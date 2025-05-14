@@ -6,10 +6,13 @@ import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
 import { Playground, playgroundData } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, MessageSquare, CalendarDays } from "lucide-react";
+import { MapPin, MessageSquare, CalendarDays, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(playgroundData);
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
 
@@ -44,6 +47,17 @@ const Index = () => {
           <h2 className="font-press-start text-xs md:text-sm text-center py-2">
             TROVA IL TUO PLAYGROUND A BOLOGNA
           </h2>
+        </div>
+        
+        <div className="flex justify-end mb-4">
+          <Button 
+            onClick={() => navigate('/add-playground')}
+            className="pixel-button text-xs flex items-center gap-2"
+          >
+            <Plus size={16} />
+            <span className="hidden md:inline">Aggiungi Playground</span>
+            <span className="inline md:hidden">Nuovo</span>
+          </Button>
         </div>
         
         <Tabs defaultValue="map" className="w-full">

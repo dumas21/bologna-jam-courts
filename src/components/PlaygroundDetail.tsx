@@ -1,5 +1,5 @@
 
-import { Clock, MapPin, Users } from "lucide-react";
+import { Clock, MapPin, Users, Lightbulb } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { Button } from "@/components/ui/button";
 
@@ -64,6 +64,9 @@ const PlaygroundDetail = ({ playground, onCheckIn }: PlaygroundDetailProps) => {
             <li>• {playground.hasAmenities 
                 ? "Bar/gelaterie entro 100m" 
                 : "Nessun bar/gelateria nelle vicinanze"}</li>
+            <li>• {playground.hasLighting 
+                ? "Campo illuminato per il gioco notturno" 
+                : "Campo non illuminato, utilizzabile solo con luce solare"}</li>
           </ul>
         </div>
         

@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { MapPin, Users } from "lucide-react";
+import { MapPin, Users, Lightbulb } from "lucide-react";
 import { Playground } from "@/types/playground";
 
 interface MapViewProps {
@@ -32,9 +32,14 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               <div className="font-press-start text-xs mb-2 text-jam-pink">
                 {playground.name}
               </div>
-              <div className="flex items-center bg-jam-dark px-2 py-1 rounded">
-                <Users size={12} className="text-jam-orange mr-1" />
-                <span className="text-xs font-press-start">{playground.currentPlayers}</span>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center bg-jam-dark px-2 py-1 rounded">
+                  <Users size={12} className="text-jam-orange mr-1" />
+                  <span className="text-xs font-press-start">{playground.currentPlayers}</span>
+                </div>
+                {playground.hasLighting && (
+                  <Lightbulb size={12} className="text-jam-yellow" />
+                )}
               </div>
             </div>
             <div className="text-xs text-white/70 mb-1">

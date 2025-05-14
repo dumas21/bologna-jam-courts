@@ -1,4 +1,5 @@
 
+
 export interface Playground {
   id: string;
   name: string;
@@ -9,6 +10,7 @@ export interface Playground {
   hasShade: boolean;
   hasFountain: boolean;
   hasAmenities: boolean;
+  hasLighting: boolean; // Nuova proprietà per l'illuminazione
   currentPlayers: number;
 }
 
@@ -23,6 +25,7 @@ export const playgroundData: Playground[] = [
     hasShade: true,
     hasFountain: true,
     hasAmenities: true,
+    hasLighting: true, // Aggiunto illuminazione
     currentPlayers: 8,
   },
   {
@@ -35,6 +38,7 @@ export const playgroundData: Playground[] = [
     hasShade: false,
     hasFountain: true,
     hasAmenities: false,
+    hasLighting: true, // Aggiunto illuminazione
     currentPlayers: 4,
   },
   {
@@ -47,6 +51,7 @@ export const playgroundData: Playground[] = [
     hasShade: true,
     hasFountain: false,
     hasAmenities: true,
+    hasLighting: false, // Aggiunto illuminazione
     currentPlayers: 2,
   },
   {
@@ -59,6 +64,7 @@ export const playgroundData: Playground[] = [
     hasShade: false,
     hasFountain: true,
     hasAmenities: false,
+    hasLighting: false, // Aggiunto illuminazione
     currentPlayers: 0,
   },
   {
@@ -71,6 +77,8 @@ export const playgroundData: Playground[] = [
     hasShade: true,
     hasFountain: true,
     hasAmenities: true,
+    hasLighting: true, // Aggiunto illuminazione
     currentPlayers: 10,
   },
 ];
+
