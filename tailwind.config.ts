@@ -1,4 +1,5 @@
 
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -69,6 +70,7 @@ export default {
           blue: '#0EA5E9',
           pink: '#D946EF',
           dark: '#1A1F2C',
+          yellow: '#FBBF24', // Aggiunto per l'icona di illuminazione
         }
 			},
 			fontFamily: {
@@ -115,3 +117,4 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+

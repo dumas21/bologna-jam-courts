@@ -68,8 +68,16 @@ const AddPlayground = () => {
     
     // Create new playground with unique ID
     const newPlayground: Playground = {
-      ...data,
       id: `pg-${Date.now()}`,
+      name: data.name,           // Assegna esplicitamente ogni proprietà richiesta
+      address: data.address,     // per risolvere l'errore TypeScript
+      lat: data.lat,
+      lng: data.lng,
+      openHours: data.openHours,
+      hasShade: data.hasShade,
+      hasFountain: data.hasFountain,
+      hasAmenities: data.hasAmenities,
+      hasLighting: data.hasLighting,
       currentPlayers: 0,
     };
     
