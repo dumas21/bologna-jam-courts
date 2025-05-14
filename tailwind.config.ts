@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,17 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+        jam: {
+          purple: '#9b87f5',
+          orange: '#F97316',
+          blue: '#0EA5E9',
+          pink: '#D946EF',
+          dark: '#1A1F2C',
+        }
+			},
+			fontFamily: {
+				'press-start': ['"Press Start 2P"', 'cursive'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,11 +95,21 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+        'pixel-bounce': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-5px)' },
+        },
+        'pixel-fade-in': {
+          '0%': { opacity: '0', transform: 'translateY(4px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' }
+        },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+        'pixel-bounce': 'pixel-bounce 0.5s ease infinite',
+        'pixel-fade-in': 'pixel-fade-in 0.3s ease-out',
 			}
 		}
 	},

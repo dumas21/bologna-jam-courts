@@ -1,12 +1,107 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import Header from "@/components/Header";
+import MapView from "@/components/MapView";
+import PlaygroundDetail from "@/components/PlaygroundDetail";
+import { Playground, playgroundData } from "@/types/playground";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MapPin, MessageSquare, CalendarDays } from "lucide-react";
 
 const Index = () => {
+  const { toast } = useToast();
+  const [playgrounds, setPlaygrounds] = useState<Playground[]>(playgroundData);
+  const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
+
+  const handleSelectPlayground = (playground: Playground) => {
+    setSelectedPlayground(playground);
+  };
+
+  const handleCheckIn = (playgroundId: string) => {
+    setPlaygrounds(current =>
+      current.map(pg => {
+        if (pg.id === playgroundId) {
+          const updatedPlayground = { ...pg, currentPlayers: pg.currentPlayers + 1 };
+          setSelectedPlayground(updatedPlayground);
+          return updatedPlayground;
+        }
+        return pg;
+      })
+    );
+    
+    toast({
+      title: "Check-in completato!",
+      description: `Non dimenticare di portare il pallone! 🏀`,
+    });
+  };
+  
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-jam-dark text-white">
+      <Header />
+      
+      <main className="container mx-auto p-4 flex-1">
+        <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
+          <h2 className="font-press-start text-xs md:text-sm text-center py-2">
+            TROVA IL TUO PLAYGROUND A BOLOGNA
+          </h2>
+        </div>
+        
+        <Tabs defaultValue="map" className="w-full">
+          <TabsList className="w-full grid grid-cols-3 mb-4">
+            <TabsTrigger value="map" className="font-press-start text-xs">
+              <MapPin size={16} className="mr-1" />
+              <span className="hidden md:inline">Mappa</span>
+            </TabsTrigger>
+            <TabsTrigger value="chat" className="font-press-start text-xs">
+              <MessageSquare size={16} className="mr-1" />
+              <span className="hidden md:inline">Chat</span>
+            </TabsTrigger>
+            <TabsTrigger value="events" className="font-press-start text-xs">
+              <CalendarDays size={16} className="mr-1" />
+              <span className="hidden md:inline">Eventi</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="map" className="animate-pixel-fade-in">
+            <MapView 
+              playgrounds={playgrounds} 
+              selectedPlayground={selectedPlayground}
+              onSelectPlayground={handleSelectPlayground} 
+            />
+            
+            {selectedPlayground && (
+              <PlaygroundDetail 
+                playground={selectedPlayground} 
+                onCheckIn={handleCheckIn}
+              />
+            )}
+          </TabsContent>
+          
+          <TabsContent value="chat" className="animate-pixel-fade-in">
+            <div className="pixel-card h-64 flex items-center justify-center">
+              <p className="font-press-start text-xs text-jam-orange">
+                Chat disponibile dopo il login
+              </p>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="events" className="animate-pixel-fade-in">
+            <div className="pixel-card h-64 flex items-center justify-center">
+              <p className="font-press-start text-xs text-jam-orange">
+                Eventi disponibili dopo il login
+              </p>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </main>
+      
+      <footer className="bg-jam-dark border-t-4 border-white py-4">
+        <div className="container mx-auto px-4 text-center">
+          <p className="font-press-start text-xs text-white/60">
+            PLAYGROUND JAM BOLOGNA &copy; 2025
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

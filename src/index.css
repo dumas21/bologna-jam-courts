@@ -1,6 +1,9 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 @layer base {
   :root {
@@ -96,6 +99,20 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-jam-dark text-white;
+  }
+}
+
+@layer components {
+  .pixel-border {
+    @apply border-4 border-white shadow-[4px_4px_0px_0px_rgba(0,0,0,0.9)];
+  }
+  
+  .pixel-button {
+    @apply pixel-border bg-jam-purple hover:bg-jam-blue transition-colors px-6 py-3 uppercase font-press-start text-white;
+  }
+  
+  .pixel-card {
+    @apply pixel-border bg-jam-dark p-4;
   }
 }
