@@ -1,5 +1,4 @@
 
-import { useState } from "react";
 import { MapPin, Users, Lightbulb } from "lucide-react";
 import { Playground } from "@/types/playground";
 
@@ -23,9 +22,11 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
         {playgrounds.map(playground => (
           <div 
             key={playground.id}
-            className={`pixel-card cursor-pointer transition-colors ${
-              selectedPlayground?.id === playground.id ? 'bg-jam-purple' : 'bg-jam-dark'
-            }`}
+            className={`cursor-pointer transition-colors ${
+              selectedPlayground?.id === playground.id 
+                ? 'bg-jam-purple bg-opacity-80' 
+                : 'bg-black bg-opacity-70'
+            } backdrop-blur-sm p-3 border border-white/20`}
             onClick={() => onSelectPlayground(playground)}
           >
             <div className="flex justify-between items-start">

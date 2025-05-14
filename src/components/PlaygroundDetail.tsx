@@ -8,19 +8,23 @@ import {
   Umbrella, 
   Sun,
   Bell,
-  BellOff
+  BellOff,
+  LogOut,
+  TimerReset
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
+import { formatTimeUntilReset } from "@/utils/timeUtils";
 
 interface PlaygroundDetailProps {
   playground: Playground;
   onCheckIn: (playgroundId: string) => void;
+  onCheckOut: (playgroundId: string) => void;
 }
 
-const PlaygroundDetail = ({ playground, onCheckIn }: PlaygroundDetailProps) => {
+const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut }: PlaygroundDetailProps) => {
   const { toast } = useToast();
   const { 
     isLoggedIn, 
@@ -35,6 +39,18 @@ const PlaygroundDetail = ({ playground, onCheckIn }: PlaygroundDetailProps) => {
   
   const handleCheckIn = () => {
     onCheckIn(playground.id);
+    toast({
+      title: "Check-in completato!",
+      description: `Non dimenticare di portare il pallone! 🏀`,
+    });
+  };
+  
+  const handleCheckOut = () => {
+    onCheckOut(playground.id);
+    toast({
+      title: "Check-out completato!",
+      description: `Grazie per aver aggiornato le presenze! 👋`,
+    });
   };
   
   const handleSubscriptionToggle = () => {
@@ -65,7 +81,7 @@ const PlaygroundDetail = ({ playground, onCheckIn }: PlaygroundDetailProps) => {
   };
 
   return (
-    <div className="pixel-card mt-6 animate-pixel-fade-in">
+    <div className="pixel-card mt-6 animate-pixel-fade-in bg-black bg-opacity-70 backdrop-blur-sm">
       <h3 className="font-press-start text-base md:text-xl text-jam-orange mb-2">
         {playground.name}
       </h3>
@@ -119,23 +135,49 @@ const PlaygroundDetail = ({ playground, onCheckIn }: PlaygroundDetailProps) => {
               <span className="text-xs">Illuminazione</span>
             </div>
           </div>
+          
+          <div className="flex items-center gap-2 mt-2 text-xs text-jam-blue">
+            <TimerReset size={14} />
+            <span>Reset conteggio tra {formatTimeUntilReset()}</span>
+          </div>
         </div>
         
         <div className="flex flex-col md:items-end gap-3">
-          <div className="flex items-center bg-jam-dark p-2 rounded justify-center">
-            <User className="text-jam-blue" size={16} />
-            <span className="font-press-start text-base ml-2">
-              {playground.currentPlayers}
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs">Presenze oggi:</span>
+            <div className="flex items-center bg-jam-dark p-2 rounded justify-center ml-2">
+              <User className="text-jam-blue" size={16} />
+              <span className="font-press-start text-base ml-2">
+                {playground.currentPlayers}
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs">Totale check-in:</span>
+            <span className="font-press-start text-jam-yellow text-sm ml-2">
+              {playground.totalCheckins}
             </span>
           </div>
           
-          <Button onClick={handleCheckIn} className="pixel-button text-xs w-full md:w-auto">
-            CHECK-IN
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleCheckIn} className="pixel-button text-xs w-full md:w-auto">
+              CHECK-IN
+            </Button>
+            
+            <Button 
+              onClick={handleCheckOut} 
+              className="pixel-button bg-jam-orange hover:bg-red-500 text-xs w-full md:w-auto"
+              disabled={playground.currentPlayers === 0}
+            >
+              <LogOut size={16} />
+              <span className="hidden sm:inline">CHECK-OUT</span>
+            </Button>
+          </div>
           
           <Button 
             onClick={handleSubscriptionToggle}
-            className={`flex items-center gap-2 ${
+            className={`flex items-center gap-2 mt-2 ${
               subscriptionStatus 
               ? 'bg-red-500 hover:bg-red-700' 
               : 'bg-green-500 hover:bg-green-700'

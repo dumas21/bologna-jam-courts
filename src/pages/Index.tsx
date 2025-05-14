@@ -4,42 +4,25 @@ import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
-import { Playground, playgroundData } from "@/types/playground";
+import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, MessageSquare, CalendarDays, Plus } from "lucide-react";
+import { MapPin, MessageSquare, CalendarDays, Plus, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
+import { usePlaygrounds } from "@/hooks/usePlaygrounds";
 
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isLoggedIn } = useUser();
-  const [playgrounds, setPlaygrounds] = useState<Playground[]>(playgroundData);
+  const { playgrounds, checkIn, checkOut } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
 
   const handleSelectPlayground = (playground: Playground) => {
     setSelectedPlayground(playground);
   };
 
-  const handleCheckIn = (playgroundId: string) => {
-    setPlaygrounds(current =>
-      current.map(pg => {
-        if (pg.id === playgroundId) {
-          const updatedPlayground = { ...pg, currentPlayers: pg.currentPlayers + 1 };
-          setSelectedPlayground(updatedPlayground);
-          return updatedPlayground;
-        }
-        return pg;
-      })
-    );
-    
-    toast({
-      title: "Check-in completato!",
-      description: `Non dimenticare di portare il pallone! 🏀`,
-    });
-  };
-  
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -51,7 +34,16 @@ const Index = () => {
           </h2>
         </div>
         
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-between mb-4">
+          <Button 
+            onClick={() => navigate('/stats')}
+            className="pixel-button text-xs flex items-center gap-2 bg-jam-blue"
+          >
+            <BarChart size={16} />
+            <span className="hidden md:inline">Statistiche</span>
+            <span className="inline md:hidden">Stats</span>
+          </Button>
+          
           <Button 
             onClick={() => navigate('/add-playground')}
             className="pixel-button text-xs flex items-center gap-2"
@@ -79,7 +71,7 @@ const Index = () => {
           </TabsList>
           
           <TabsContent value="map" className="animate-pixel-fade-in">
-            <div className="pixel-card">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-sm">
               <MapView 
                 playgrounds={playgrounds} 
                 selectedPlayground={selectedPlayground}
@@ -90,13 +82,14 @@ const Index = () => {
             {selectedPlayground && (
               <PlaygroundDetail 
                 playground={selectedPlayground} 
-                onCheckIn={handleCheckIn}
+                onCheckIn={checkIn}
+                onCheckOut={checkOut}
               />
             )}
           </TabsContent>
           
           <TabsContent value="chat" className="animate-pixel-fade-in">
-            <div className="pixel-card h-64 flex items-center justify-center">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-sm h-64 flex items-center justify-center">
               <p className="font-press-start text-xs text-jam-orange">
                 {isLoggedIn ? 'Chat disponibile presto' : 'Chat disponibile dopo il login'}
               </p>
@@ -104,7 +97,7 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="events" className="animate-pixel-fade-in">
-            <div className="pixel-card h-64 flex items-center justify-center">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-sm h-64 flex items-center justify-center">
               <p className="font-press-start text-xs text-jam-orange">
                 {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
               </p>
@@ -113,7 +106,7 @@ const Index = () => {
         </Tabs>
       </main>
       
-      <footer className="bg-black bg-opacity-80 border-t-4 border-jam-purple py-4">
+      <footer className="bg-black bg-opacity-70 backdrop-blur-sm border-t-4 border-jam-purple py-4">
         <div className="container mx-auto px-4 text-center">
           <p className="font-press-start text-xs text-white/60">
             PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami

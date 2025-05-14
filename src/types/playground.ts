@@ -1,5 +1,4 @@
 
-
 export interface Playground {
   id: string;
   name: string;
@@ -10,8 +9,9 @@ export interface Playground {
   hasShade: boolean;
   hasFountain: boolean;
   hasAmenities: boolean;
-  hasLighting: boolean; // Nuova proprietà per l'illuminazione
+  hasLighting: boolean;
   currentPlayers: number;
+  totalCheckins: number; // New field to track total check-ins
 }
 
 export const playgroundData: Playground[] = [
@@ -25,8 +25,9 @@ export const playgroundData: Playground[] = [
     hasShade: true,
     hasFountain: true,
     hasAmenities: true,
-    hasLighting: true, // Aggiunto illuminazione
+    hasLighting: true,
     currentPlayers: 8,
+    totalCheckins: 124,
   },
   {
     id: "pm",
@@ -38,8 +39,9 @@ export const playgroundData: Playground[] = [
     hasShade: false,
     hasFountain: true,
     hasAmenities: false,
-    hasLighting: true, // Aggiunto illuminazione
+    hasLighting: true,
     currentPlayers: 4,
+    totalCheckins: 87,
   },
   {
     id: "mp",
@@ -51,8 +53,9 @@ export const playgroundData: Playground[] = [
     hasShade: true,
     hasFountain: false,
     hasAmenities: true,
-    hasLighting: false, // Aggiunto illuminazione
+    hasLighting: false,
     currentPlayers: 2,
+    totalCheckins: 53,
   },
   {
     id: "vdb",
@@ -64,8 +67,9 @@ export const playgroundData: Playground[] = [
     hasShade: false,
     hasFountain: true,
     hasAmenities: false,
-    hasLighting: false, // Aggiunto illuminazione
+    hasLighting: false,
     currentPlayers: 0,
+    totalCheckins: 32,
   },
   {
     id: "aas",
@@ -77,8 +81,8 @@ export const playgroundData: Playground[] = [
     hasShade: true,
     hasFountain: true,
     hasAmenities: true,
-    hasLighting: true, // Aggiunto illuminazione
+    hasLighting: true,
     currentPlayers: 10,
+    totalCheckins: 189,
   },
 ];
-
