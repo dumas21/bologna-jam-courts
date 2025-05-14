@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Lightbulb, MapPin } from "lucide-react";
+import { MapPin, Check, Sun } from "lucide-react";
 import { Playground, playgroundData } from "@/types/playground";
 
 const formSchema = z.object({
@@ -23,7 +23,7 @@ const formSchema = z.object({
   hasShade: z.boolean().default(false),
   hasFountain: z.boolean().default(false),
   hasAmenities: z.boolean().default(false),
-  hasLighting: z.boolean().default(false), // Aggiunta illuminazione
+  hasLighting: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -44,7 +44,7 @@ const AddPlayground = () => {
       hasShade: false,
       hasFountain: false,
       hasAmenities: false,
-      hasLighting: false, // Default false
+      hasLighting: false,
     },
   });
 
@@ -95,7 +95,7 @@ const AddPlayground = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-jam-dark text-white">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="container mx-auto p-4 flex-1">
@@ -171,7 +171,7 @@ const AddPlayground = () => {
                 name="openHours"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-press-start text-xs text-jam-orange">Orari Apertura</FormLabel>
+                    <FormLabel className="font-press-start text-xs text-jam-orange">Orari</FormLabel>
                     <FormControl>
                       <Input placeholder="08:00 - 22:00" {...field} />
                     </FormControl>
@@ -180,19 +180,21 @@ const AddPlayground = () => {
                 )}
               />
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+              <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="hasShade"
                   render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                       <FormControl>
-                        <Checkbox 
+                        <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormLabel className="text-sm">Ombreggiato</FormLabel>
+                      <FormLabel className="font-press-start text-xs">
+                        Area Ombreggiata
+                      </FormLabel>
                     </FormItem>
                   )}
                 />
@@ -201,14 +203,16 @@ const AddPlayground = () => {
                   control={form.control}
                   name="hasFountain"
                   render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                       <FormControl>
-                        <Checkbox 
+                        <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormLabel className="text-sm">Fontanella</FormLabel>
+                      <FormLabel className="font-press-start text-xs">
+                        Fontanella
+                      </FormLabel>
                     </FormItem>
                   )}
                 />
@@ -217,14 +221,16 @@ const AddPlayground = () => {
                   control={form.control}
                   name="hasAmenities"
                   render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                       <FormControl>
-                        <Checkbox 
+                        <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormLabel className="text-sm">Bar/Gelaterie vicine</FormLabel>
+                      <FormLabel className="font-press-start text-xs">
+                        Servizi
+                      </FormLabel>
                     </FormItem>
                   )}
                 />
@@ -233,14 +239,16 @@ const AddPlayground = () => {
                   control={form.control}
                   name="hasLighting"
                   render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2 space-y-0">
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                       <FormControl>
-                        <Checkbox 
+                        <Checkbox
                           checked={field.value}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>
-                      <FormLabel className="text-sm">Illuminazione notturna</FormLabel>
+                      <FormLabel className="font-press-start text-xs">
+                        Illuminazione
+                      </FormLabel>
                     </FormItem>
                   )}
                 />
@@ -248,15 +256,23 @@ const AddPlayground = () => {
               
               <Button 
                 type="submit" 
+                className="pixel-button w-full" 
                 disabled={isSubmitting}
-                className="w-full mt-6 pixel-button"
               >
-                {isSubmitting ? "Aggiunta in corso..." : "Aggiungi Playground"}
+                {isSubmitting ? 'INVIO...' : 'AGGIUNGI PLAYGROUND'}
               </Button>
             </form>
           </Form>
         </div>
       </main>
+      
+      <footer className="bg-black bg-opacity-80 border-t-4 border-jam-purple py-4">
+        <div className="container mx-auto px-4 text-center">
+          <p className="font-press-start text-xs text-white/60">
+            PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

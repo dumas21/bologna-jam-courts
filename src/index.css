@@ -1,5 +1,3 @@
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -101,6 +99,11 @@
 
   body {
     @apply bg-jam-dark text-white;
+    background-image: url('/lovable-uploads/a6410e74-ad0f-4439-aa75-557beaf6607a.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
   }
 }
 
@@ -114,7 +117,21 @@
   }
   
   .pixel-card {
-    @apply pixel-border bg-jam-dark p-4;
+    @apply pixel-border bg-black bg-opacity-80 p-4;
+  }
+
+  .nba-jam-heading {
+    @apply font-press-start text-jam-orange drop-shadow-[4px_4px_0px_rgba(155,135,245,0.7)];
+  }
+
+  .retro-grid-bg {
+    background-image: linear-gradient(rgba(18, 16, 37, 0.85), rgba(18, 16, 37, 0.95)),
+                      linear-gradient(0deg, rgba(155, 135, 245, 0.2) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(155, 135, 245, 0.2) 1px, transparent 1px);
+    background-size: 100% 100%, 30px 30px, 30px 30px;
+  }
+
+  .content-container {
+    @apply bg-black bg-opacity-75 backdrop-blur-sm;
   }
 }
-

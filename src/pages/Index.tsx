@@ -9,10 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, MessageSquare, CalendarDays, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@/contexts/UserContext";
 
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { isLoggedIn } = useUser();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(playgroundData);
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
 
@@ -39,7 +41,7 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen flex flex-col bg-jam-dark text-white">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="container mx-auto p-4 flex-1">
@@ -77,11 +79,13 @@ const Index = () => {
           </TabsList>
           
           <TabsContent value="map" className="animate-pixel-fade-in">
-            <MapView 
-              playgrounds={playgrounds} 
-              selectedPlayground={selectedPlayground}
-              onSelectPlayground={handleSelectPlayground} 
-            />
+            <div className="pixel-card">
+              <MapView 
+                playgrounds={playgrounds} 
+                selectedPlayground={selectedPlayground}
+                onSelectPlayground={handleSelectPlayground} 
+              />
+            </div>
             
             {selectedPlayground && (
               <PlaygroundDetail 
@@ -94,7 +98,7 @@ const Index = () => {
           <TabsContent value="chat" className="animate-pixel-fade-in">
             <div className="pixel-card h-64 flex items-center justify-center">
               <p className="font-press-start text-xs text-jam-orange">
-                Chat disponibile dopo il login
+                {isLoggedIn ? 'Chat disponibile presto' : 'Chat disponibile dopo il login'}
               </p>
             </div>
           </TabsContent>
@@ -102,17 +106,17 @@ const Index = () => {
           <TabsContent value="events" className="animate-pixel-fade-in">
             <div className="pixel-card h-64 flex items-center justify-center">
               <p className="font-press-start text-xs text-jam-orange">
-                Eventi disponibili dopo il login
+                {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
               </p>
             </div>
           </TabsContent>
         </Tabs>
       </main>
       
-      <footer className="bg-jam-dark border-t-4 border-white py-4">
+      <footer className="bg-black bg-opacity-80 border-t-4 border-jam-purple py-4">
         <div className="container mx-auto px-4 text-center">
           <p className="font-press-start text-xs text-white/60">
-            PLAYGROUND JAM BOLOGNA &copy; 2025
+            PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
           </p>
         </div>
       </footer>

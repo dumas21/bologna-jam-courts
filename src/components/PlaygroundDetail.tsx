@@ -1,7 +1,19 @@
 
-import { Clock, MapPin, Users, Lightbulb } from "lucide-react";
-import { Playground } from "@/types/playground";
+import { useState } from "react";
+import { 
+  User, 
+  Clock, 
+  Droplet, 
+  Home, 
+  Umbrella, 
+  Sun,
+  Bell,
+  BellOff
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Playground } from "@/types/playground";
+import { useUser } from "@/contexts/UserContext";
+import { useToast } from "@/components/ui/use-toast";
 
 interface PlaygroundDetailProps {
   playground: Playground;
@@ -9,73 +21,137 @@ interface PlaygroundDetailProps {
 }
 
 const PlaygroundDetail = ({ playground, onCheckIn }: PlaygroundDetailProps) => {
-  const getShadeText = (hasShade: boolean) => {
-    const currentHour = new Date().getHours();
-    
-    if (hasShade) {
-      return currentHour > 11 && currentHour < 18 
-        ? "Ombreggiato durante le ore più calde" 
-        : "Ombreggiato parzialmente";
-    }
-    
-    return currentHour > 11 && currentHour < 18 
-      ? "Attenzione: nessuna ombra durante le ore più calde" 
-      : "Nessuna area d'ombra";
+  const { toast } = useToast();
+  const { 
+    isLoggedIn, 
+    subscribeToPlayground, 
+    unsubscribeFromPlayground, 
+    isSubscribed 
+  } = useUser();
+  
+  const [subscriptionStatus, setSubscriptionStatus] = useState(
+    isSubscribed(playground.id)
+  );
+  
+  const handleCheckIn = () => {
+    onCheckIn(playground.id);
   };
   
+  const handleSubscriptionToggle = () => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login richiesto",
+        description: "Devi accedere per ricevere notifiche sui playground",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (subscriptionStatus) {
+      unsubscribeFromPlayground(playground.id);
+      setSubscriptionStatus(false);
+      toast({
+        title: "Notifiche disattivate",
+        description: `Non riceverai più notifiche per ${playground.name}`
+      });
+    } else {
+      subscribeToPlayground(playground.id);
+      setSubscriptionStatus(true);
+      toast({
+        title: "Notifiche attivate",
+        description: `Riceverai notifiche per ${playground.name}`
+      });
+    }
+  };
+
   return (
-    <div className="pixel-card mt-4">
-      <h2 className="font-press-start text-lg text-jam-orange mb-4">{playground.name}</h2>
+    <div className="pixel-card mt-6 animate-pixel-fade-in">
+      <h3 className="font-press-start text-base md:text-xl text-jam-orange mb-2">
+        {playground.name}
+      </h3>
       
-      <div className="space-y-4">
-        <div className="flex items-start">
-          <MapPin className="mr-2 text-jam-blue flex-shrink-0 mt-1" size={18} />
-          <div>
-            <div className="text-sm font-bold">Indirizzo</div>
-            <div className="text-sm opacity-80">{playground.address}</div>
+      <div className="flex flex-col md:flex-row md:justify-between">
+        <div className="mb-4 md:mb-0 md:w-2/3">
+          <div className="flex items-start gap-2 mb-2">
+            <Home className="flex-shrink-0 text-jam-purple mt-1" size={16} />
+            <span className="text-sm">{playground.address}</span>
           </div>
-        </div>
-        
-        <div className="flex items-start">
-          <Clock className="mr-2 text-jam-pink flex-shrink-0 mt-1" size={18} />
-          <div>
-            <div className="text-sm font-bold">Orari</div>
-            <div className="text-sm opacity-80">{playground.openHours}</div>
+          
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="text-jam-purple" size={16} />
+            <span className="text-sm">{playground.openHours}</span>
           </div>
-        </div>
-        
-        <div className="flex items-start">
-          <Users className="mr-2 text-jam-orange flex-shrink-0 mt-1" size={18} />
-          <div>
-            <div className="text-sm font-bold">Giocatori Presenti</div>
-            <div className="text-sm opacity-80">
-              {playground.currentPlayers} {playground.currentPlayers === 1 ? 'giocatore' : 'giocatori'}
+          
+          <div className="grid grid-cols-2 gap-2 md:gap-4 mt-4">
+            <div className="flex items-center gap-1">
+              {playground.hasShade ? (
+                <Umbrella className="text-green-400" size={16} />
+              ) : (
+                <Umbrella className="text-red-400" size={16} />
+              )}
+              <span className="text-xs">Ombra</span>
+            </div>
+            
+            <div className="flex items-center gap-1">
+              {playground.hasFountain ? (
+                <Droplet className="text-green-400" size={16} />
+              ) : (
+                <Droplet className="text-red-400" size={16} />
+              )}
+              <span className="text-xs">Fontanella</span>
+            </div>
+            
+            <div className="flex items-center gap-1">
+              {playground.hasAmenities ? (
+                <Home className="text-green-400" size={16} />
+              ) : (
+                <Home className="text-red-400" size={16} />
+              )}
+              <span className="text-xs">Servizi</span>
+            </div>
+            
+            <div className="flex items-center gap-1">
+              {playground.hasLighting ? (
+                <Sun className="text-jam-yellow" size={16} />
+              ) : (
+                <Sun className="text-red-400" size={16} />
+              )}
+              <span className="text-xs">Illuminazione</span>
             </div>
           </div>
         </div>
         
-        <div className="bg-jam-dark/50 p-3 rounded mt-4">
-          <div className="text-sm font-bold mb-1">Info aggiuntive:</div>
-          <ul className="text-xs space-y-2 opacity-80">
-            <li>• {getShadeText(playground.hasShade)}</li>
-            <li>• {playground.hasFountain 
-                ? "Fontanella disponibile nel campo" 
-                : "Nessuna fontanella nel campo"}</li>
-            <li>• {playground.hasAmenities 
-                ? "Bar/gelaterie entro 100m" 
-                : "Nessun bar/gelateria nelle vicinanze"}</li>
-            <li>• {playground.hasLighting 
-                ? "Campo illuminato per il gioco notturno" 
-                : "Campo non illuminato, utilizzabile solo con luce solare"}</li>
-          </ul>
-        </div>
-        
-        <div className="flex justify-between gap-4 mt-6">
+        <div className="flex flex-col md:items-end gap-3">
+          <div className="flex items-center bg-jam-dark p-2 rounded justify-center">
+            <User className="text-jam-blue" size={16} />
+            <span className="font-press-start text-base ml-2">
+              {playground.currentPlayers}
+            </span>
+          </div>
+          
+          <Button onClick={handleCheckIn} className="pixel-button text-xs w-full md:w-auto">
+            CHECK-IN
+          </Button>
+          
           <Button 
-            className="pixel-button flex-1 text-xs animate-pixel-bounce"
-            onClick={() => onCheckIn(playground.id)}
+            onClick={handleSubscriptionToggle}
+            className={`flex items-center gap-2 ${
+              subscriptionStatus 
+              ? 'bg-red-500 hover:bg-red-700' 
+              : 'bg-green-500 hover:bg-green-700'
+            } text-white rounded-md px-3 py-1 text-xs w-full md:w-auto`}
           >
-            Check-in
+            {subscriptionStatus ? (
+              <>
+                <BellOff size={14} />
+                <span>Disattiva notifiche</span>
+              </>
+            ) : (
+              <>
+                <Bell size={14} />
+                <span>Attiva notifiche</span>
+              </>
+            )}
           </Button>
         </div>
       </div>
