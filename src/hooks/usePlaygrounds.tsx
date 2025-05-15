@@ -211,18 +211,40 @@ export function usePlaygrounds() {
   
   // Funzione per aggiornare un playground esistente
   const updatePlayground = (updatedPlayground: Playground) => {
-    setPlaygrounds(current =>
-      current.map(pg => {
-        if (pg.id === updatedPlayground.id) {
-          return updatedPlayground;
-        }
-        return pg;
-      })
-    );
+    setPlaygrounds(current => {
+      // Check if this playground already exists
+      const existingPlaygroundIndex = current.findIndex(pg => pg.id === updatedPlayground.id);
+      
+      if (existingPlaygroundIndex >= 0) {
+        // Update existing playground
+        const updatedPlaygrounds = [...current];
+        updatedPlaygrounds[existingPlaygroundIndex] = updatedPlayground;
+        return updatedPlaygrounds;
+      } else {
+        // Add new playground
+        return [...current, updatedPlayground];
+      }
+    });
     
     toast({
       title: "Playground aggiornato",
       description: `${updatedPlayground.name} è stato aggiornato con successo.`,
+    });
+    
+    // Play sound effect
+    const audio = new Audio('/sounds/add.mp3');
+    audio.play().catch(err => console.log('Audio playback error:', err));
+    
+    return true;
+  };
+  
+  // Add a new playground
+  const addPlayground = (newPlayground: Playground) => {
+    setPlaygrounds(current => [...current, newPlayground]);
+    
+    toast({
+      title: "Playground aggiunto",
+      description: `${newPlayground.name} è stato aggiunto con successo.`,
     });
     
     // Play sound effect
@@ -247,6 +269,7 @@ export function usePlaygrounds() {
     resetDailyCounts,
     resetChats,
     updatePlayground,
+    addPlayground,
     hasUserCheckedIn,
     checkInRecords
   };

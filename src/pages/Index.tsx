@@ -7,7 +7,7 @@ import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MapPin, MessageSquare, CalendarDays, Plus, BarChart } from "lucide-react";
+import { MessageSquare, CalendarDays, Plus, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -110,8 +110,8 @@ const Index = () => {
               className="font-press-start text-xs"
               onClick={() => playSoundEffect('tab')}
             >
-              <MapPin size={16} className="mr-1" />
-              <span className="hidden md:inline">Mappa</span>
+              <span className="hidden md:inline">Lista</span>
+              <span className="inline md:hidden">Lista</span>
             </TabsTrigger>
             <TabsTrigger 
               value="chat" 

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -11,8 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { MapPin, Check, Sun, ArrowLeft } from "lucide-react";
-import { Playground, playgroundData } from "@/types/playground";
+import { Check, ArrowLeft } from "lucide-react";
+import { Playground } from "@/types/playground";
 import { usePlaygrounds } from "@/hooks/usePlaygrounds";
 import { useUser } from "@/contexts/UserContext";
 
@@ -35,7 +34,7 @@ const AddPlayground = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { updatePlayground } = usePlaygrounds();
+  const { updatePlayground, addPlayground } = usePlaygrounds();
   const { isLoggedIn } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
@@ -44,24 +43,30 @@ const AddPlayground = () => {
   useEffect(() => {
     const editPlaygroundId = localStorage.getItem("editPlaygroundId");
     if (editPlaygroundId) {
-      const playground = playgroundData.find(pg => pg.id === editPlaygroundId);
-      if (playground) {
-        setIsEditing(true);
-        setEditId(playground.id);
+      // Get the playground from localStorage
+      const savedPlaygrounds = localStorage.getItem("playgroundData");
+      if (savedPlaygrounds) {
+        const playgrounds = JSON.parse(savedPlaygrounds);
+        const playground = playgrounds.find((pg: Playground) => pg.id === editPlaygroundId);
         
-        // Set form default values
-        form.reset({
-          name: playground.name,
-          address: playground.address,
-          lat: playground.lat,
-          lng: playground.lng,
-          openHours: playground.openHours,
-          hasShade: playground.hasShade,
-          hasFountain: playground.hasFountain,
-          hasAmenities: playground.hasAmenities,
-          hasLighting: playground.hasLighting,
-          basketCount: playground.basketCount || 1,
-        });
+        if (playground) {
+          setIsEditing(true);
+          setEditId(playground.id);
+          
+          // Set form default values
+          form.reset({
+            name: playground.name,
+            address: playground.address,
+            lat: playground.lat,
+            lng: playground.lng,
+            openHours: playground.openHours,
+            hasShade: playground.hasShade,
+            hasFountain: playground.hasFountain,
+            hasAmenities: playground.hasAmenities,
+            hasLighting: playground.hasLighting,
+            basketCount: playground.basketCount || 1,
+          });
+        }
       }
       // Rimuovi l'ID dopo averlo usato
       localStorage.removeItem("editPlaygroundId");
@@ -97,9 +102,17 @@ const AddPlayground = () => {
       return;
     }
     
+    // Get existing playgrounds from localStorage for checking duplicates
+    const savedPlaygrounds = localStorage.getItem("playgroundData");
+    let existingPlaygrounds: Playground[] = [];
+    if (savedPlaygrounds) {
+      existingPlaygrounds = JSON.parse(savedPlaygrounds);
+    }
+    
     if (isEditing && editId) {
-      // Aggiorna un playground esistente
-      const existingPlayground = playgroundData.find(pg => pg.id === editId);
+      // Find the existing playground to update
+      const existingPlayground = existingPlaygrounds.find(pg => pg.id === editId);
+      
       if (existingPlayground) {
         const updatedPlayground: Playground = {
           ...existingPlayground,
@@ -133,7 +146,7 @@ const AddPlayground = () => {
     
     // Check for duplicate coordinates for new playgrounds
     if (!isEditing) {
-      const isDuplicate = playgroundData.some(
+      const isDuplicate = existingPlaygrounds.some(
         pg => Math.abs(pg.lat - data.lat) < 0.0001 && Math.abs(pg.lng - data.lng) < 0.0001
       );
       
@@ -160,37 +173,19 @@ const AddPlayground = () => {
       hasFountain: data.hasFountain,
       hasAmenities: data.hasAmenities,
       hasLighting: data.hasLighting,
-      currentPlayers: isEditing && editId ? playgroundData.find(pg => pg.id === editId)?.currentPlayers || 0 : 0,
-      totalCheckins: isEditing && editId ? playgroundData.find(pg => pg.id === editId)?.totalCheckins || 0 : 0,
+      currentPlayers: 0,
+      totalCheckins: 0,
       basketCount: data.basketCount,
-      rating: isEditing && editId ? playgroundData.find(pg => pg.id === editId)?.rating || 0 : 0,
-      ratingCount: isEditing && editId ? playgroundData.find(pg => pg.id === editId)?.ratingCount || 0 : 0,
-      comments: isEditing && editId ? playgroundData.find(pg => pg.id === editId)?.comments || [] : []
+      rating: 0,
+      ratingCount: 0,
+      comments: []
     };
     
     // Play sound effect
     playSoundEffect('add');
     
-    if (!isEditing) {
-      // In a real app, we'd save to a database here
-      playgroundData.push(newPlayground);
-      
-      toast({
-        title: "Playground aggiunto!",
-        description: "Il nuovo playground è stato aggiunto con successo.",
-      });
-    } else {
-      // Trova l'indice del playground da modificare
-      const index = playgroundData.findIndex(pg => pg.id === editId);
-      if (index !== -1) {
-        playgroundData[index] = newPlayground;
-        
-        toast({
-          title: "Playground aggiornato!",
-          description: "Il playground è stato aggiornato con successo.",
-        });
-      }
-    }
+    // Add the new playground
+    addPlayground(newPlayground);
     
     setIsSubmitting(false);
     navigate("/");

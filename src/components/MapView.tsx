@@ -1,5 +1,5 @@
 
-import { MapPin, Users, Lightbulb } from "lucide-react";
+import { Users, Lightbulb } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 
@@ -54,7 +54,6 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               {playground.address}
             </div>
             <div className="flex items-center mt-2">
-              <MapPin size={12} className="text-blue-400 mr-1" />
               <span className="text-xs">
                 {playground.openHours}
               </span>
