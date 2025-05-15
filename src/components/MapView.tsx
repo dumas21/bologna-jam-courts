@@ -1,6 +1,8 @@
 
 import { MapPin, Users, Lightbulb } from "lucide-react";
 import { Playground } from "@/types/playground";
+import { useUser } from "@/contexts/UserContext";
+import { Button } from "@/components/ui/button";
 
 interface MapViewProps {
   playgrounds: Playground[];
@@ -9,24 +11,43 @@ interface MapViewProps {
 }
 
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
-  // This is a placeholder for an actual map integration
-  // In a real app, we'd integrate with Google Maps API here
+  const { isLoggedIn, username } = useUser();
+  
+  // Function to open Google Maps with the Bologna playground search
+  const openGoogleMaps = () => {
+    // Open Google Maps with a search for playgrounds in Bologna
+    window.open("https://maps.app.goo.gl/S65CFKEcTu7QZ7zW6", "_blank");
+    
+    // Play sound effect
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Audio playback error:', err));
+  };
   
   return (
-    <div className="relative w-full h-[400px] bg-jam-dark border-2 border-white p-4 overflow-hidden">
-      <div className="text-xs font-press-start text-jam-orange mb-4">
-        [Map Placeholder - Google Maps API would be integrated here]
+    <div className="relative w-full bg-jam-dark bg-opacity-50 backdrop-blur-sm border-2 border-white p-4 overflow-hidden rounded-md">
+      <div className="flex justify-between items-center mb-4">
+        <div className="text-xs font-press-start text-jam-orange">
+          Playground Map
+        </div>
+        
+        <Button 
+          onClick={openGoogleMaps}
+          className="bg-jam-purple text-white text-xs font-press-start px-4 py-2 rounded hover:bg-jam-blue transition-colors"
+        >
+          <MapPin size={16} className="mr-2" />
+          Apri Google Maps
+        </Button>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto pr-2">
         {playgrounds.map(playground => (
           <div 
             key={playground.id}
             className={`cursor-pointer transition-colors ${
               selectedPlayground?.id === playground.id 
                 ? 'bg-jam-purple bg-opacity-80' 
-                : 'bg-black bg-opacity-70'
-            } backdrop-blur-sm p-3 border border-white/20`}
+                : 'bg-black bg-opacity-60'
+            } backdrop-blur-sm p-3 border border-white/20 rounded-md`}
             onClick={() => onSelectPlayground(playground)}
           >
             <div className="flex justify-between items-start">
@@ -52,6 +73,26 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                 {playground.openHours}
               </span>
             </div>
+            
+            {/* Display registered users if any */}
+            {isLoggedIn && playground.currentPlayers > 0 && (
+              <div className="mt-2 pt-2 border-t border-white/10">
+                <div className="text-xs text-jam-orange font-press-start mb-1">Presenze:</div>
+                <div className="text-xs text-white/70 italic">
+                  {username && 
+                    <div className="flex items-center">
+                      <Users size={10} className="text-jam-blue mr-1" />
+                      <span>{username}</span>
+                    </div>
+                  }
+                  {playground.currentPlayers > (username ? 1 : 0) && 
+                    <div className="text-xs text-white/50">
+                      + altri {playground.currentPlayers - (username ? 1 : 0)} giocatori
+                    </div>
+                  }
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
