@@ -37,19 +37,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -99,7 +92,7 @@
 
   body {
     @apply bg-jam-dark text-white;
-    background-image: url('/lovable-uploads/a6410e74-ad0f-4439-aa75-557beaf6607a.png');
+    background-image: url('/lovable-uploads/a5c1a58c-5820-488a-b33b-8c3f45c080ee.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -107,7 +100,7 @@
     overflow-x: hidden;
   }
   
-  /* Better readability on background image */
+  /* Better readability */
   h1, h2, h3, h4, h5, h6, p, span, div {
     text-shadow: 0px 2px 4px rgba(0,0,0,0.9);
   }
@@ -118,22 +111,22 @@
   }
   
   ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.3);
   }
   
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #9b87f5, #F97316);
+    background: linear-gradient(to bottom, #e53e3e, #2b6cb0);
     border-radius: 4px;
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(to bottom, #F97316, #9b87f5);
+    background: linear-gradient(to bottom, #2b6cb0, #e53e3e);
   }
   
   /* NBA Jam flashing text animation */
   @keyframes text-flashing {
-    0%, 100% { text-shadow: 0 0 8px #F97316, 0 0 12px #F97316; }
-    50% { text-shadow: 0 0 20px #F97316, 0 0 30px #F97316; }
+    0%, 100% { text-shadow: 0 0 8px #e53e3e, 0 0 12px #e53e3e; }
+    50% { text-shadow: 0 0 20px #e53e3e, 0 0 30px #e53e3e; }
   }
   
   /* Blinking cursor animation */
@@ -149,35 +142,35 @@
   }
   
   .pixel-button {
-    @apply pixel-border bg-jam-purple hover:bg-jam-blue transition-colors px-6 py-3 uppercase font-press-start text-white;
+    @apply pixel-border bg-red-600 hover:bg-blue-600 transition-colors px-6 py-3 uppercase font-press-start text-white;
   }
   
   .pixel-card {
-    @apply pixel-border bg-black bg-opacity-40 backdrop-blur-md p-4; /* Increased transparency */
+    @apply pixel-border bg-black bg-opacity-70 backdrop-blur-md p-4;
   }
 
   .nba-jam-heading {
-    @apply font-press-start text-jam-orange drop-shadow-[4px_4px_0px_rgba(155,135,245,0.7)] animate-[text-flashing_3s_ease-in-out_infinite];
+    @apply font-press-start text-red-600 drop-shadow-[4px_4px_0px_rgba(43,108,176,0.7)] animate-[text-flashing_3s_ease-in-out_infinite];
   }
 
   .retro-grid-bg {
-    background-image: linear-gradient(rgba(18, 16, 37, 0.5), rgba(18, 16, 37, 0.6)),
-                      linear-gradient(0deg, rgba(155, 135, 245, 0.2) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(155, 135, 245, 0.2) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(18, 16, 37, 0.7), rgba(18, 16, 37, 0.8)),
+                      linear-gradient(0deg, rgba(43, 108, 176, 0.2) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(43, 108, 176, 0.2) 1px, transparent 1px);
     background-size: 100% 100%, 30px 30px, 30px 30px;
   }
 
   .content-container {
-    @apply bg-black bg-opacity-40 backdrop-blur-md; /* Increased transparency */
+    @apply bg-black bg-opacity-70 backdrop-blur-md;
   }
   
   /* Classes for transparent UI elements */
   .glass-card {
-    @apply bg-black bg-opacity-40 backdrop-blur-md border border-jam-purple shadow-[0_0_15px_rgba(155,135,245,0.5)]; /* Increased transparency */
+    @apply bg-black bg-opacity-70 backdrop-blur-md border border-red-600 shadow-[0_0_15px_rgba(229,62,62,0.5)];
   }
   
   .glass-panel {
-    @apply bg-black bg-opacity-40 backdrop-blur-md; /* Increased transparency */
+    @apply bg-black bg-opacity-70 backdrop-blur-md;
   }
   
   /* Chat elements */
@@ -186,11 +179,11 @@
   }
   
   .chat-message-user {
-    @apply bg-jam-purple bg-opacity-60 ml-auto mr-2 max-w-[80%]; /* Increased transparency */
+    @apply bg-red-600 bg-opacity-70 ml-auto mr-2 max-w-[80%];
   }
   
   .chat-message-other {
-    @apply bg-jam-dark bg-opacity-60 mr-auto ml-2 max-w-[80%]; /* Increased transparency */
+    @apply bg-blue-600 bg-opacity-70 mr-auto ml-2 max-w-[80%];
   }
   
   /* Rating stars */
@@ -203,14 +196,14 @@
   }
   
   .star-rating .star.filled {
-    @apply text-jam-yellow;
+    @apply text-yellow-400;
   }
   
   /* Text cursor for chat input */
   .chat-input::after {
     content: '|';
     animation: blink-cursor 1s infinite;
-    @apply text-jam-orange;
+    @apply text-red-600;
   }
   
   /* Stats card */
@@ -220,7 +213,7 @@
   
   /* Chart container */
   .chart-container {
-    @apply bg-black bg-opacity-40 backdrop-blur-md border border-jam-purple p-2 rounded-md; /* Increased transparency */
+    @apply bg-black bg-opacity-70 backdrop-blur-md border border-blue-600 p-2 rounded-md;
   }
   
   /* Logo specific styling */

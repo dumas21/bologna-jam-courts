@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
@@ -17,8 +18,8 @@ import { it } from "date-fns/locale";
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn } = useUser();
-  const { playgrounds, checkIn, checkOut } = usePlaygrounds();
+  const { isLoggedIn, email } = useUser();
+  const { playgrounds, checkIn, checkOut, hasUserCheckedIn } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
   // Format current date
@@ -36,6 +37,32 @@ const Index = () => {
     audio.play().catch(err => console.log('Audio playback error:', err));
   };
 
+  const handleCheckIn = (playgroundId: string, userEmail: string) => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login richiesto",
+        description: "Devi effettuare il login per fare check-in",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    return checkIn(playgroundId, userEmail);
+  };
+
+  const handleCheckOut = (playgroundId: string, userEmail: string) => {
+    if (!isLoggedIn) {
+      toast({
+        title: "Login richiesto",
+        description: "Devi effettuare il login per fare check-out",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    return checkOut(playgroundId, userEmail);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -44,7 +71,7 @@ const Index = () => {
         <Logo />
         
         <div className="flex justify-between items-center mb-4">
-          <div className="text-jam-yellow font-press-start text-xs">
+          <div className="text-yellow-400 font-press-start text-xs">
             {currentDate}
           </div>
           
@@ -54,7 +81,7 @@ const Index = () => {
                 playSoundEffect('click');
                 navigate('/stats');
               }}
-              className="pixel-button text-xs flex items-center gap-2 bg-jam-blue"
+              className="pixel-button text-xs flex items-center gap-2 bg-blue-600"
             >
               <BarChart size={16} />
               <span className="hidden md:inline">Statistiche</span>
@@ -67,6 +94,7 @@ const Index = () => {
                 navigate('/add-playground');
               }}
               className="pixel-button text-xs flex items-center gap-2"
+              disabled={!isLoggedIn}
             >
               <Plus size={16} />
               <span className="hidden md:inline">Aggiungi</span>
@@ -104,7 +132,7 @@ const Index = () => {
           </TabsList>
           
           <TabsContent value="map" className="animate-pixel-fade-in">
-            <div className="pixel-card bg-black bg-opacity-50 backdrop-blur-md">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
               <MapView 
                 playgrounds={playgrounds} 
                 selectedPlayground={selectedPlayground}
@@ -115,15 +143,16 @@ const Index = () => {
             {selectedPlayground && (
               <PlaygroundDetail 
                 playground={selectedPlayground} 
-                onCheckIn={checkIn}
-                onCheckOut={checkOut}
+                onCheckIn={handleCheckIn}
+                onCheckOut={handleCheckOut}
+                hasUserCheckedIn={hasUserCheckedIn}
               />
             )}
           </TabsContent>
           
           <TabsContent value="chat" className="animate-pixel-fade-in">
-            <div className="pixel-card bg-black bg-opacity-50 backdrop-blur-md h-64 flex flex-col items-center justify-center">
-              <p className="font-press-start text-xs text-jam-orange mb-4">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
+              <p className="font-press-start text-xs text-red-600 mb-4">
                 {isLoggedIn ? 'Chat disponibile nei singoli playground' : 'Chat disponibile dopo il login'}
               </p>
               <p className="text-xs text-white/70">
@@ -133,8 +162,8 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="events" className="animate-pixel-fade-in">
-            <div className="pixel-card bg-black bg-opacity-50 backdrop-blur-md h-64 flex items-center justify-center">
-              <p className="font-press-start text-xs text-jam-orange">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex items-center justify-center">
+              <p className="font-press-start text-xs text-red-600">
                 {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
               </p>
             </div>
@@ -142,7 +171,7 @@ const Index = () => {
         </Tabs>
       </main>
       
-      <footer className="bg-black bg-opacity-60 backdrop-blur-md border-t-4 border-jam-purple py-4">
+      <footer className="bg-black bg-opacity-70 backdrop-blur-md border-t-4 border-red-600 py-4">
         <div className="container mx-auto px-4 text-center">
           <p className="font-press-start text-xs text-white/60">
             PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
