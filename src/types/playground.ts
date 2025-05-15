@@ -11,7 +11,11 @@ export interface Playground {
   hasAmenities: boolean;
   hasLighting: boolean;
   currentPlayers: number;
-  totalCheckins: number; // New field to track total check-ins
+  totalCheckins: number;
+  basketCount?: number; // Number of basketball hoops
+  rating?: number; // Average rating 0-5
+  ratingCount?: number; // Number of ratings
+  comments?: string[]; // User comments
 }
 
 export const playgroundData: Playground[] = [
@@ -28,6 +32,10 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     currentPlayers: 8,
     totalCheckins: 124,
+    basketCount: 4,
+    rating: 4.7,
+    ratingCount: 42,
+    comments: ["Ottimo playground!", "Canestri in buone condizioni", "Area ben tenuta"]
   },
   {
     id: "pm",
@@ -42,6 +50,10 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     currentPlayers: 4,
     totalCheckins: 87,
+    basketCount: 2,
+    rating: 3.8,
+    ratingCount: 24,
+    comments: ["Discreto playground", "Spesso affollato"]
   },
   {
     id: "mp",
@@ -56,6 +68,10 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     currentPlayers: 2,
     totalCheckins: 53,
+    basketCount: 2,
+    rating: 4.2,
+    ratingCount: 18,
+    comments: ["Bel playground", "Terreno un po' irregolare"]
   },
   {
     id: "vdb",
@@ -70,6 +86,10 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 32,
+    basketCount: 1,
+    rating: 3.5,
+    ratingCount: 11,
+    comments: ["Piccolo ma funzionale"]
   },
   {
     id: "aas",
@@ -84,5 +104,45 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     currentPlayers: 10,
     totalCheckins: 189,
+    basketCount: 6,
+    rating: 4.9,
+    ratingCount: 53,
+    comments: ["Il miglior playground di Bologna", "Sempre ben frequentato", "Canestri perfetti"]
   },
+  {
+    id: "jarde",
+    name: "Jardine de la Paz",
+    address: "Via della Pace, 40132 Bologna",
+    lat: 44.5123,
+    lng: 11.3562,
+    openHours: "08:00 - 21:00",
+    hasShade: true,
+    hasFountain: true,
+    hasAmenities: false,
+    hasLighting: true,
+    currentPlayers: 6,
+    totalCheckins: 73,
+    basketCount: 2,
+    rating: 4.1,
+    ratingCount: 22,
+    comments: ["Ottima illuminazione per giocare la sera"]
+  },
+  {
+    id: "staca",
+    name: "San Donato Campo",
+    address: "Via San Donato, 40127 Bologna",
+    lat: 44.5071,
+    lng: 11.3699,
+    openHours: "07:30 - 22:30",
+    hasShade: false,
+    hasFountain: true,
+    hasAmenities: true,
+    hasLighting: false,
+    currentPlayers: 3,
+    totalCheckins: 46,
+    basketCount: 2,
+    rating: 3.7,
+    ratingCount: 14,
+    comments: ["Buona manutenzione", "Manca l'illuminazione serale"]
+  }
 ];

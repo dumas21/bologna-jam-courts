@@ -44,12 +44,20 @@ export function usePlaygrounds() {
   // Reset all current player counts to zero
   const resetDailyCounts = () => {
     setPlaygrounds(current => 
-      current.map(pg => ({ ...pg, currentPlayers: 0 }))
+      current.map(pg => ({ 
+        ...pg, 
+        currentPlayers: 0,
+        comments: [] // Reset comments at midnight
+      }))
     );
     
+    // Play reset sound
+    const audio = new Audio('/sounds/reset.mp3');
+    audio.play().catch(err => console.log('Audio playback error:', err));
+    
     toast({
-      title: "Contatori resettati",
-      description: "Il conteggio giornaliero dei giocatori è stato azzerato.",
+      title: "Reset giornaliero",
+      description: "I conteggi giornalieri e le chat sono stati azzerati.",
     });
   };
   
