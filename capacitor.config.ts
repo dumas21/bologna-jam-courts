@@ -6,16 +6,24 @@ const config: CapacitorConfig = {
   appName: 'bologna-jam-courts',
   webDir: 'dist',
   server: {
-    url: "https://d01073df-498e-488b-be4b-ef189a39047d.lovableproject.com?forceHideBadge=true",
+    url: 'https://d01073df-498e-488b-be4b-ef189a39047d.lovableproject.com?forceHideBadge=true',
     cleartext: true
   },
   plugins: {
     SplashScreen: {
       launchShowDuration: 3000,
+      launchAutoHide: true,
       backgroundColor: "#1A1F2C",
-      showSpinner: true,
-      spinnerColor: "#9b87f5"
-    }
+      androidSplashResourceName: "splash",
+      androidScaleType: "CENTER_CROP",
+      showSpinner: false,
+    },
+  },
+  android: {
+    backgroundColor: "#1A1F2C"
+  },
+  ios: {
+    backgroundColor: "#1A1F2C"
   }
 };
 

@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -154,7 +153,7 @@
   }
   
   .pixel-card {
-    @apply pixel-border bg-black bg-opacity-50 backdrop-blur-md p-4;
+    @apply pixel-border bg-black bg-opacity-40 backdrop-blur-md p-4; /* Increased transparency */
   }
 
   .nba-jam-heading {
@@ -162,23 +161,23 @@
   }
 
   .retro-grid-bg {
-    background-image: linear-gradient(rgba(18, 16, 37, 0.7), rgba(18, 16, 37, 0.8)),
+    background-image: linear-gradient(rgba(18, 16, 37, 0.5), rgba(18, 16, 37, 0.6)),
                       linear-gradient(0deg, rgba(155, 135, 245, 0.2) 1px, transparent 1px),
                       linear-gradient(90deg, rgba(155, 135, 245, 0.2) 1px, transparent 1px);
     background-size: 100% 100%, 30px 30px, 30px 30px;
   }
 
   .content-container {
-    @apply bg-black bg-opacity-60 backdrop-blur-md;
+    @apply bg-black bg-opacity-40 backdrop-blur-md; /* Increased transparency */
   }
   
-  /* New classes for transparent UI elements */
+  /* Classes for transparent UI elements */
   .glass-card {
-    @apply bg-black bg-opacity-50 backdrop-blur-md border border-jam-purple shadow-[0_0_15px_rgba(155,135,245,0.5)];
+    @apply bg-black bg-opacity-40 backdrop-blur-md border border-jam-purple shadow-[0_0_15px_rgba(155,135,245,0.5)]; /* Increased transparency */
   }
   
   .glass-panel {
-    @apply bg-black bg-opacity-50 backdrop-blur-md;
+    @apply bg-black bg-opacity-40 backdrop-blur-md; /* Increased transparency */
   }
   
   /* Chat elements */
@@ -187,11 +186,11 @@
   }
   
   .chat-message-user {
-    @apply bg-jam-purple bg-opacity-70 ml-auto mr-2 max-w-[80%];
+    @apply bg-jam-purple bg-opacity-60 ml-auto mr-2 max-w-[80%]; /* Increased transparency */
   }
   
   .chat-message-other {
-    @apply bg-jam-dark bg-opacity-70 mr-auto ml-2 max-w-[80%];
+    @apply bg-jam-dark bg-opacity-60 mr-auto ml-2 max-w-[80%]; /* Increased transparency */
   }
   
   /* Rating stars */
@@ -221,6 +220,11 @@
   
   /* Chart container */
   .chart-container {
-    @apply bg-black bg-opacity-60 backdrop-blur-md border border-jam-purple p-2 rounded-md;
+    @apply bg-black bg-opacity-40 backdrop-blur-md border border-jam-purple p-2 rounded-md; /* Increased transparency */
+  }
+  
+  /* Logo specific styling */
+  .logo-container {
+    @apply mx-auto my-6 max-w-md animate-[text-flashing_4s_ease-in-out_infinite];
   }
 }

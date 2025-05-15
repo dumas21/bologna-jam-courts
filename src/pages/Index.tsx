@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
+import Logo from "@/components/Logo";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MapPin, MessageSquare, CalendarDays, Plus, BarChart } from "lucide-react";
@@ -41,11 +41,7 @@ const Index = () => {
       <Header />
       
       <main className="container mx-auto p-4 flex-1">
-        <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-          <h2 className="font-press-start text-xs md:text-sm text-center py-2 animate-[text-flashing_2s_ease-in-out_infinite]">
-            TROVA IL TUO PLAYGROUND A BOLOGNA
-          </h2>
-        </div>
+        <Logo />
         
         <div className="flex justify-between items-center mb-4">
           <div className="text-jam-yellow font-press-start text-xs">
