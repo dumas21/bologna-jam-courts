@@ -129,11 +129,15 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     }
     
     playSoundEffect('message');
-    setComments([...comments, message]);
-    setMessage("");
     
     // Aggiorna il playground con il nuovo messaggio
-    playground.comments = [...comments, message];
+    const updatedComments = [...comments, message];
+    setComments(updatedComments);
+    
+    // Aggiorna anche i commenti nel playground
+    playground.comments = updatedComments;
+    
+    setMessage("");
     
     toast({
       title: "Messaggio inviato",
@@ -329,7 +333,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             {comments && comments.length > 0 ? (
               <div className="space-y-2">
                 {comments.map((comment, index) => (
-                  <div key={index} className={`p-2 rounded mb-2 ${index % 2 === 0 ? 'bg-gray-100 text-black' : 'bg-blue-100 text-black'}`}>
+                  <div key={index} className="p-2 rounded mb-2 bg-gray-100 text-black border border-gray-200">
                     {comment}
                   </div>
                 ))}
@@ -346,7 +350,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
           <div className="flex gap-2">
             <Textarea 
               placeholder="Scrivi un messaggio..." 
-              className="bg-black bg-opacity-70 border-red-600 min-h-[60px]"
+              className="bg-white text-black border-gray-300 min-h-[60px]"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               disabled={!isLoggedIn}
@@ -397,7 +401,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             <Input
               type="email"
               placeholder="Email"
-              className="bg-black bg-opacity-70 border-red-600"
+              className="bg-black bg-opacity-70 border-red-600 text-white"
               value={checkInEmail}
               onChange={(e) => setCheckInEmail(e.target.value)}
             />
