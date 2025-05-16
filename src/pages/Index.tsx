@@ -7,7 +7,7 @@ import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
 import { Playground } from "@/types/playgroundTypes";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, CalendarDays, BarChart, RefreshCcw } from "lucide-react";
+import { MessageSquare, CalendarDays, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -19,7 +19,7 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isLoggedIn, username } = useUser();
-  const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords, resetToInitialData } = usePlaygrounds();
+  const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
   // Format current date
@@ -67,13 +67,6 @@ const Index = () => {
     
     return checkOut(playgroundId, userEmail);
   };
-  
-  // Funzione per reimpostare i dati ai valori predefiniti
-  const handleResetData = () => {
-    if (resetToInitialData()) {
-      playSoundEffect('reset');
-    }
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -98,16 +91,6 @@ const Index = () => {
               <BarChart size={16} />
               <span className="hidden md:inline">Statistiche</span>
               <span className="inline md:hidden">Stats</span>
-            </Button>
-            
-            <Button 
-              onClick={handleResetData}
-              className="pixel-button text-xs flex items-center gap-2 bg-red-600"
-              title="Reimposta i playground ai valori predefiniti"
-            >
-              <RefreshCcw size={16} />
-              <span className="hidden md:inline">Reimposta</span>
-              <span className="inline md:hidden">Reset</span>
             </Button>
           </div>
         </div>

@@ -268,18 +268,6 @@ export function usePlaygrounds() {
     );
   };
   
-  // Aggiunta di una funzione per resettare i dati ai valori iniziali
-  const resetToInitialData = () => {
-    localStorage.removeItem("playgroundData");
-    setPlaygrounds(initialData);
-    toast({
-      title: "Dati reimpostati",
-      description: "I dati dei playground sono stati reimpostati ai valori predefiniti.",
-    });
-    console.log("Dati reimpostati ai valori iniziali:", initialData);
-    return true;
-  };
-  
   return { 
     playgrounds, 
     totalCheckIns,
@@ -290,7 +278,6 @@ export function usePlaygrounds() {
     updatePlayground,
     addPlayground,
     hasUserCheckedIn,
-    checkInRecords,
-    resetToInitialData
+    checkInRecords
   };
 }
