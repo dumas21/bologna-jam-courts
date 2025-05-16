@@ -12,7 +12,8 @@ import {
   Calendar,
   MessageSquare,
   Edit,
-  BarChart3
+  BarChart3,
+  Mail
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Playground } from "@/types/playground";
@@ -31,15 +32,16 @@ import { useNavigate } from "react-router-dom";
 
 interface PlaygroundDetailProps {
   playground: Playground;
-  onCheckIn: (playgroundId: string, email: string) => boolean;
-  onCheckOut: (playgroundId: string, email: string) => boolean;
-  hasUserCheckedIn: (playgroundId: string, email: string) => boolean;
+  onCheckIn: (playgroundId: string, userEmail: string) => boolean;
+  onCheckOut: (playgroundId: string, userEmail: string) => boolean;
+  hasUserCheckedIn: (playgroundId: string, userEmail: string) => boolean;
+  checkInRecords: Array<{playgroundId: string; email: string; timestamp: number;}>;
 }
 
-const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn }: PlaygroundDetailProps) => {
+const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn, checkInRecords }: PlaygroundDetailProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, email } = useUser();
+  const { isLoggedIn, username } = useUser();
   const [message, setMessage] = useState("");
   const [checkInEmail, setCheckInEmail] = useState("");
   const [comments, setComments] = useState<string[]>(playground.comments || []);
@@ -48,7 +50,13 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
   const currentTime = format(new Date(), "HH:mm");
   
-  const userHasCheckedIn = email ? hasUserCheckedIn(playground.id, email) : false;
+  // Filter check-in records for this specific playground
+  const playgroundCheckins = checkInRecords.filter(record => record.playgroundId === playground.id);
+  
+  // Check if the current user has checked in
+  const userHasCheckedIn = checkInRecords.some(
+    record => record.playgroundId === playground.id && username === record.email
+  );
   
   const handleCheckIn = () => {
     if (!isLoggedIn) {
@@ -60,14 +68,8 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
       return;
     }
     
-    // Mostra il dialog per inserire l'email se non è già loggato
-    if (!email) {
-      setShowEmailDialog(true);
-      return;
-    }
-    
-    // Usa l'email dell'utente loggato
-    processCheckIn(email);
+    // Mostra il dialog per inserire l'email
+    setShowEmailDialog(true);
   };
   
   const processCheckIn = (emailToUse: string) => {
@@ -93,7 +95,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
   };
   
   const handleCheckOut = () => {
-    if (!isLoggedIn || !email) {
+    if (!isLoggedIn) {
       toast({
         title: "Login richiesto",
         description: "Devi effettuare il login per fare check-out",
@@ -102,7 +104,8 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
       return;
     }
     
-    const success = onCheckOut(playground.id, email);
+    // Use the username as email for checkout
+    const success = username ? onCheckOut(playground.id, username) : false;
     
     if (success) {
       playSoundEffect('checkout');
@@ -156,8 +159,8 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
   // Calcola quando la chat verrà resettata
   const lastChatReset = localStorage.getItem("lastChatReset");
   const nextChatReset = lastChatReset 
-    ? new Date(Number(lastChatReset) + (3 * 24 * 60 * 60 * 1000)) 
-    : new Date(Date.now() + (3 * 24 * 60 * 60 * 1000));
+    ? new Date(Number(lastChatReset) + (2 * 24 * 60 * 60 * 1000)) // 48 hours as requested
+    : new Date(Date.now() + (2 * 24 * 60 * 60 * 1000));
   const chatResetDate = format(nextChatReset, "dd/MM/yyyy", { locale: it });
 
   return (
@@ -180,6 +183,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
           <TabsTrigger value="info" className="text-xs" onClick={() => playSoundEffect('tab')}>Info</TabsTrigger>
           <TabsTrigger value="stats" className="text-xs" onClick={() => playSoundEffect('tab')}>Statistiche</TabsTrigger>
           <TabsTrigger value="chat" className="text-xs" onClick={() => playSoundEffect('tab')}>Chat</TabsTrigger>
+          <TabsTrigger value="checkins" className="text-xs" onClick={() => playSoundEffect('tab')}>Check-in</TabsTrigger>
         </TabsList>
         
         <TabsContent value="info">
@@ -317,15 +321,15 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
         </TabsContent>
         
         <TabsContent value="chat">
-          <div className="bg-black bg-opacity-70 backdrop-blur-md border border-red-600 rounded-md p-2 h-64 mb-4 overflow-y-auto">
+          <div className="bg-white p-2 rounded-md mb-4 h-64 overflow-y-auto">
             <div className="text-xs text-center text-blue-500 mb-2">
-              Chat valida fino al {chatResetDate} (reset ogni 72 ore)
+              Chat valida fino al {chatResetDate} (reset ogni 48 ore)
             </div>
           
             {comments && comments.length > 0 ? (
               <div className="space-y-2">
                 {comments.map((comment, index) => (
-                  <div key={index} className={`chat-message ${index % 2 === 0 ? 'chat-message-other' : 'chat-message-user'}`}>
+                  <div key={index} className={`p-2 rounded mb-2 ${index % 2 === 0 ? 'bg-gray-100 text-black' : 'bg-blue-100 text-black'}`}>
                     {comment}
                   </div>
                 ))}
@@ -358,6 +362,28 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn 
           {!isLoggedIn && (
             <p className="text-xs text-red-600 mt-1">Effettua il login per partecipare alla chat</p>
           )}
+        </TabsContent>
+        
+        <TabsContent value="checkins">
+          <div className="bg-white p-4 rounded-md mb-4 text-black">
+            <h4 className="font-press-start text-xs text-red-600 mb-2">Lista check-in</h4>
+            
+            {playgroundCheckins.length > 0 ? (
+              <div className="space-y-2">
+                {playgroundCheckins.map((record, index) => (
+                  <div key={index} className="flex items-center gap-2 border-b border-gray-200 py-2">
+                    <Mail size={16} className="text-blue-500" />
+                    <div className="text-sm">{record.email}</div>
+                    <div className="text-xs text-gray-500 ml-auto">
+                      {format(new Date(record.timestamp), "HH:mm")}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">Nessun utente ha fatto check-in</p>
+            )}
+          </div>
         </TabsContent>
       </Tabs>
       

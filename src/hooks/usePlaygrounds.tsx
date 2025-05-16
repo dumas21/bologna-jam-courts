@@ -5,7 +5,7 @@ import { getDailyResetTime } from "@/utils/timeUtils";
 import { useToast } from "@/components/ui/use-toast";
 
 // Aggiungiamo un'interfaccia per i check-in degli utenti
-interface CheckInRecord {
+export interface CheckInRecord {
   playgroundId: string;
   email: string;
   timestamp: number;
@@ -70,22 +70,22 @@ export function usePlaygrounds() {
     return setupDailyResetTimer();
   }, []);
   
-  // Set up chat reset timer (ogni 72 ore)
+  // Set up chat reset timer (ogni 48 ore)
   useEffect(() => {
     const setupChatResetTimer = () => {
       // Check if we need to reset chats
       const lastChatReset = localStorage.getItem("lastChatReset");
       const now = Date.now();
-      const threedays = 3 * 24 * 60 * 60 * 1000; // 72 hours in milliseconds
+      const twodays = 2 * 24 * 60 * 60 * 1000; // 48 hours in milliseconds
       
-      if (!lastChatReset || now - Number(lastChatReset) > threedays) {
-        // Reset comments dopo 72 ore
+      if (!lastChatReset || now - Number(lastChatReset) > twodays) {
+        // Reset comments dopo 48 ore
         resetChats();
         localStorage.setItem("lastChatReset", now.toString());
       }
       
       // Setup next timer
-      const timeUntilReset = threedays - (now - (lastChatReset ? Number(lastChatReset) : now));
+      const timeUntilReset = twodays - (now - (lastChatReset ? Number(lastChatReset) : now));
       const timerId = setTimeout(() => {
         resetChats();
         localStorage.setItem("lastChatReset", Date.now().toString());
@@ -120,7 +120,7 @@ export function usePlaygrounds() {
     });
   };
   
-  // Reset chat ogni 72 ore
+  // Reset chat ogni 48 ore
   const resetChats = () => {
     setPlaygrounds(current => 
       current.map(pg => ({ 
@@ -135,7 +135,7 @@ export function usePlaygrounds() {
     
     toast({
       title: "Reset chat",
-      description: "Le chat dei playground sono state resettate dopo 72 ore.",
+      description: "Le chat dei playground sono state resettate dopo 48 ore.",
     });
   };
   

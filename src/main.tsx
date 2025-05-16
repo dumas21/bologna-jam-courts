@@ -1,37 +1,42 @@
 
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
-// Preload sound effects
-const soundEffects = [
-  'click.mp3',
-  'checkin.mp3',
-  'checkout.mp3',
-  'select.mp3',
-  'tab.mp3',
-  'message.mp3',
-  'rating.mp3',
-  'reset.mp3',
-  'add.mp3'
-];
-
-// Preloading sounds in background
-soundEffects.forEach(sound => {
-  const audio = new Audio(`/sounds/${sound}`);
-  audio.preload = 'auto';
-  audio.load();
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize audio context for sound effects when user interacts
+  window.addEventListener('click', initAudioContext, { once: true });
+  window.addEventListener('touchstart', initAudioContext, { once: true });
+  
+  const root = createRoot(document.getElementById('root')!);
+  
+  root.render(
+    <StrictMode>
+      <App />
+    </StrictMode>
+  );
 });
 
-// Audio context handling (for iOS Safari)
-document.addEventListener('click', function() {
-  // Create and destroy AudioContext on first user interaction
-  // This is needed for iOS Safari which blocks autoplay
-  const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (AudioContext) {
-    const audioCtx = new AudioContext();
-    audioCtx.close();
+// Initialize audio context to enable sound effects
+function initAudioContext() {
+  try {
+    // Use standard AudioContext instead of webkitAudioContext
+    const AudioContext = window.AudioContext;
+    if (AudioContext) {
+      const audioCtx = new AudioContext();
+      console.log('Audio context initialized successfully');
+      
+      // Create a short sound to "wake up" audio on iOS
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.value = 0; // Mute the sound
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      oscillator.start();
+      oscillator.stop(0.001);
+    }
+  } catch (e) {
+    console.log('Could not initialize audio context', e);
   }
-}, { once: true });
-
-createRoot(document.getElementById("root")!).render(<App />);
+}

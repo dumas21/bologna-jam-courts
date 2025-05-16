@@ -7,7 +7,7 @@ import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, CalendarDays, Plus, BarChart } from "lucide-react";
+import { MessageSquare, CalendarDays, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -18,8 +18,8 @@ import { it } from "date-fns/locale";
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, email } = useUser();
-  const { playgrounds, checkIn, checkOut, hasUserCheckedIn } = usePlaygrounds();
+  const { isLoggedIn, username } = useUser();
+  const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
   // Format current date
@@ -87,19 +87,6 @@ const Index = () => {
               <span className="hidden md:inline">Statistiche</span>
               <span className="inline md:hidden">Stats</span>
             </Button>
-            
-            <Button 
-              onClick={() => {
-                playSoundEffect('click');
-                navigate('/add-playground');
-              }}
-              className="pixel-button text-xs flex items-center gap-2"
-              disabled={!isLoggedIn}
-            >
-              <Plus size={16} />
-              <span className="hidden md:inline">Aggiungi</span>
-              <span className="inline md:hidden">Nuovo</span>
-            </Button>
           </div>
         </div>
         
@@ -146,6 +133,7 @@ const Index = () => {
                 onCheckIn={handleCheckIn}
                 onCheckOut={handleCheckOut}
                 hasUserCheckedIn={hasUserCheckedIn}
+                checkInRecords={checkInRecords}
               />
             )}
           </TabsContent>
