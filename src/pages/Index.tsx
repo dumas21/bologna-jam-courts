@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import MapView from "@/components/MapView";
@@ -24,6 +24,11 @@ const Index = () => {
   
   // Format current date
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
+
+  // Log playgrounds per verificare che i dati siano caricati correttamente
+  useEffect(() => {
+    console.log("Playgrounds caricati:", playgrounds);
+  }, [playgrounds]);
   
   const handleSelectPlayground = (playground: Playground) => {
     setSelectedPlayground(playground);
