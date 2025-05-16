@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from "react";
-import { Playground, playgroundData as initialData } from "@/types/playground";
+import { Playground } from "@/types/playgroundTypes";
+import { playgroundData as initialData } from "@/data/playgroundData";
 import { getDailyResetTime } from "@/utils/timeUtils";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -14,10 +15,15 @@ export interface CheckInRecord {
 export function usePlaygrounds() {
   const { toast } = useToast();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(() => {
+    // Aggiungiamo log per il debugging
+    console.log("Inizializzazione playgrounds...");
     const saved = localStorage.getItem("playgroundData");
     if (saved) {
-      return JSON.parse(saved);
+      const parsedData = JSON.parse(saved);
+      console.log("Dati caricati da localStorage:", parsedData);
+      return parsedData;
     }
+    console.log("Utilizzo dati iniziali:", initialData);
     return initialData;
   });
   
@@ -38,6 +44,7 @@ export function usePlaygrounds() {
   useEffect(() => {
     localStorage.setItem("playgroundData", JSON.stringify(playgrounds));
     setTotalCheckIns(playgrounds.reduce((acc, pg) => acc + pg.totalCheckins, 0));
+    console.log("Playgrounds aggiornati e salvati:", playgrounds);
   }, [playgrounds]);
   
   // Save check-in records
@@ -261,6 +268,18 @@ export function usePlaygrounds() {
     );
   };
   
+  // Aggiunta di una funzione per resettare i dati ai valori iniziali
+  const resetToInitialData = () => {
+    localStorage.removeItem("playgroundData");
+    setPlaygrounds(initialData);
+    toast({
+      title: "Dati reimpostati",
+      description: "I dati dei playground sono stati reimpostati ai valori predefiniti.",
+    });
+    console.log("Dati reimpostati ai valori iniziali:", initialData);
+    return true;
+  };
+  
   return { 
     playgrounds, 
     totalCheckIns,
@@ -271,6 +290,7 @@ export function usePlaygrounds() {
     updatePlayground,
     addPlayground,
     hasUserCheckedIn,
-    checkInRecords
+    checkInRecords,
+    resetToInitialData
   };
 }

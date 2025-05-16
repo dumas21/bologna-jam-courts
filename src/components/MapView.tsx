@@ -1,6 +1,6 @@
 
 import { Users, Lightbulb } from "lucide-react";
-import { Playground } from "@/types/playground";
+import { Playground } from "@/types/playgroundTypes";
 import { useUser } from "@/contexts/UserContext";
 
 interface MapViewProps {
@@ -11,6 +11,9 @@ interface MapViewProps {
 
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
   const { isLoggedIn, username } = useUser();
+
+  // Logging per debugging
+  console.log("Playgrounds in MapView:", playgrounds);
   
   return (
     <div className="relative w-full bg-black bg-opacity-70 backdrop-blur-sm border-2 border-red-600 p-4 overflow-hidden rounded-md">
@@ -21,8 +24,8 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto pr-2">
-        {playgrounds.length > 0 ? (
-          playgrounds.map(playground => (
+        {playgrounds && playgrounds.length > 0 ? (
+          playgrounds.map((playground) => (
             <div 
               key={playground.id}
               className={`cursor-pointer transition-colors ${
@@ -31,6 +34,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                   : 'bg-black bg-opacity-70'
               } backdrop-blur-sm p-3 border border-white/20 rounded-md`}
               onClick={() => {
+                console.log("Selezionato playground:", playground);
                 onSelectPlayground(playground);
                 // Play sound effect
                 const audio = new Audio('/sounds/select.mp3');
