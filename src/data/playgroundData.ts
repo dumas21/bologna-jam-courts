@@ -93,24 +93,6 @@ export const playgroundData: Playground[] = [
     comments: []
   },
   {
-    id: "jarde",
-    name: "Jardine de la Paz",
-    address: "Via della Pace, 40132 Bologna",
-    lat: 44.5123,
-    lng: 11.3562,
-    openHours: "08:00 - 21:00",
-    hasShade: true,
-    hasFountain: true,
-    hasAmenities: false,
-    hasLighting: true,
-    currentPlayers: 0,
-    totalCheckins: 0,
-    basketCount: 2,
-    rating: 4.1,
-    ratingCount: 22,
-    comments: []
-  },
-  {
     id: "staca",
     name: "San Donato Campo",
     address: "Via San Donato, 40127 Bologna",

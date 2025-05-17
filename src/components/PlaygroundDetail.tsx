@@ -44,7 +44,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   const { isLoggedIn, username } = useUser();
   const [message, setMessage] = useState("");
   const [checkInEmail, setCheckInEmail] = useState("");
-  const [comments, setComments] = useState<string[]>(playground.comments || []);
+  const [comments, setComments] = useState<Comment[]>(playground.comments || []);
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
@@ -130,8 +130,16 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     
     playSoundEffect('message');
     
+    // Create a new comment with the correct structure
+    const newComment = {
+      id: `comment-${Date.now()}`,
+      text: message,
+      user: username || 'anonymous',
+      timestamp: Date.now()
+    };
+    
     // Aggiorna il playground con il nuovo messaggio
-    const updatedComments = [...comments, message];
+    const updatedComments = [...comments, newComment];
     setComments(updatedComments);
     
     // Aggiorna anche i commenti nel playground
@@ -334,7 +342,10 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
               <div className="space-y-2">
                 {comments.map((comment, index) => (
                   <div key={index} className="p-2 rounded mb-2 bg-gray-100 text-black border border-gray-200">
-                    {comment}
+                    {comment.text}
+                    <div className="text-xs text-gray-500 mt-1">
+                      {comment.user} - {new Date(comment.timestamp).toLocaleTimeString()}
+                    </div>
                   </div>
                 ))}
               </div>
