@@ -151,14 +151,30 @@ const Index = () => {
               <p className="text-xs text-white/70">
                 Seleziona un playground dalla mappa e vai alla tab "Chat" per chattare con altri giocatori
               </p>
+              {!isLoggedIn && (
+                <Button 
+                  className="mt-4 pixel-button"
+                  onClick={() => navigate('/login')}
+                >
+                  Accedi ora
+                </Button>
+              )}
             </div>
           </TabsContent>
           
           <TabsContent value="events" className="animate-pixel-fade-in">
-            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex items-center justify-center">
-              <p className="font-press-start text-xs text-red-600">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
+              <p className="font-press-start text-xs text-red-600 mb-4">
                 {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
               </p>
+              {!isLoggedIn && (
+                <Button 
+                  className="mt-4 pixel-button"
+                  onClick={() => navigate('/login')}
+                >
+                  Accedi ora
+                </Button>
+              )}
             </div>
           </TabsContent>
         </Tabs>

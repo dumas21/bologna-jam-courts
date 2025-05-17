@@ -12,6 +12,14 @@ export interface CheckInRecord {
   timestamp: number;
 }
 
+// Aggiungiamo un'interfaccia per gli utenti registrati
+export interface RegisteredUser {
+  email: string;
+  password: string;
+  isAdmin: boolean;
+  registrationDate: number;
+}
+
 export function usePlaygrounds() {
   const { toast } = useToast();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(() => {
@@ -36,6 +44,15 @@ export function usePlaygrounds() {
     return [];
   });
   
+  // Array per tenere traccia degli utenti registrati
+  const [registeredUsers, setRegisteredUsers] = useState<RegisteredUser[]>(() => {
+    const saved = localStorage.getItem("registeredUsers");
+    if (saved) {
+      return JSON.parse(saved);
+    }
+    return [];
+  });
+  
   const [totalCheckIns, setTotalCheckIns] = useState<number>(() => {
     return playgrounds.reduce((acc, pg) => acc + pg.totalCheckins, 0);
   });
@@ -51,6 +68,11 @@ export function usePlaygrounds() {
   useEffect(() => {
     localStorage.setItem("checkInRecords", JSON.stringify(checkInRecords));
   }, [checkInRecords]);
+  
+  // Save registered users
+  useEffect(() => {
+    localStorage.setItem("registeredUsers", JSON.stringify(registeredUsers));
+  }, [registeredUsers]);
   
   // Set up daily reset timer per il reset alle 23:59
   useEffect(() => {
@@ -268,6 +290,80 @@ export function usePlaygrounds() {
     );
   };
   
+  // Funzione per registrare un nuovo utente
+  const registerUser = (email: string, password: string) => {
+    // Verifica se l'utente è già registrato
+    const existingUser = registeredUsers.find(user => user.email === email);
+    
+    if (existingUser) {
+      toast({
+        title: "Utente già registrato",
+        description: "Questa email è già registrata nel sistema.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
+    // Determina se è il primo utente (primo admin)
+    const isFirstUser = registeredUsers.length === 0;
+    
+    // Registra il nuovo utente
+    const newUser: RegisteredUser = {
+      email,
+      password, // In un'app reale, questa password dovrebbe essere criptata
+      isAdmin: isFirstUser, // Solo il primo utente è admin
+      registrationDate: Date.now()
+    };
+    
+    setRegisteredUsers(current => [...current, newUser]);
+    
+    toast({
+      title: "Registrazione completata",
+      description: `Benvenuto, ${email}! ${isFirstUser ? "Sei stato registrato come amministratore." : ""}`,
+    });
+    
+    return true;
+  };
+  
+  // Funzione per verificare le credenziali di login
+  const verifyLogin = (email: string, password: string) => {
+    const user = registeredUsers.find(
+      user => user.email === email && user.password === password
+    );
+    
+    return user || null;
+  };
+  
+  // Funzione per ottenere la lista degli utenti registrati (solo per admin)
+  const getRegisteredUsers = () => {
+    return registeredUsers;
+  };
+  
+  // Funzione per ottenere la lista degli utenti che hanno fatto check-in oggi
+  const getTodayCheckins = () => {
+    return checkInRecords;
+  };
+  
+  // Funzione per reimpostare i conteggi delle presenze a zero
+  const resetAttendanceCounts = () => {
+    setPlaygrounds(current => 
+      current.map(pg => ({ 
+        ...pg, 
+        currentPlayers: 0,
+        totalCheckins: 0
+      }))
+    );
+    
+    setCheckInRecords([]);
+    
+    toast({
+      title: "Conteggi reimpostati",
+      description: "Tutti i conteggi delle presenze sono stati azzerati.",
+    });
+    
+    return true;
+  };
+  
   return { 
     playgrounds, 
     totalCheckIns,
@@ -278,6 +374,11 @@ export function usePlaygrounds() {
     updatePlayground,
     addPlayground,
     hasUserCheckedIn,
-    checkInRecords
+    checkInRecords,
+    registerUser,
+    verifyLogin,
+    getRegisteredUsers,
+    getTodayCheckins,
+    resetAttendanceCounts
   };
 }

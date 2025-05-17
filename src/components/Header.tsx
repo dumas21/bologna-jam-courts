@@ -1,78 +1,125 @@
 
-import { useState } from "react";
-import { Bell, User, LogIn, LogOut } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { 
+  User, 
+  LogOut, 
+  ShieldCheck, 
+  MapPin, 
+  Plus, 
+  Home 
+} from "lucide-react";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger 
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isLoggedIn, username, logout, subscribedPlaygrounds } = useUser();
+  const { isLoggedIn, username, isAdmin, logout } = useUser();
   const navigate = useNavigate();
-  
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    logout();
+    toast({
+      title: "Logout effettuato",
+      description: "Hai effettuato il logout con successo",
+    });
+    navigate("/");
+  };
+
+  const playSoundEffect = () => {
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Audio playback error:', err));
+  };
+
   return (
-    <header className="bg-jam-purple border-b-4 border-white sticky top-0 z-10">
-      <div className="container mx-auto flex justify-between items-center py-3 px-4">
-        <div className="flex items-center">
-          <Link to="/" className="flex flex-col">
-            <h1 className="font-press-start text-sm md:text-lg text-white">
-              PLAYGROUND
-            </h1>
-            <span className="font-press-start text-lg md:text-xl text-jam-orange mt-1">
-              JAM BOLOGNA
+    <header className="bg-black bg-opacity-80 backdrop-blur-md sticky top-0 z-10 border-b-4 border-red-600">
+      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <Link to="/" className="text-white hover:text-red-600 transition-colors">
+          <div className="flex items-center">
+            <MapPin className="text-red-600" />
+            <span className="font-press-start text-xs ml-1 hidden sm:inline">
+              PLAYGROUND JAM
             </span>
+            <span className="font-press-start text-xs ml-1 sm:hidden">
+              PJ
+            </span>
+          </div>
+        </Link>
+
+        <nav className="flex items-center gap-2 sm:gap-4">
+          <Link 
+            to="/" 
+            className="text-white hover:text-red-600 transition-colors px-2 py-1"
+            onClick={playSoundEffect}
+          >
+            <Home className="h-4 w-4 sm:hidden" />
+            <span className="font-press-start text-xs hidden sm:inline">Home</span>
           </Link>
-        </div>
-        
-        <div className="flex items-center space-x-4">
+          
           {isLoggedIn ? (
             <>
-              <Link to="/" className="text-white relative">
-                <Bell size={24} />
-                {subscribedPlaygrounds.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-jam-orange text-black text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                    {subscribedPlaygrounds.length}
-                  </span>
-                )}
+              <Link 
+                to="/add-playground" 
+                className="text-white hover:text-red-600 transition-colors px-2 py-1"
+                onClick={playSoundEffect}
+              >
+                <Plus className="h-4 w-4 sm:hidden" />
+                <span className="font-press-start text-xs hidden sm:inline">Aggiungi</span>
               </Link>
               
+              {isAdmin && (
+                <Link 
+                  to="/admin" 
+                  className="text-white hover:text-red-600 transition-colors px-2 py-1"
+                  onClick={playSoundEffect}
+                >
+                  <ShieldCheck className="h-4 w-4 sm:hidden" />
+                  <span className="font-press-start text-xs hidden sm:inline">Admin</span>
+                </Link>
+              )}
+              
               <DropdownMenu>
-                <DropdownMenuTrigger className="bg-white p-1 rounded-full">
-                  <User size={24} className="text-jam-dark" />
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="h-8 w-8 p-0 rounded-full">
+                    <span className="sr-only">User menu</span>
+                    <User className="h-4 w-4 text-red-600" />
+                  </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem className="font-press-start text-xs">
+                <DropdownMenuContent align="end" className="bg-black text-white border border-red-600">
+                  <DropdownMenuLabel className="font-press-start text-xs">
                     {username}
-                  </DropdownMenuItem>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem 
-                    className="cursor-pointer font-press-start text-xs text-red-500"
-                    onClick={() => {
-                      logout();
-                      navigate("/");
-                    }}
+                    onClick={handleLogout}
+                    className="font-press-start text-xs cursor-pointer flex items-center text-red-600"
                   >
-                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
           ) : (
-            <Button 
-              onClick={() => navigate("/login")} 
-              variant="ghost" 
-              className="text-white hover:text-jam-orange"
+            <Link 
+              to="/login" 
+              className="text-white hover:text-red-600 transition-colors px-2 py-1"
+              onClick={playSoundEffect}
             >
-              <LogIn className="mr-2 h-4 w-4" />
-              <span className="font-press-start text-xs">LOGIN</span>
-            </Button>
+              <User className="h-4 w-4 sm:hidden" />
+              <span className="font-press-start text-xs hidden sm:inline">Login</span>
+            </Link>
           )}
-        </div>
+        </nav>
       </div>
     </header>
   );

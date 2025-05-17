@@ -1,96 +1,61 @@
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
-type UserContextType = {
+interface UserContextType {
   isLoggedIn: boolean;
-  username: string | null;
-  subscribedPlaygrounds: string[];
-  login: (username: string) => void;
+  username: string;
+  isAdmin: boolean;
+  login: (username: string, isAdmin?: boolean) => void;
   logout: () => void;
-  subscribeToPlayground: (playgroundId: string) => void;
-  unsubscribeFromPlayground: (playgroundId: string) => void;
-  isSubscribed: (playgroundId: string) => boolean;
-};
+}
 
-const UserContext = createContext<UserContextType | null>(null);
+const UserContext = createContext<UserContextType>({
+  isLoggedIn: false,
+  username: "",
+  isAdmin: false,
+  login: () => {},
+  logout: () => {},
+});
 
-export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState<string | null>(null);
-  const [subscribedPlaygrounds, setSubscribedPlaygrounds] = useState<string[]>([]);
+export const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    const saved = localStorage.getItem("userLoggedIn");
+    return saved ? JSON.parse(saved) : false;
+  });
+  
+  const [username, setUsername] = useState<string>(() => {
+    const saved = localStorage.getItem("username");
+    return saved ? JSON.parse(saved) : "";
+  });
+  
+  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
+    const saved = localStorage.getItem("isUserAdmin");
+    return saved ? JSON.parse(saved) : false;
+  });
 
-  // Load user data from localStorage
-  useEffect(() => {
-    const storedUser = localStorage.getItem('playgroundJamUser');
-    if (storedUser) {
-      const userData = JSON.parse(storedUser);
-      setIsLoggedIn(true);
-      setUsername(userData.username);
-      setSubscribedPlaygrounds(userData.subscribedPlaygrounds || []);
-    }
-  }, []);
-
-  // Save user data to localStorage
-  useEffect(() => {
-    if (isLoggedIn && username) {
-      localStorage.setItem('playgroundJamUser', JSON.stringify({
-        username,
-        subscribedPlaygrounds
-      }));
-    } else if (!isLoggedIn) {
-      localStorage.removeItem('playgroundJamUser');
-    }
-  }, [isLoggedIn, username, subscribedPlaygrounds]);
-
-  const login = (newUsername: string) => {
+  const login = (username: string, isAdmin: boolean = false) => {
+    localStorage.setItem("userLoggedIn", "true");
+    localStorage.setItem("username", JSON.stringify(username));
+    localStorage.setItem("isUserAdmin", JSON.stringify(isAdmin));
     setIsLoggedIn(true);
-    setUsername(newUsername);
+    setUsername(username);
+    setIsAdmin(isAdmin);
   };
 
   const logout = () => {
+    localStorage.removeItem("userLoggedIn");
+    localStorage.removeItem("username");
+    localStorage.removeItem("isUserAdmin");
     setIsLoggedIn(false);
-    setUsername(null);
-    setSubscribedPlaygrounds([]);
-  };
-
-  const subscribeToPlayground = (playgroundId: string) => {
-    if (!subscribedPlaygrounds.includes(playgroundId)) {
-      setSubscribedPlaygrounds([...subscribedPlaygrounds, playgroundId]);
-    }
-  };
-
-  const unsubscribeFromPlayground = (playgroundId: string) => {
-    setSubscribedPlaygrounds(
-      subscribedPlaygrounds.filter(id => id !== playgroundId)
-    );
-  };
-
-  const isSubscribed = (playgroundId: string) => {
-    return subscribedPlaygrounds.includes(playgroundId);
+    setUsername("");
+    setIsAdmin(false);
   };
 
   return (
-    <UserContext.Provider
-      value={{
-        isLoggedIn,
-        username,
-        subscribedPlaygrounds,
-        login,
-        logout,
-        subscribeToPlayground,
-        unsubscribeFromPlayground,
-        isSubscribed
-      }}
-    >
+    <UserContext.Provider value={{ isLoggedIn, username, isAdmin, login, logout }}>
       {children}
     </UserContext.Provider>
   );
-}
-
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser must be used within a UserProvider");
-  }
-  return context;
 };
+
+export const useUser = () => useContext(UserContext);

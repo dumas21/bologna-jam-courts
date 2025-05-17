@@ -13,12 +13,12 @@ export const playgroundData: Playground[] = [
     hasFountain: true,
     hasAmenities: true,
     hasLighting: true,
-    currentPlayers: 8,
-    totalCheckins: 124,
+    currentPlayers: 0,
+    totalCheckins: 0,
     basketCount: 4,
     rating: 4.7,
     ratingCount: 42,
-    comments: ["Ottimo playground!", "Canestri in buone condizioni", "Area ben tenuta"]
+    comments: []
   },
   {
     id: "pm",
@@ -31,12 +31,12 @@ export const playgroundData: Playground[] = [
     hasFountain: true,
     hasAmenities: false,
     hasLighting: true,
-    currentPlayers: 4,
-    totalCheckins: 87,
+    currentPlayers: 0,
+    totalCheckins: 0,
     basketCount: 2,
     rating: 3.8,
     ratingCount: 24,
-    comments: ["Discreto playground", "Spesso affollato"]
+    comments: []
   },
   {
     id: "mp",
@@ -49,12 +49,12 @@ export const playgroundData: Playground[] = [
     hasFountain: false,
     hasAmenities: true,
     hasLighting: false,
-    currentPlayers: 2,
-    totalCheckins: 53,
+    currentPlayers: 0,
+    totalCheckins: 0,
     basketCount: 4,
     rating: 4.2,
     ratingCount: 18,
-    comments: ["Bel playground", "Terreno un po' irregolare"]
+    comments: []
   },
   {
     id: "vdb",
@@ -68,11 +68,11 @@ export const playgroundData: Playground[] = [
     hasAmenities: false,
     hasLighting: false,
     currentPlayers: 0,
-    totalCheckins: 32,
+    totalCheckins: 0,
     basketCount: 1,
     rating: 3.5,
     ratingCount: 11,
-    comments: ["Piccolo ma funzionale"]
+    comments: []
   },
   {
     id: "aas",
@@ -85,12 +85,12 @@ export const playgroundData: Playground[] = [
     hasFountain: true,
     hasAmenities: true,
     hasLighting: true,
-    currentPlayers: 10,
-    totalCheckins: 189,
+    currentPlayers: 0,
+    totalCheckins: 0,
     basketCount: 6,
     rating: 4.9,
     ratingCount: 53,
-    comments: ["Il miglior playground di Bologna", "Sempre ben frequentato", "Canestri perfetti"]
+    comments: []
   },
   {
     id: "jarde",
@@ -103,12 +103,12 @@ export const playgroundData: Playground[] = [
     hasFountain: true,
     hasAmenities: false,
     hasLighting: true,
-    currentPlayers: 6,
-    totalCheckins: 73,
+    currentPlayers: 0,
+    totalCheckins: 0,
     basketCount: 2,
     rating: 4.1,
     ratingCount: 22,
-    comments: ["Ottima illuminazione per giocare la sera"]
+    comments: []
   },
   {
     id: "staca",
@@ -121,14 +121,13 @@ export const playgroundData: Playground[] = [
     hasFountain: true,
     hasAmenities: true,
     hasLighting: false,
-    currentPlayers: 3,
-    totalCheckins: 46,
+    currentPlayers: 0,
+    totalCheckins: 0,
     basketCount: 2,
     rating: 3.7,
     ratingCount: 14,
-    comments: ["Buona manutenzione", "Manca l'illuminazione serale"]
+    comments: []
   },
-  // Nuovi playground
   {
     id: "birra",
     name: "Campo da basket Birra",
@@ -217,6 +216,78 @@ export const playgroundData: Playground[] = [
     basketCount: 2,
     rating: 4.0,
     ratingCount: 7,
+    comments: []
+  },
+  {
+    id: "pilastro",
+    name: "Playground Pilastro",
+    address: "Via Pirandello, 40127 Bologna",
+    lat: 44.5153,
+    lng: 11.3842,
+    openHours: "08:00 - 22:00",
+    hasShade: true,
+    hasFountain: true,
+    hasAmenities: false,
+    hasLighting: true,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 4.1,
+    ratingCount: 15,
+    comments: []
+  },
+  {
+    id: "dozza",
+    name: "Campo da basket Dozza",
+    address: "Via Romita, 40127 Bologna",
+    lat: 44.5196,
+    lng: 11.3583,
+    openHours: "Sempre aperto",
+    hasShade: true,
+    hasFountain: false,
+    hasAmenities: false, 
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.7,
+    ratingCount: 8,
+    comments: []
+  },
+  {
+    id: "lunetta",
+    name: "Lunetta Gamberini",
+    address: "Via degli Orti, 60, 40137 Bologna",
+    lat: 44.4855,
+    lng: 11.3690,
+    openHours: "07:00 - 23:00",
+    hasShade: true,
+    hasFountain: true,
+    hasAmenities: true,
+    hasLighting: true,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 3,
+    rating: 4.4,
+    ratingCount: 22,
+    comments: []
+  },
+  {
+    id: "cavina",
+    name: "Centro Sportivo Cavina",
+    address: "Via Biancolelli, 36, 40132 Bologna",
+    lat: 44.5031,
+    lng: 11.2969,
+    openHours: "09:00 - 22:00",
+    hasShade: true,
+    hasFountain: true,
+    hasAmenities: true,
+    hasLighting: true,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 4,
+    rating: 4.6,
+    ratingCount: 32,
     comments: []
   }
 ];

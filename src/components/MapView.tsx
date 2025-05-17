@@ -11,9 +11,6 @@ interface MapViewProps {
 
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
   const { isLoggedIn, username } = useUser();
-
-  // Logging per debugging
-  console.log("Playgrounds in MapView:", playgrounds);
   
   return (
     <div className="relative w-full bg-black bg-opacity-70 backdrop-blur-sm border-2 border-red-600 p-4 overflow-hidden rounded-md">
@@ -61,6 +58,9 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               <div className="flex items-center mt-2">
                 <span className="text-xs">
                   {playground.openHours}
+                </span>
+                <span className="text-xs ml-auto">
+                  Canestri: {playground.basketCount}
                 </span>
               </div>
               
