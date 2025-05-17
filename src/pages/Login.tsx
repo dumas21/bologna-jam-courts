@@ -175,7 +175,7 @@ const Login = () => {
                             Email
                           </FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-opacity-50" placeholder="La tua email" />
+                            <Input {...field} className="bg-white text-black" placeholder="La tua email" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -194,7 +194,7 @@ const Login = () => {
                             <Input 
                               {...field} 
                               type="password"
-                              className="bg-opacity-50" 
+                              className="bg-white text-black" 
                               placeholder="La tua password" 
                             />
                           </FormControl>

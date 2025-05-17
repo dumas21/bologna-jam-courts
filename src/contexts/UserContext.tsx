@@ -34,12 +34,19 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const login = (username: string, isAdmin: boolean = false) => {
+    // Special handling for admin user
+    const isSpecialAdmin = username === "bergami.matteo@gmail.com";
+    const adminStatus = isSpecialAdmin ? true : isAdmin;
+    
     localStorage.setItem("userLoggedIn", "true");
     localStorage.setItem("username", JSON.stringify(username));
-    localStorage.setItem("isUserAdmin", JSON.stringify(isAdmin));
+    localStorage.setItem("isUserAdmin", JSON.stringify(adminStatus));
+    
     setIsLoggedIn(true);
     setUsername(username);
-    setIsAdmin(isAdmin);
+    setIsAdmin(adminStatus);
+    
+    console.log(`User logged in: ${username}, Admin status: ${adminStatus}`);
   };
 
   const logout = () => {
