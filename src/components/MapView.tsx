@@ -15,7 +15,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
   return (
     <div className="relative w-full bg-black bg-opacity-70 backdrop-blur-sm border-2 border-red-600 p-4 overflow-hidden rounded-md">
       <div className="flex justify-between items-center mb-4">
-        <div className="text-xs font-press-start text-red-600">
+        <div className="text-xs font-press-start text-red-600 font-bold">
           Playground Bologna - {playgrounds.length} campi disponibili
         </div>
       </div>
@@ -39,7 +39,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               }}
             >
               <div className="flex justify-between items-start">
-                <div className="font-press-start text-xs mb-2 text-blue-400">
+                <div className="font-press-start text-xs mb-2 text-blue-400 font-bold">
                   {playground.name}
                 </div>
                 <div className="flex items-center gap-2">
@@ -52,14 +52,14 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                   )}
                 </div>
               </div>
-              <div className="text-xs text-white/70 mb-1">
+              <div className="text-xs text-white/70 mb-1 font-bold">
                 {playground.address}
               </div>
               <div className="flex items-center mt-2">
                 <span className="text-xs">
                   {playground.openHours}
                 </span>
-                <span className="text-xs ml-auto">
+                <span className="text-xs ml-auto font-bold">
                   Canestri: {playground.basketCount}
                 </span>
               </div>
@@ -67,7 +67,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               {/* Display registered users if any */}
               {isLoggedIn && playground.currentPlayers > 0 && (
                 <div className="mt-2 pt-2 border-t border-white/10">
-                  <div className="text-xs text-red-600 font-press-start mb-1">Presenze:</div>
+                  <div className="text-xs text-red-600 font-press-start mb-1 font-bold">Presenze:</div>
                   <div className="text-xs text-white/70 italic">
                     {username && 
                       <div className="flex items-center">

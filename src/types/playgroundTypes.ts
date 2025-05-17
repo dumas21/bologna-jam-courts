@@ -12,8 +12,15 @@ export interface Playground {
   hasLighting: boolean;
   currentPlayers: number;
   totalCheckins: number;
-  basketCount?: number; // Number of basketball hoops
-  rating?: number; // Average rating 0-5
-  ratingCount?: number; // Number of ratings
-  comments?: string[]; // User comments
+  basketCount: number;
+  rating: number;
+  ratingCount: number;
+  comments: Comment[];
+}
+
+export interface Comment {
+  id: string;
+  text: string;
+  user: string;
+  timestamp: number;
 }

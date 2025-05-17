@@ -9,7 +9,7 @@ import { CheckInRecord, RegisteredUser, usePlaygrounds } from "@/hooks/usePlaygr
 import { useUser } from "@/contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Mail, Shield, BarChart, RefreshCcw } from "lucide-react";
+import { Users, Mail, Shield, BarChart, Calendar, Search } from "lucide-react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 
@@ -28,9 +28,10 @@ const Admin = () => {
   const [checkInRecords, setCheckInRecords] = useState<CheckInRecord[]>([]);
   const [adminPassword, setAdminPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   
   // Admin password per questa demo
-  const ADMIN_PASSWORD = "admin123"; // In un'app reale, questo sarebbe gestito in modo sicuro
+  const ADMIN_PASSWORD = "Admin2025!"; // In un'app reale, questo sarebbe gestito in modo sicuro
   
   useEffect(() => {
     if (!isLoggedIn) {
@@ -54,11 +55,20 @@ const Admin = () => {
   const handleAdminLogin = () => {
     if (adminPassword === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
+      
+      // Play admin sound
+      const audio = new Audio('/sounds/admin.mp3');
+      audio.play().catch(err => console.log('Audio playback error:', err));
+      
       toast({
         title: "Accesso amministratore",
         description: "Hai effettuato l'accesso come amministratore",
       });
     } else {
+      // Play error sound
+      const audio = new Audio('/sounds/error.mp3');
+      audio.play().catch(err => console.log('Audio playback error:', err));
+      
       toast({
         title: "Password errata",
         description: "La password amministratore non è corretta",
@@ -67,23 +77,17 @@ const Admin = () => {
     }
   };
   
-  const handleResetAttendance = () => {
-    if (window.confirm("Sei sicuro di voler azzerare tutti i conteggi delle presenze? Questa operazione non può essere annullata.")) {
-      resetAttendanceCounts();
-      toast({
-        title: "Conteggi azzerati",
-        description: "Tutti i conteggi delle presenze sono stati reimpostati a zero",
-      });
-    }
+  const playSound = (soundName: string) => {
+    const audio = new Audio(`/sounds/${soundName}.mp3`);
+    audio.play().catch(err => console.log('Audio playback error:', err));
   };
   
-  const handleResetDaily = () => {
-    if (window.confirm("Sei sicuro di voler reimpostare i conteggi giornalieri? Tutti gli utenti verranno disconnessi.")) {
-      resetDailyCounts();
-      // Aggiorna i dati dopo il reset
-      setCheckInRecords([]);
-    }
-  };
+  // Filtra gli utenti in base al termine di ricerca
+  const filteredUsers = registeredUsers
+    .filter(user => 
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => a.email.localeCompare(b.email)); // Ordine alfabetico
   
   if (!isLoggedIn) {
     return null; // L'utente verrà reindirizzato dal useEffect
@@ -99,7 +103,7 @@ const Admin = () => {
           
           <div className="max-w-md w-full mt-8">
             <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-              <h2 className="font-press-start text-xs md:text-sm text-center py-2">
+              <h2 className="font-press-start text-xs md:text-sm text-center py-2 font-bold">
                 ACCESSO AMMINISTRATORE
               </h2>
             </div>
@@ -128,7 +132,7 @@ const Admin = () => {
               </div>
               
               <p className="mt-6 text-center text-xs text-white/60">
-                Per questa demo, usa la password: "admin123"
+                Per effettuare l'accesso, usa la password dell'amministratore
               </p>
             </div>
           </div>
@@ -160,7 +164,10 @@ const Admin = () => {
           
           <div className="flex gap-2">
             <Button 
-              onClick={() => navigate("/")}
+              onClick={() => {
+                playSound('click');
+                navigate("/");
+              }}
               className="pixel-button text-xs flex items-center gap-2 bg-blue-600"
             >
               Torna alla Home
@@ -173,46 +180,48 @@ const Admin = () => {
             <h2 className="font-press-start text-red-600 text-sm">
               Pannello Amministratore
             </h2>
-            
-            <div className="flex gap-2">
-              <Button 
-                onClick={handleResetDaily}
-                className="pixel-button text-xs bg-orange-600"
-              >
-                <RefreshCcw size={16} className="mr-1" />
-                Reset Giornaliero
-              </Button>
-              
-              <Button 
-                onClick={handleResetAttendance}
-                className="pixel-button text-xs bg-red-600"
-              >
-                <RefreshCcw size={16} className="mr-1" />
-                Reset Totale
-              </Button>
-            </div>
           </div>
         </div>
         
         <Tabs defaultValue="checkins">
           <TabsList className="w-full mb-4">
-            <TabsTrigger value="checkins" className="font-press-start text-xs">
+            <TabsTrigger 
+              value="checkins" 
+              className="font-press-start text-xs"
+              onClick={() => playSound('tab')}
+            >
               <Mail size={16} className="mr-1" />
               Check-in Oggi
             </TabsTrigger>
-            <TabsTrigger value="users" className="font-press-start text-xs">
+            <TabsTrigger 
+              value="users" 
+              className="font-press-start text-xs"
+              onClick={() => playSound('tab')}
+            >
               <Users size={16} className="mr-1" />
               Utenti Registrati
             </TabsTrigger>
-            <TabsTrigger value="stats" className="font-press-start text-xs">
+            <TabsTrigger 
+              value="stats" 
+              className="font-press-start text-xs"
+              onClick={() => playSound('tab')}
+            >
               <BarChart size={16} className="mr-1" />
               Statistiche
+            </TabsTrigger>
+            <TabsTrigger 
+              value="events" 
+              className="font-press-start text-xs"
+              onClick={() => playSound('tab')}
+            >
+              <Calendar size={16} className="mr-1" />
+              Eventi
             </TabsTrigger>
           </TabsList>
           
           <TabsContent value="checkins">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
-              <h3 className="font-press-start text-xs text-red-600 mb-4">
+              <h3 className="font-press-start text-xs text-red-600 mb-4 font-bold">
                 Check-in di oggi ({checkInRecords.length})
               </h3>
               
@@ -246,6 +255,7 @@ const Admin = () => {
               <div className="mt-4">
                 <Button 
                   onClick={() => {
+                    playSound('click');
                     // Esportazione in CSV
                     if (checkInRecords.length === 0) {
                       toast({
@@ -281,11 +291,23 @@ const Admin = () => {
           
           <TabsContent value="users">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
-              <h3 className="font-press-start text-xs text-red-600 mb-4">
-                Utenti Registrati ({registeredUsers.length})
-              </h3>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="font-press-start text-xs text-red-600 font-bold">
+                  Utenti Registrati ({filteredUsers.length})
+                </h3>
+                
+                <div className="flex bg-black rounded-md border border-jam-purple overflow-hidden">
+                  <Input
+                    placeholder="Cerca utente..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="bg-transparent border-0 text-white text-xs"
+                  />
+                  <Search size={16} className="text-jam-purple my-auto mr-2" />
+                </div>
+              </div>
               
-              {registeredUsers.length > 0 ? (
+              {filteredUsers.length > 0 ? (
                 <div className="bg-white rounded-md p-4 text-black">
                   <table className="w-full">
                     <thead>
@@ -296,7 +318,7 @@ const Admin = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {registeredUsers.map((user, index) => (
+                      {filteredUsers.map((user, index) => (
                         <tr key={index} className="border-b border-gray-100">
                           <td className="p-2 text-xs">{user.email}</td>
                           <td className="p-2 text-xs">
@@ -318,14 +340,17 @@ const Admin = () => {
                   </table>
                 </div>
               ) : (
-                <p className="text-white/70 text-sm">Nessun utente registrato</p>
+                <p className="text-white/70 text-sm">
+                  {searchTerm ? "Nessun utente corrisponde alla ricerca" : "Nessun utente registrato"}
+                </p>
               )}
               
               <div className="mt-4">
                 <Button 
                   onClick={() => {
+                    playSound('click');
                     // Esportazione in CSV
-                    if (registeredUsers.length === 0) {
+                    if (filteredUsers.length === 0) {
                       toast({
                         title: "Nessun dato da esportare",
                         description: "Non ci sono utenti da esportare",
@@ -334,7 +359,7 @@ const Admin = () => {
                     }
                     
                     const headers = "Email,DataRegistrazione,Ruolo\n";
-                    const csvData = registeredUsers.map(user => 
+                    const csvData = filteredUsers.map(user => 
                       `${user.email},${format(new Date(user.registrationDate), "dd/MM/yyyy HH:mm")},${user.isAdmin ? "Admin" : "Utente"}`
                     ).join('\n');
                     
@@ -349,7 +374,7 @@ const Admin = () => {
                     document.body.removeChild(a);
                   }}
                   className="pixel-button bg-blue-600 text-xs"
-                  disabled={registeredUsers.length === 0}
+                  disabled={filteredUsers.length === 0}
                 >
                   Esporta CSV
                 </Button>
@@ -359,30 +384,74 @@ const Admin = () => {
           
           <TabsContent value="stats">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
-              <h3 className="font-press-start text-xs text-red-600 mb-4">
+              <h3 className="font-press-start text-xs text-red-600 mb-4 font-bold">
                 Statistiche Utenti
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-black bg-opacity-50 p-4 rounded-md border border-jam-purple">
-                  <h4 className="font-press-start text-xs text-jam-orange mb-2">Utenti Registrati</h4>
+                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Utenti Registrati</h4>
                   <div className="text-3xl font-press-start text-white">{registeredUsers.length}</div>
                   <div className="text-xs text-white/70 mt-2">Totale utenti nel sistema</div>
                 </div>
                 
                 <div className="bg-black bg-opacity-50 p-4 rounded-md border border-jam-purple">
-                  <h4 className="font-press-start text-xs text-jam-orange mb-2">Check-in Oggi</h4>
+                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Check-in Oggi</h4>
                   <div className="text-3xl font-press-start text-white">{checkInRecords.length}</div>
                   <div className="text-xs text-white/70 mt-2">Numero di check-in odierni</div>
                 </div>
               </div>
               
               <div className="mt-6">
-                <h4 className="font-press-start text-xs text-red-600 mb-2">
+                <h4 className="font-press-start text-xs text-red-600 mb-2 font-bold">
                   Totale Playground
                 </h4>
-                <div className="text-3xl font-press-start text-white">16</div>
+                <div className="text-3xl font-press-start text-white">12</div>
                 <div className="text-xs text-white/70 mt-2">Campi da basket disponibili a Bologna</div>
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="events">
+            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
+              <h3 className="font-press-start text-xs text-red-600 mb-4 font-bold">
+                Gestione Eventi
+              </h3>
+              
+              <div className="bg-white rounded-md p-6 text-black">
+                <p className="font-bold mb-4">Pianifica e gestisci eventi per i playground di Bologna</p>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h4 className="font-bold text-sm mb-2">Eventi in programma</h4>
+                    <p className="text-sm text-gray-600 italic">Non ci sono eventi programmati al momento.</p>
+                    
+                    <Button 
+                      onClick={() => {
+                        playSound('click');
+                        toast({
+                          title: "Feature in arrivo",
+                          description: "La gestione degli eventi sarà disponibile prossimamente",
+                        });
+                      }}
+                      className="mt-4 bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      <Calendar size={16} className="mr-2" />
+                      Crea nuovo evento
+                    </Button>
+                  </div>
+                  
+                  <div className="border-t pt-4">
+                    <h4 className="font-bold text-sm mb-2">Idee per eventi</h4>
+                    <ul className="list-disc pl-5 text-sm space-y-2">
+                      <li>Tornei 3vs3</li>
+                      <li>Clinic di allenamento</li>
+                      <li>Sfide di tiro</li>
+                      <li>Eventi per bambini</li>
+                      <li>Esibizioni freestyle</li>
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </TabsContent>

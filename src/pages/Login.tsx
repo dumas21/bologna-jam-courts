@@ -64,10 +64,31 @@ const Login = () => {
   });
 
   const handleLogin = (values: z.infer<typeof loginSchema>) => {
+    // Special admin login check
+    if (values.email === "admin@playgroundjam.it" && values.password === "Admin2025!") {
+      login(values.email, true);
+      
+      // Play admin login sound
+      const audio = new Audio('/sounds/admin.mp3');
+      audio.play().catch(err => console.log('Audio playback error:', err));
+      
+      toast({
+        title: "Login amministratore",
+        description: "Hai effettuato l'accesso come amministratore!",
+      });
+      
+      navigate("/admin");
+      return;
+    }
+    
     const user = verifyLogin(values.email, values.password);
     
     if (user) {
       login(values.email, user.isAdmin);
+      
+      // Play login sound
+      const audio = new Audio('/sounds/login.mp3');
+      audio.play().catch(err => console.log('Audio playback error:', err));
       
       toast({
         title: "Login effettuato!",
@@ -76,6 +97,10 @@ const Login = () => {
       
       navigate("/");
     } else {
+      // Play error sound
+      const audio = new Audio('/sounds/error.mp3');
+      audio.play().catch(err => console.log('Audio playback error:', err));
+      
       toast({
         title: "Errore",
         description: "Email o password non corretti",
@@ -88,6 +113,10 @@ const Login = () => {
     const success = registerUser(values.email, values.password);
     
     if (success) {
+      // Play success sound
+      const audio = new Audio('/sounds/register.mp3');
+      audio.play().catch(err => console.log('Audio playback error:', err));
+      
       login(values.email, false); // Registrato come utente normale
       
       toast({
@@ -96,7 +125,16 @@ const Login = () => {
       });
       
       navigate("/");
+    } else {
+      // Play error sound
+      const audio = new Audio('/sounds/error.mp3');
+      audio.play().catch(err => console.log('Audio playback error:', err));
     }
+  };
+
+  const playSound = (soundName: string) => {
+    const audio = new Audio(`/sounds/${soundName}.mp3`);
+    audio.play().catch(err => console.log('Audio playback error:', err));
   };
 
   return (
@@ -107,7 +145,10 @@ const Login = () => {
         <div className="max-w-md w-full">
           <Tabs
             value={activeTab}
-            onValueChange={setActiveTab}
+            onValueChange={(value) => {
+              setActiveTab(value);
+              playSound('tab');
+            }}
             className="w-full"
           >
             <TabsList className="grid grid-cols-2 mb-4">
@@ -117,7 +158,7 @@ const Login = () => {
             
             <TabsContent value="login">
               <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-                <h2 className="font-press-start text-xs md:text-sm text-center py-2">
+                <h2 className="font-press-start text-xs md:text-sm text-center py-2 font-bold">
                   ACCEDI AL TUO ACCOUNT
                 </h2>
               </div>
@@ -162,7 +203,11 @@ const Login = () => {
                       )}
                     />
                     
-                    <Button type="submit" className="pixel-button w-full">
+                    <Button 
+                      type="submit" 
+                      className="pixel-button w-full"
+                      onClick={() => playSound('click')}
+                    >
                       ACCEDI
                     </Button>
                   </form>
@@ -172,7 +217,10 @@ const Login = () => {
                   Non hai un account?{" "}
                   <span 
                     className="text-jam-orange cursor-pointer" 
-                    onClick={() => setActiveTab("register")}
+                    onClick={() => {
+                      setActiveTab("register");
+                      playSound('tab');
+                    }}
                   >
                     Registrati
                   </span>
@@ -182,26 +230,26 @@ const Login = () => {
             
             <TabsContent value="register">
               <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-                <h2 className="font-press-start text-xs md:text-sm text-center py-2">
+                <h2 className="font-press-start text-xs md:text-sm text-center py-2 font-bold">
                   CREA UN NUOVO ACCOUNT
                 </h2>
               </div>
               
               <div className="pixel-card p-8">
                 <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-6">
+                  <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-6 bg-white text-black rounded-md p-6">
                     <FormField
                       control={registerForm.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-press-start text-xs text-jam-orange">
+                          <FormLabel className="font-press-start text-xs text-black">
                             Email
                           </FormLabel>
                           <FormControl>
-                            <Input {...field} className="bg-opacity-50" placeholder="La tua email" />
+                            <Input {...field} className="bg-white text-black" placeholder="La tua email" />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-red-600" />
                         </FormItem>
                       )}
                     />
@@ -211,18 +259,18 @@ const Login = () => {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-press-start text-xs text-jam-orange">
+                          <FormLabel className="font-press-start text-xs text-black">
                             Password
                           </FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               type="password"
-                              className="bg-opacity-50" 
+                              className="bg-white text-black" 
                               placeholder="Scegli una password" 
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-red-600" />
                         </FormItem>
                       )}
                     />
@@ -232,23 +280,27 @@ const Login = () => {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-press-start text-xs text-jam-orange">
+                          <FormLabel className="font-press-start text-xs text-black">
                             Conferma Password
                           </FormLabel>
                           <FormControl>
                             <Input 
                               {...field} 
                               type="password"
-                              className="bg-opacity-50" 
+                              className="bg-white text-black" 
                               placeholder="Conferma la password" 
                             />
                           </FormControl>
-                          <FormMessage />
+                          <FormMessage className="text-red-600" />
                         </FormItem>
                       )}
                     />
                     
-                    <Button type="submit" className="pixel-button w-full">
+                    <Button 
+                      type="submit" 
+                      className="pixel-button w-full"
+                      onClick={() => playSound('click')}
+                    >
                       REGISTRATI
                     </Button>
                   </form>
@@ -258,7 +310,10 @@ const Login = () => {
                   Hai già un account?{" "}
                   <span 
                     className="text-jam-orange cursor-pointer" 
-                    onClick={() => setActiveTab("login")}
+                    onClick={() => {
+                      setActiveTab("login");
+                      playSound('tab');
+                    }}
                   >
                     Accedi
                   </span>
