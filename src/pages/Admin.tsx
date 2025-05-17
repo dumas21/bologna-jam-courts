@@ -30,8 +30,8 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   
-  // Admin password per questa demo
-  const ADMIN_PASSWORD = "Admin2025!"; // In un'app reale, questo sarebbe gestito in modo sicuro
+  // Admin password
+  const ADMIN_PASSWORD = "Admin2025!";
   
   useEffect(() => {
     if (!isLoggedIn) {
@@ -41,8 +41,14 @@ const Admin = () => {
         variant: "destructive"
       });
       navigate("/login");
+      return;
     }
-  }, [isLoggedIn, navigate, toast]);
+    
+    // Automatically authenticate if the user is bergami.matteo@gmail.com
+    if (username === "bergami.matteo@gmail.com") {
+      setIsAuthenticated(true);
+    }
+  }, [isLoggedIn, navigate, toast, username]);
   
   useEffect(() => {
     if (isAuthenticated) {
@@ -183,16 +189,8 @@ const Admin = () => {
           </div>
         </div>
         
-        <Tabs defaultValue="checkins">
+        <Tabs defaultValue="users">
           <TabsList className="w-full mb-4">
-            <TabsTrigger 
-              value="checkins" 
-              className="font-press-start text-xs"
-              onClick={() => playSound('tab')}
-            >
-              <Mail size={16} className="mr-1" />
-              Check-in Oggi
-            </TabsTrigger>
             <TabsTrigger 
               value="users" 
               className="font-press-start text-xs"
@@ -218,76 +216,6 @@ const Admin = () => {
               Eventi
             </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="checkins">
-            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
-              <h3 className="font-press-start text-xs text-red-600 mb-4 font-bold">
-                Check-in di oggi ({checkInRecords.length})
-              </h3>
-              
-              {checkInRecords.length > 0 ? (
-                <div className="bg-white rounded-md p-4 text-black">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left text-xs font-semibold p-2">Email</th>
-                        <th className="text-left text-xs font-semibold p-2">Playground</th>
-                        <th className="text-left text-xs font-semibold p-2">Ora</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {checkInRecords.map((record, index) => (
-                        <tr key={index} className="border-b border-gray-100">
-                          <td className="p-2 text-xs">{record.email}</td>
-                          <td className="p-2 text-xs">{record.playgroundId}</td>
-                          <td className="p-2 text-xs">
-                            {format(new Date(record.timestamp), "HH:mm")}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <p className="text-white/70 text-sm">Nessun check-in effettuato oggi</p>
-              )}
-              
-              <div className="mt-4">
-                <Button 
-                  onClick={() => {
-                    playSound('click');
-                    // Esportazione in CSV
-                    if (checkInRecords.length === 0) {
-                      toast({
-                        title: "Nessun dato da esportare",
-                        description: "Non ci sono check-in da esportare",
-                      });
-                      return;
-                    }
-                    
-                    const headers = "Email,Playground,Timestamp\n";
-                    const csvData = checkInRecords.map(record => 
-                      `${record.email},${record.playgroundId},${format(new Date(record.timestamp), "dd/MM/yyyy HH:mm")}`
-                    ).join('\n');
-                    
-                    const blob = new Blob([headers + csvData], { type: 'text/csv' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.setAttribute('hidden', '');
-                    a.setAttribute('href', url);
-                    a.setAttribute('download', `checkins_${format(new Date(), "yyyyMMdd")}.csv`);
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                  }}
-                  className="pixel-button bg-blue-600 text-xs"
-                  disabled={checkInRecords.length === 0}
-                >
-                  Esporta CSV
-                </Button>
-              </div>
-            </div>
-          </TabsContent>
           
           <TabsContent value="users">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
@@ -396,18 +324,10 @@ const Admin = () => {
                 </div>
                 
                 <div className="bg-black bg-opacity-50 p-4 rounded-md border border-jam-purple">
-                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Check-in Oggi</h4>
-                  <div className="text-3xl font-press-start text-white">{checkInRecords.length}</div>
-                  <div className="text-xs text-white/70 mt-2">Numero di check-in odierni</div>
+                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Playground</h4>
+                  <div className="text-3xl font-press-start text-white">12</div>
+                  <div className="text-xs text-white/70 mt-2">Campi da basket disponibili a Bologna</div>
                 </div>
-              </div>
-              
-              <div className="mt-6">
-                <h4 className="font-press-start text-xs text-red-600 mb-2 font-bold">
-                  Totale Playground
-                </h4>
-                <div className="text-3xl font-press-start text-white">12</div>
-                <div className="text-xs text-white/70 mt-2">Campi da basket disponibili a Bologna</div>
               </div>
             </div>
           </TabsContent>

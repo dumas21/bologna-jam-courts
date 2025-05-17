@@ -65,7 +65,7 @@ const Login = () => {
 
   const handleLogin = (values: z.infer<typeof loginSchema>) => {
     // Special admin login check
-    if (values.email === "admin@playgroundjam.it" && values.password === "Admin2025!") {
+    if (values.email === "bergami.matteo@gmail.com" && values.password === "Admin2025!") {
       login(values.email, true);
       
       // Play admin login sound
