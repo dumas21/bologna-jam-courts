@@ -1,4 +1,5 @@
 
+// Define comment type without conflicting with DOM types
 export interface Comment {
   id: string;
   text: string;

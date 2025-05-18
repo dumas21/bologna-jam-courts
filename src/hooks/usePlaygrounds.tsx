@@ -1,9 +1,9 @@
+
 import { useState, useEffect } from "react";
-import { Playground } from "@/types/playground";
+import { Playground, Comment, CheckInRecord, RegisteredUser } from "@/types/playground";
 import { playgroundData as initialData } from "@/data/playgroundData";
 import { getDailyResetTime } from "@/utils/timeUtils";
 import { useToast } from "@/components/ui/use-toast";
-import { Comment, CheckInRecord, RegisteredUser } from "@/types/playground";
 
 export type { CheckInRecord, RegisteredUser };
 

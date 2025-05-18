@@ -1,4 +1,6 @@
 
+import { Comment, CheckInRecord, RegisteredUser, WeatherData } from "@/types/playgroundTypes";
+
 // Define and export the Playground interface 
 export interface Playground {
   id: string;
@@ -19,5 +21,5 @@ export interface Playground {
   comments: Comment[];
 }
 
-// Re-export the types from playgroundTypes.ts to fix import errors
-export type { Comment, CheckInRecord, RegisteredUser, WeatherData } from '@/types/playgroundTypes';
+// Re-export the types from playgroundTypes.ts
+export type { Comment, CheckInRecord, RegisteredUser, WeatherData };
