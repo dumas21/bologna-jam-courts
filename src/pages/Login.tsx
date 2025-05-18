@@ -2,325 +2,300 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { useUser } from "@/contexts/UserContext";
 import { usePlaygrounds } from "@/hooks/usePlaygrounds";
-import Header from "@/components/Header";
-import { Input } from "@/components/ui/input";
+import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage 
-} from "@/components/ui/form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-// Schema di validazione per login
-const loginSchema = z.object({
-  email: z.string().email({ message: "Email non valida" }),
-  password: z.string().min(6, { message: "La password deve avere almeno 6 caratteri" }),
-});
-
-// Schema di validazione per registrazione
-const registerSchema = z.object({
-  email: z.string().email({ message: "Email non valida" }),
-  password: z.string().min(6, { message: "La password deve avere almeno 6 caratteri" }),
-  confirmPassword: z.string().min(6, { message: "La password deve avere almeno 6 caratteri" }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Le password non coincidono",
-  path: ["confirmPassword"],
-});
+import Header from "@/components/Header";
+import Logo from "@/components/Logo";
+import { AtSign, Lock, UserCheck, UserPlus } from "lucide-react";
 
 const Login = () => {
-  const [activeTab, setActiveTab] = useState("login");
-  const { login } = useUser();
-  const { registerUser, verifyLogin } = usePlaygrounds();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { registerUser, verifyLogin } = usePlaygrounds();
+  const { login } = useUser();
   
-  // Form per il login
-  const loginForm = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
-  });
+  // State for login
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
   
-  // Form per la registrazione
-  const registerForm = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
-  });
-
-  const handleLogin = (values: z.infer<typeof loginSchema>) => {
-    // Special admin login check
-    if (values.email === "bergami.matteo@gmail.com" && values.password === "Admin2025!") {
-      login(values.email, true);
-      
-      // Play admin login sound
-      const audio = new Audio('/sounds/admin.mp3');
-      audio.play().catch(err => console.log('Audio playback error:', err));
-      
+  // State for registration
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [registerConfirmPassword, setRegisterConfirmPassword] = useState("");
+  const [nickname, setNickname] = useState("");
+  
+  // State for active tab
+  const [activeTab, setActiveTab] = useState("login");
+  
+  const playSound = (sound: string) => {
+    const audio = new Audio(`/sounds/${sound}.mp3`);
+    audio.play().catch(err => console.log('Audio playback error:', err));
+  };
+  
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!loginEmail || !loginPassword) {
+      playSound("error");
       toast({
-        title: "Login amministratore",
-        description: "Hai effettuato l'accesso come amministratore!",
+        title: "Campi mancanti",
+        description: "Inserisci email e password",
+        variant: "destructive"
       });
-      
-      navigate("/admin");
       return;
     }
     
-    const user = verifyLogin(values.email, values.password);
+    const user = verifyLogin(loginEmail, loginPassword);
     
     if (user) {
-      login(values.email, user.isAdmin);
-      
-      // Play login sound
-      const audio = new Audio('/sounds/login.mp3');
-      audio.play().catch(err => console.log('Audio playback error:', err));
+      playSound("success");
+      login(loginEmail, user.isAdmin);
       
       toast({
-        title: "Login effettuato!",
-        description: `Benvenuto, ${values.email}!`,
+        title: "Login effettuato",
+        description: `Benvenuto, ${user.nickname || loginEmail.split('@')[0]}!`,
       });
       
       navigate("/");
     } else {
-      // Play error sound
-      const audio = new Audio('/sounds/error.mp3');
-      audio.play().catch(err => console.log('Audio playback error:', err));
-      
+      playSound("error");
       toast({
-        title: "Errore",
+        title: "Credenziali errate",
         description: "Email o password non corretti",
-        variant: "destructive",
+        variant: "destructive"
       });
     }
   };
   
-  const handleRegister = (values: z.infer<typeof registerSchema>) => {
-    const success = registerUser(values.email, values.password);
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!registerEmail || !registerPassword || !registerConfirmPassword) {
+      playSound("error");
+      toast({
+        title: "Campi mancanti",
+        description: "Completa tutti i campi per registrarti",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!registerEmail.includes('@')) {
+      playSound("error");
+      toast({
+        title: "Email non valida",
+        description: "Inserisci un indirizzo email valido",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!nickname) {
+      playSound("error");
+      toast({
+        title: "Nickname mancante",
+        description: "Inserisci un nickname per la chat",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (registerPassword.length < 6) {
+      playSound("error");
+      toast({
+        title: "Password troppo corta",
+        description: "La password deve avere almeno 6 caratteri",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (registerPassword !== registerConfirmPassword) {
+      playSound("error");
+      toast({
+        title: "Password non corrispondenti",
+        description: "Le password inserite non corrispondono",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Registra l'utente
+    const success = registerUser(registerEmail, registerPassword, nickname);
     
     if (success) {
-      // Play success sound
-      const audio = new Audio('/sounds/register.mp3');
-      audio.play().catch(err => console.log('Audio playback error:', err));
+      playSound("success");
       
-      login(values.email, false); // Registrato come utente normale
+      // Auto-login after registration
+      login(registerEmail, registerEmail === "bergami.matteo@gmail.com");
       
       toast({
-        title: "Registrazione completata!",
-        description: `Benvenuto, ${values.email}!`,
+        title: "Registrazione completata",
+        description: "Grazie per esserti registrato a Playground Jam!",
       });
       
       navigate("/");
-    } else {
-      // Play error sound
-      const audio = new Audio('/sounds/error.mp3');
-      audio.play().catch(err => console.log('Audio playback error:', err));
     }
   };
-
-  const playSound = (soundName: string) => {
-    const audio = new Audio(`/sounds/${soundName}.mp3`);
-    audio.play().catch(err => console.log('Audio playback error:', err));
-  };
-
+  
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="container mx-auto p-4 flex-1 flex flex-col items-center justify-center">
-        <div className="max-w-md w-full">
-          <Tabs
-            value={activeTab}
-            onValueChange={(value) => {
-              setActiveTab(value);
-              playSound('tab');
-            }}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-2 mb-4">
-              <TabsTrigger value="login" className="font-press-start text-xs">LOGIN</TabsTrigger>
-              <TabsTrigger value="register" className="font-press-start text-xs">REGISTRATI</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="login">
-              <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-                <h2 className="font-press-start text-xs md:text-sm text-center py-2 font-bold">
-                  ACCEDI AL TUO ACCOUNT
-                </h2>
-              </div>
+        <Logo />
+        
+        <div className="max-w-md w-full mt-8">
+          <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
+            <h2 className="font-press-start text-xs md:text-sm text-center py-2 font-bold">
+              ACCEDI O REGISTRATI
+            </h2>
+          </div>
+          
+          <div className="pixel-card p-8">
+            <Tabs 
+              defaultValue="login" 
+              className="w-full" 
+              onValueChange={(value) => {
+                setActiveTab(value);
+                playSound("tab");
+              }}
+            >
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="login" className="font-press-start text-xs">
+                  <UserCheck className="w-4 h-4 mr-2" />
+                  LOGIN
+                </TabsTrigger>
+                <TabsTrigger value="register" className="font-press-start text-xs">
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  REGISTRATI
+                </TabsTrigger>
+              </TabsList>
               
-              <div className="pixel-card p-8">
-                <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-6">
-                    <FormField
-                      control={loginForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-press-start text-xs text-jam-orange">
-                            Email
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} className="bg-white text-black" placeholder="La tua email" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={loginForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-press-start text-xs text-jam-orange">
-                            Password
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              {...field} 
-                              type="password"
-                              className="bg-white text-black" 
-                              placeholder="La tua password" 
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <Button 
-                      type="submit" 
-                      className="pixel-button w-full"
-                      onClick={() => playSound('click')}
-                    >
-                      ACCEDI
-                    </Button>
-                  </form>
-                </Form>
-                
-                <p className="mt-6 text-center text-xs text-white/60">
-                  Non hai un account?{" "}
-                  <span 
-                    className="text-jam-orange cursor-pointer" 
-                    onClick={() => {
-                      setActiveTab("register");
-                      playSound('tab');
-                    }}
+              <TabsContent value="login">
+                <form onSubmit={handleLogin} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="font-press-start text-xs text-jam-orange">
+                      Email
+                    </label>
+                    <div className="relative">
+                      <AtSign className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                      <Input
+                        type="email"
+                        value={loginEmail}
+                        onChange={(e) => setLoginEmail(e.target.value)}
+                        className="bg-white text-black pl-10"
+                        placeholder="Inserisci la tua email"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="font-press-start text-xs text-jam-orange">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                      <Input
+                        type="password"
+                        value={loginPassword}
+                        onChange={(e) => setLoginPassword(e.target.value)}
+                        className="bg-white text-black pl-10"
+                        placeholder="Inserisci la password"
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="pixel-button w-full"
+                    onClick={() => playSound("click")}
                   >
-                    Registrati
-                  </span>
-                </p>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="register">
-              <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-                <h2 className="font-press-start text-xs md:text-sm text-center py-2 font-bold">
-                  CREA UN NUOVO ACCOUNT
-                </h2>
-              </div>
+                    ACCEDI
+                  </Button>
+                </form>
+              </TabsContent>
               
-              <div className="pixel-card p-8">
-                <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-6 bg-white text-black rounded-md p-6">
-                    <FormField
-                      control={registerForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-press-start text-xs text-black">
-                            Email
-                          </FormLabel>
-                          <FormControl>
-                            <Input {...field} className="bg-white text-black" placeholder="La tua email" />
-                          </FormControl>
-                          <FormMessage className="text-red-600" />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={registerForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-press-start text-xs text-black">
-                            Password
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              {...field} 
-                              type="password"
-                              className="bg-white text-black" 
-                              placeholder="Scegli una password" 
-                            />
-                          </FormControl>
-                          <FormMessage className="text-red-600" />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={registerForm.control}
-                      name="confirmPassword"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="font-press-start text-xs text-black">
-                            Conferma Password
-                          </FormLabel>
-                          <FormControl>
-                            <Input 
-                              {...field} 
-                              type="password"
-                              className="bg-white text-black" 
-                              placeholder="Conferma la password" 
-                            />
-                          </FormControl>
-                          <FormMessage className="text-red-600" />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <Button 
-                      type="submit" 
-                      className="pixel-button w-full"
-                      onClick={() => playSound('click')}
-                    >
-                      REGISTRATI
-                    </Button>
-                  </form>
-                </Form>
-                
-                <p className="mt-6 text-center text-xs text-white/60">
-                  Hai già un account?{" "}
-                  <span 
-                    className="text-jam-orange cursor-pointer" 
-                    onClick={() => {
-                      setActiveTab("login");
-                      playSound('tab');
-                    }}
+              <TabsContent value="register">
+                <form onSubmit={handleRegister} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="font-press-start text-xs text-jam-orange">
+                      Email
+                    </label>
+                    <div className="relative">
+                      <AtSign className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                      <Input
+                        type="email"
+                        value={registerEmail}
+                        onChange={(e) => setRegisterEmail(e.target.value)}
+                        className="bg-white text-black pl-10"
+                        placeholder="Inserisci la tua email"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="font-press-start text-xs text-jam-orange">
+                      Nickname
+                    </label>
+                    <div className="relative">
+                      <UserCheck className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                      <Input
+                        type="text"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        className="bg-white text-black pl-10"
+                        placeholder="Scegli un nickname per la chat"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="font-press-start text-xs text-jam-orange">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                      <Input
+                        type="password"
+                        value={registerPassword}
+                        onChange={(e) => setRegisterPassword(e.target.value)}
+                        className="bg-white text-black pl-10"
+                        placeholder="Crea una password (min. 6 caratteri)"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="font-press-start text-xs text-jam-orange">
+                      Conferma Password
+                    </label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                      <Input
+                        type="password"
+                        value={registerConfirmPassword}
+                        onChange={(e) => setRegisterConfirmPassword(e.target.value)}
+                        className="bg-white text-black pl-10"
+                        placeholder="Conferma la tua password"
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    type="submit" 
+                    className="pixel-button w-full"
+                    onClick={() => playSound("click")}
                   >
-                    Accedi
-                  </span>
-                </p>
-              </div>
-            </TabsContent>
-          </Tabs>
+                    REGISTRATI
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </main>
       

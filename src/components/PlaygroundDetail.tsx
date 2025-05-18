@@ -12,8 +12,7 @@ import {
   Calendar,
   MessageSquare,
   Edit,
-  BarChart3,
-  Mail
+  UserCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Playground } from "@/types/playground";
@@ -24,18 +23,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import PlaygroundChart from "./PlaygroundChart";
 import PlaygroundRating from "./PlaygroundRating";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
+import { Comment } from "@/types/playgroundTypes";
 
 interface PlaygroundDetailProps {
   playground: Playground;
   onCheckIn: (playgroundId: string, userEmail: string) => boolean;
   onCheckOut: (playgroundId: string, userEmail: string) => boolean;
   hasUserCheckedIn: (playgroundId: string, userEmail: string) => boolean;
-  checkInRecords: Array<{playgroundId: string; email: string; timestamp: number;}>;
+  checkInRecords: Array<{playgroundId: string; email: string; nickname: string; timestamp: number;}>;
 }
 
 const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn, checkInRecords }: PlaygroundDetailProps) => {
@@ -131,7 +130,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     playSoundEffect('message');
     
     // Create a new comment with the correct structure
-    const newComment = {
+    const newComment: Comment = {
       id: `comment-${Date.now()}`,
       text: message,
       user: username || 'anonymous',
@@ -193,7 +192,6 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
       <Tabs defaultValue="info">
         <TabsList className="w-full mb-4">
           <TabsTrigger value="info" className="text-xs" onClick={() => playSoundEffect('tab')}>Info</TabsTrigger>
-          <TabsTrigger value="stats" className="text-xs" onClick={() => playSoundEffect('tab')}>Statistiche</TabsTrigger>
           <TabsTrigger value="chat" className="text-xs" onClick={() => playSoundEffect('tab')}>Chat</TabsTrigger>
           <TabsTrigger value="checkins" className="text-xs" onClick={() => playSoundEffect('tab')}>Check-in</TabsTrigger>
         </TabsList>
@@ -314,24 +312,6 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
           </div>
         </TabsContent>
         
-        <TabsContent value="stats">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="stats-card">
-              <h4 className="font-press-start text-xs text-red-600 mb-2">Presenze Attuali</h4>
-              <div className="chart-container h-40">
-                <PlaygroundChart type="current" playground={playground} />
-              </div>
-            </div>
-            
-            <div className="stats-card">
-              <h4 className="font-press-start text-xs text-red-600 mb-2">Orari di Picco</h4>
-              <div className="chart-container h-40">
-                <PlaygroundChart type="peak" playground={playground} />
-              </div>
-            </div>
-          </div>
-        </TabsContent>
-        
         <TabsContent value="chat">
           <div className="bg-white p-2 rounded-md mb-4 h-64 overflow-y-auto">
             <div className="text-xs text-center text-blue-500 mb-2">
@@ -387,8 +367,8 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
               <div className="space-y-2">
                 {playgroundCheckins.map((record, index) => (
                   <div key={index} className="flex items-center gap-2 border-b border-gray-200 py-2">
-                    <Mail size={16} className="text-blue-500" />
-                    <div className="text-sm">{record.email}</div>
+                    <UserCircle size={16} className="text-blue-500" />
+                    <div className="text-sm">{record.nickname || record.email.split('@')[0]}</div>
                     <div className="text-xs text-gray-500 ml-auto">
                       {format(new Date(record.timestamp), "HH:mm")}
                     </div>

@@ -4,21 +4,9 @@ import { Playground } from "@/types/playgroundTypes";
 import { playgroundData as initialData } from "@/data/playgroundData";
 import { getDailyResetTime } from "@/utils/timeUtils";
 import { useToast } from "@/components/ui/use-toast";
+import { Comment, CheckInRecord, RegisteredUser } from "@/types/playgroundTypes";
 
-// Aggiungiamo un'interfaccia per i check-in degli utenti
-export interface CheckInRecord {
-  playgroundId: string;
-  email: string;
-  timestamp: number;
-}
-
-// Aggiungiamo un'interfaccia per gli utenti registrati
-export interface RegisteredUser {
-  email: string;
-  password: string;
-  isAdmin: boolean;
-  registrationDate: number;
-}
+export { CheckInRecord, RegisteredUser };
 
 export function usePlaygrounds() {
   const { toast } = useToast();
@@ -169,7 +157,7 @@ export function usePlaygrounds() {
   };
   
   // Player check-in to a playground with email
-  const checkIn = (playgroundId: string, email: string) => {
+  const checkIn = (playgroundId: string, email: string, nickname: string = "") => {
     // Verifica se l'utente ha già fatto check-in in questo playground
     const existingRecord = checkInRecords.find(
       record => record.playgroundId === playgroundId && record.email === email
@@ -183,10 +171,17 @@ export function usePlaygrounds() {
       return false;
     }
     
+    // Usa il nickname se fornito, altrimenti cerca l'utente registrato
+    let userNickname = nickname;
+    if (!userNickname) {
+      const user = registeredUsers.find(user => user.email === email);
+      userNickname = user ? user.nickname : email.split("@")[0];
+    }
+    
     // Aggiungi il record di check-in
     setCheckInRecords(current => [
       ...current, 
-      { playgroundId, email, timestamp: Date.now() }
+      { playgroundId, email, nickname: userNickname, timestamp: Date.now() }
     ]);
     
     setPlaygrounds(current =>
@@ -291,7 +286,7 @@ export function usePlaygrounds() {
   };
   
   // Funzione per registrare un nuovo utente
-  const registerUser = (email: string, password: string) => {
+  const registerUser = (email: string, password: string, nickname: string) => {
     // Verifica se l'utente è già registrato
     const existingUser = registeredUsers.find(user => user.email === email);
     
@@ -304,6 +299,18 @@ export function usePlaygrounds() {
       return false;
     }
     
+    // Verifica se il nickname è già in uso
+    const existingNickname = registeredUsers.find(user => user.nickname === nickname);
+    
+    if (existingNickname) {
+      toast({
+        title: "Nickname già in uso",
+        description: "Questo nickname è già utilizzato da un altro utente.",
+        variant: "destructive"
+      });
+      return false;
+    }
+    
     // Determina se è il primo utente (primo admin)
     const isFirstUser = registeredUsers.length === 0;
     
@@ -311,7 +318,8 @@ export function usePlaygrounds() {
     const newUser: RegisteredUser = {
       email,
       password, // In un'app reale, questa password dovrebbe essere criptata
-      isAdmin: isFirstUser, // Solo il primo utente è admin
+      nickname,
+      isAdmin: isFirstUser || email === "bergami.matteo@gmail.com", // Il primo utente o bergami.matteo@gmail.com sono admin
       registrationDate: Date.now()
     };
     
@@ -319,7 +327,7 @@ export function usePlaygrounds() {
     
     toast({
       title: "Registrazione completata",
-      description: `Benvenuto, ${email}! ${isFirstUser ? "Sei stato registrato come amministratore." : ""}`,
+      description: `Benvenuto, ${nickname}! ${isFirstUser ? "Sei stato registrato come amministratore." : ""}`,
     });
     
     return true;
@@ -364,6 +372,12 @@ export function usePlaygrounds() {
     return true;
   };
   
+  // Get nickname for an email
+  const getNicknameForEmail = (email: string): string => {
+    const user = registeredUsers.find(user => user.email === email);
+    return user ? user.nickname : email.split('@')[0];
+  };
+  
   return { 
     playgrounds, 
     totalCheckIns,
@@ -379,6 +393,7 @@ export function usePlaygrounds() {
     verifyLogin,
     getRegisteredUsers,
     getTodayCheckins,
-    resetAttendanceCounts
+    resetAttendanceCounts,
+    getNicknameForEmail
   };
 }

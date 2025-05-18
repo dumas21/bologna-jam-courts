@@ -1,26 +1,31 @@
 
-export interface Playground {
-  id: string;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  openHours: string;
-  hasShade: boolean;
-  hasFountain: boolean;
-  hasAmenities: boolean;
-  hasLighting: boolean;
-  currentPlayers: number;
-  totalCheckins: number;
-  basketCount: number;
-  rating: number;
-  ratingCount: number;
-  comments: Comment[];
-}
+import { Playground } from "./playground";
 
 export interface Comment {
   id: string;
   text: string;
   user: string;
   timestamp: number;
+}
+
+export interface CheckInRecord {
+  playgroundId: string;
+  email: string;
+  nickname: string;
+  timestamp: number;
+}
+
+export interface RegisteredUser {
+  email: string;
+  password: string;
+  nickname: string;
+  isAdmin: boolean;
+  registrationDate: number;
+}
+
+export interface WeatherData {
+  condition: string;
+  temperature: number;
+  humidity: number;
+  icon: string;
 }

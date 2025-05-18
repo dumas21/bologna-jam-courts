@@ -9,9 +9,10 @@ import { CheckInRecord, RegisteredUser, usePlaygrounds } from "@/hooks/usePlaygr
 import { useUser } from "@/contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Mail, Shield, BarChart, Calendar, Search } from "lucide-react";
+import { Users, Mail, Shield, BarChart, Calendar, Search, Sun, Cloud, CloudRain } from "lucide-react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
+import { WeatherData } from "@/types/playgroundTypes";
 
 const Admin = () => {
   const { toast } = useToast();
@@ -29,6 +30,12 @@ const Admin = () => {
   const [adminPassword, setAdminPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [weatherData, setWeatherData] = useState<WeatherData>({
+    condition: "Soleggiato",
+    temperature: 24,
+    humidity: 60,
+    icon: "sun"
+  });
   
   // Admin password
   const ADMIN_PASSWORD = "Admin2025!";
@@ -88,10 +95,21 @@ const Admin = () => {
     audio.play().catch(err => console.log('Audio playback error:', err));
   };
   
+  const handleResetStatistics = () => {
+    if (resetAttendanceCounts()) {
+      playSound("reset");
+      toast({
+        title: "Statistiche azzerate",
+        description: "Tutte le statistiche dei playground sono state azzerate",
+      });
+    }
+  };
+  
   // Filtra gli utenti in base al termine di ricerca
   const filteredUsers = registeredUsers
     .filter(user => 
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => a.email.localeCompare(b.email)); // Ordine alfabetico
   
@@ -170,6 +188,12 @@ const Admin = () => {
           
           <div className="flex gap-2">
             <Button 
+              onClick={handleResetStatistics}
+              className="pixel-button text-xs flex items-center gap-2 bg-red-600"
+            >
+              Azzera Statistiche
+            </Button>
+            <Button 
               onClick={() => {
                 playSound('click');
                 navigate("/");
@@ -241,6 +265,7 @@ const Admin = () => {
                     <thead>
                       <tr className="border-b border-gray-200">
                         <th className="text-left text-xs font-semibold p-2">Email</th>
+                        <th className="text-left text-xs font-semibold p-2">Nickname</th>
                         <th className="text-left text-xs font-semibold p-2">Data Registrazione</th>
                         <th className="text-left text-xs font-semibold p-2">Ruolo</th>
                       </tr>
@@ -249,6 +274,7 @@ const Admin = () => {
                       {filteredUsers.map((user, index) => (
                         <tr key={index} className="border-b border-gray-100">
                           <td className="p-2 text-xs">{user.email}</td>
+                          <td className="p-2 text-xs">{user.nickname}</td>
                           <td className="p-2 text-xs">
                             {format(new Date(user.registrationDate), "dd/MM/yyyy HH:mm")}
                           </td>
@@ -286,9 +312,9 @@ const Admin = () => {
                       return;
                     }
                     
-                    const headers = "Email,DataRegistrazione,Ruolo\n";
+                    const headers = "Email,Nickname,DataRegistrazione,Ruolo\n";
                     const csvData = filteredUsers.map(user => 
-                      `${user.email},${format(new Date(user.registrationDate), "dd/MM/yyyy HH:mm")},${user.isAdmin ? "Admin" : "Utente"}`
+                      `${user.email},${user.nickname},${format(new Date(user.registrationDate), "dd/MM/yyyy HH:mm")},${user.isAdmin ? "Admin" : "Utente"}`
                     ).join('\n');
                     
                     const blob = new Blob([headers + csvData], { type: 'text/csv' });
@@ -313,20 +339,46 @@ const Admin = () => {
           <TabsContent value="stats">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
               <h3 className="font-press-start text-xs text-red-600 mb-4 font-bold">
-                Statistiche Utenti
+                Previsioni Meteo Bologna
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-black bg-opacity-50 p-4 rounded-md border border-jam-purple">
-                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Utenti Registrati</h4>
-                  <div className="text-3xl font-press-start text-white">{registeredUsers.length}</div>
-                  <div className="text-xs text-white/70 mt-2">Totale utenti nel sistema</div>
+                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Condizioni Meteo</h4>
+                  <div className="flex items-center space-x-4">
+                    <div className="bg-blue-500 p-3 rounded-full">
+                      {weatherData.icon === "sun" && <Sun className="text-yellow-400" size={32} />}
+                      {weatherData.icon === "cloud" && <Cloud className="text-white" size={32} />}
+                      {weatherData.icon === "rain" && <CloudRain className="text-white" size={32} />}
+                    </div>
+                    <div>
+                      <div className="text-2xl font-press-start text-white">{weatherData.temperature}°C</div>
+                      <div className="text-xs text-white/70 mt-1">{weatherData.condition}</div>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="bg-black bg-opacity-50 p-4 rounded-md border border-jam-purple">
-                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Playground</h4>
-                  <div className="text-3xl font-press-start text-white">12</div>
-                  <div className="text-xs text-white/70 mt-2">Campi da basket disponibili a Bologna</div>
+                  <h4 className="font-press-start text-xs text-jam-orange mb-2 font-bold">Umidità</h4>
+                  <div className="text-2xl font-press-start text-white">{weatherData.humidity}%</div>
+                  <div className="text-xs text-white/70 mt-1">Umidità relativa dell'aria</div>
+                </div>
+              </div>
+              
+              <div className="mt-4 bg-white p-4 rounded-md text-black">
+                <h4 className="font-press-start text-sm mb-2">Prossimi Giorni</h4>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { day: "Domani", temp: "25°C", condition: "Soleggiato" },
+                    { day: "Dopodomani", temp: "23°C", condition: "Parzialmente nuvoloso" },
+                    { day: "Tra 3 giorni", temp: "21°C", condition: "Possibile pioggia" }
+                  ].map((forecast, index) => (
+                    <div key={index} className="border border-gray-200 p-2 rounded">
+                      <div className="font-bold text-sm">{forecast.day}</div>
+                      <div className="text-lg">{forecast.temp}</div>
+                      <div className="text-xs text-gray-500">{forecast.condition}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
