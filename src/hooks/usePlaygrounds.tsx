@@ -1,9 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Playground, Comment, CheckInRecord, RegisteredUser } from "@/types/playground";
 import { playgroundData as initialData } from "@/data/playgroundData";
 import { getDailyResetTime } from "@/utils/timeUtils";
 import { useToast } from "@/components/ui/use-toast";
+import { v4 as uuidv4 } from 'uuid';
 
 export type { CheckInRecord, RegisteredUser };
 
@@ -284,7 +284,7 @@ export function usePlaygrounds() {
     );
   };
   
-  // Funzione per registrare un nuovo utente
+  // Funzione per registrare un nuovo utente - UPDATED to include all required properties
   const registerUser = (email: string, password: string, nickname: string) => {
     // Verifica se l'utente è già registrato
     const existingUser = registeredUsers.find(user => user.email === email);
@@ -313,13 +313,15 @@ export function usePlaygrounds() {
     // Determina se è il primo utente (primo admin)
     const isFirstUser = registeredUsers.length === 0;
     
-    // Registra il nuovo utente
+    // Registra il nuovo utente con l'ID generato e createdAt
     const newUser: RegisteredUser = {
+      id: uuidv4(), // Genera un UUID univoco
       email,
       password, // In un'app reale, questa password dovrebbe essere criptata
       nickname,
       isAdmin: isFirstUser || email === "bergami.matteo@gmail.com", // Il primo utente o bergami.matteo@gmail.com sono admin
-      registrationDate: Date.now()
+      registrationDate: Date.now(),
+      createdAt: new Date().toISOString() // Aggiunta questa proprietà richiesta
     };
     
     setRegisteredUsers(current => [...current, newUser]);
