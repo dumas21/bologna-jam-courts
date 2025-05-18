@@ -1,25 +1,5 @@
 
-import { Comment, CheckInRecord, RegisteredUser, WeatherData } from "@/types/playgroundTypes";
+import { Playground, Comment, CheckInRecord, RegisteredUser, WeatherData } from "@/types/playgroundTypes";
 
-// Define and export the Playground interface 
-export interface Playground {
-  id: string;
-  name: string;
-  address: string;
-  lat: number;
-  lng: number;
-  openHours: string;
-  hasShade: boolean;
-  hasFountain: boolean;
-  hasAmenities: boolean;
-  hasLighting: boolean;
-  currentPlayers: number;
-  totalCheckins: number;
-  basketCount?: number;
-  rating?: number;
-  ratingCount?: number;
-  comments: Comment[];
-}
-
-// Re-export the types from playgroundTypes.ts
-export type { Comment, CheckInRecord, RegisteredUser, WeatherData };
+// Re-export all the types from playgroundTypes.ts
+export type { Playground, Comment, CheckInRecord, RegisteredUser, WeatherData };

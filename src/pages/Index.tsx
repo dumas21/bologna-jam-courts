@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
-import { Playground } from "@/types/playgroundTypes";
+import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MessageSquare, CalendarDays, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";

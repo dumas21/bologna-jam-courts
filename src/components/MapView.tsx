@@ -1,6 +1,6 @@
 
 import { Users, Lightbulb } from "lucide-react";
-import { Playground } from "@/types/playgroundTypes";
+import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 
 interface MapViewProps {
