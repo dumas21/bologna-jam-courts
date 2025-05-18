@@ -1,6 +1,4 @@
 
-import { Playground } from "./playground";
-
 export interface Comment {
   id: string;
   text: string;
