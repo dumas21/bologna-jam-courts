@@ -8,6 +8,7 @@ export interface RegisteredUser {
   password: string;     // password utente
   isAdmin: boolean;     // flag per indicare se l'utente è admin
   registrationDate: number; // data di registrazione come timestamp
+  checkedIn: boolean;   // flag per indicare se l'utente ha fatto check-in
 }
 
 // Tipo commento visibile nella piattaforma

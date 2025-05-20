@@ -183,6 +183,16 @@ export function usePlaygrounds() {
       { playgroundId, email, nickname: userNickname, timestamp: Date.now() }
     ]);
     
+    // Aggiorna lo stato checkedIn dell'utente
+    setRegisteredUsers(current => 
+      current.map(user => {
+        if (user.email === email) {
+          return { ...user, checkedIn: true };
+        }
+        return user;
+      })
+    );
+    
     setPlaygrounds(current =>
       current.map(pg => {
         if (pg.id === playgroundId) {
@@ -218,6 +228,23 @@ export function usePlaygrounds() {
       current.filter(
         record => !(record.playgroundId === playgroundId && record.email === email)
       )
+    );
+    
+    // Aggiorna lo stato checkedIn dell'utente
+    setRegisteredUsers(current => 
+      current.map(user => {
+        if (user.email === email) {
+          // Controlla se l'utente ha altri check-in attivi
+          const hasOtherCheckIns = checkInRecords.some(
+            record => record.email === email && record.playgroundId !== playgroundId
+          );
+          
+          if (!hasOtherCheckIns) {
+            return { ...user, checkedIn: false };
+          }
+        }
+        return user;
+      })
     );
     
     setPlaygrounds(current =>
@@ -321,7 +348,8 @@ export function usePlaygrounds() {
       nickname,
       isAdmin: isFirstUser || email === "bergami.matteo@gmail.com", // Il primo utente o bergami.matteo@gmail.com sono admin
       registrationDate: Date.now(),
-      createdAt: new Date().toISOString() // Aggiunta questa proprietà richiesta
+      createdAt: new Date().toISOString(), // Aggiunta questa proprietà richiesta
+      checkedIn: false // Inizialmente l'utente non ha fatto check-in
     };
     
     setRegisteredUsers(current => [...current, newUser]);
