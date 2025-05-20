@@ -1,6 +1,9 @@
 
 import React from 'react';
 import { RegisteredUser } from '@/types/playground';
+import { CalendarDays, User } from 'lucide-react';
+import { format } from 'date-fns';
+import { it } from 'date-fns/locale';
 
 type Props = {
   users: RegisteredUser[];
@@ -9,22 +12,55 @@ type Props = {
 const UserList: React.FC<Props> = ({ users }) => {
   return (
     <div className="bg-white rounded-md p-4 text-black">
-      <h2 className="font-press-start text-sm mb-4">Lista Iscritti</h2>
+      <h2 className="font-press-start text-sm mb-4 flex items-center">
+        <User size={16} className="mr-2 text-jam-purple" />
+        Lista Iscritti
+      </h2>
+      
       {users.length > 0 ? (
         <ul className="space-y-4">
           {users.map((user) => (
             <li key={user.id} className="border-b pb-2">
-              <strong>Nickname:</strong> {user.nickname}
-              <br />
-              <em className="text-xs text-gray-600">
-                Registrato il: {new Date(user.createdAt).toLocaleDateString()}
-              </em>
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="font-semibold text-jam-blue">
+                    {user.nickname}
+                  </span>
+                  <div className="flex items-center text-xs text-gray-600 mt-1">
+                    <CalendarDays size={12} className="mr-1" />
+                    <span>
+                      {format(new Date(user.createdAt), "dd MMMM yyyy", { locale: it })}
+                    </span>
+                  </div>
+                </div>
+                
+                {user.isAdmin && (
+                  <span className="bg-jam-purple text-white text-xs px-2 py-1 rounded">
+                    Admin
+                  </span>
+                )}
+              </div>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-gray-500">Nessun utente registrato</p>
+        <p className="text-gray-500 flex items-center justify-center h-20">
+          Nessun utente registrato
+        </p>
       )}
+      
+      <div className="mt-4 pt-2 border-t text-xs text-gray-500">
+        <p>
+          Le informazioni degli utenti sono visibili solo agli amministratori e 
+          vengono gestite secondo la nostra{' '}
+          <button 
+            className="text-jam-blue underline" 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-privacy-policy'))}
+          >
+            Privacy Policy
+          </button>
+        </p>
+      </div>
     </div>
   );
 };

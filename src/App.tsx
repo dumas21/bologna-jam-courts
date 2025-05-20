@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,29 +10,37 @@ import AddPlayground from "./pages/AddPlayground";
 import Login from "./pages/Login";
 import Stats from "./pages/Stats";
 import Admin from "./pages/Admin";
+import CookieBanner from "./components/CookieBanner";
+import Footer from "./components/Footer";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <UserProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/add-playground" element={<AddPlayground />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/stats" element={<Stats />} />
-            <Route path="/admin" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </UserProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/add-playground" element={<AddPlayground />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/stats" element={<Stats />} />
+                <Route path="/admin" element={<Admin />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </UserProvider>
+      </QueryClientProvider>
+      <CookieBanner />
+      <Footer />
+    </>
+  );
+}
 
 export default App;

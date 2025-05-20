@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Comment, Playground } from "@/types/playgroundTypes";
@@ -77,20 +77,34 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     });
   };
   
+  // Handle keypresses in the textarea
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+  
   return (
-    <>
-      <div className="bg-white p-2 rounded-md mb-4 h-72 overflow-y-auto">
+    <div className="p-4 bg-gray-100 rounded-lg border border-gray-200 shadow-sm">
+      <h3 className="font-press-start text-xs mb-2 flex items-center text-jam-purple">
+        <MessageSquare size={16} className="mr-2" /> 
+        Chat di {playground.name}
+      </h3>
+      
+      <div className="bg-white p-2 rounded-md mb-4 h-72 overflow-y-auto shadow-inner">
         <div className="text-xs text-center text-blue-500 mb-2">
-          Chat di {playground.name} valida fino al {chatResetDate}
+          Chat valida fino al {chatResetDate}
         </div>
         
         {comments && comments.length > 0 ? (
-          <div className="space-y-2">
+          <div className="space-y-2 px-1">
             {comments.map((comment, index) => (
-              <div key={index} className="p-2 rounded mb-2 bg-gray-100 text-black border border-gray-200">
-                <div className="text-sm">{comment.text}</div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {comment.user} - {new Date(comment.timestamp).toLocaleTimeString()}
+              <div key={index} className="p-3 rounded mb-2 bg-gray-100 text-black border border-gray-200">
+                <div className="text-sm break-words">{comment.text}</div>
+                <div className="text-xs text-gray-500 mt-1 flex justify-between">
+                  <span className="font-medium">{comment.user}</span>
+                  <span>{format(new Date(comment.timestamp), 'HH:mm')}</span>
                 </div>
               </div>
             ))}
@@ -104,26 +118,42 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         )}
       </div>
       
-      <div className="flex gap-2 mt-4">
-        <Textarea 
-          placeholder="Scrivi un messaggio..." 
-          className="bg-white text-black border-gray-300 min-h-[70px]"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          disabled={!isLoggedIn}
-        />
-        <Button 
-          onClick={handleSendMessage}
-          className="pixel-button h-[70px] w-[70px] flex items-center justify-center p-2"
-          disabled={!isLoggedIn || !message.trim()}
-        >
-          <MessageSquare size={30} />
-        </Button>
+      <div className="mt-5">
+        <div className="flex gap-2 items-end">
+          <Textarea 
+            placeholder="Scrivi un messaggio..." 
+            className="bg-white text-black border-gray-300 min-h-[80px] flex-1"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            disabled={!isLoggedIn}
+            onKeyDown={handleKeyPress}
+          />
+          <Button 
+            onClick={handleSendMessage}
+            className="pixel-button h-[80px] w-[80px] flex items-center justify-center"
+            disabled={!isLoggedIn || !message.trim()}
+          >
+            <Send size={24} />
+          </Button>
+        </div>
+        
+        {!isLoggedIn && (
+          <p className="text-xs text-red-600 mt-2">
+            Effettua il login per partecipare alla chat
+          </p>
+        )}
+        
+        <p className="text-xs text-gray-500 mt-2">
+          I messaggi sono soggetti alla nostra{' '}
+          <button 
+            className="text-jam-blue underline" 
+            onClick={() => window.dispatchEvent(new CustomEvent('open-privacy-policy'))}
+          >
+            Privacy Policy
+          </button>
+        </p>
       </div>
-      {!isLoggedIn && (
-        <p className="text-xs text-red-600 mt-1">Effettua il login per partecipare alla chat</p>
-      )}
-    </>
+    </div>
   );
 };
 
