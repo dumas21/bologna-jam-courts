@@ -95,7 +95,7 @@ export function usePlaygrounds() {
       const twodays = 2 * 24 * 60 * 60 * 1000; // 48 hours in milliseconds
       
       if (!lastChatReset || now - Number(lastChatReset) > twodays) {
-        // Reset comments dopo 48 ore
+        // Reset chat dopo 48 ore
         resetChats();
         localStorage.setItem("lastChatReset", now.toString());
       }
@@ -136,7 +136,7 @@ export function usePlaygrounds() {
     });
   };
   
-  // Reset chat ogni 48 ore
+  // Reset chat ogni 48 ore - Garantire che ogni commento abbia playgroundId
   const resetChats = () => {
     setPlaygrounds(current => 
       current.map(pg => ({ 

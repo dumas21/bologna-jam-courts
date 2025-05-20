@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   User, 
@@ -15,7 +14,7 @@ import {
   UserCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Playground, Comment } from "@/types/playground";
+import { Playground, Comment, WeatherData } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimeUntilReset } from "@/utils/timeUtils";
@@ -43,12 +42,20 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   const [message, setMessage] = useState("");
   const [checkInEmail, setCheckInEmail] = useState("");
   const [comments, setComments] = useState<Comment[]>(() => {
-    // Filtra i commenti per mostrare solo quelli del playground corrente
+    // Filtra i commenti per mostrare SOLO quelli del playground corrente
     return (playground.comments || []).filter(comment => 
-      comment.playgroundId === playground.id || !comment.playgroundId
+      comment.playgroundId === playground.id
     );
   });
   const [showEmailDialog, setShowEmailDialog] = useState(false);
+  
+  // Dati meteo di esempio per il playground
+  const [weatherData, setWeatherData] = useState<WeatherData>({
+    condition: "Soleggiato",
+    temperature: 24,
+    humidity: 60,
+    icon: "sun"
+  });
   
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
   const currentTime = format(new Date(), "HH:mm");
@@ -133,13 +140,13 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     
     playSoundEffect('message');
     
-    // Create a new comment with the correct structure
+    // Create a new comment with the correct structure and ensure it has the playground ID
     const newComment: Comment = {
       id: `comment-${Date.now()}`,
       text: message,
-      user: nickname || username.split('@')[0],
+      user: nickname || username.split('@')[0], // Usa sempre il nickname, mai l'email
       timestamp: Date.now(),
-      playgroundId: playground.id // Aggiungiamo l'ID del playground
+      playgroundId: playground.id
     };
     
     // Aggiorna il playground con il nuovo messaggio
@@ -199,6 +206,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
           <TabsTrigger value="info" className="text-xs" onClick={() => playSoundEffect('tab')}>Info</TabsTrigger>
           <TabsTrigger value="chat" className="text-xs" onClick={() => playSoundEffect('tab')}>Chat</TabsTrigger>
           <TabsTrigger value="checkins" className="text-xs" onClick={() => playSoundEffect('tab')}>Check-in</TabsTrigger>
+          <TabsTrigger value="meteo" className="text-xs" onClick={() => playSoundEffect('tab')}>Meteo</TabsTrigger>
         </TabsList>
         
         <TabsContent value="info">
@@ -318,7 +326,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         </TabsContent>
         
         <TabsContent value="chat">
-          <div className="bg-white p-2 rounded-md mb-4 h-64 overflow-y-auto">
+          <div className="bg-white p-2 rounded-md mb-4 h-72 overflow-y-auto">
             <div className="text-xs text-center text-blue-500 mb-2">
               Chat di {playground.name} valida fino al {chatResetDate}
             </div>
@@ -327,7 +335,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
               <div className="space-y-2">
                 {comments.map((comment, index) => (
                   <div key={index} className="p-2 rounded mb-2 bg-gray-100 text-black border border-gray-200">
-                    {comment.text}
+                    <div className="text-sm">{comment.text}</div>
                     <div className="text-xs text-gray-500 mt-1">
                       {comment.user} - {new Date(comment.timestamp).toLocaleTimeString()}
                     </div>
@@ -343,20 +351,20 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             )}
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-4">
             <Textarea 
               placeholder="Scrivi un messaggio..." 
-              className="bg-white text-black border-gray-300 min-h-[60px]"
+              className="bg-white text-black border-gray-300 min-h-[70px]"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               disabled={!isLoggedIn}
             />
             <Button 
               onClick={handleSendMessage}
-              className="pixel-button h-[60px] w-[60px] flex items-center justify-center p-2"
+              className="pixel-button h-[70px] w-[70px] flex items-center justify-center p-2"
               disabled={!isLoggedIn || !message.trim()}
             >
-              <MessageSquare size={24} />
+              <MessageSquare size={30} />
             </Button>
           </div>
           {!isLoggedIn && (
@@ -383,6 +391,40 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             ) : (
               <p className="text-sm text-gray-500">Nessun utente ha fatto check-in</p>
             )}
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="meteo">
+          <div className="bg-white p-4 rounded-md mb-4 text-black">
+            <h4 className="font-press-start text-xs text-red-600 mb-4">Meteo {playground.name}</h4>
+            
+            <div className="flex items-center gap-6 mb-4">
+              <div className="bg-blue-500 p-3 rounded-full">
+                {weatherData.icon === "sun" && <Sun className="text-yellow-400" size={32} />}
+                {weatherData.icon === "cloud" && <Sun className="text-white" size={32} />}
+                {weatherData.icon === "rain" && <Sun className="text-white" size={32} />}
+              </div>
+              <div>
+                <div className="text-2xl font-semibold">{weatherData.temperature}°C</div>
+                <div className="text-sm text-gray-600">{weatherData.condition}</div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gray-100 p-3 rounded-md">
+                <div className="text-sm text-gray-500">Umidità</div>
+                <div className="text-xl">{weatherData.humidity}%</div>
+              </div>
+              
+              <div className="bg-gray-100 p-3 rounded-md">
+                <div className="text-sm text-gray-500">Condizioni</div>
+                <div className="text-xl">Ottimali</div>
+              </div>
+            </div>
+            
+            <div className="mt-4 text-xs text-gray-500">
+              Aggiornato alle {format(new Date(), "HH:mm")}
+            </div>
           </div>
         </TabsContent>
       </Tabs>

@@ -19,9 +19,9 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   const { isLoggedIn, username, nickname } = useUser();
   const [message, setMessage] = useState("");
   const [comments, setComments] = useState<Comment[]>(() => {
-    // Filtra i commenti per mostrare solo quelli del playground corrente
+    // Filtra i commenti per mostrare SOLO quelli del playground corrente
     return (playground.comments || []).filter(comment => 
-      comment.playgroundId === playground.id || !comment.playgroundId
+      comment.playgroundId === playground.id
     );
   });
 
@@ -51,13 +51,13 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     
     playSoundEffect('message');
     
-    // Create a new comment with the correct structure
+    // Create a new comment with the correct structure and ALWAYS include playground ID
     const newComment: Comment = {
       id: `comment-${Date.now()}`,
       text: message,
-      user: nickname || username.split('@')[0],
+      user: nickname || username.split('@')[0], // Usa sempre il nickname, mai l'email
       timestamp: Date.now(),
-      playgroundId: playground.id
+      playgroundId: playground.id // Assicuriamoci che questo sia sempre presente
     };
     
     // Aggiorna i commenti locali
@@ -79,7 +79,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   
   return (
     <>
-      <div className="bg-white p-2 rounded-md mb-4 h-64 overflow-y-auto">
+      <div className="bg-white p-2 rounded-md mb-4 h-72 overflow-y-auto">
         <div className="text-xs text-center text-blue-500 mb-2">
           Chat di {playground.name} valida fino al {chatResetDate}
         </div>
@@ -104,20 +104,20 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         )}
       </div>
       
-      <div className="flex gap-2">
+      <div className="flex gap-2 mt-4">
         <Textarea 
           placeholder="Scrivi un messaggio..." 
-          className="bg-white text-black border-gray-300 min-h-[60px]"
+          className="bg-white text-black border-gray-300 min-h-[70px]"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           disabled={!isLoggedIn}
         />
         <Button 
           onClick={handleSendMessage}
-          className="pixel-button h-[60px] w-[60px] flex items-center justify-center p-2"
+          className="pixel-button h-[70px] w-[70px] flex items-center justify-center p-2"
           disabled={!isLoggedIn || !message.trim()}
         >
-          <MessageSquare size={24} />
+          <MessageSquare size={30} />
         </Button>
       </div>
       {!isLoggedIn && (
