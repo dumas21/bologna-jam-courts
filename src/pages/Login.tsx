@@ -18,7 +18,7 @@ const Login = () => {
   const { login } = useUser();
   
   // State for login
-  const [loginEmail, setLoginEmail] = useState("");
+  const [loginIdentifier, setLoginIdentifier] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   
   // State for registration
@@ -38,25 +38,25 @@ const Login = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!loginEmail || !loginPassword) {
+    if (!loginIdentifier || !loginPassword) {
       playSound("error");
       toast({
         title: "Campi mancanti",
-        description: "Inserisci email e password",
+        description: "Inserisci nickname o email e password",
         variant: "destructive"
       });
       return;
     }
     
-    const user = verifyLogin(loginEmail, loginPassword);
+    const user = verifyLogin(loginIdentifier, loginPassword);
     
     if (user) {
       playSound("success");
-      login(loginEmail, user.isAdmin);
+      login(user.email, user.isAdmin, user.nickname);
       
       toast({
         title: "Login effettuato",
-        description: `Benvenuto, ${user.nickname || loginEmail.split('@')[0]}!`,
+        description: `Benvenuto, ${user.nickname}!`,
       });
       
       navigate("/");
@@ -64,7 +64,7 @@ const Login = () => {
       playSound("error");
       toast({
         title: "Credenziali errate",
-        description: "Email o password non corretti",
+        description: "Nickname/Email o password non corretti",
         variant: "destructive"
       });
     }
@@ -130,7 +130,7 @@ const Login = () => {
       playSound("success");
       
       // Auto-login after registration
-      login(registerEmail, registerEmail === "bergami.matteo@gmail.com");
+      login(registerEmail, registerEmail === "bergami.matteo@gmail.com", nickname);
       
       toast({
         title: "Registrazione completata",
@@ -179,16 +179,16 @@ const Login = () => {
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <label className="font-press-start text-xs text-jam-orange">
-                      Email
+                      Nickname o Email
                     </label>
                     <div className="relative">
-                      <AtSign className="absolute left-3 top-3 h-4 w-4 text-white/60" />
+                      <UserCheck className="absolute left-3 top-3 h-4 w-4 text-white/60" />
                       <Input
-                        type="email"
-                        value={loginEmail}
-                        onChange={(e) => setLoginEmail(e.target.value)}
+                        type="text"
+                        value={loginIdentifier}
+                        onChange={(e) => setLoginIdentifier(e.target.value)}
                         className="bg-white text-black pl-10"
-                        placeholder="Inserisci la tua email"
+                        placeholder="Inserisci il tuo nickname o email"
                       />
                     </div>
                   </div>

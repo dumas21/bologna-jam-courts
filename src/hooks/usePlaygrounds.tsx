@@ -363,10 +363,18 @@ export function usePlaygrounds() {
   };
   
   // Funzione per verificare le credenziali di login
-  const verifyLogin = (email: string, password: string) => {
-    const user = registeredUsers.find(
-      user => user.email === email && user.password === password
+  const verifyLogin = (identifier: string, password: string) => {
+    // Verifica per email
+    let user = registeredUsers.find(
+      user => user.email === identifier && user.password === password
     );
+    
+    // Se non trovato per email, prova per nickname
+    if (!user) {
+      user = registeredUsers.find(
+        user => user.nickname === identifier && user.password === password
+      );
+    }
     
     return user || null;
   };

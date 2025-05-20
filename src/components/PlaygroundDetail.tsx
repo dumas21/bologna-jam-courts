@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   User, 
   Clock, 
@@ -15,7 +15,7 @@ import {
   UserCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Playground } from "@/types/playground";
+import { Playground, Comment } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimeUntilReset } from "@/utils/timeUtils";
@@ -27,7 +27,6 @@ import PlaygroundRating from "./PlaygroundRating";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
-import { Comment } from "@/types/playgroundTypes";
 
 interface PlaygroundDetailProps {
   playground: Playground;
@@ -40,10 +39,15 @@ interface PlaygroundDetailProps {
 const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn, checkInRecords }: PlaygroundDetailProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, username } = useUser();
+  const { isLoggedIn, username, nickname } = useUser();
   const [message, setMessage] = useState("");
   const [checkInEmail, setCheckInEmail] = useState("");
-  const [comments, setComments] = useState<Comment[]>(playground.comments || []);
+  const [comments, setComments] = useState<Comment[]>(() => {
+    // Filtra i commenti per mostrare solo quelli del playground corrente
+    return (playground.comments || []).filter(comment => 
+      comment.playgroundId === playground.id || !comment.playgroundId
+    );
+  });
   const [showEmailDialog, setShowEmailDialog] = useState(false);
   
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
@@ -133,8 +137,9 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     const newComment: Comment = {
       id: `comment-${Date.now()}`,
       text: message,
-      user: username || 'anonymous',
-      timestamp: Date.now()
+      user: nickname || username.split('@')[0],
+      timestamp: Date.now(),
+      playgroundId: playground.id // Aggiungiamo l'ID del playground
     };
     
     // Aggiorna il playground con il nuovo messaggio
@@ -142,7 +147,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     setComments(updatedComments);
     
     // Aggiorna anche i commenti nel playground
-    playground.comments = updatedComments;
+    playground.comments = [...playground.comments || [], newComment];
     
     setMessage("");
     
@@ -287,7 +292,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
                     className="pixel-button bg-red-600 hover:bg-red-700 text-xs w-full md:w-auto"
                   >
                     <LogOut size={16} />
-                    <span className="hidden sm:inline">CHECK-OUT</span>
+                    <span className="sm:inline">CHECK-OUT</span>
                   </Button>
                 ) : (
                   <Button 
@@ -304,7 +309,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
                     className="pixel-button bg-blue-600 hover:bg-blue-700 text-xs w-full md:w-auto"
                   >
                     <Edit size={16} />
-                    <span className="hidden sm:inline">MODIFICA</span>
+                    <span className="sm:inline">MODIFICA</span>
                   </Button>
                 )}
               </div>
@@ -315,7 +320,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         <TabsContent value="chat">
           <div className="bg-white p-2 rounded-md mb-4 h-64 overflow-y-auto">
             <div className="text-xs text-center text-blue-500 mb-2">
-              Chat valida fino al {chatResetDate} (reset ogni 48 ore)
+              Chat di {playground.name} valida fino al {chatResetDate}
             </div>
           
             {comments && comments.length > 0 ? (
@@ -332,7 +337,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             ) : (
               <div className="h-full flex items-center justify-center">
                 <p className="text-red-600 font-press-start text-xs text-center">
-                  Nessun messaggio nella chat
+                  Nessun messaggio nella chat di {playground.name}
                 </p>
               </div>
             )}
@@ -368,7 +373,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
                 {playgroundCheckins.map((record, index) => (
                   <div key={index} className="flex items-center gap-2 border-b border-gray-200 py-2">
                     <UserCircle size={16} className="text-blue-500" />
-                    <div className="text-sm">{record.nickname || record.email.split('@')[0]}</div>
+                    <div className="text-sm">{record.nickname}</div>
                     <div className="text-xs text-gray-500 ml-auto">
                       {format(new Date(record.timestamp), "HH:mm")}
                     </div>
@@ -385,25 +390,24 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
       <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
         <DialogContent className="glass-card text-white">
           <DialogHeader>
-            <DialogTitle className="text-red-600 font-press-start">Inserisci la tua email</DialogTitle>
+            <DialogTitle className="text-red-600 font-press-start">Conferma check-in</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-4">
-            <p className="text-xs">L'email verrà utilizzata per eventi, tornei e aggiornamenti sui playground.</p>
-            <Input
-              type="email"
-              placeholder="Email"
-              className="bg-black bg-opacity-70 border-red-600 text-white"
-              value={checkInEmail}
-              onChange={(e) => setCheckInEmail(e.target.value)}
-            />
-            <div className="flex justify-end">
-              <Button className="pixel-button" onClick={() => processCheckIn(checkInEmail)}>
+            <p className="text-xs">Sei sicuro di voler fare il check-in in questo playground?</p>
+            <div className="flex justify-end gap-2">
+              <Button 
+                className="pixel-button bg-gray-600" 
+                onClick={() => setShowEmailDialog(false)}
+              >
+                Annulla
+              </Button>
+              <Button 
+                className="pixel-button" 
+                onClick={() => processCheckIn(username)}
+              >
                 Conferma
               </Button>
             </div>
-            <p className="text-xs text-center text-gray-400">
-              Utilizziamo la tua email solo per notificarti di eventi nei playground
-            </p>
           </div>
         </DialogContent>
       </Dialog>

@@ -3,7 +3,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'app.lovable.d01073df498e488bbe4bef189a39047d',
-  appName: 'bologna-jam-courts',
+  appName: 'Playground Jam',
   webDir: 'dist',
   server: {
     url: 'https://d01073df-498e-488b-be4b-ef189a39047d.lovableproject.com?forceHideBadge=true',

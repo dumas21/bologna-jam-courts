@@ -17,6 +17,7 @@ export interface Comment {
   text: string;        // contenuto del commento (rinominato per compatibilità)
   user: string;        // nickname dell'autore
   timestamp: number;   // timestamp del commento
+  playgroundId: string; // ID del playground a cui appartiene il commento
 }
 
 // Record di check-in per un utente

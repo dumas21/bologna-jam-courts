@@ -15,12 +15,7 @@ const UserList: React.FC<Props> = ({ users }) => {
           {users.map((user) => (
             <li key={user.id} className="border-b pb-2">
               <strong>Nickname:</strong> {user.nickname}
-              {!user.checkedIn && (
-                <>
-                  <br />
-                  <strong>Email:</strong> {user.email}
-                </>
-              )}
+              {/* Mostriamo l'email solo agli admin */}
               <br />
               <em className="text-xs text-gray-600">
                 Registrato il: {new Date(user.createdAt).toLocaleDateString()}
