@@ -32,10 +32,10 @@ const Footer: React.FC = () => {
           </p>
           
           <div className="flex flex-wrap justify-center gap-4 text-xs text-white/60">
-            <button onClick={() => setShowPrivacyPolicy(true)} className="hover:text-jam-orange transition-colors">
+            <button onClick={() => navigate('/privacy')} className="hover:text-jam-orange transition-colors">
               Privacy Policy
             </button>
-            <button onClick={() => setShowCookiePolicy(true)} className="hover:text-jam-orange transition-colors">
+            <button onClick={() => navigate('/cookies')} className="hover:text-jam-orange transition-colors">
               Cookie Policy
             </button>
             <button onClick={() => navigate('/admin')} className="hover:text-jam-orange transition-colors">

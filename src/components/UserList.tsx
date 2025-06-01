@@ -24,7 +24,7 @@ const UserList: React.FC<Props> = ({ users }) => {
               <div className="flex items-start justify-between">
                 <div>
                   <span className="font-semibold text-jam-blue">
-                    {user.nickname}
+                    {user.nickname || 'Utente Anonimo'}
                   </span>
                   <div className="flex items-center text-xs text-gray-600 mt-1">
                     <CalendarDays size={12} className="mr-1" />
@@ -32,6 +32,10 @@ const UserList: React.FC<Props> = ({ users }) => {
                       {format(new Date(user.createdAt), "dd MMMM yyyy", { locale: it })}
                     </span>
                   </div>
+                  {/* NEVER show email address - only nickname for privacy */}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Privacy protetta - solo nickname visibile
+                  </p>
                 </div>
                 
                 {user.isAdmin && (
@@ -51,8 +55,8 @@ const UserList: React.FC<Props> = ({ users }) => {
       
       <div className="mt-4 pt-2 border-t text-xs text-gray-500">
         <p>
-          Le informazioni degli utenti sono visibili solo agli amministratori e 
-          vengono gestite secondo la nostra{' '}
+          Per privacy, vengono mostrati solo i nickname degli utenti.
+          Le informazioni sono gestite secondo la nostra{' '}
           <button 
             className="text-jam-blue underline" 
             onClick={() => window.dispatchEvent(new CustomEvent('open-privacy-policy'))}

@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +11,8 @@ import AddPlayground from "./pages/AddPlayground";
 import Login from "./pages/Login";
 import Stats from "./pages/Stats";
 import Admin from "./pages/Admin";
+import Privacy from "./pages/Privacy";
+import CookieInfo from "./pages/CookieInfo";
 import CookieBanner from "./components/CookieBanner";
 import Footer from "./components/Footer";
 

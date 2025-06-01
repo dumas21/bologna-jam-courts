@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MessageSquare, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,17 +16,32 @@ interface PlaygroundChatProps {
 
 const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessage }) => {
   const { toast } = useToast();
-  const { isLoggedIn, username, nickname } = useUser();
+  const { isLoggedIn, nickname } = useUser();
   const [message, setMessage] = useState("");
+  
+  // Store comments specifically for THIS playground only in localStorage
   const [comments, setComments] = useState<Comment[]>(() => {
-    // Filtra i commenti per mostrare SOLO quelli del playground corrente
-    return (playground.comments || []).filter(comment => 
-      comment.playgroundId === playground.id
-    );
+    const storageKey = `playground_chat_${playground.id}`;
+    const storedComments = localStorage.getItem(storageKey);
+    if (storedComments) {
+      try {
+        const parsed = JSON.parse(storedComments);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
   });
 
-  // Calcola quando la chat verrà resettata
-  const lastChatReset = localStorage.getItem("lastChatReset");
+  // Save comments to localStorage whenever they change
+  useEffect(() => {
+    const storageKey = `playground_chat_${playground.id}`;
+    localStorage.setItem(storageKey, JSON.stringify(comments));
+  }, [comments, playground.id]);
+
+  // Calculate when the chat will be reset (every 48 hours)
+  const lastChatReset = localStorage.getItem(`lastChatReset_${playground.id}`);
   const nextChatReset = lastChatReset 
     ? new Date(Number(lastChatReset) + (2 * 24 * 60 * 60 * 1000))
     : new Date(Date.now() + (2 * 24 * 60 * 60 * 1000));
@@ -40,7 +55,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   const handleSendMessage = () => {
     if (!message.trim()) return;
     
-    if (!isLoggedIn) {
+    if (!isLoggedIn || !nickname) {
       toast({
         title: "Login richiesto",
         description: "Devi effettuare il login per inviare messaggi",
@@ -51,20 +66,20 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     
     playSoundEffect('message');
     
-    // Create a new comment with the correct structure and ALWAYS include playground ID
+    // Create a new comment with ONLY nickname (never email)
     const newComment: Comment = {
       id: `comment-${Date.now()}`,
       text: message,
-      user: nickname || username.split('@')[0], // Usa sempre il nickname, mai l'email
+      user: nickname, // Always use nickname, never email
       timestamp: Date.now(),
-      playgroundId: playground.id // Assicuriamoci che questo sia sempre presente
+      playgroundId: playground.id
     };
     
-    // Aggiorna i commenti locali
+    // Update local comments for THIS specific playground
     const updatedComments = [...comments, newComment];
     setComments(updatedComments);
     
-    // Callback per aggiornare i commenti nel playground
+    // Callback for parent component
     if (onSendMessage) {
       onSendMessage(newComment);
     }
@@ -86,24 +101,24 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   };
   
   return (
-    <div className="p-4 bg-gray-100 rounded-lg border border-gray-200 shadow-sm">
-      <h3 className="font-press-start text-xs mb-2 flex items-center text-jam-purple">
+    <div className="p-4 bg-gray-100 rounded-lg border border-gray-200 shadow-sm mb-20">
+      <h3 className="font-press-start text-xs mb-3 flex items-center text-jam-purple">
         <MessageSquare size={16} className="mr-2" /> 
         Chat di {playground.name}
       </h3>
       
-      <div className="bg-white p-2 rounded-md mb-4 h-72 overflow-y-auto shadow-inner">
-        <div className="text-xs text-center text-blue-500 mb-2">
+      <div className="bg-white p-3 rounded-md mb-6 h-80 overflow-y-auto shadow-inner">
+        <div className="text-xs text-center text-blue-500 mb-3 font-semibold">
           Chat valida fino al {chatResetDate}
         </div>
         
         {comments && comments.length > 0 ? (
-          <div className="space-y-2 px-1">
+          <div className="space-y-3 px-1">
             {comments.map((comment, index) => (
-              <div key={index} className="p-3 rounded mb-2 bg-gray-100 text-black border border-gray-200">
-                <div className="text-sm break-words">{comment.text}</div>
-                <div className="text-xs text-gray-500 mt-1 flex justify-between">
-                  <span className="font-medium">{comment.user}</span>
+              <div key={index} className="p-3 rounded-lg mb-2 bg-gray-50 text-black border border-gray-200 shadow-sm">
+                <div className="text-sm break-words leading-relaxed">{comment.text}</div>
+                <div className="text-xs text-gray-500 mt-2 flex justify-between items-center">
+                  <span className="font-medium text-jam-blue">{comment.user}</span>
                   <span>{format(new Date(comment.timestamp), 'HH:mm')}</span>
                 </div>
               </div>
@@ -111,18 +126,19 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
           </div>
         ) : (
           <div className="h-full flex items-center justify-center">
-            <p className="text-red-600 font-press-start text-xs text-center">
+            <p className="text-gray-500 font-press-start text-xs text-center">
               Nessun messaggio nella chat di {playground.name}
             </p>
           </div>
         )}
       </div>
       
-      <div className="mt-5">
-        <div className="flex gap-2 items-end">
+      {/* Fixed chat input at bottom with better spacing */}
+      <div className="fixed bottom-6 left-4 right-4 bg-white p-4 rounded-lg shadow-lg border border-gray-200 z-40">
+        <div className="flex gap-3 items-end max-w-6xl mx-auto">
           <Textarea 
-            placeholder="Scrivi un messaggio..." 
-            className="bg-white text-black border-gray-300 min-h-[80px] flex-1"
+            placeholder={`Scrivi nella chat di ${playground.name}...`}
+            className="bg-white text-black border-gray-300 min-h-[60px] flex-1 text-base resize-none"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             disabled={!isLoggedIn}
@@ -130,28 +146,18 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
           />
           <Button 
             onClick={handleSendMessage}
-            className="pixel-button h-[80px] w-[80px] flex items-center justify-center"
+            className="bg-jam-purple hover:bg-jam-purple/90 text-white h-[60px] w-[60px] flex items-center justify-center rounded-lg shadow-md"
             disabled={!isLoggedIn || !message.trim()}
           >
-            <Send size={24} />
+            <Send size={20} />
           </Button>
         </div>
         
         {!isLoggedIn && (
-          <p className="text-xs text-red-600 mt-2">
+          <p className="text-xs text-red-600 mt-2 text-center">
             Effettua il login per partecipare alla chat
           </p>
         )}
-        
-        <p className="text-xs text-gray-500 mt-2">
-          I messaggi sono soggetti alla nostra{' '}
-          <button 
-            className="text-jam-blue underline" 
-            onClick={() => window.dispatchEvent(new CustomEvent('open-privacy-policy'))}
-          >
-            Privacy Policy
-          </button>
-        </p>
       </div>
     </div>
   );
