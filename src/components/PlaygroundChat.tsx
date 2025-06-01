@@ -101,24 +101,24 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   };
   
   return (
-    <div className="p-4 bg-gray-100 rounded-lg border border-gray-200 shadow-sm mb-20">
-      <h3 className="font-press-start text-xs mb-3 flex items-center text-jam-purple">
-        <MessageSquare size={16} className="mr-2" /> 
+    <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+      <h3 className="font-press-start text-xs mb-3 flex items-center text-black">
+        <MessageSquare size={16} className="mr-2 text-blue-600" /> 
         Chat di {playground.name}
       </h3>
       
-      <div className="bg-white p-3 rounded-md mb-6 h-80 overflow-y-auto shadow-inner">
-        <div className="text-xs text-center text-blue-500 mb-3 font-semibold">
+      <div className="bg-gray-50 p-3 rounded-md mb-4 h-60 overflow-y-auto shadow-inner border">
+        <div className="text-xs text-center text-blue-600 mb-3 font-semibold">
           Chat valida fino al {chatResetDate}
         </div>
         
         {comments && comments.length > 0 ? (
-          <div className="space-y-3 px-1">
+          <div className="space-y-3">
             {comments.map((comment, index) => (
-              <div key={index} className="p-3 rounded-lg mb-2 bg-gray-50 text-black border border-gray-200 shadow-sm">
-                <div className="text-sm break-words leading-relaxed">{comment.text}</div>
-                <div className="text-xs text-gray-500 mt-2 flex justify-between items-center">
-                  <span className="font-medium text-jam-blue">{comment.user}</span>
+              <div key={index} className="p-3 rounded-lg bg-white border border-gray-200 shadow-sm">
+                <div className="text-sm text-black break-words leading-relaxed">{comment.text}</div>
+                <div className="text-xs text-gray-600 mt-2 flex justify-between items-center">
+                  <span className="font-medium text-blue-600">{comment.user}</span>
                   <span>{format(new Date(comment.timestamp), 'HH:mm')}</span>
                 </div>
               </div>
@@ -133,32 +133,29 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         )}
       </div>
       
-      {/* Fixed chat input at bottom with better spacing */}
-      <div className="fixed bottom-6 left-4 right-4 bg-white p-4 rounded-lg shadow-lg border border-gray-200 z-40">
-        <div className="flex gap-3 items-end max-w-6xl mx-auto">
-          <Textarea 
-            placeholder={`Scrivi nella chat di ${playground.name}...`}
-            className="bg-white text-black border-gray-300 min-h-[60px] flex-1 text-base resize-none"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            disabled={!isLoggedIn}
-            onKeyDown={handleKeyPress}
-          />
-          <Button 
-            onClick={handleSendMessage}
-            className="bg-jam-purple hover:bg-jam-purple/90 text-white h-[60px] w-[60px] flex items-center justify-center rounded-lg shadow-md"
-            disabled={!isLoggedIn || !message.trim()}
-          >
-            <Send size={20} />
-          </Button>
-        </div>
-        
-        {!isLoggedIn && (
-          <p className="text-xs text-red-600 mt-2 text-center">
-            Effettua il login per partecipare alla chat
-          </p>
-        )}
+      <div className="flex gap-3 items-end">
+        <Textarea 
+          placeholder={`Scrivi nella chat di ${playground.name}...`}
+          className="bg-white text-black border-gray-300 min-h-[60px] flex-1 text-sm resize-none"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          disabled={!isLoggedIn}
+          onKeyDown={handleKeyPress}
+        />
+        <Button 
+          onClick={handleSendMessage}
+          className="bg-blue-600 hover:bg-blue-700 text-white h-[60px] px-4 flex items-center justify-center rounded-lg"
+          disabled={!isLoggedIn || !message.trim()}
+        >
+          <Send size={18} />
+        </Button>
       </div>
+      
+      {!isLoggedIn && (
+        <p className="text-xs text-red-600 mt-2 text-center">
+          Effettua il login per partecipare alla chat
+        </p>
+      )}
     </div>
   );
 };
