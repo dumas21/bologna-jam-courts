@@ -3,16 +3,14 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 interface UserContextType {
   isLoggedIn: boolean;
-  username: string;  // è l'email
-  nickname: string;  // nickname dell'utente
+  nickname: string;  // solo nickname, niente email
   isAdmin: boolean;
-  login: (username: string, isAdmin?: boolean, nickname?: string) => void;
+  login: (nickname: string, isAdmin?: boolean) => void;
   logout: () => void;
 }
 
 const UserContext = createContext<UserContextType>({
   isLoggedIn: false,
-  username: "",
   nickname: "",
   isAdmin: false,
   login: () => {},
@@ -25,11 +23,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     return saved ? JSON.parse(saved) : false;
   });
   
-  const [username, setUsername] = useState<string>(() => {
-    const saved = localStorage.getItem("username");
-    return saved ? JSON.parse(saved) : "";
-  });
-  
   const [nickname, setNickname] = useState<string>(() => {
     const saved = localStorage.getItem("userNickname");
     return saved ? JSON.parse(saved) : "";
@@ -40,38 +33,32 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     return saved ? JSON.parse(saved) : false;
   });
 
-  const login = (username: string, isAdmin: boolean = false, nickname: string = "") => {
-    // Special handling for admin user
-    const isSpecialAdmin = username === "bergami.matteo@gmail.com";
-    const adminStatus = isSpecialAdmin ? true : isAdmin;
-    const displayNickname = nickname || username.split('@')[0];
+  const login = (nickname: string, isAdmin: boolean = false) => {
+    // Determina se l'utente è admin (per esempio se il nickname è "matteo")
+    const adminStatus = nickname.toLowerCase() === "matteo" || isAdmin;
     
     localStorage.setItem("userLoggedIn", "true");
-    localStorage.setItem("username", JSON.stringify(username));
-    localStorage.setItem("userNickname", JSON.stringify(displayNickname));
+    localStorage.setItem("userNickname", JSON.stringify(nickname));
     localStorage.setItem("isUserAdmin", JSON.stringify(adminStatus));
     
     setIsLoggedIn(true);
-    setUsername(username);
-    setNickname(displayNickname);
+    setNickname(nickname);
     setIsAdmin(adminStatus);
     
-    console.log(`User logged in: ${username}, Nickname: ${displayNickname}, Admin status: ${adminStatus}`);
+    console.log(`User logged in: ${nickname}, Admin status: ${adminStatus}`);
   };
 
   const logout = () => {
     localStorage.removeItem("userLoggedIn");
-    localStorage.removeItem("username");
     localStorage.removeItem("userNickname");
     localStorage.removeItem("isUserAdmin");
     setIsLoggedIn(false);
-    setUsername("");
     setNickname("");
     setIsAdmin(false);
   };
 
   return (
-    <UserContext.Provider value={{ isLoggedIn, username, nickname, isAdmin, login, logout }}>
+    <UserContext.Provider value={{ isLoggedIn, nickname, isAdmin, login, logout }}>
       {children}
     </UserContext.Provider>
   );

@@ -7,7 +7,7 @@ import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MessageSquare, CalendarDays, BarChart } from "lucide-react";
+import { CalendarDays, BarChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -18,21 +18,19 @@ import { it } from "date-fns/locale";
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, username } = useUser();
+  const { isLoggedIn, nickname } = useUser();
   const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
   // Format current date
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
 
-  // Log playgrounds per verificare che i dati siano caricati correttamente
   useEffect(() => {
     console.log("Playgrounds caricati:", playgrounds);
   }, [playgrounds]);
   
   const handleSelectPlayground = (playground: Playground) => {
     setSelectedPlayground(playground);
-    // Play sound effect
     const audio = new Audio('/sounds/select.mp3');
     audio.play().catch(err => console.log('Audio playback error:', err));
   };
@@ -42,7 +40,7 @@ const Index = () => {
     audio.play().catch(err => console.log('Audio playback error:', err));
   };
 
-  const handleCheckIn = (playgroundId: string, userEmail: string) => {
+  const handleCheckIn = (playgroundId: string, userNickname: string) => {
     if (!isLoggedIn) {
       toast({
         title: "Login richiesto",
@@ -52,10 +50,10 @@ const Index = () => {
       return false;
     }
     
-    return checkIn(playgroundId, userEmail);
+    return checkIn(playgroundId, userNickname, userNickname);
   };
 
-  const handleCheckOut = (playgroundId: string, userEmail: string) => {
+  const handleCheckOut = (playgroundId: string, userNickname: string) => {
     if (!isLoggedIn) {
       toast({
         title: "Login richiesto",
@@ -65,7 +63,7 @@ const Index = () => {
       return false;
     }
     
-    return checkOut(playgroundId, userEmail);
+    return checkOut(playgroundId, userNickname);
   };
 
   return (
@@ -106,12 +104,11 @@ const Index = () => {
               <span className="inline md:hidden">Lista</span>
             </TabsTrigger>
             <TabsTrigger 
-              value="chat" 
+              value="mb" 
               className="font-press-start text-xs"
               onClick={() => playSoundEffect('tab')}
             >
-              <MessageSquare size={16} className="mr-1" />
-              <span className="hidden md:inline">Chat</span>
+              MB
             </TabsTrigger>
             <TabsTrigger 
               value="events" 
@@ -143,22 +140,17 @@ const Index = () => {
             )}
           </TabsContent>
           
-          <TabsContent value="chat" className="animate-pixel-fade-in">
+          <TabsContent value="mb" className="animate-pixel-fade-in">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
-              <p className="font-press-start text-xs text-red-600 mb-4">
-                {isLoggedIn ? 'Chat disponibile nei singoli playground' : 'Chat disponibile dopo il login'}
-              </p>
-              <p className="text-xs text-white/70">
-                Seleziona un playground dalla mappa e vai alla tab "Chat" per chattare con altri giocatori
-              </p>
-              {!isLoggedIn && (
-                <Button 
-                  className="mt-4 pixel-button"
-                  onClick={() => navigate('/login')}
-                >
-                  Accedi ora
-                </Button>
-              )}
+              <div className="text-center space-y-4">
+                <h2 className="font-press-start text-lg text-red-600">MATTEO BERGAMI</h2>
+                <p className="font-press-start text-xs text-yellow-400 max-w-md">
+                  Creatore di Playground Jam Bologna
+                </p>
+                <p className="text-xs text-white/70 max-w-md">
+                  Sviluppato con passione per la community di basket bolognese
+                </p>
+              </div>
             </div>
           </TabsContent>
           

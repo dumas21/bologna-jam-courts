@@ -22,7 +22,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 
 const Header = () => {
-  const { isLoggedIn, username, isAdmin, logout } = useUser();
+  const { isLoggedIn, nickname, isAdmin, logout } = useUser();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -96,7 +96,7 @@ const Header = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-black text-white border border-red-600">
                   <DropdownMenuLabel className="font-press-start text-xs">
-                    {username}
+                    {nickname}
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem 

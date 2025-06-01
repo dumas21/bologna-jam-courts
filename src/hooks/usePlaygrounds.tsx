@@ -10,7 +10,6 @@ export type { CheckInRecord, RegisteredUser };
 export function usePlaygrounds() {
   const { toast } = useToast();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(() => {
-    // Aggiungiamo log per il debugging
     console.log("Inizializzazione playgrounds...");
     const saved = localStorage.getItem("playgroundData");
     if (saved) {
@@ -25,15 +24,6 @@ export function usePlaygrounds() {
   // Array per tenere traccia degli utenti che hanno fatto check-in
   const [checkInRecords, setCheckInRecords] = useState<CheckInRecord[]>(() => {
     const saved = localStorage.getItem("checkInRecords");
-    if (saved) {
-      return JSON.parse(saved);
-    }
-    return [];
-  });
-  
-  // Array per tenere traccia degli utenti registrati
-  const [registeredUsers, setRegisteredUsers] = useState<RegisteredUser[]>(() => {
-    const saved = localStorage.getItem("registeredUsers");
     if (saved) {
       return JSON.parse(saved);
     }
@@ -55,11 +45,6 @@ export function usePlaygrounds() {
   useEffect(() => {
     localStorage.setItem("checkInRecords", JSON.stringify(checkInRecords));
   }, [checkInRecords]);
-  
-  // Save registered users
-  useEffect(() => {
-    localStorage.setItem("registeredUsers", JSON.stringify(registeredUsers));
-  }, [registeredUsers]);
   
   // Set up daily reset timer per il reset alle 23:59
   useEffect(() => {
@@ -155,11 +140,11 @@ export function usePlaygrounds() {
     });
   };
   
-  // Player check-in to a playground with email
-  const checkIn = (playgroundId: string, email: string, nickname: string = "") => {
+  // Player check-in to a playground with nickname
+  const checkIn = (playgroundId: string, nickname: string, displayNickname: string = "") => {
     // Verifica se l'utente ha già fatto check-in in questo playground
     const existingRecord = checkInRecords.find(
-      record => record.playgroundId === playgroundId && record.email === email
+      record => record.playgroundId === playgroundId && record.nickname === nickname
     );
     
     if (existingRecord) {
@@ -170,28 +155,14 @@ export function usePlaygrounds() {
       return false;
     }
     
-    // Usa il nickname se fornito, altrimenti cerca l'utente registrato
-    let userNickname = nickname;
-    if (!userNickname) {
-      const user = registeredUsers.find(user => user.email === email);
-      userNickname = user ? user.nickname : email.split("@")[0];
-    }
+    // Usa il displayNickname se fornito, altrimenti usa il nickname
+    const userNickname = displayNickname || nickname;
     
-    // Aggiungi il record di check-in
+    // Aggiungi il record di check-in (usando nickname come email per compatibilità)
     setCheckInRecords(current => [
       ...current, 
-      { playgroundId, email, nickname: userNickname, timestamp: Date.now() }
+      { playgroundId, email: nickname, nickname: userNickname, timestamp: Date.now() }
     ]);
-    
-    // Aggiorna lo stato checkedIn dell'utente
-    setRegisteredUsers(current => 
-      current.map(user => {
-        if (user.email === email) {
-          return { ...user, checkedIn: true };
-        }
-        return user;
-      })
-    );
     
     setPlaygrounds(current =>
       current.map(pg => {
@@ -210,10 +181,10 @@ export function usePlaygrounds() {
   };
   
   // Player check-out from a playground
-  const checkOut = (playgroundId: string, email: string) => {
+  const checkOut = (playgroundId: string, nickname: string) => {
     // Rimuovi il record di check-in
     const recordExists = checkInRecords.some(
-      record => record.playgroundId === playgroundId && record.email === email
+      record => record.playgroundId === playgroundId && record.nickname === nickname
     );
     
     if (!recordExists) {
@@ -226,25 +197,8 @@ export function usePlaygrounds() {
     
     setCheckInRecords(current => 
       current.filter(
-        record => !(record.playgroundId === playgroundId && record.email === email)
+        record => !(record.playgroundId === playgroundId && record.nickname === nickname)
       )
-    );
-    
-    // Aggiorna lo stato checkedIn dell'utente
-    setRegisteredUsers(current => 
-      current.map(user => {
-        if (user.email === email) {
-          // Controlla se l'utente ha altri check-in attivi
-          const hasOtherCheckIns = checkInRecords.some(
-            record => record.email === email && record.playgroundId !== playgroundId
-          );
-          
-          if (!hasOtherCheckIns) {
-            return { ...user, checkedIn: false };
-          }
-        }
-        return user;
-      })
     );
     
     setPlaygrounds(current =>
@@ -304,10 +258,10 @@ export function usePlaygrounds() {
     return true;
   };
   
-  // Check if user has checked in
-  const hasUserCheckedIn = (playgroundId: string, email: string) => {
+  // Check if user has checked in (using nickname)
+  const hasUserCheckedIn = (playgroundId: string, nickname: string) => {
     return checkInRecords.some(
-      record => record.playgroundId === playgroundId && record.email === email
+      record => record.playgroundId === playgroundId && record.nickname === nickname
     );
   };
   

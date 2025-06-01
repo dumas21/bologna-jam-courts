@@ -31,18 +31,17 @@ import { useNavigate } from "react-router-dom";
 
 interface PlaygroundDetailProps {
   playground: Playground;
-  onCheckIn: (playgroundId: string, userEmail: string) => boolean;
-  onCheckOut: (playgroundId: string, userEmail: string) => boolean;
-  hasUserCheckedIn: (playgroundId: string, userEmail: string) => boolean;
+  onCheckIn: (playgroundId: string, userNickname: string) => boolean;
+  onCheckOut: (playgroundId: string, userNickname: string) => boolean;
+  hasUserCheckedIn: (playgroundId: string, userNickname: string) => boolean;
   checkInRecords: Array<{playgroundId: string; email: string; nickname: string; timestamp: number;}>;
 }
 
 const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn, checkInRecords }: PlaygroundDetailProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, username, nickname } = useUser();
-  const [checkInEmail, setCheckInEmail] = useState("");
-  const [showEmailDialog, setShowEmailDialog] = useState(false);
+  const { isLoggedIn, nickname } = useUser();
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
   const currentTime = format(new Date(), "HH:mm");
@@ -52,7 +51,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   
   // Check if the current user has checked in
   const userHasCheckedIn = checkInRecords.some(
-    record => record.playgroundId === playground.id && username === record.email
+    record => record.playgroundId === playground.id && nickname === record.nickname
   );
   
   const handleCheckIn = () => {
@@ -65,21 +64,11 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
       return;
     }
     
-    // Mostra il dialog per inserire l'email
-    setShowEmailDialog(true);
+    setShowConfirmDialog(true);
   };
   
-  const processCheckIn = (emailToUse: string) => {
-    if (!emailToUse.trim() || !emailToUse.includes('@')) {
-      toast({
-        title: "Email non valida",
-        description: "Inserisci un indirizzo email valido",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    const success = onCheckIn(playground.id, emailToUse);
+  const processCheckIn = () => {
+    const success = onCheckIn(playground.id, nickname);
     
     if (success) {
       playSoundEffect('checkin');
@@ -87,7 +76,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         title: "Check-in completato!",
         description: `Non dimenticare di portare il pallone e tenere pulito! 🏀`,
       });
-      setShowEmailDialog(false);
+      setShowConfirmDialog(false);
     }
   };
   
@@ -101,8 +90,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
       return;
     }
     
-    // Use the username as email for checkout
-    const success = username ? onCheckOut(playground.id, username) : false;
+    const success = onCheckOut(playground.id, nickname);
     
     if (success) {
       playSoundEffect('checkout');
@@ -114,12 +102,8 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   };
   
   const handleEditPlayground = () => {
-    // Salva l'ID del playground da modificare nel localStorage
     localStorage.setItem("editPlaygroundId", playground.id);
-    
-    // Vai alla pagina di modifica
     navigate("/add-playground");
-    
     playSoundEffect('click');
   };
 
@@ -303,7 +287,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         </TabsContent>
       </Tabs>
       
-      <Dialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent className="glass-card text-white">
           <DialogHeader>
             <DialogTitle className="text-red-600 font-press-start">Conferma check-in</DialogTitle>
@@ -313,13 +297,13 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             <div className="flex justify-end gap-2">
               <Button 
                 className="pixel-button bg-gray-600" 
-                onClick={() => setShowEmailDialog(false)}
+                onClick={() => setShowConfirmDialog(false)}
               >
                 Annulla
               </Button>
               <Button 
                 className="pixel-button" 
-                onClick={() => processCheckIn(username)}
+                onClick={processCheckIn}
               >
                 Conferma
               </Button>
