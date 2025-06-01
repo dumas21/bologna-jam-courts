@@ -23,6 +23,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PlaygroundRating from "./PlaygroundRating";
+import PlaygroundChat from "./PlaygroundChat";
+import WeatherInfo from "./WeatherInfo";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { useNavigate } from "react-router-dom";
@@ -39,23 +41,8 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isLoggedIn, username, nickname } = useUser();
-  const [message, setMessage] = useState("");
   const [checkInEmail, setCheckInEmail] = useState("");
-  const [comments, setComments] = useState<Comment[]>(() => {
-    // Filtra i commenti per mostrare SOLO quelli del playground corrente
-    return (playground.comments || []).filter(comment => 
-      comment.playgroundId === playground.id
-    );
-  });
   const [showEmailDialog, setShowEmailDialog] = useState(false);
-  
-  // Dati meteo di esempio per il playground
-  const [weatherData, setWeatherData] = useState<WeatherData>({
-    condition: "Soleggiato",
-    temperature: 24,
-    humidity: 60,
-    icon: "sun"
-  });
   
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
   const currentTime = format(new Date(), "HH:mm");
@@ -126,44 +113,6 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     }
   };
   
-  const handleSendMessage = () => {
-    if (!message.trim()) return;
-    
-    if (!isLoggedIn) {
-      toast({
-        title: "Login richiesto",
-        description: "Devi effettuare il login per inviare messaggi",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    playSoundEffect('message');
-    
-    // Create a new comment with the correct structure and ensure it has the playground ID
-    const newComment: Comment = {
-      id: `comment-${Date.now()}`,
-      text: message,
-      user: nickname || username.split('@')[0], // Usa sempre il nickname, mai l'email
-      timestamp: Date.now(),
-      playgroundId: playground.id
-    };
-    
-    // Aggiorna il playground con il nuovo messaggio
-    const updatedComments = [...comments, newComment];
-    setComments(updatedComments);
-    
-    // Aggiorna anche i commenti nel playground
-    playground.comments = [...playground.comments || [], newComment];
-    
-    setMessage("");
-    
-    toast({
-      title: "Messaggio inviato",
-      description: "Il tuo messaggio è stato pubblicato nella chat",
-    });
-  };
-  
   const handleEditPlayground = () => {
     // Salva l'ID del playground da modificare nel localStorage
     localStorage.setItem("editPlaygroundId", playground.id);
@@ -178,13 +127,6 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     const audio = new Audio(`/sounds/${action}.mp3`);
     audio.play().catch(err => console.log('Audio playback error:', err));
   };
-
-  // Calcola quando la chat verrà resettata
-  const lastChatReset = localStorage.getItem("lastChatReset");
-  const nextChatReset = lastChatReset 
-    ? new Date(Number(lastChatReset) + (2 * 24 * 60 * 60 * 1000)) // 48 hours as requested
-    : new Date(Date.now() + (2 * 24 * 60 * 60 * 1000));
-  const chatResetDate = format(nextChatReset, "dd/MM/yyyy", { locale: it });
 
   return (
     <div className="pixel-card mt-6 animate-pixel-fade-in bg-black bg-opacity-70 backdrop-blur-md">
@@ -326,50 +268,9 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         </TabsContent>
         
         <TabsContent value="chat">
-          <div className="bg-white p-2 rounded-md mb-4 h-72 overflow-y-auto">
-            <div className="text-xs text-center text-blue-500 mb-2">
-              Chat di {playground.name} valida fino al {chatResetDate}
-            </div>
-          
-            {comments && comments.length > 0 ? (
-              <div className="space-y-2">
-                {comments.map((comment, index) => (
-                  <div key={index} className="p-2 rounded mb-2 bg-gray-100 text-black border border-gray-200">
-                    <div className="text-sm">{comment.text}</div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {comment.user} - {new Date(comment.timestamp).toLocaleTimeString()}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="h-full flex items-center justify-center">
-                <p className="text-red-600 font-press-start text-xs text-center">
-                  Nessun messaggio nella chat di {playground.name}
-                </p>
-              </div>
-            )}
-          </div>
-          
-          <div className="flex gap-2 mt-4">
-            <Textarea 
-              placeholder="Scrivi un messaggio..." 
-              className="bg-white text-black border-gray-300 min-h-[70px]"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              disabled={!isLoggedIn}
-            />
-            <Button 
-              onClick={handleSendMessage}
-              className="pixel-button h-[70px] w-[70px] flex items-center justify-center p-2"
-              disabled={!isLoggedIn || !message.trim()}
-            >
-              <MessageSquare size={30} />
-            </Button>
-          </div>
-          {!isLoggedIn && (
-            <p className="text-xs text-red-600 mt-1">Effettua il login per partecipare alla chat</p>
-          )}
+          <PlaygroundChat 
+            playground={playground}
+          />
         </TabsContent>
         
         <TabsContent value="checkins">
@@ -395,37 +296,10 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         </TabsContent>
         
         <TabsContent value="meteo">
-          <div className="bg-white p-4 rounded-md mb-4 text-black">
-            <h4 className="font-press-start text-xs text-red-600 mb-4">Meteo {playground.name}</h4>
-            
-            <div className="flex items-center gap-6 mb-4">
-              <div className="bg-blue-500 p-3 rounded-full">
-                {weatherData.icon === "sun" && <Sun className="text-yellow-400" size={32} />}
-                {weatherData.icon === "cloud" && <Sun className="text-white" size={32} />}
-                {weatherData.icon === "rain" && <Sun className="text-white" size={32} />}
-              </div>
-              <div>
-                <div className="text-2xl font-semibold">{weatherData.temperature}°C</div>
-                <div className="text-sm text-gray-600">{weatherData.condition}</div>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gray-100 p-3 rounded-md">
-                <div className="text-sm text-gray-500">Umidità</div>
-                <div className="text-xl">{weatherData.humidity}%</div>
-              </div>
-              
-              <div className="bg-gray-100 p-3 rounded-md">
-                <div className="text-sm text-gray-500">Condizioni</div>
-                <div className="text-xl">Ottimali</div>
-              </div>
-            </div>
-            
-            <div className="mt-4 text-xs text-gray-500">
-              Aggiornato alle {format(new Date(), "HH:mm")}
-            </div>
-          </div>
+          <WeatherInfo 
+            playgroundName={playground.name}
+            location={playground.address}
+          />
         </TabsContent>
       </Tabs>
       
