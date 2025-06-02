@@ -10,7 +10,7 @@ interface MapViewProps {
 }
 
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
-  const { isLoggedIn, username } = useUser();
+  const { isLoggedIn, nickname } = useUser();
   
   return (
     <div className="relative w-full bg-black bg-opacity-70 backdrop-blur-sm border-2 border-red-600 p-4 overflow-hidden rounded-md">
@@ -69,15 +69,15 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                 <div className="mt-2 pt-2 border-t border-white/10">
                   <div className="text-xs text-red-600 font-press-start mb-1 font-bold">Presenze:</div>
                   <div className="text-xs text-white/70 italic">
-                    {username && 
+                    {nickname && 
                       <div className="flex items-center">
                         <Users size={10} className="text-blue-400 mr-1" />
-                        <span>{username}</span>
+                        <span>{nickname}</span>
                       </div>
                     }
-                    {playground.currentPlayers > (username ? 1 : 0) && 
+                    {playground.currentPlayers > (nickname ? 1 : 0) && 
                       <div className="text-xs text-white/50">
-                        + altri {playground.currentPlayers - (username ? 1 : 0)} giocatori
+                        + altri {playground.currentPlayers - (nickname ? 1 : 0)} giocatori
                       </div>
                     }
                   </div>

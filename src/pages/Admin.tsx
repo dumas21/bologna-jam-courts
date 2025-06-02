@@ -1,14 +1,15 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import Logo from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CheckInRecord, RegisteredUser, usePlaygrounds } from "@/hooks/usePlaygrounds";
+import { CheckInRecord, usePlaygrounds } from "@/hooks/usePlaygrounds";
 import { useUser } from "@/contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Mail, Shield, BarChart, Calendar, Search, Sun, Cloud, CloudRain } from "lucide-react";
+import { Users, Shield, BarChart, Calendar, Search, Sun, Cloud, CloudRain } from "lucide-react";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { WeatherData } from "@/types/playgroundTypes";
@@ -18,13 +19,11 @@ const Admin = () => {
   const { isLoggedIn, nickname, isAdmin } = useUser();
   const navigate = useNavigate();
   const { 
-    getRegisteredUsers,
     getTodayCheckins,
     resetAttendanceCounts,
     resetDailyCounts 
   } = usePlaygrounds();
   
-  const [registeredUsers, setRegisteredUsers] = useState<RegisteredUser[]>([]);
   const [checkInRecords, setCheckInRecords] = useState<CheckInRecord[]>([]);
   const [adminPassword, setAdminPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -59,10 +58,9 @@ const Admin = () => {
   useEffect(() => {
     if (isAuthenticated) {
       // Carica i dati solo se autenticato
-      setRegisteredUsers(getRegisteredUsers());
       setCheckInRecords(getTodayCheckins());
     }
-  }, [isAuthenticated, getRegisteredUsers, getTodayCheckins]);
+  }, [isAuthenticated, getTodayCheckins]);
   
   const handleAdminLogin = () => {
     if (adminPassword === ADMIN_PASSWORD) {
@@ -105,12 +103,11 @@ const Admin = () => {
   };
   
   // Filtra gli utenti in base al termine di ricerca
-  const filteredUsers = registeredUsers
-    .filter(user => 
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      user.nickname.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredRecords = checkInRecords
+    .filter(record => 
+      record.nickname.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .sort((a, b) => a.email.localeCompare(b.email)); // Ordine alfabetico
+    .sort((a, b) => a.nickname.localeCompare(b.nickname)); // Ordine alfabetico
   
   if (!isLoggedIn) {
     return null; // L'utente verrà reindirizzato dal useEffect
@@ -220,7 +217,7 @@ const Admin = () => {
               onClick={() => playSound('tab')}
             >
               <Users size={16} className="mr-1" />
-              Utenti Registrati
+              Check-in Oggi
             </TabsTrigger>
             <TabsTrigger 
               value="stats" 
@@ -244,12 +241,12 @@ const Admin = () => {
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-press-start text-xs text-red-600 font-bold">
-                  Utenti Registrati ({filteredUsers.length})
+                  Check-in di Oggi ({filteredRecords.length})
                 </h3>
                 
                 <div className="flex bg-black rounded-md border border-jam-purple overflow-hidden">
                   <Input
-                    placeholder="Cerca utente..."
+                    placeholder="Cerca nickname..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="bg-transparent border-0 text-white text-xs"
@@ -258,34 +255,23 @@ const Admin = () => {
                 </div>
               </div>
               
-              {filteredUsers.length > 0 ? (
+              {filteredRecords.length > 0 ? (
                 <div className="bg-white rounded-md p-4 text-black">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-gray-200">
-                        <th className="text-left text-xs font-semibold p-2">Email</th>
                         <th className="text-left text-xs font-semibold p-2">Nickname</th>
-                        <th className="text-left text-xs font-semibold p-2">Data Registrazione</th>
-                        <th className="text-left text-xs font-semibold p-2">Ruolo</th>
+                        <th className="text-left text-xs font-semibold p-2">Playground</th>
+                        <th className="text-left text-xs font-semibold p-2">Orario Check-in</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredUsers.map((user, index) => (
+                      {filteredRecords.map((record, index) => (
                         <tr key={index} className="border-b border-gray-100">
-                          <td className="p-2 text-xs">{user.email}</td>
-                          <td className="p-2 text-xs">{user.nickname}</td>
+                          <td className="p-2 text-xs">{record.nickname}</td>
+                          <td className="p-2 text-xs">{record.playgroundId}</td>
                           <td className="p-2 text-xs">
-                            {format(new Date(user.registrationDate), "dd/MM/yyyy HH:mm")}
-                          </td>
-                          <td className="p-2 text-xs">
-                            {user.isAdmin ? (
-                              <span className="flex items-center text-green-600">
-                                <Shield size={12} className="mr-1" />
-                                Admin
-                              </span>
-                            ) : (
-                              "Utente"
-                            )}
+                            {format(new Date(record.timestamp), "dd/MM/yyyy HH:mm")}
                           </td>
                         </tr>
                       ))}
@@ -294,7 +280,7 @@ const Admin = () => {
                 </div>
               ) : (
                 <p className="text-white/70 text-sm">
-                  {searchTerm ? "Nessun utente corrisponde alla ricerca" : "Nessun utente registrato"}
+                  {searchTerm ? "Nessun check-in corrisponde alla ricerca" : "Nessun check-in oggi"}
                 </p>
               )}
               
@@ -303,17 +289,17 @@ const Admin = () => {
                   onClick={() => {
                     playSound('click');
                     // Esportazione in CSV
-                    if (filteredUsers.length === 0) {
+                    if (filteredRecords.length === 0) {
                       toast({
                         title: "Nessun dato da esportare",
-                        description: "Non ci sono utenti da esportare",
+                        description: "Non ci sono check-in da esportare",
                       });
                       return;
                     }
                     
-                    const headers = "Email,Nickname,DataRegistrazione,Ruolo\n";
-                    const csvData = filteredUsers.map(user => 
-                      `${user.email},${user.nickname},${format(new Date(user.registrationDate), "dd/MM/yyyy HH:mm")},${user.isAdmin ? "Admin" : "Utente"}`
+                    const headers = "Nickname,Playground,OrarioCheckIn\n";
+                    const csvData = filteredRecords.map(record => 
+                      `${record.nickname},${record.playgroundId},${format(new Date(record.timestamp), "dd/MM/yyyy HH:mm")}`
                     ).join('\n');
                     
                     const blob = new Blob([headers + csvData], { type: 'text/csv' });
@@ -321,13 +307,13 @@ const Admin = () => {
                     const a = document.createElement('a');
                     a.setAttribute('hidden', '');
                     a.setAttribute('href', url);
-                    a.setAttribute('download', `users_${format(new Date(), "yyyyMMdd")}.csv`);
+                    a.setAttribute('download', `checkins_${format(new Date(), "yyyyMMdd")}.csv`);
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
                   }}
                   className="pixel-button bg-blue-600 text-xs"
-                  disabled={filteredUsers.length === 0}
+                  disabled={filteredRecords.length === 0}
                 >
                   Esporta CSV
                 </Button>
