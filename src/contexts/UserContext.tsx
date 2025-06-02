@@ -3,7 +3,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 interface UserContextType {
   isLoggedIn: boolean;
-  nickname: string;  // solo nickname, niente email
+  nickname: string;
   isAdmin: boolean;
   login: (nickname: string, isAdmin?: boolean) => void;
   logout: () => void;
@@ -34,7 +34,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const login = (nickname: string, isAdmin: boolean = false) => {
-    // Determina se l'utente è admin (per esempio se il nickname è "matteo")
     const adminStatus = nickname.toLowerCase() === "matteo" || isAdmin;
     
     localStorage.setItem("userLoggedIn", "true");

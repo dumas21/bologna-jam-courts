@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Playground, Comment, CheckInRecord, RegisteredUser } from "@/types/playground";
 import { playgroundData as initialData } from "@/data/playgroundData";
@@ -21,7 +22,6 @@ export function usePlaygrounds() {
     return initialData;
   });
   
-  // Array per tenere traccia degli utenti che hanno fatto check-in
   const [checkInRecords, setCheckInRecords] = useState<CheckInRecord[]>(() => {
     const saved = localStorage.getItem("checkInRecords");
     if (saved) {
@@ -62,7 +62,7 @@ export function usePlaygrounds() {
       
       const timerId = setTimeout(() => {
         resetDailyCounts();
-        setupDailyResetTimer(); // Set up the next day's timer
+        setupDailyResetTimer();
       }, timeUntilReset);
       
       return () => clearTimeout(timerId);
@@ -74,23 +74,20 @@ export function usePlaygrounds() {
   // Set up chat reset timer (ogni 48 ore)
   useEffect(() => {
     const setupChatResetTimer = () => {
-      // Check if we need to reset chats
       const lastChatReset = localStorage.getItem("lastChatReset");
       const now = Date.now();
-      const twodays = 2 * 24 * 60 * 60 * 1000; // 48 hours in milliseconds
+      const twodays = 2 * 24 * 60 * 60 * 1000;
       
       if (!lastChatReset || now - Number(lastChatReset) > twodays) {
-        // Reset chat dopo 48 ore
         resetChats();
         localStorage.setItem("lastChatReset", now.toString());
       }
       
-      // Setup next timer
       const timeUntilReset = twodays - (now - (lastChatReset ? Number(lastChatReset) : now));
       const timerId = setTimeout(() => {
         resetChats();
         localStorage.setItem("lastChatReset", Date.now().toString());
-        setupChatResetTimer(); // Set up the next timer
+        setupChatResetTimer();
       }, timeUntilReset);
       
       return () => clearTimeout(timerId);
@@ -99,7 +96,6 @@ export function usePlaygrounds() {
     return setupChatResetTimer();
   }, []);
   
-  // Reset all current player counts to zero alle 23:59
   const resetDailyCounts = () => {
     setPlaygrounds(current => 
       current.map(pg => ({ 
@@ -108,10 +104,8 @@ export function usePlaygrounds() {
       }))
     );
     
-    // Resetta anche i check-in records
     setCheckInRecords([]);
     
-    // Play reset sound
     const audio = new Audio('/sounds/reset.mp3');
     audio.play().catch(err => console.log('Audio playback error:', err));
     
@@ -121,7 +115,6 @@ export function usePlaygrounds() {
     });
   };
   
-  // Reset chat ogni 48 ore - Garantire che ogni commento abbia playgroundId
   const resetChats = () => {
     setPlaygrounds(current => 
       current.map(pg => ({ 
@@ -130,7 +123,6 @@ export function usePlaygrounds() {
       }))
     );
     
-    // Play chat reset sound
     const audio = new Audio('/sounds/message.mp3');
     audio.play().catch(err => console.log('Audio playback error:', err));
     
@@ -140,9 +132,7 @@ export function usePlaygrounds() {
     });
   };
   
-  // Player check-in to a playground with nickname
   const checkIn = (playgroundId: string, nickname: string, displayNickname: string = "") => {
-    // Verifica se l'utente ha già fatto check-in in questo playground
     const existingRecord = checkInRecords.find(
       record => record.playgroundId === playgroundId && record.nickname === nickname
     );
@@ -155,10 +145,8 @@ export function usePlaygrounds() {
       return false;
     }
     
-    // Usa il displayNickname se fornito, altrimenti usa il nickname
     const userNickname = displayNickname || nickname;
     
-    // Aggiungi il record di check-in (usando nickname come email per compatibilità)
     setCheckInRecords(current => [
       ...current, 
       { playgroundId, email: nickname, nickname: userNickname, timestamp: Date.now() }
@@ -180,9 +168,7 @@ export function usePlaygrounds() {
     return true;
   };
   
-  // Player check-out from a playground
   const checkOut = (playgroundId: string, nickname: string) => {
-    // Rimuovi il record di check-in
     const recordExists = checkInRecords.some(
       record => record.playgroundId === playgroundId && record.nickname === nickname
     );
@@ -213,19 +199,15 @@ export function usePlaygrounds() {
     return true;
   };
   
-  // Funzione per aggiornare un playground esistente
   const updatePlayground = (updatedPlayground: Playground) => {
     setPlaygrounds(current => {
-      // Check if this playground already exists
       const existingPlaygroundIndex = current.findIndex(pg => pg.id === updatedPlayground.id);
       
       if (existingPlaygroundIndex >= 0) {
-        // Update existing playground
         const updatedPlaygrounds = [...current];
         updatedPlaygrounds[existingPlaygroundIndex] = updatedPlayground;
         return updatedPlaygrounds;
       } else {
-        // Add new playground
         return [...current, updatedPlayground];
       }
     });
@@ -235,14 +217,12 @@ export function usePlaygrounds() {
       description: `${updatedPlayground.name} è stato aggiornato con successo.`,
     });
     
-    // Play sound effect
     const audio = new Audio('/sounds/add.mp3');
     audio.play().catch(err => console.log('Audio playback error:', err));
     
     return true;
   };
   
-  // Add a new playground
   const addPlayground = (newPlayground: Playground) => {
     setPlaygrounds(current => [...current, newPlayground]);
     
@@ -251,99 +231,18 @@ export function usePlaygrounds() {
       description: `${newPlayground.name} è stato aggiunto con successo.`,
     });
     
-    // Play sound effect
     const audio = new Audio('/sounds/add.mp3');
-    audio.play().catch(err => console.log('Audio playback error:', err));
+    audio.play().catch(err => console.log('Audio playbook error:', err));
     
     return true;
   };
   
-  // Check if user has checked in (using nickname)
   const hasUserCheckedIn = (playgroundId: string, nickname: string) => {
     return checkInRecords.some(
       record => record.playgroundId === playgroundId && record.nickname === nickname
     );
   };
   
-  // Funzione per registrare un nuovo utente - UPDATED to include all required properties
-  const registerUser = (email: string, password: string, nickname: string) => {
-    // Verifica se l'utente è già registrato
-    const existingUser = registeredUsers.find(user => user.email === email);
-    
-    if (existingUser) {
-      toast({
-        title: "Utente già registrato",
-        description: "Questa email è già registrata nel sistema.",
-        variant: "destructive"
-      });
-      return false;
-    }
-    
-    // Verifica se il nickname è già in uso
-    const existingNickname = registeredUsers.find(user => user.nickname === nickname);
-    
-    if (existingNickname) {
-      toast({
-        title: "Nickname già in uso",
-        description: "Questo nickname è già utilizzato da un altro utente.",
-        variant: "destructive"
-      });
-      return false;
-    }
-    
-    // Determina se è il primo utente (primo admin)
-    const isFirstUser = registeredUsers.length === 0;
-    
-    // Registra il nuovo utente con l'ID generato e createdAt
-    const newUser: RegisteredUser = {
-      id: uuidv4(), // Genera un UUID univoco
-      email,
-      password, // In un'app reale, questa password dovrebbe essere criptata
-      nickname,
-      isAdmin: isFirstUser || email === "bergami.matteo@gmail.com", // Il primo utente o bergami.matteo@gmail.com sono admin
-      registrationDate: Date.now(),
-      createdAt: new Date().toISOString(), // Aggiunta questa proprietà richiesta
-      checkedIn: false // Inizialmente l'utente non ha fatto check-in
-    };
-    
-    setRegisteredUsers(current => [...current, newUser]);
-    
-    toast({
-      title: "Registrazione completata",
-      description: `Benvenuto, ${nickname}! ${isFirstUser ? "Sei stato registrato come amministratore." : ""}`,
-    });
-    
-    return true;
-  };
-  
-  // Funzione per verificare le credenziali di login
-  const verifyLogin = (identifier: string, password: string) => {
-    // Verifica per email
-    let user = registeredUsers.find(
-      user => user.email === identifier && user.password === password
-    );
-    
-    // Se non trovato per email, prova per nickname
-    if (!user) {
-      user = registeredUsers.find(
-        user => user.nickname === identifier && user.password === password
-      );
-    }
-    
-    return user || null;
-  };
-  
-  // Funzione per ottenere la lista degli utenti registrati (solo per admin)
-  const getRegisteredUsers = () => {
-    return registeredUsers;
-  };
-  
-  // Funzione per ottenere la lista degli utenti che hanno fatto check-in oggi
-  const getTodayCheckins = () => {
-    return checkInRecords;
-  };
-  
-  // Funzione per reimpostare i conteggi delle presenze a zero
   const resetAttendanceCounts = () => {
     setPlaygrounds(current => 
       current.map(pg => ({ 
@@ -363,10 +262,8 @@ export function usePlaygrounds() {
     return true;
   };
   
-  // Get nickname for an email
-  const getNicknameForEmail = (email: string): string => {
-    const user = registeredUsers.find(user => user.email === email);
-    return user ? user.nickname : email.split('@')[0];
+  const getTodayCheckins = () => {
+    return checkInRecords;
   };
   
   return { 
@@ -380,11 +277,7 @@ export function usePlaygrounds() {
     addPlayground,
     hasUserCheckedIn,
     checkInRecords,
-    registerUser,
-    verifyLogin,
-    getRegisteredUsers,
     getTodayCheckins,
-    resetAttendanceCounts,
-    getNicknameForEmail
+    resetAttendanceCounts
   };
 }

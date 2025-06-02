@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
@@ -16,7 +15,7 @@ import { WeatherData } from "@/types/playgroundTypes";
 
 const Admin = () => {
   const { toast } = useToast();
-  const { isLoggedIn, username, isAdmin } = useUser();
+  const { isLoggedIn, nickname, isAdmin } = useUser();
   const navigate = useNavigate();
   const { 
     getRegisteredUsers,
@@ -52,10 +51,10 @@ const Admin = () => {
     }
     
     // Automatically authenticate if the user is bergami.matteo@gmail.com
-    if (username === "bergami.matteo@gmail.com") {
+    if (nickname === "matteo") {
       setIsAuthenticated(true);
     }
-  }, [isLoggedIn, navigate, toast, username]);
+  }, [isLoggedIn, navigate, toast, nickname]);
   
   useEffect(() => {
     if (isAuthenticated) {

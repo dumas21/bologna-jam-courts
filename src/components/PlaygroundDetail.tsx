@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   User, 
@@ -10,8 +11,7 @@ import {
   TimerReset,
   Calendar,
   MessageSquare,
-  Edit,
-  UserCircle
+  Edit
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Playground, Comment, WeatherData } from "@/types/playground";
@@ -19,8 +19,6 @@ import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
 import { formatTimeUntilReset } from "@/utils/timeUtils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PlaygroundRating from "./PlaygroundRating";
 import PlaygroundChat from "./PlaygroundChat";
@@ -46,10 +44,6 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
   const currentTime = format(new Date(), "HH:mm");
   
-  // Filter check-in records for this specific playground
-  const playgroundCheckins = checkInRecords.filter(record => record.playgroundId === playground.id);
-  
-  // Check if the current user has checked in
   const userHasCheckedIn = checkInRecords.some(
     record => record.playgroundId === playground.id && nickname === record.nickname
   );
@@ -131,7 +125,6 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         <TabsList className="w-full mb-4">
           <TabsTrigger value="info" className="text-xs" onClick={() => playSoundEffect('tab')}>Info</TabsTrigger>
           <TabsTrigger value="chat" className="text-xs" onClick={() => playSoundEffect('tab')}>Chat</TabsTrigger>
-          <TabsTrigger value="checkins" className="text-xs" onClick={() => playSoundEffect('tab')}>Check-in</TabsTrigger>
           <TabsTrigger value="meteo" className="text-xs" onClick={() => playSoundEffect('tab')}>Meteo</TabsTrigger>
         </TabsList>
         
@@ -255,28 +248,6 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
           <PlaygroundChat 
             playground={playground}
           />
-        </TabsContent>
-        
-        <TabsContent value="checkins">
-          <div className="bg-white p-4 rounded-md mb-4 text-black">
-            <h4 className="font-press-start text-xs text-red-600 mb-2">Lista check-in</h4>
-            
-            {playgroundCheckins.length > 0 ? (
-              <div className="space-y-2">
-                {playgroundCheckins.map((record, index) => (
-                  <div key={index} className="flex items-center gap-2 border-b border-gray-200 py-2">
-                    <UserCircle size={16} className="text-blue-500" />
-                    <div className="text-sm">{record.nickname}</div>
-                    <div className="text-xs text-gray-500 ml-auto">
-                      {format(new Date(record.timestamp), "HH:mm")}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-gray-500">Nessun utente ha fatto check-in</p>
-            )}
-          </div>
         </TabsContent>
         
         <TabsContent value="meteo">

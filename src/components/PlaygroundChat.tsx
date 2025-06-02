@@ -19,7 +19,6 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   const { isLoggedIn, nickname } = useUser();
   const [message, setMessage] = useState("");
   
-  // Store comments specifically for THIS playground only in localStorage
   const [comments, setComments] = useState<Comment[]>(() => {
     const storageKey = `playground_chat_${playground.id}`;
     const storedComments = localStorage.getItem(storageKey);
@@ -34,13 +33,11 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     return [];
   });
 
-  // Save comments to localStorage whenever they change
   useEffect(() => {
     const storageKey = `playground_chat_${playground.id}`;
     localStorage.setItem(storageKey, JSON.stringify(comments));
   }, [comments, playground.id]);
 
-  // Calculate when the chat will be reset (every 48 hours)
   const lastChatReset = localStorage.getItem(`lastChatReset_${playground.id}`);
   const nextChatReset = lastChatReset 
     ? new Date(Number(lastChatReset) + (2 * 24 * 60 * 60 * 1000))
@@ -66,20 +63,17 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     
     playSoundEffect('message');
     
-    // Create a new comment with ONLY nickname (never email)
     const newComment: Comment = {
       id: `comment-${Date.now()}`,
       text: message,
-      user: nickname, // Always use nickname, never email
+      user: nickname,
       timestamp: Date.now(),
       playgroundId: playground.id
     };
     
-    // Update local comments for THIS specific playground
     const updatedComments = [...comments, newComment];
     setComments(updatedComments);
     
-    // Callback for parent component
     if (onSendMessage) {
       onSendMessage(newComment);
     }
@@ -92,7 +86,6 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     });
   };
   
-  // Handle keypresses in the textarea
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -119,7 +112,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
                 <div className="text-sm text-black break-words leading-relaxed">{comment.text}</div>
                 <div className="text-xs text-gray-600 mt-2 flex justify-between items-center">
                   <span className="font-medium text-blue-600">{comment.user}</span>
-                  <span>{format(new Date(comment.timestamp), 'HH:mm')}</span>
+                  <span>{format(new Date(comment.timestamp), 'dd/MM/yyyy HH:mm', { locale: it })}</span>
                 </div>
               </div>
             ))}
