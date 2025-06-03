@@ -18,12 +18,46 @@ import { it } from "date-fns/locale";
 const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, nickname } = useUser();
+  const { isLoggedIn, nickname, logout } = useUser();
   const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
   // Format current date
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
+
+  // Auto-logout after 24 hours
+  useEffect(() => {
+    if (isLoggedIn) {
+      const loginTime = localStorage.getItem("userLoginTime");
+      if (loginTime) {
+        const loginTimestamp = parseInt(loginTime);
+        const now = Date.now();
+        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        if (now - loginTimestamp > twentyFourHours) {
+          logout();
+          toast({
+            title: "Sessione scaduta",
+            description: "Sei stato disconnesso automaticamente dopo 24 ore",
+            variant: "destructive"
+          });
+        } else {
+          // Set a timeout for the remaining time
+          const remainingTime = twentyFourHours - (now - loginTimestamp);
+          const timeoutId = setTimeout(() => {
+            logout();
+            toast({
+              title: "Sessione scaduta",
+              description: "Sei stato disconnesso automaticamente dopo 24 ore",
+              variant: "destructive"
+            });
+          }, remainingTime);
+          
+          return () => clearTimeout(timeoutId);
+        }
+      }
+    }
+  }, [isLoggedIn, logout, toast]);
 
   useEffect(() => {
     console.log("Playgrounds caricati:", playgrounds);
@@ -100,15 +134,15 @@ const Index = () => {
               className="font-press-start text-xs"
               onClick={() => playSoundEffect('tab')}
             >
-              <span className="hidden md:inline">Lista</span>
-              <span className="inline md:hidden">Lista</span>
+              <span className="hidden md:inline">Lista Bologna</span>
+              <span className="inline md:hidden">Bologna</span>
             </TabsTrigger>
             <TabsTrigger 
-              value="mb" 
+              value="italia" 
               className="font-press-start text-xs"
               onClick={() => playSoundEffect('tab')}
             >
-              MB
+              Lista Italia
             </TabsTrigger>
             <TabsTrigger 
               value="events" 
@@ -140,15 +174,12 @@ const Index = () => {
             )}
           </TabsContent>
           
-          <TabsContent value="mb" className="animate-pixel-fade-in">
+          <TabsContent value="italia" className="animate-pixel-fade-in">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
               <div className="text-center space-y-4">
-                <h2 className="font-press-start text-lg text-red-600">MATTEO BERGAMI</h2>
+                <h2 className="font-press-start text-lg text-red-600">LISTA ITALIA</h2>
                 <p className="font-press-start text-xs text-yellow-400 max-w-md">
-                  Creatore di Playground Jam Bologna
-                </p>
-                <p className="text-xs text-white/70 max-w-md">
-                  Sviluppato con passione per la community di basket bolognese
+                  A breve altri playground in altre città italiane
                 </p>
               </div>
             </div>

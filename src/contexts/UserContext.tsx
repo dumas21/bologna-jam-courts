@@ -35,22 +35,25 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (nickname: string, isAdmin: boolean = false) => {
     const adminStatus = nickname.toLowerCase() === "matteo" || isAdmin;
+    const loginTime = Date.now().toString();
     
     localStorage.setItem("userLoggedIn", "true");
     localStorage.setItem("userNickname", JSON.stringify(nickname));
     localStorage.setItem("isUserAdmin", JSON.stringify(adminStatus));
+    localStorage.setItem("userLoginTime", loginTime);
     
     setIsLoggedIn(true);
     setNickname(nickname);
     setIsAdmin(adminStatus);
     
-    console.log(`User logged in: ${nickname}, Admin status: ${adminStatus}`);
+    console.log(`User logged in: ${nickname}, Admin status: ${adminStatus}, Login time: ${loginTime}`);
   };
 
   const logout = () => {
     localStorage.removeItem("userLoggedIn");
     localStorage.removeItem("userNickname");
     localStorage.removeItem("isUserAdmin");
+    localStorage.removeItem("userLoginTime");
     setIsLoggedIn(false);
     setNickname("");
     setIsAdmin(false);
