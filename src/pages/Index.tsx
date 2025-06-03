@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
@@ -108,7 +107,7 @@ const Index = () => {
         <Logo />
         
         <div className="flex justify-between items-center mb-4">
-          <div className="text-yellow-400 font-press-start text-xs">
+          <div className="date-display">
             {currentDate}
           </div>
           
@@ -118,7 +117,7 @@ const Index = () => {
                 playSoundEffect('click');
                 navigate('/stats');
               }}
-              className="pixel-button text-xs flex items-center gap-2 bg-blue-600"
+              className="pixel-button text-sm flex items-center gap-2 bg-blue-600"
             >
               <BarChart size={16} />
               <span className="hidden md:inline">Statistiche</span>
@@ -131,7 +130,7 @@ const Index = () => {
           <TabsList className="w-full grid grid-cols-3 mb-4">
             <TabsTrigger 
               value="map" 
-              className="font-press-start text-xs"
+              className="nike-text text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               <span className="hidden md:inline">Lista Bologna</span>
@@ -139,14 +138,14 @@ const Index = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="italia" 
-              className="font-press-start text-xs"
+              className="nike-text text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               Lista Italia
             </TabsTrigger>
             <TabsTrigger 
               value="events" 
-              className="font-press-start text-xs"
+              className="nike-text text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               <CalendarDays size={16} className="mr-1" />
@@ -177,8 +176,8 @@ const Index = () => {
           <TabsContent value="italia" className="animate-pixel-fade-in">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
               <div className="text-center space-y-4">
-                <h2 className="font-press-start text-lg text-red-600">LISTA ITALIA</h2>
-                <p className="font-press-start text-xs text-yellow-400 max-w-md">
+                <h2 className="nba-jam-heading text-xl">LISTA ITALIA</h2>
+                <p className="nike-text text-base max-w-md">
                   A breve altri playground in altre città italiane
                 </p>
               </div>
@@ -187,7 +186,7 @@ const Index = () => {
           
           <TabsContent value="events" className="animate-pixel-fade-in">
             <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
-              <p className="font-press-start text-xs text-red-600 mb-4">
+              <p className="nike-text text-base mb-4">
                 {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
               </p>
               {!isLoggedIn && (

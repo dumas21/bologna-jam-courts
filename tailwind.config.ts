@@ -78,6 +78,7 @@ export default {
 				'press-start': ['"Press Start 2P"', 'cursive'],
 				'orbitron': ['Orbitron', 'monospace'],
 				'exo': ['"Exo 2"', 'sans-serif'],
+				'saira': ['"Saira Condensed"', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

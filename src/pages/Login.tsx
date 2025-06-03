@@ -64,7 +64,7 @@ const Login = () => {
         
         <div className="max-w-md w-full mt-8">
           <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-            <h2 className="font-press-start text-xs md:text-sm text-center py-2 font-bold">
+            <h2 className="nike-text text-lg text-center py-3 font-bold text-white">
               INSERISCI IL TUO NICKNAME
             </h2>
           </div>
@@ -72,7 +72,7 @@ const Login = () => {
           <div className="pixel-card p-8">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <label className="font-press-start text-xs text-jam-orange">
+                <label className="nike-text text-base text-jam-orange">
                   Nickname
                 </label>
                 <div className="relative">
@@ -81,7 +81,7 @@ const Login = () => {
                     type="text"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
-                    className="bg-white text-black pl-10"
+                    className="bg-white text-black pl-10 font-saira font-semibold text-lg"
                     placeholder="Scegli il tuo nickname"
                     maxLength={20}
                   />
@@ -90,7 +90,7 @@ const Login = () => {
               
               <Button 
                 type="submit" 
-                className="pixel-button w-full"
+                className="pixel-button w-full text-lg py-4"
                 onClick={() => playSound("click")}
               >
                 ENTRA
@@ -98,8 +98,8 @@ const Login = () => {
             </form>
             
             <div className="mt-4 text-center">
-              <p className="text-xs text-white/70">
-                Il tuo nickname sarà visibile negli altri utenti nella chat dei playground
+              <p className="text-sm text-white/90 nike-text">
+                Il tuo nickname sarà visibile agli altri utenti nella chat dei playground
               </p>
             </div>
           </div>
