@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   User, 
@@ -10,16 +9,14 @@ import {
   LogOut,
   TimerReset,
   Calendar,
-  MessageSquare,
   Edit
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Playground, Comment, WeatherData } from "@/types/playground";
+import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
-import { formatTimeUntilReset } from "@/utils/timeUtils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import PlaygroundRating from "./PlaygroundRating";
 import PlaygroundChat from "./PlaygroundChat";
 import WeatherInfo from "./WeatherInfo";
@@ -48,10 +45,22 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     record => record.playgroundId === playground.id && nickname === record.nickname
   );
   
+  const playBasketballSound = (soundType: string) => {
+    const audio = new Audio(`/sounds/${soundType}.mp3`);
+    audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
+  
+  const openGoogleMaps = (address: string) => {
+    const encodedAddress = encodeURIComponent(address);
+    const url = `https://maps.google.com/maps?q=${encodedAddress}`;
+    window.open(url, '_blank');
+    playBasketballSound('click');
+  };
+  
   const handleCheckIn = () => {
     if (!isLoggedIn) {
       toast({
-        title: "Login richiesto",
+        title: "LOGIN RICHIESTO",
         description: "Devi effettuare il login per fare check-in",
         variant: "destructive"
       });
@@ -59,16 +68,17 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     }
     
     setShowConfirmDialog(true);
+    playBasketballSound('tab');
   };
   
   const processCheckIn = () => {
     const success = onCheckIn(playground.id, nickname);
     
     if (success) {
-      playSoundEffect('checkin');
+      playBasketballSound('checkin');
       toast({
-        title: "Check-in completato!",
-        description: `Non dimenticare di portare il pallone e tenere pulito! 🏀`,
+        title: "CHECK-IN COMPLETATO! 🏀",
+        description: `Non dimenticare di portare il pallone e tenere pulito!`,
       });
       setShowConfirmDialog(false);
     }
@@ -77,7 +87,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   const handleCheckOut = () => {
     if (!isLoggedIn) {
       toast({
-        title: "Login richiesto",
+        title: "LOGIN RICHIESTO",
         description: "Devi effettuare il login per fare check-out",
         variant: "destructive"
       });
@@ -87,10 +97,10 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
     const success = onCheckOut(playground.id, nickname);
     
     if (success) {
-      playSoundEffect('checkout');
+      playBasketballSound('checkout');
       toast({
-        title: "Check-out completato!",
-        description: `Grazie per aver aggiornato le presenze e mantenuto pulito il playground! 👋`,
+        title: "CHECK-OUT COMPLETATO! 👋",
+        description: `Grazie per aver aggiornato le presenze e mantenuto pulito il playground!`,
       });
     }
   };
@@ -98,133 +108,159 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   const handleEditPlayground = () => {
     localStorage.setItem("editPlaygroundId", playground.id);
     navigate("/add-playground");
-    playSoundEffect('click');
-  };
-
-  const playSoundEffect = (action: string) => {
-    const audio = new Audio(`/sounds/${action}.mp3`);
-    audio.play().catch(err => console.log('Audio playback error:', err));
+    playBasketballSound('click');
   };
 
   return (
-    <div className="pixel-card mt-6 animate-pixel-fade-in bg-black bg-opacity-70 backdrop-blur-md">
-      <div className="flex flex-wrap items-center justify-between mb-4">
-        <h3 className="font-press-start text-base md:text-xl text-red-600">
-          {playground.name}
+    <div className="glass-card mt-8 animate-pixel-fade-in p-6 rounded-lg">
+      <div className="flex flex-wrap items-center justify-between mb-6">
+        <h3 className="font-orbitron text-lg md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 font-black nike-text">
+          🏀 {playground.name.toUpperCase()}
         </h3>
         
-        <div className="flex items-center space-x-2 text-xs">
-          <Calendar size={14} className="text-blue-500" />
-          <span className="font-press-start">{currentDate}</span>
-          <Clock size={14} className="text-blue-500 ml-2" />
-          <span className="font-press-start">{currentTime}</span>
+        <div className="flex items-center space-x-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <Calendar size={16} className="text-blue-400 animate-neon-glow" />
+            <span className="font-exo font-bold text-white">{currentDate}</span>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Clock size={16} className="text-blue-400 animate-neon-glow" />
+            <span className="font-exo font-bold text-white">{currentTime}</span>
+          </div>
         </div>
       </div>
       
       <Tabs defaultValue="info">
-        <TabsList className="w-full mb-4">
-          <TabsTrigger value="info" className="text-xs" onClick={() => playSoundEffect('tab')}>Info</TabsTrigger>
-          <TabsTrigger value="chat" className="text-xs" onClick={() => playSoundEffect('tab')}>Chat</TabsTrigger>
-          <TabsTrigger value="meteo" className="text-xs" onClick={() => playSoundEffect('tab')}>Meteo</TabsTrigger>
+        <TabsList className="w-full mb-6 bg-black bg-opacity-70 border border-orange-500">
+          <TabsTrigger 
+            value="info" 
+            className="text-sm font-orbitron font-bold" 
+            onClick={() => playBasketballSound('tab')}
+          >
+            INFO
+          </TabsTrigger>
+          <TabsTrigger 
+            value="chat" 
+            className="text-sm font-orbitron font-bold" 
+            onClick={() => playBasketballSound('tab')}
+          >
+            CHAT
+          </TabsTrigger>
+          <TabsTrigger 
+            value="meteo" 
+            className="text-sm font-orbitron font-bold" 
+            onClick={() => playBasketballSound('tab')}
+          >
+            METEO
+          </TabsTrigger>
         </TabsList>
         
         <TabsContent value="info">
-          <div className="flex flex-col md:flex-row md:justify-between">
-            <div className="mb-4 md:mb-0 md:w-2/3">
-              <div className="flex items-start gap-2 mb-2">
-                <Home className="flex-shrink-0 text-red-600 mt-1" size={16} />
-                <span className="text-sm">{playground.address}</span>
+          <div className="flex flex-col md:flex-row md:justify-between gap-6">
+            <div className="md:w-2/3 space-y-4">
+              <div className="flex items-start gap-3 p-3 bg-black bg-opacity-50 rounded-lg border border-orange-500/30">
+                <Home className="flex-shrink-0 text-orange-500 mt-1 animate-neon-glow" size={20} />
+                <div>
+                  <span className="text-white font-exo font-medium">{playground.address}</span>
+                  <div 
+                    className="shoes-icon inline-block ml-3 cursor-pointer text-2xl"
+                    onClick={() => openGoogleMaps(playground.address)}
+                    title="Apri in Google Maps per le indicazioni"
+                  >
+                    👟
+                  </div>
+                </div>
               </div>
               
-              <div className="flex items-center gap-2 mb-2">
-                <Clock className="text-red-600" size={16} />
-                <span className="text-sm">{playground.openHours}</span>
+              <div className="flex items-center gap-3 p-3 bg-black bg-opacity-50 rounded-lg border border-orange-500/30">
+                <Clock className="text-orange-500 animate-neon-glow" size={20} />
+                <span className="text-white font-exo font-medium">{playground.openHours}</span>
               </div>
               
-              <div className="grid grid-cols-2 gap-2 md:gap-4 mt-4">
-                <div className="flex items-center gap-1">
+              <div className="grid grid-cols-2 gap-4 mt-6">
+                <div className="flex items-center gap-2 p-3 bg-black bg-opacity-50 rounded-lg border border-orange-500/30">
                   {playground.hasShade ? (
-                    <Umbrella className="text-green-400" size={16} />
+                    <Umbrella className="text-green-400 animate-neon-glow" size={18} />
                   ) : (
-                    <Umbrella className="text-red-400" size={16} />
+                    <Umbrella className="text-red-400" size={18} />
                   )}
-                  <span className="text-xs">Ombra</span>
+                  <span className="text-sm font-exo font-bold text-white">OMBRA</span>
                 </div>
                 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2 p-3 bg-black bg-opacity-50 rounded-lg border border-orange-500/30">
                   {playground.hasFountain ? (
-                    <Droplet className="text-green-400" size={16} />
+                    <Droplet className="text-green-400 animate-neon-glow" size={18} />
                   ) : (
-                    <Droplet className="text-red-400" size={16} />
+                    <Droplet className="text-red-400" size={18} />
                   )}
-                  <span className="text-xs">Fontanella</span>
+                  <span className="text-sm font-exo font-bold text-white">FONTANELLA</span>
                 </div>
                 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2 p-3 bg-black bg-opacity-50 rounded-lg border border-orange-500/30">
                   {playground.hasAmenities ? (
-                    <Home className="text-green-400" size={16} />
+                    <Home className="text-green-400 animate-neon-glow" size={18} />
                   ) : (
-                    <Home className="text-red-400" size={16} />
+                    <Home className="text-red-400" size={18} />
                   )}
-                  <span className="text-xs">Servizi</span>
+                  <span className="text-sm font-exo font-bold text-white">SERVIZI</span>
                 </div>
                 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2 p-3 bg-black bg-opacity-50 rounded-lg border border-orange-500/30">
                   {playground.hasLighting ? (
-                    <Sun className="text-yellow-400" size={16} />
+                    <Sun className="text-yellow-400 animate-neon-glow" size={18} />
                   ) : (
-                    <Sun className="text-red-400" size={16} />
+                    <Sun className="text-red-400" size={18} />
                   )}
-                  <span className="text-xs">Illuminazione</span>
+                  <span className="text-sm font-exo font-bold text-white">ILLUMINAZIONE</span>
                 </div>
               </div>
               
-              <div className="flex items-center gap-2 mt-4">
-                <span className="text-xs">Canestri:</span>
-                <span className="font-press-start text-yellow-400">
+              <div className="flex items-center gap-3 mt-6 p-3 bg-black bg-opacity-50 rounded-lg border border-orange-500/30">
+                <span className="text-sm font-exo font-bold text-white">🏀 CANESTRI:</span>
+                <span className="font-orbitron text-yellow-400 font-bold text-lg">
                   {playground.basketCount || 1}
                 </span>
               </div>
               
-              <div className="flex items-center gap-2 mt-2 text-xs text-blue-500">
-                <TimerReset size={14} />
-                <span>Reset conteggio alle 23:59 di oggi</span>
+              <div className="flex items-center gap-3 mt-3 text-sm text-blue-400 p-3 bg-black bg-opacity-30 rounded-lg">
+                <TimerReset size={16} className="animate-neon-glow" />
+                <span className="font-exo">Reset conteggio alle 23:59 di oggi</span>
               </div>
             </div>
             
-            <div className="flex flex-col md:items-end gap-3">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs">Presenze oggi:</span>
-                <div className="flex items-center bg-black p-2 rounded justify-center ml-2">
-                  <User className="text-blue-500" size={16} />
-                  <span className="font-press-start text-base ml-2">
+            <div className="flex flex-col md:items-end gap-4 md:w-1/3">
+              <div className="flex items-center justify-between mb-3 p-4 bg-black bg-opacity-70 rounded-lg border border-orange-500">
+                <span className="text-sm font-exo font-bold text-white">PRESENZE OGGI:</span>
+                <div className="flex items-center bg-gradient-to-r from-red-600 to-orange-500 p-3 rounded-lg justify-center ml-3">
+                  <User className="text-white" size={18} />
+                  <span className="font-orbitron text-white font-bold text-xl ml-2">
                     {playground.currentPlayers}
                   </span>
                 </div>
               </div>
               
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs">Totale check-in:</span>
-                <span className="font-press-start text-yellow-400 text-sm ml-2">
+              <div className="flex items-center justify-between mb-3 p-4 bg-black bg-opacity-70 rounded-lg border border-orange-500">
+                <span className="text-sm font-exo font-bold text-white">TOTALE CHECK-IN:</span>
+                <span className="font-orbitron text-yellow-400 font-bold text-lg ml-3">
                   {playground.totalCheckins}
                 </span>
               </div>
               
               <PlaygroundRating playground={playground} />
               
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-3 mt-4 w-full">
                 {userHasCheckedIn ? (
                   <Button 
                     onClick={handleCheckOut} 
-                    className="pixel-button bg-red-600 hover:bg-red-700 text-xs w-full md:w-auto"
+                    className="pixel-button text-sm w-full flex items-center gap-2"
                   >
-                    <LogOut size={16} />
-                    <span className="sm:inline">CHECK-OUT</span>
+                    <LogOut size={18} />
+                    <span>CHECK-OUT</span>
                   </Button>
                 ) : (
                   <Button 
                     onClick={handleCheckIn} 
-                    className="pixel-button text-xs w-full md:w-auto"
+                    className="pixel-button text-sm w-full"
                   >
                     CHECK-IN
                   </Button>
@@ -233,10 +269,10 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
                 {isLoggedIn && userHasCheckedIn && (
                   <Button 
                     onClick={handleEditPlayground} 
-                    className="pixel-button bg-blue-600 hover:bg-blue-700 text-xs w-full md:w-auto"
+                    className="pixel-button bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-sm flex items-center gap-2"
                   >
-                    <Edit size={16} />
-                    <span className="sm:inline">MODIFICA</span>
+                    <Edit size={18} />
+                    <span>MODIFICA</span>
                   </Button>
                 )}
               </div>
@@ -259,24 +295,29 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
       </Tabs>
       
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <DialogContent className="glass-card text-white">
+        <DialogContent className="glass-card text-white border border-orange-500">
           <DialogHeader>
-            <DialogTitle className="text-red-600 font-press-start">Conferma check-in</DialogTitle>
+            <DialogTitle className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 font-orbitron font-bold">
+              🏀 CONFERMA CHECK-IN
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 pt-4">
-            <p className="text-xs">Sei sicuro di voler fare il check-in in questo playground?</p>
-            <div className="flex justify-end gap-2">
+          <div className="space-y-6 pt-4">
+            <p className="text-sm font-exo font-medium">Sei sicuro di voler fare il check-in in questo playground?</p>
+            <div className="flex justify-end gap-3">
               <Button 
-                className="pixel-button bg-gray-600" 
-                onClick={() => setShowConfirmDialog(false)}
+                className="pixel-button bg-gray-600 hover:bg-gray-700" 
+                onClick={() => {
+                  setShowConfirmDialog(false);
+                  playBasketballSound('click');
+                }}
               >
-                Annulla
+                ANNULLA
               </Button>
               <Button 
                 className="pixel-button" 
                 onClick={processCheckIn}
               >
-                Conferma
+                CONFERMA
               </Button>
             </div>
           </div>

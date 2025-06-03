@@ -36,13 +36,11 @@ export interface WeatherData {
   icon: string;
 }
 
-// Tipo playground
+// Tipo playground aggiornato - rimossi lat e lng
 export interface Playground {
   id: string;
   name: string;
   address: string;      // equivalente a location
-  lat: number;
-  lng: number;
   openHours: string;
   hasShade: boolean;
   hasFountain: boolean;

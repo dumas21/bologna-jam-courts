@@ -12,71 +12,99 @@ interface MapViewProps {
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
   const { isLoggedIn, nickname } = useUser();
   
+  const playBasketballSound = () => {
+    const audio = new Audio('/sounds/select.mp3');
+    audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
+  
+  const openGoogleMaps = (address: string) => {
+    const encodedAddress = encodeURIComponent(address);
+    const url = `https://maps.google.com/maps?q=${encodedAddress}`;
+    window.open(url, '_blank');
+    
+    // Play basketball sound
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
+  
   return (
-    <div className="relative w-full bg-black bg-opacity-70 backdrop-blur-sm border-2 border-red-600 p-4 overflow-hidden rounded-md">
-      <div className="flex justify-between items-center mb-4">
-        <div className="text-xs font-press-start text-red-600 font-bold">
-          Playground Bologna - {playgrounds.length} campi disponibili
+    <div className="relative w-full bg-black bg-opacity-80 backdrop-blur-lg border-4 border-transparent p-6 overflow-hidden rounded-lg glass-card">
+      <div className="flex justify-between items-center mb-6">
+        <div className="text-sm font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 font-bold nike-text">
+          🏀 PLAYGROUND BOLOGNA - {playgrounds.length} CAMPI DISPONIBILI 🏀
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto pr-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[400px] overflow-y-auto pr-2">
         {playgrounds && playgrounds.length > 0 ? (
           playgrounds.map((playground) => (
             <div 
               key={playground.id}
-              className={`cursor-pointer transition-colors ${
+              className={`cursor-pointer transition-all duration-300 ${
                 selectedPlayground?.id === playground.id 
-                  ? 'bg-red-600 bg-opacity-70' 
+                  ? 'bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500' 
                   : 'bg-black bg-opacity-70'
-              } backdrop-blur-sm p-3 border border-white/20 rounded-md`}
+              } backdrop-blur-sm p-4 border-2 border-orange-500 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-orange-500/30`}
               onClick={() => {
                 console.log("Selezionato playground:", playground);
                 onSelectPlayground(playground);
-                // Play sound effect
-                const audio = new Audio('/sounds/select.mp3');
-                audio.play().catch(err => console.log('Audio playback error:', err));
+                playBasketballSound();
               }}
             >
-              <div className="flex justify-between items-start">
-                <div className="font-press-start text-xs mb-2 text-blue-400 font-bold">
-                  {playground.name}
+              <div className="flex justify-between items-start mb-3">
+                <div className="font-orbitron text-sm mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-bold nike-text">
+                  {playground.name.toUpperCase()}
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center bg-black px-2 py-1 rounded">
-                    <Users size={12} className="text-red-600 mr-1" />
-                    <span className="text-xs font-press-start">{playground.currentPlayers}</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center bg-black bg-opacity-70 px-3 py-1 rounded-full border border-orange-500">
+                    <Users size={14} className="text-red-500 mr-2" />
+                    <span className="text-sm font-orbitron font-bold text-white">{playground.currentPlayers}</span>
                   </div>
                   {playground.hasLighting && (
-                    <Lightbulb size={12} className="text-yellow-400" />
+                    <Lightbulb size={14} className="text-yellow-400 animate-neon-glow" />
                   )}
+                  {/* Basketball Shoes Icon for Google Maps */}
+                  <div 
+                    className="shoes-icon w-8 h-8 flex items-center justify-center"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openGoogleMaps(playground.address);
+                    }}
+                    title="Apri in Google Maps"
+                  >
+                    👟
+                  </div>
                 </div>
               </div>
-              <div className="text-xs text-white/70 mb-1 font-bold">
-                {playground.address}
+              
+              <div className="text-sm text-white/90 mb-2 font-exo font-medium">
+                📍 {playground.address}
               </div>
-              <div className="flex items-center mt-2">
-                <span className="text-xs">
-                  {playground.openHours}
+              
+              <div className="flex items-center justify-between mt-3">
+                <span className="text-sm font-exo text-white/80">
+                  🕒 {playground.openHours}
                 </span>
-                <span className="text-xs ml-auto font-bold">
-                  Canestri: {playground.basketCount}
+                <span className="text-sm font-orbitron font-bold text-yellow-400">
+                  🏀 Canestri: {playground.basketCount}
                 </span>
               </div>
               
               {/* Display registered users if any */}
               {isLoggedIn && playground.currentPlayers > 0 && (
-                <div className="mt-2 pt-2 border-t border-white/10">
-                  <div className="text-xs text-red-600 font-press-start mb-1 font-bold">Presenze:</div>
-                  <div className="text-xs text-white/70 italic">
+                <div className="mt-3 pt-3 border-t border-white/20">
+                  <div className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 font-orbitron font-bold mb-2">
+                    🔥 PRESENZE OGGI:
+                  </div>
+                  <div className="text-sm text-white/80 font-exo">
                     {nickname && 
-                      <div className="flex items-center">
-                        <Users size={10} className="text-blue-400 mr-1" />
-                        <span>{nickname}</span>
+                      <div className="flex items-center mb-1">
+                        <Users size={12} className="text-blue-400 mr-2" />
+                        <span className="font-bold text-blue-400">{nickname.toUpperCase()}</span>
                       </div>
                     }
                     {playground.currentPlayers > (nickname ? 1 : 0) && 
-                      <div className="text-xs text-white/50">
+                      <div className="text-xs text-white/60 font-exo">
                         + altri {playground.currentPlayers - (nickname ? 1 : 0)} giocatori
                       </div>
                     }
@@ -86,8 +114,8 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
             </div>
           ))
         ) : (
-          <div className="col-span-2 text-center text-red-600 font-press-start p-4">
-            Nessun playground disponibile
+          <div className="col-span-2 text-center text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 font-orbitron p-6">
+            🚫 NESSUN PLAYGROUND DISPONIBILE
           </div>
         )}
       </div>

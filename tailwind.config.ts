@@ -1,5 +1,4 @@
 
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -70,11 +69,15 @@ export default {
           blue: '#0EA5E9',
           pink: '#D946EF',
           dark: '#1A1F2C',
-          yellow: '#FBBF24', // Aggiunto per l'icona di illuminazione
+          yellow: '#FBBF24',
+          'neon-orange': '#FF6B35',
+          'neon-yellow': '#FFD23F',
         }
 			},
 			fontFamily: {
 				'press-start': ['"Press Start 2P"', 'cursive'],
+				'orbitron': ['Orbitron', 'monospace'],
+				'exo': ['"Exo 2"', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -106,15 +109,25 @@ export default {
           '0%': { opacity: '0', transform: 'translateY(4px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' }
         },
+        'neon-glow': {
+          '0%, 100%': { 
+            textShadow: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor',
+            filter: 'brightness(1)'
+          },
+          '50%': { 
+            textShadow: '0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor',
+            filter: 'brightness(1.2)'
+          }
+        },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
         'pixel-bounce': 'pixel-bounce 0.5s ease infinite',
         'pixel-fade-in': 'pixel-fade-in 0.3s ease-out',
+        'neon-glow': 'neon-glow 2s ease-in-out infinite',
 			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-

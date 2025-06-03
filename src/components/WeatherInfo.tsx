@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Cloud, Sun, CloudRain, CloudSnow } from 'lucide-react';
+import { Cloud, Sun, CloudRain, CloudSnow, Zap } from 'lucide-react';
 
 interface WeatherData {
   temperature: number;
@@ -45,22 +45,28 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   }, [location]);
   
   const getWeatherIcon = (condition: string) => {
+    const iconProps = { size: 32, className: "animate-neon-glow" };
+    
     if (condition.includes('Soleggiato') || condition.includes('Sun')) {
-      return <Sun size={24} className="text-yellow-500" />;
+      return <Sun {...iconProps} className="text-yellow-400 animate-neon-glow" />;
     } else if (condition.includes('Pioggia') || condition.includes('Rain')) {
-      return <CloudRain size={24} className="text-blue-500" />;
+      return <CloudRain {...iconProps} className="text-blue-400 animate-neon-glow" />;
     } else if (condition.includes('Neve') || condition.includes('Snow')) {
-      return <CloudSnow size={24} className="text-blue-300" />;
+      return <CloudSnow {...iconProps} className="text-blue-300 animate-neon-glow" />;
     } else {
-      return <Cloud size={24} className="text-gray-500" />;
+      return <Cloud {...iconProps} className="text-gray-400 animate-neon-glow" />;
     }
   };
   
   if (loading) {
     return (
-      <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 mb-4">
-        <div className="flex items-center justify-center h-20">
-          <p className="text-gray-500 text-sm">Caricamento meteo...</p>
+      <div className="weather-cartoon p-6 mb-6 relative">
+        <div className="relative z-10 flex items-center justify-center h-24">
+          <div className="flex items-center space-x-2">
+            <Zap size={24} className="text-black animate-bounce" />
+            <p className="text-black text-xs font-bold nike-text">LOADING WEATHER...</p>
+            <Zap size={24} className="text-black animate-bounce" />
+          </div>
         </div>
       </div>
     );
@@ -68,47 +74,51 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   
   if (!weather) {
     return (
-      <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 mb-4">
-        <div className="flex items-center justify-center h-20">
-          <p className="text-red-500 text-sm">Errore nel caricamento meteo</p>
+      <div className="weather-cartoon p-6 mb-6 relative">
+        <div className="relative z-10 flex items-center justify-center h-24">
+          <p className="text-black text-xs font-bold nike-text">WEATHER ERROR!</p>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 mb-4">
-      <h4 className="font-press-start text-xs mb-3 text-jam-purple flex items-center">
-        {getWeatherIcon(weather.condition)}
-        <span className="ml-2">Meteo a {playgroundName}</span>
-      </h4>
-      
-      <div className="grid grid-cols-2 gap-4 text-sm">
-        <div className="flex flex-col">
-          <span className="text-gray-600">Temperatura</span>
-          <span className="font-semibold text-lg text-jam-blue">{weather.temperature}°C</span>
+    <div className="weather-cartoon p-6 mb-6 relative">
+      <div className="relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <h4 className="font-press-start text-xs text-black nike-text flex items-center">
+            {getWeatherIcon(weather.condition)}
+            <span className="ml-3">METEO {playgroundName.toUpperCase()}</span>
+          </h4>
         </div>
         
-        <div className="flex flex-col">
-          <span className="text-gray-600">Condizioni</span>
-          <span className="font-medium">{weather.condition}</span>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
+            <div className="text-black text-xs font-bold mb-1 nike-text">TEMP</div>
+            <div className="text-black text-2xl font-black font-orbitron">{weather.temperature}°C</div>
+          </div>
+          
+          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
+            <div className="text-black text-xs font-bold mb-1 nike-text">STATO</div>
+            <div className="text-black text-xs font-black font-orbitron">{weather.condition.toUpperCase()}</div>
+          </div>
+          
+          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
+            <div className="text-black text-xs font-bold mb-1 nike-text">UMIDITÀ</div>
+            <div className="text-black text-lg font-black font-orbitron">{weather.humidity}%</div>
+          </div>
+          
+          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
+            <div className="text-black text-xs font-bold mb-1 nike-text">VENTO</div>
+            <div className="text-black text-lg font-black font-orbitron">{weather.windSpeed} KM/H</div>
+          </div>
         </div>
         
-        <div className="flex flex-col">
-          <span className="text-gray-600">Umidità</span>
-          <span className="font-medium">{weather.humidity}%</span>
+        <div className="mt-4 pt-3 border-t-2 border-black">
+          <p className="text-black text-xs font-bold nike-text text-center">
+            📍 {location.toUpperCase()}
+          </p>
         </div>
-        
-        <div className="flex flex-col">
-          <span className="text-gray-600">Vento</span>
-          <span className="font-medium">{weather.windSpeed} km/h</span>
-        </div>
-      </div>
-      
-      <div className="mt-3 pt-3 border-t border-gray-200">
-        <p className="text-xs text-gray-500">
-          Dati meteo aggiornati per la zona di {location}
-        </p>
       </div>
     </div>
   );
