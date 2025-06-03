@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,6 +7,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
 
 @layer base {
   :root {
@@ -101,19 +104,54 @@
     background-attachment: fixed;
     background-repeat: no-repeat;
     overflow-x: hidden;
-    font-family: 'Saira Condensed', 'Exo 2', sans-serif;
+    font-family: 'Bebas Neue', 'Anton', 'Saira Condensed', sans-serif;
   }
   
   /* Improved text readability */
   h1, h2, h3, h4, h5, h6 {
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
     font-weight: 700;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    letter-spacing: 2px;
   }
   
   p, span, div {
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    font-family: 'Bebas Neue', 'Saira Condensed', sans-serif;
   }
   
+  /* Enhanced animations */
+  @keyframes text-flashing {
+    0%, 100% { 
+      text-shadow: 0 0 10px #FF6B35, 0 0 20px #FF6B35, 3px 3px 6px rgba(0,0,0,0.9);
+      transform: scale(1);
+    }
+    50% { 
+      text-shadow: 0 0 25px #FFD23F, 0 0 40px #FFD23F, 3px 3px 6px rgba(0,0,0,0.9);
+      transform: scale(1.02);
+    }
+  }
+  
+  @keyframes nike-glow {
+    0%, 100% { 
+      box-shadow: 0 0 15px rgba(255, 107, 53, 0.6), inset 0 0 15px rgba(255, 107, 53, 0.2);
+    }
+    50% { 
+      box-shadow: 0 0 30px rgba(255, 210, 63, 0.8), inset 0 0 25px rgba(255, 210, 63, 0.3);
+    }
+  }
+
+  @keyframes neon-pulse {
+    0%, 100% { 
+      filter: brightness(1) saturate(1.2);
+      text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+    }
+    50% { 
+      filter: brightness(1.3) saturate(1.5);
+      text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+    }
+  }
+
   /* Improved scrolling */
   ::-webkit-scrollbar {
     width: 12px;
@@ -133,238 +171,186 @@
   ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #FFD23F, #F7931E, #FF6B35);
   }
-  
-  /* Enhanced animations */
-  @keyframes text-flashing {
-    0%, 100% { 
-      text-shadow: 0 0 10px #FF6B35, 0 0 20px #FF6B35, 2px 2px 4px rgba(0,0,0,0.9);
-      transform: scale(1);
-    }
-    50% { 
-      text-shadow: 0 0 25px #FFD23F, 0 0 40px #FFD23F, 2px 2px 4px rgba(0,0,0,0.9);
-      transform: scale(1.02);
-    }
-  }
-  
-  @keyframes nike-glow {
-    0%, 100% { 
-      box-shadow: 0 0 15px rgba(255, 107, 53, 0.6), inset 0 0 15px rgba(255, 107, 53, 0.2);
-    }
-    50% { 
-      box-shadow: 0 0 30px rgba(255, 210, 63, 0.8), inset 0 0 25px rgba(255, 210, 63, 0.3);
-    }
-  }
-  
-  @keyframes blink-cursor {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  @keyframes neon-pulse {
-    0%, 100% { 
-      filter: brightness(1) saturate(1.2);
-      text-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
-    }
-    50% { 
-      filter: brightness(1.3) saturate(1.5);
-      text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
-    }
-  }
 }
 
 @layer components {
-  /* Tab buttons - much more readable */
+  /* Tab buttons - much more readable with 80s/90s style */
   .tab-button {
-    @apply bg-black bg-opacity-70 backdrop-blur-sm;
-    @apply text-white font-bold text-sm px-4 py-3;
-    @apply border-2 border-orange-500;
+    @apply bg-black bg-opacity-80 backdrop-blur-sm;
+    @apply text-white font-bold text-base px-6 py-4;
+    @apply border-3 border-orange-500;
     @apply transition-all duration-300;
-    font-family: 'Saira Condensed', sans-serif;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
   }
   
   .tab-button:hover {
-    @apply bg-orange-600 border-yellow-400;
+    @apply bg-gradient-to-r from-orange-600 to-red-600 border-yellow-400;
     @apply text-white;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+    transform: scale(1.05);
   }
   
   .tab-button[data-state="active"] {
-    @apply bg-gradient-to-r from-orange-600 to-red-600;
+    @apply bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500;
     @apply border-yellow-400 text-white;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+    transform: scale(1.05);
   }
 
   .pixel-border {
-    @apply border-4 border-white shadow-[6px_6px_0px_0px_rgba(0,0,0,0.9)];
-    box-shadow: 6px 6px 0px 0px rgba(0,0,0,0.9), 0 0 20px rgba(255, 107, 53, 0.3);
+    @apply border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.9)];
+    box-shadow: 8px 8px 0px 0px rgba(0,0,0,0.9), 0 0 25px rgba(255, 107, 53, 0.4);
   }
   
   .pixel-button {
-    @apply pixel-border bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 hover:from-yellow-500 hover:via-orange-500 hover:to-red-600 transition-all duration-300 px-6 py-3 uppercase font-bold text-white;
-    font-family: 'Saira Condensed', sans-serif;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    @apply pixel-border bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 hover:from-yellow-500 hover:via-orange-500 hover:to-red-600 transition-all duration-300 px-8 py-4 uppercase font-bold text-white;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
     animation: nike-glow 2s ease-in-out infinite;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     font-weight: 800;
+    font-size: 1.1rem;
   }
   
   .pixel-card {
-    @apply pixel-border bg-black bg-opacity-80 backdrop-blur-lg p-6;
-    border: 3px solid;
+    @apply pixel-border bg-black bg-opacity-85 backdrop-blur-lg p-6;
+    border: 4px solid;
     border-image: linear-gradient(45deg, #FF6B35, #F7931E, #FFD23F, #FF6B35) 1;
   }
 
-  /* More readable headings */
+  /* NBA JAM / Rocky style headings */
   .nba-jam-heading {
     @apply font-bold text-white;
-    font-family: 'Saira Condensed', sans-serif;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
     font-weight: 900;
-    letter-spacing: 2px;
-    font-size: clamp(1rem, 4vw, 2rem);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9), 0 0 8px rgba(255, 107, 53, 0.6);
-  }
-
-  /* Nike-style readable text */
-  .nike-text {
-    font-family: 'Saira Condensed', sans-serif;
-    font-weight: 800;
-    letter-spacing: 1px;
+    letter-spacing: 3px;
+    font-size: clamp(1.2rem, 5vw, 2.5rem);
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 12px rgba(255, 107, 53, 0.7);
     text-transform: uppercase;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  }
+
+  /* Nike/NBA style readable text */
+  .nike-text {
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
     color: white;
+    font-size: 1.1rem;
   }
 
-  /* Playground names - much more readable */
+  /* Playground names - NBA/Nike style */
   .playground-name {
-    font-family: 'Saira Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1.25rem;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
     color: #FFD23F;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-    letter-spacing: 0.5px;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
 
-  .retro-grid-bg {
-    background-image: linear-gradient(rgba(18, 16, 37, 0.7), rgba(18, 16, 37, 0.8)),
-                      linear-gradient(0deg, rgba(255, 107, 53, 0.3) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(255, 107, 53, 0.3) 1px, transparent 1px);
-    background-size: 100% 100%, 40px 40px, 40px 40px;
-  }
-
-  .content-container {
-    @apply bg-black bg-opacity-80 backdrop-blur-lg;
-    border: 2px solid;
-    border-image: linear-gradient(45deg, #FF6B35, #FFD23F) 1;
-  }
-  
   .glass-card {
-    @apply bg-black bg-opacity-80 backdrop-blur-lg;
-    border: 2px solid;
+    @apply bg-black bg-opacity-85 backdrop-blur-lg;
+    border: 3px solid;
     border-image: linear-gradient(45deg, #FF6B35, #F7931E, #FFD23F) 1;
-    box-shadow: 0 0 25px rgba(255, 107, 53, 0.4), inset 0 0 25px rgba(255, 107, 53, 0.1);
+    box-shadow: 0 0 30px rgba(255, 107, 53, 0.5), inset 0 0 30px rgba(255, 107, 53, 0.15);
   }
   
-  .glass-panel {
-    @apply bg-black bg-opacity-80 backdrop-blur-lg;
-  }
-  
-  /* Header and login area - much more visible */
+  /* Header and login area - NBA style */
   .header-text {
-    font-family: 'Saira Condensed', sans-serif;
-    font-weight: 700;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    font-weight: 900;
     color: #FFD23F;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-    font-size: 1rem;
-    letter-spacing: 0.5px;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
   
   .login-button {
     @apply bg-gradient-to-r from-blue-600 to-purple-600;
-    @apply border-2 border-blue-400 text-white font-bold px-4 py-2 rounded;
-    font-family: 'Saira Condensed', sans-serif;
-    font-weight: 700;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    @apply border-3 border-blue-400 text-white font-bold px-6 py-3 rounded;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    font-weight: 900;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
     transition: all 0.3s ease;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
   
   .login-button:hover {
     @apply bg-gradient-to-r from-purple-600 to-pink-600;
     @apply border-pink-400;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+    transform: scale(1.05);
   }
   
   /* Enhanced chat elements */
   .chat-message {
-    @apply my-3 p-3 rounded-lg;
-    font-family: 'Saira Condensed', sans-serif;
+    @apply my-3 p-4 rounded-lg;
+    font-family: 'Bebas Neue', 'Saira Condensed', sans-serif;
     font-weight: 600;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
   }
   
   .chat-message-user {
     @apply bg-gradient-to-r from-red-600 to-orange-500 ml-auto mr-2 max-w-[80%];
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
   }
   
   .chat-message-other {
     @apply bg-gradient-to-r from-blue-600 to-purple-600 mr-auto ml-2 max-w-[80%];
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
   }
   
-  /* Date display - more readable */
+  /* Date display - Rocky/NBA style */
   .date-display {
-    font-family: 'Saira Condensed', sans-serif;
-    font-weight: 700;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    font-weight: 900;
     color: #FFD23F;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-    font-size: 0.875rem;
-    letter-spacing: 0.5px;
-  }
-  
-  /* Weather box styling */
-  .weather-cartoon {
-    background: linear-gradient(135deg, #FF6B35, #F7931E, #FFD23F);
-    border: 4px solid #000;
-    border-radius: 20px;
-    box-shadow: 8px 8px 0px #000, 0 0 30px rgba(255, 107, 53, 0.5);
-    font-family: 'Saira Condensed', sans-serif;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .weather-cartoon::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 2px,
-      rgba(255, 255, 255, 0.1) 2px,
-      rgba(255, 255, 255, 0.1) 4px
-    );
-    animation: slide 3s linear infinite;
-  }
-  
-  @keyframes slide {
-    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
 
+  /* Enhanced shoes icon */
   .shoes-icon {
     @apply cursor-pointer transition-all duration-300;
-    filter: drop-shadow(0 0 8px rgba(255, 107, 53, 0.6));
+    filter: drop-shadow(0 0 12px rgba(255, 107, 53, 0.8));
+    font-size: 2rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
   }
   
   .shoes-icon:hover {
-    transform: scale(1.1) rotate(5deg);
-    filter: drop-shadow(0 0 15px rgba(255, 210, 63, 0.8));
+    transform: scale(1.2) rotate(10deg);
+    filter: drop-shadow(0 0 20px rgba(255, 210, 63, 1));
+    animation: neon-pulse 1s ease-in-out infinite;
+  }
+
+  /* Rating stars horizontal layout */
+  .star-rating {
+    @apply flex items-center gap-1;
+  }
+
+  .star {
+    @apply cursor-pointer transition-all duration-200;
+    color: #666;
+  }
+
+  .star.filled {
+    color: #FFD23F;
+    filter: drop-shadow(0 0 8px rgba(255, 210, 63, 0.8));
+  }
+
+  .star:hover {
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 10px rgba(255, 210, 63, 1));
   }
 }
 

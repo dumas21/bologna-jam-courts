@@ -54,8 +54,8 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     
     if (!isLoggedIn || !nickname) {
       toast({
-        title: "Login richiesto",
-        description: "Devi effettuare il login per inviare messaggi",
+        title: "LOGIN RICHIESTO",
+        description: "Devi effettuare il login e inserire un nickname per inviare messaggi",
         variant: "destructive"
       });
       return;
@@ -81,7 +81,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     setMessage("");
     
     toast({
-      title: "Messaggio inviato",
+      title: "MESSAGGIO INVIATO",
       description: "Il tuo messaggio è stato pubblicato nella chat",
     });
   };
@@ -94,60 +94,64 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   };
   
   return (
-    <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-      <h3 className="font-press-start text-xs mb-3 flex items-center text-black">
-        <MessageSquare size={16} className="mr-2 text-blue-600" /> 
-        Chat di {playground.name}
+    <div className="bg-white p-6 rounded-lg border-4 border-orange-500 shadow-lg">
+      <h3 className="nike-text text-lg mb-4 flex items-center text-black">
+        <MessageSquare size={20} className="mr-3 text-blue-600" /> 
+        CHAT DI {playground.name.toUpperCase()}
       </h3>
       
-      <div className="bg-gray-50 p-3 rounded-md mb-4 h-60 overflow-y-auto shadow-inner border">
-        <div className="text-xs text-center text-blue-600 mb-3 font-semibold">
-          Chat valida fino al {chatResetDate}
+      <div className="bg-gray-50 p-4 rounded-md mb-6 h-64 overflow-y-auto shadow-inner border-2 border-gray-200">
+        <div className="text-sm text-center text-blue-600 mb-4 nike-text">
+          CHAT VALIDA FINO AL {chatResetDate}
         </div>
         
         {comments && comments.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {comments.map((comment, index) => (
-              <div key={index} className="p-3 rounded-lg bg-white border border-gray-200 shadow-sm">
-                <div className="text-sm text-black break-words leading-relaxed">{comment.text}</div>
-                <div className="text-xs text-gray-600 mt-2 flex justify-between items-center">
-                  <span className="font-medium text-blue-600">{comment.user}</span>
-                  <span>{format(new Date(comment.timestamp), 'dd/MM/yyyy HH:mm', { locale: it })}</span>
+              <div key={index} className="p-4 rounded-lg bg-white border-2 border-gray-200 shadow-sm">
+                <div className="text-base text-black break-words leading-relaxed nike-text">{comment.text}</div>
+                <div className="text-sm text-gray-600 mt-3 flex justify-between items-center">
+                  <span className="font-bold text-blue-600 nike-text">{comment.user}</span>
+                  <span className="nike-text">{format(new Date(comment.timestamp), 'dd/MM/yyyy HH:mm', { locale: it })}</span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <div className="h-full flex items-center justify-center">
-            <p className="text-gray-500 font-press-start text-xs text-center">
-              Nessun messaggio nella chat di {playground.name}
+            <p className="text-gray-500 nike-text text-sm text-center">
+              NESSUN MESSAGGIO NELLA CHAT DI {playground.name.toUpperCase()}
             </p>
           </div>
         )}
       </div>
       
-      <div className="flex gap-3 items-end">
-        <Textarea 
-          placeholder={`Scrivi nella chat di ${playground.name}...`}
-          className="bg-white text-black border-gray-300 min-h-[60px] flex-1 text-sm resize-none"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          disabled={!isLoggedIn}
-          onKeyDown={handleKeyPress}
-        />
-        <Button 
-          onClick={handleSendMessage}
-          className="bg-blue-600 hover:bg-blue-700 text-white h-[60px] px-4 flex items-center justify-center rounded-lg"
-          disabled={!isLoggedIn || !message.trim()}
-        >
-          <Send size={18} />
-        </Button>
-      </div>
-      
-      {!isLoggedIn && (
-        <p className="text-xs text-red-600 mt-2 text-center">
-          Effettua il login per partecipare alla chat
-        </p>
+      {!isLoggedIn ? (
+        <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4 text-center">
+          <p className="text-red-700 nike-text text-sm mb-2">
+            DEVI EFFETTUARE IL LOGIN PER SCRIVERE IN CHAT
+          </p>
+          <p className="text-red-600 text-xs nike-text">
+            Vai alla pagina di login e inserisci il tuo nickname
+          </p>
+        </div>
+      ) : (
+        <div className="flex gap-4 items-end">
+          <Textarea 
+            placeholder={`Scrivi nella chat di ${playground.name}...`}
+            className="bg-white text-black border-2 border-gray-300 min-h-[80px] flex-1 text-base resize-none nike-text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyPress}
+          />
+          <Button 
+            onClick={handleSendMessage}
+            className="bg-blue-600 hover:bg-blue-700 text-white h-[80px] px-6 flex items-center justify-center rounded-lg nike-text"
+            disabled={!message.trim()}
+          >
+            <Send size={20} />
+          </Button>
+        </div>
       )}
     </div>
   );

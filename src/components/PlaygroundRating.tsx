@@ -51,13 +51,13 @@ const PlaygroundRating = ({ playground }: PlaygroundRatingProps) => {
   };
 
   return (
-    <div className="flex flex-col items-start">
-      <div className="flex items-center gap-1 mb-1">
-        <span className="text-xs">Valutazione:</span>
-        <span className="text-jam-yellow font-press-start ml-1">
+    <div className="flex flex-col items-start bg-black bg-opacity-60 p-4 rounded-lg border border-orange-500/30">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-sm nike-text text-white">VALUTAZIONE:</span>
+        <span className="text-yellow-400 font-bold text-lg nike-text">
           {rating.toFixed(1)}
         </span>
-        <span className="text-xs text-gray-400 ml-1">
+        <span className="text-xs text-white/60 nike-text">
           ({playground.ratingCount || 0})
         </span>
       </div>
@@ -68,11 +68,11 @@ const PlaygroundRating = ({ playground }: PlaygroundRatingProps) => {
           return (
             <Star
               key={index}
-              size={16}
+              size={20}
               className={`
                 star 
                 ${starValue <= (hoveredRating || rating) ? 'filled' : ''} 
-                ${hoveredRating && starValue <= hoveredRating ? 'text-jam-yellow' : ''}
+                ${hoveredRating && starValue <= hoveredRating ? 'text-yellow-400' : ''}
               `}
               onMouseEnter={() => !hasVoted && setHoveredRating(starValue)}
               onMouseLeave={() => setHoveredRating(0)}
@@ -83,7 +83,7 @@ const PlaygroundRating = ({ playground }: PlaygroundRatingProps) => {
       </div>
       
       {hasVoted && (
-        <span className="text-xs text-green-400 mt-1">Grazie per il tuo voto!</span>
+        <span className="text-xs text-green-400 mt-2 nike-text">GRAZIE PER IL VOTO!</span>
       )}
     </div>
   );
