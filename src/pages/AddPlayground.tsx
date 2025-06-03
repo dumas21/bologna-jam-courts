@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -18,8 +19,6 @@ import { useUser } from "@/contexts/UserContext";
 const formSchema = z.object({
   name: z.string().min(3, { message: "Il nome deve avere almeno 3 caratteri" }),
   address: z.string().min(5, { message: "Inserisci un indirizzo valido" }),
-  lat: z.coerce.number().min(-90).max(90),
-  lng: z.coerce.number().min(-180).max(180),
   openHours: z.string().min(5, { message: "Inserisci orari validi (es. 08:00 - 22:00)" }),
   hasShade: z.boolean().default(false),
   hasFountain: z.boolean().default(false),
@@ -57,8 +56,6 @@ const AddPlayground = () => {
           form.reset({
             name: playground.name,
             address: playground.address,
-            lat: playground.lat,
-            lng: playground.lng,
             openHours: playground.openHours,
             hasShade: playground.hasShade,
             hasFountain: playground.hasFountain,
@@ -78,8 +75,6 @@ const AddPlayground = () => {
     defaultValues: {
       name: "",
       address: "",
-      lat: 44.49, // Default coordinate Bologna
-      lng: 11.34,
       openHours: "08:00 - 22:00",
       hasShade: false,
       hasFountain: false,
@@ -118,8 +113,6 @@ const AddPlayground = () => {
           ...existingPlayground,
           name: data.name,
           address: data.address,
-          lat: data.lat,
-          lng: data.lng,
           openHours: data.openHours,
           hasShade: data.hasShade,
           hasFountain: data.hasFountain,
@@ -144,16 +137,16 @@ const AddPlayground = () => {
       }
     }
     
-    // Check for duplicate coordinates for new playgrounds
+    // Check for duplicate addresses for new playgrounds
     if (!isEditing) {
       const isDuplicate = existingPlaygrounds.some(
-        pg => Math.abs(pg.lat - data.lat) < 0.0001 && Math.abs(pg.lng - data.lng) < 0.0001
+        pg => pg.address.toLowerCase() === data.address.toLowerCase()
       );
       
       if (isDuplicate) {
         toast({
           title: "Errore",
-          description: "Esiste già un playground in questa posizione!",
+          description: "Esiste già un playground a questo indirizzo!",
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -166,8 +159,6 @@ const AddPlayground = () => {
       id: isEditing && editId ? editId : `pg-${Date.now()}`,
       name: data.name,
       address: data.address,
-      lat: data.lat,
-      lng: data.lng,
       openHours: data.openHours,
       hasShade: data.hasShade,
       hasFountain: data.hasFountain,
@@ -245,36 +236,6 @@ const AddPlayground = () => {
                   </FormItem>
                 )}
               />
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="lat"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-press-start text-xs text-red-600">Latitudine</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.0001" placeholder="44.4949" className="bg-black bg-opacity-70 border-red-600" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={form.control}
-                  name="lng"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-press-start text-xs text-red-600">Longitudine</FormLabel>
-                      <FormControl>
-                        <Input type="number" step="0.0001" placeholder="11.3426" className="bg-black bg-opacity-70 border-red-600" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
               
               <FormField
                 control={form.control}
