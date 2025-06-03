@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -367,4 +366,25 @@
     transform: scale(1.1) rotate(5deg);
     filter: drop-shadow(0 0 15px rgba(255, 210, 63, 0.8));
   }
+}
+
+/* Hide Lovable badge */
+.lovable-badge {
+  display: none !important;
+}
+
+iframe[title="Lovable badge"] {
+  display: none !important;
+}
+
+div[data-testid="lovable-badge"] {
+  display: none !important;
+}
+
+[data-lovable-badge] {
+  display: none !important;
+}
+
+.lovable-edit-button {
+  display: none !important;
 }

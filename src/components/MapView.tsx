@@ -30,8 +30,8 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
   return (
     <div className="relative w-full bg-black bg-opacity-80 backdrop-blur-lg border-4 border-transparent p-6 overflow-hidden rounded-lg glass-card">
       <div className="flex justify-between items-center mb-6">
-        <div className="text-sm font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 font-bold nike-text">
-          🏀 PLAYGROUND BOLOGNA - {playgrounds.length} CAMPI DISPONIBILI 🏀
+        <div className="text-sm font-bold text-white bg-black bg-opacity-80 px-4 py-2 rounded-lg border-2 border-orange-500">
+          PLAYGROUND BOLOGNA - {playgrounds.length} CAMPI DISPONIBILI
         </div>
       </div>
       
@@ -52,7 +52,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               }}
             >
               <div className="flex justify-between items-start mb-3">
-                <div className="font-orbitron text-sm mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-bold nike-text">
+                <div className="font-bold text-lg text-white bg-black bg-opacity-60 px-3 py-1 rounded">
                   {playground.name.toUpperCase()}
                 </div>
                 <div className="flex items-center gap-3">
@@ -86,15 +86,15 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                   🕒 {playground.openHours}
                 </span>
                 <span className="text-sm font-orbitron font-bold text-yellow-400">
-                  🏀 Canestri: {playground.basketCount}
+                  Canestri: {playground.basketCount}
                 </span>
               </div>
               
               {/* Display registered users if any */}
               {isLoggedIn && playground.currentPlayers > 0 && (
                 <div className="mt-3 pt-3 border-t border-white/20">
-                  <div className="text-xs text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-500 font-orbitron font-bold mb-2">
-                    🔥 PRESENZE OGGI:
+                  <div className="text-xs text-white font-bold mb-2 bg-black bg-opacity-60 px-2 py-1 rounded">
+                    CHECK-IN OGGI:
                   </div>
                   <div className="text-sm text-white/80 font-exo">
                     {nickname && 

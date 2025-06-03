@@ -49,7 +49,7 @@ const Login = () => {
     
     toast({
       title: "Accesso effettuato",
-      description: `Benvenuto, ${nickname}!`,
+      description: `Benvenuto, ${nickname}! Ricorda di portare la palla e di tenere pulito!`,
     });
     
     navigate("/");
