@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   User, 
@@ -9,7 +8,8 @@ import {
   Sun,
   LogOut,
   TimerReset,
-  Calendar
+  Calendar,
+  Gamepad2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Playground } from "@/types/playground";
@@ -20,6 +20,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import PlaygroundRating from "./PlaygroundRating";
 import PlaygroundChat from "./PlaygroundChat";
 import WeatherInfo from "./WeatherInfo";
+import ShootTheHoop from "./ShootTheHoop";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 
@@ -118,7 +119,7 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
   return (
     <div className="glass-card mt-8 animate-pixel-fade-in p-8 rounded-lg">
       <div className="flex flex-wrap items-center justify-between mb-8">
-        <h3 className="nba-jam-heading bg-black bg-opacity-90 px-6 py-3 rounded-lg border-3 border-orange-500">
+        <h3 className="nba-jam-heading bg-black bg-opacity-90 px-6 py-3 rounded-lg border-[3px] border-orange-500">
           {playground.name.toUpperCase()}
         </h3>
         
@@ -156,6 +157,14 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             onClick={() => playBasketballSound('tab')}
           >
             METEO
+          </TabsTrigger>
+          <TabsTrigger 
+            value="gioco" 
+            className="text-base nike-text" 
+            onClick={() => playBasketballSound('tab')}
+          >
+            <Gamepad2 size={16} className="mr-2" />
+            GIOCO
           </TabsTrigger>
         </TabsList>
         
@@ -288,6 +297,23 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
             playgroundName={playground.name}
             location={playground.address}
           />
+        </TabsContent>
+        
+        <TabsContent value="gioco">
+          <div className="flex flex-col items-center justify-center space-y-6">
+            <h2 className="nba-jam-heading text-2xl text-center">
+              ARCADE BASKETBALL
+            </h2>
+            <p className="nike-text text-center text-white/80 max-w-md">
+              PROVA LA TUA ABILITÀ NEL TIRO! MIRA ALLA ZONA VERDE PER FARE CANESTRO!
+            </p>
+            <ShootTheHoop />
+            <div className="bg-black bg-opacity-60 p-4 rounded-lg border-2 border-orange-500/40 max-w-md">
+              <p className="nike-text text-sm text-center text-white/70">
+                🎯 TRUCCO: PREMI QUANDO LA BARRA È NELLA ZONA CENTRALE PER FARE CANESTRO!
+              </p>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
       

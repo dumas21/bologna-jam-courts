@@ -178,7 +178,7 @@
   .tab-button {
     @apply bg-black bg-opacity-80 backdrop-blur-sm;
     @apply text-white font-bold text-base px-6 py-4;
-    @apply border-3 border-orange-500;
+    @apply border-[3px] border-orange-500;
     @apply transition-all duration-300;
     font-family: 'Bebas Neue', 'Anton', sans-serif;
     font-weight: 700;
@@ -274,7 +274,7 @@
   
   .login-button {
     @apply bg-gradient-to-r from-blue-600 to-purple-600;
-    @apply border-3 border-blue-400 text-white font-bold px-6 py-3 rounded;
+    @apply border-[3px] border-blue-400 text-white font-bold px-6 py-3 rounded;
     font-family: 'Bebas Neue', 'Anton', sans-serif;
     font-weight: 900;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
@@ -351,6 +351,86 @@
   .star:hover {
     transform: scale(1.2);
     filter: drop-shadow(0 0 10px rgba(255, 210, 63, 1));
+  }
+
+  /* Weather cartoon style */
+  .weather-cartoon {
+    background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFE4B5 100%);
+    border: 4px solid #000;
+    border-radius: 12px;
+    box-shadow: 8px 8px 0px 0px rgba(0,0,0,0.8), 0 0 20px rgba(135, 206, 235, 0.5);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .weather-cartoon::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.1) 2px,
+      rgba(255,255,255,0.1) 4px
+    );
+    animation: float 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(180deg); }
+  }
+
+  /* Retro game styling */
+  .retro-game {
+    background: linear-gradient(135deg, #000 0%, #1a1a2e 50%, #16213e 100%);
+    border: 4px solid #0ff;
+    border-radius: 12px;
+    box-shadow: 
+      0 0 20px #0ff,
+      inset 0 0 20px rgba(0, 255, 255, 0.1),
+      8px 8px 0px 0px rgba(0,0,0,0.8);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .retro-game::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 255, 255, 0.03) 2px,
+      rgba(0, 255, 255, 0.03) 4px
+    );
+    pointer-events: none;
+  }
+
+  .power-bar {
+    border: 2px solid #0ff;
+    background: #001122;
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.2);
+  }
+
+  .power-level {
+    background: linear-gradient(90deg, #0ff 0%, #f0f 50%, #ff0 100%);
+    box-shadow: 0 0 15px currentColor;
+    animation: power-pulse 0.1s ease-in-out infinite;
+  }
+
+  @keyframes power-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
   }
 }
 
