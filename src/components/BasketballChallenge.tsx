@@ -16,6 +16,15 @@ interface Ball {
   isFlying: boolean;
 }
 
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  velocityX: number;
+  velocityY: number;
+  life: number;
+}
+
 const BasketballChallenge = () => {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'gameover'>('menu');
   const [score, setScore] = useState(0);
@@ -27,11 +36,14 @@ const BasketballChallenge = () => {
   const [ball, setBall] = useState<Ball>({ x: 50, y: 350, velocityX: 0, velocityY: 0, isFlying: false });
   const [basketPosition, setBasketPosition] = useState(300);
   const [basketDirection, setBasketDirection] = useState(1);
+  const [particles, setParticles] = useState<Particle[]>([]);
+  const [basketAnimation, setBasketAnimation] = useState(false);
   
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number>();
   const powerIntervalRef = useRef<NodeJS.Timeout>();
   const gameIntervalRef = useRef<NodeJS.Timeout>();
+  const particleIntervalRef = useRef<NodeJS.Timeout>();
 
   // Genera ostacoli casuali
   const generateObstacles = useCallback(() => {
@@ -49,6 +61,22 @@ const BasketballChallenge = () => {
     setObstacles(newObstacles);
   }, [level]);
 
+  // Crea particelle per effetto canestro
+  const createParticles = (x: number, y: number) => {
+    const newParticles: Particle[] = [];
+    for (let i = 0; i < 15; i++) {
+      newParticles.push({
+        id: Date.now() + i,
+        x: x,
+        y: y,
+        velocityX: (Math.random() - 0.5) * 8,
+        velocityY: Math.random() * -8 - 2,
+        life: 30
+      });
+    }
+    setParticles(prev => [...prev, ...newParticles]);
+  };
+
   // Inizia il gioco
   const startGame = () => {
     setGameState('playing');
@@ -56,6 +84,7 @@ const BasketballChallenge = () => {
     setLevel(1);
     setTimeLeft(30);
     setBall({ x: 50, y: 350, velocityX: 0, velocityY: 0, isFlying: false });
+    setParticles([]);
     generateObstacles();
     
     // Suono di inizio
@@ -127,6 +156,25 @@ const BasketballChallenge = () => {
     }
   }, [gameState]);
 
+  // Animazione particelle
+  useEffect(() => {
+    if (particles.length > 0) {
+      particleIntervalRef.current = setInterval(() => {
+        setParticles(prev => prev.map(particle => ({
+          ...particle,
+          x: particle.x + particle.velocityX,
+          y: particle.y + particle.velocityY,
+          velocityY: particle.velocityY + 0.3,
+          life: particle.life - 1
+        })).filter(particle => particle.life > 0));
+      }, 50);
+    }
+    
+    return () => {
+      if (particleIntervalRef.current) clearInterval(particleIntervalRef.current);
+    };
+  }, [particles.length]);
+
   // Animazione palla
   useEffect(() => {
     if (ball.isFlying) {
@@ -136,12 +184,17 @@ const BasketballChallenge = () => {
           const newY = prev.y + prev.velocityY;
           const newVelocityY = prev.velocityY + 0.5; // Gravità
           
-          // Controllo collisione con canestro
-          if (newX >= basketPosition - 20 && newX <= basketPosition + 20 && 
-              newY >= 80 && newY <= 120 && prev.velocityY > 0) {
+          // Controllo collisione con canestro (area più precisa)
+          if (newX >= basketPosition - 15 && newX <= basketPosition + 15 && 
+              newY >= 85 && newY <= 105 && prev.velocityY > 0) {
             // Canestro!
             const newScore = score + 10 * level;
             setScore(newScore);
+            
+            // Effetti canestro
+            setBasketAnimation(true);
+            createParticles(basketPosition, 90);
+            setTimeout(() => setBasketAnimation(false), 300);
             
             // Suono canestro
             const audio = new Audio('/sounds/checkin.mp3');
@@ -210,6 +263,7 @@ const BasketballChallenge = () => {
     setPower(0);
     setBall({ x: 50, y: 350, velocityX: 0, velocityY: 0, isFlying: false });
     setObstacles([]);
+    setParticles([]);
   };
 
   if (gameState === 'menu') {
@@ -329,18 +383,55 @@ const BasketballChallenge = () => {
           boxShadow: '0 0 20px rgba(0, 255, 255, 0.3), inset 0 0 20px rgba(0, 255, 255, 0.1)'
         }}
       >
-        {/* Canestro mobile */}
+        {/* Canestro con struttura visibile */}
         <div 
           style={{
             position: 'absolute',
-            left: basketPosition + 'px',
-            top: '80px',
-            fontSize: '40px',
-            filter: 'drop-shadow(0 0 10px #ff0080)',
-            zIndex: 10
+            left: basketPosition - 25 + 'px',
+            top: '60px',
+            zIndex: 15
           }}
         >
-          🏀
+          {/* Tabellone */}
+          <div
+            style={{
+              width: '50px',
+              height: '35px',
+              backgroundColor: '#ffffff',
+              border: '3px solid #ff0080',
+              borderRadius: '3px',
+              boxShadow: '0 0 10px rgba(255, 0, 128, 0.8)',
+              marginBottom: '5px'
+            }}
+          />
+          {/* Anello del canestro */}
+          <div
+            style={{
+              width: '40px',
+              height: '8px',
+              backgroundColor: basketAnimation ? '#ffff00' : '#ff0080',
+              border: '2px solid #ffffff',
+              borderRadius: '50px',
+              marginLeft: '5px',
+              boxShadow: basketAnimation ? '0 0 15px #ffff00' : '0 0 10px #ff0080',
+              transition: 'all 0.3s ease'
+            }}
+          />
+          {/* Rete */}
+          <div
+            style={{
+              position: 'absolute',
+              left: '8px',
+              top: '48px',
+              fontSize: '16px',
+              color: '#ffffff',
+              textShadow: '0 0 5px #ffffff',
+              transform: basketAnimation ? 'scale(1.2)' : 'scale(1)',
+              transition: 'transform 0.3s ease'
+            }}
+          >
+            ╬╬╬
+          </div>
         </div>
 
         {/* Ostacoli */}
@@ -357,6 +448,25 @@ const BasketballChallenge = () => {
             }}
           >
             ⚡
+          </div>
+        ))}
+
+        {/* Particelle */}
+        {particles.map(particle => (
+          <div
+            key={particle.id}
+            style={{
+              position: 'absolute',
+              left: particle.x + 'px',
+              top: particle.y + 'px',
+              fontSize: '8px',
+              color: '#ffff00',
+              opacity: particle.life / 30,
+              filter: 'drop-shadow(0 0 3px #ffff00)',
+              zIndex: 12
+            }}
+          >
+            ✨
           </div>
         ))}
 
@@ -387,17 +497,47 @@ const BasketballChallenge = () => {
         >
           🤖
         </div>
+
+        {/* Linea traiettoria quando non si sta tirando */}
+        {!ball.isFlying && (
+          <div
+            style={{
+              position: 'absolute',
+              left: '70px',
+              top: '350px',
+              width: `${basketPosition - 70}px`,
+              height: '2px',
+              background: `linear-gradient(90deg, transparent 0%, rgba(0, 255, 255, 0.3) 50%, transparent 100%)`,
+              transformOrigin: 'left',
+              transform: `rotate(-${Math.atan2(250, basketPosition - 70) * 180 / Math.PI}deg)`,
+              zIndex: 1
+            }}
+          />
+        )}
       </div>
 
       {/* Power bar */}
       {!ball.isFlying && (
         <div className="mt-4">
-          <div className="power-bar rounded h-6 w-full mb-4 relative overflow-hidden">
+          <div className="text-center mb-2">
+            <span className="nike-text text-sm" style={{ 
+              color: '#0ff',
+              fontFamily: "'Press Start 2P', cursive",
+              textShadow: '0 0 5px #0ff'
+            }}>
+              POTENZA: {Math.round(power)}%
+            </span>
+          </div>
+          <div className="power-bar rounded h-6 w-full mb-4 relative overflow-hidden border-2 border-cyan-400" style={{
+            background: 'linear-gradient(90deg, #000033 0%, #001122 100%)',
+            boxShadow: '0 0 10px rgba(0, 255, 255, 0.3)'
+          }}>
             <div
               className="power-level h-full transition-all duration-75"
               style={{ 
                 width: `${power}%`,
-                background: `linear-gradient(90deg, #0ff 0%, #f0f 50%, #ff0 100%)`
+                background: `linear-gradient(90deg, #0ff 0%, #f0f 50%, #ff0 100%)`,
+                boxShadow: 'inset 0 0 10px rgba(255, 255, 255, 0.3)'
               }}
             />
           </div>
@@ -420,7 +560,7 @@ const BasketballChallenge = () => {
       {/* Istruzioni */}
       <div className="mt-4 text-center">
         <p className="nike-text text-xs text-white/60" style={{ fontFamily: "'Press Start 2P', cursive" }}>
-          🎯 MIRA AL CANESTRO MOBILE! EVITA I FULMINI! ⚡
+          🎯 MIRA AL CANESTRO CON TABELLONE! EVITA I FULMINI! ⚡
         </p>
       </div>
     </div>
