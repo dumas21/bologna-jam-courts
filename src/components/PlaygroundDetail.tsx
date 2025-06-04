@@ -21,6 +21,7 @@ import PlaygroundRating from "./PlaygroundRating";
 import PlaygroundChat from "./PlaygroundChat";
 import WeatherInfo from "./WeatherInfo";
 import ShootTheHoop from "./ShootTheHoop";
+import BasketballChallenge from "./BasketballChallenge";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 
@@ -302,15 +303,17 @@ const PlaygroundDetail = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn,
         <TabsContent value="gioco">
           <div className="flex flex-col items-center justify-center space-y-6">
             <h2 className="nba-jam-heading text-2xl text-center">
-              ARCADE BASKETBALL
+              BASKETBALL CHALLENGE
             </h2>
             <p className="nike-text text-center text-white/80 max-w-md">
-              PROVA LA TUA ABILITÀ NEL TIRO! MIRA ALLA ZONA VERDE PER FARE CANESTRO!
+              SFIDA LA TUA PRECISIONE! FAI CANESTRO EVITANDO GLI OSTACOLI CHE SI MUOVONO!
             </p>
-            <ShootTheHoop />
+            <BasketballChallenge />
             <div className="bg-black bg-opacity-60 p-4 rounded-lg border-2 border-orange-500/40 max-w-md">
               <p className="nike-text text-sm text-center text-white/70">
-                🎯 TRUCCO: PREMI QUANDO LA BARRA È NELLA ZONA CENTRALE PER FARE CANESTRO!
+                🎮 CONTROLLI: CLICCA QUANDO LA BARRA È AL MASSIMO PER PIÙ POTENZA!<br/>
+                ⚡ EVITA I FULMINI E MIRA AL CANESTRO CHE SI MUOVE!<br/>
+                🏆 +10 PUNTI PER CANESTRO • LIVELLO UP OGNI 50 PUNTI!
               </p>
             </div>
           </div>
