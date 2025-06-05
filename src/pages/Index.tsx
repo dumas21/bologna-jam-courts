@@ -1,12 +1,14 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
+import ShootTheHoop from "@/components/ShootTheHoop";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDays, BarChart } from "lucide-react";
+import { CalendarDays, BarChart, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -23,6 +25,13 @@ const Index = () => {
   
   // Format current date
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Audio playback error:', err));
+  };
 
   // Auto-logout after 24 hours
   useEffect(() => {
@@ -100,24 +109,32 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bologna-theme">
       <Header />
       
       <main className="container mx-auto p-4 flex-1">
         <Logo />
         
-        <div className="flex justify-between items-center mb-4">
-          <div className="date-display">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+          <div className="bologna-date-display text-center md:text-left">
             {currentDate}
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap justify-center">
+            <Button 
+              onClick={scrollToTop}
+              className="bologna-button-home text-sm flex items-center gap-2"
+            >
+              <Home size={16} />
+              <span className="hidden md:inline">Home</span>
+            </Button>
+            
             <Button 
               onClick={() => {
                 playSoundEffect('click');
                 navigate('/stats');
               }}
-              className="pixel-button text-sm flex items-center gap-2 bg-blue-600"
+              className="bologna-button-stats text-sm flex items-center gap-2"
             >
               <BarChart size={16} />
               <span className="hidden md:inline">Statistiche</span>
@@ -127,10 +144,10 @@ const Index = () => {
         </div>
         
         <Tabs defaultValue="map" className="w-full">
-          <TabsList className="w-full grid grid-cols-3 mb-4">
+          <TabsList className="w-full grid grid-cols-4 mb-4 bologna-tabs">
             <TabsTrigger 
               value="map" 
-              className="nike-text text-sm"
+              className="bologna-tab text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               <span className="hidden md:inline">Lista Bologna</span>
@@ -138,14 +155,21 @@ const Index = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="italia" 
-              className="nike-text text-sm"
+              className="bologna-tab text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               Lista Italia
             </TabsTrigger>
             <TabsTrigger 
+              value="game" 
+              className="bologna-tab text-sm"
+              onClick={() => playSoundEffect('tab')}
+            >
+              🏀 Gioco
+            </TabsTrigger>
+            <TabsTrigger 
               value="events" 
-              className="nike-text text-sm"
+              className="bologna-tab text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               <CalendarDays size={16} className="mr-1" />
@@ -154,7 +178,7 @@ const Index = () => {
           </TabsList>
           
           <TabsContent value="map" className="animate-pixel-fade-in">
-            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md">
+            <div className="bologna-card">
               <MapView 
                 playgrounds={playgrounds} 
                 selectedPlayground={selectedPlayground}
@@ -174,24 +198,30 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="italia" className="animate-pixel-fade-in">
-            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
+            <div className="bologna-card h-64 flex flex-col items-center justify-center">
               <div className="text-center space-y-4">
-                <h2 className="nba-jam-heading text-xl">LISTA ITALIA</h2>
-                <p className="nike-text text-base max-w-md">
+                <h2 className="bologna-heading text-xl">LISTA ITALIA</h2>
+                <p className="bologna-text text-base max-w-md">
                   A breve altri playground in altre città italiane
                 </p>
               </div>
             </div>
           </TabsContent>
           
+          <TabsContent value="game" className="animate-pixel-fade-in">
+            <div className="bologna-card">
+              <ShootTheHoop />
+            </div>
+          </TabsContent>
+          
           <TabsContent value="events" className="animate-pixel-fade-in">
-            <div className="pixel-card bg-black bg-opacity-70 backdrop-blur-md h-64 flex flex-col items-center justify-center">
-              <p className="nike-text text-base mb-4">
+            <div className="bologna-card h-64 flex flex-col items-center justify-center">
+              <p className="bologna-text text-base mb-4">
                 {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
               </p>
               {!isLoggedIn && (
                 <Button 
-                  className="mt-4 pixel-button"
+                  className="mt-4 bologna-button-primary"
                   onClick={() => navigate('/login')}
                 >
                   Accedi ora
@@ -202,9 +232,9 @@ const Index = () => {
         </Tabs>
       </main>
       
-      <footer className="bg-black bg-opacity-70 backdrop-blur-md border-t-4 border-red-600 py-4">
+      <footer className="bologna-footer">
         <div className="container mx-auto px-4 text-center">
-          <p className="font-press-start text-xs text-white/60">
+          <p className="font-press-start text-xs text-white/80">
             PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
           </p>
         </div>

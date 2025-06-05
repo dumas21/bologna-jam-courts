@@ -50,6 +50,11 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Bologna colors */
+    --bologna-red: #DC143C;
+    --bologna-blue: #0052CC;
+    --bologna-white: #FFFFFF;
   }
 
   .dark {
@@ -97,17 +102,16 @@
   }
 
   body {
-    @apply bg-jam-dark text-white;
-    background-image: url('/lovable-uploads/a5c1a58c-5820-488a-b33b-8c3f45c080ee.png');
-    background-size: cover;
-    background-position: center;
+    @apply text-white;
+    background: linear-gradient(135deg, #DC143C 0%, #0052CC 50%, #FFFFFF 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     overflow-x: hidden;
     font-family: 'Bebas Neue', 'Anton', 'Saira Condensed', sans-serif;
+    min-height: 100vh;
   }
   
-  /* Improved text readability */
+  /* Improved text readability with Bologna colors */
   h1, h2, h3, h4, h5, h6 {
     text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
     font-weight: 700;
@@ -123,21 +127,21 @@
   /* Enhanced animations */
   @keyframes text-flashing {
     0%, 100% { 
-      text-shadow: 0 0 10px #FF6B35, 0 0 20px #FF6B35, 3px 3px 6px rgba(0,0,0,0.9);
+      text-shadow: 0 0 10px #DC143C, 0 0 20px #DC143C, 3px 3px 6px rgba(0,0,0,0.9);
       transform: scale(1);
     }
     50% { 
-      text-shadow: 0 0 25px #FFD23F, 0 0 40px #FFD23F, 3px 3px 6px rgba(0,0,0,0.9);
+      text-shadow: 0 0 25px #0052CC, 0 0 40px #0052CC, 3px 3px 6px rgba(0,0,0,0.9);
       transform: scale(1.02);
     }
   }
   
-  @keyframes nike-glow {
+  @keyframes bologna-glow {
     0%, 100% { 
-      box-shadow: 0 0 15px rgba(255, 107, 53, 0.6), inset 0 0 15px rgba(255, 107, 53, 0.2);
+      box-shadow: 0 0 15px rgba(220, 20, 60, 0.6), inset 0 0 15px rgba(220, 20, 60, 0.2);
     }
     50% { 
-      box-shadow: 0 0 30px rgba(255, 210, 63, 0.8), inset 0 0 25px rgba(255, 210, 63, 0.3);
+      box-shadow: 0 0 30px rgba(0, 82, 204, 0.8), inset 0 0 25px rgba(0, 82, 204, 0.3);
     }
   }
 
@@ -163,230 +167,166 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #FF6B35, #F7931E, #FFD23F);
+    background: linear-gradient(135deg, #DC143C, #0052CC, #FFFFFF);
     border-radius: 6px;
     border: 2px solid rgba(0, 0, 0, 0.3);
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #FFD23F, #F7931E, #FF6B35);
+    background: linear-gradient(135deg, #0052CC, #DC143C, #FFFFFF);
   }
 }
 
 @layer components {
-  /* Tab buttons - much more readable with 80s/90s style */
-  .tab-button {
-    @apply bg-black bg-opacity-80 backdrop-blur-sm;
-    @apply text-white font-bold text-base px-6 py-4;
-    @apply border-[3px] border-orange-500;
-    @apply transition-all duration-300;
-    font-family: 'Bebas Neue', 'Anton', sans-serif;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-  }
-  
-  .tab-button:hover {
-    @apply bg-gradient-to-r from-orange-600 to-red-600 border-yellow-400;
-    @apply text-white;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
-    transform: scale(1.05);
-  }
-  
-  .tab-button[data-state="active"] {
-    @apply bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500;
-    @apply border-yellow-400 text-white;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
-    transform: scale(1.05);
+  /* Bologna theme */
+  .bologna-theme {
+    background: linear-gradient(135deg, #DC143C 0%, #0052CC 50%, #FFFFFF 100%);
+    background-attachment: fixed;
   }
 
-  .pixel-border {
-    @apply border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.9)];
-    box-shadow: 8px 8px 0px 0px rgba(0,0,0,0.9), 0 0 25px rgba(255, 107, 53, 0.4);
-  }
-  
-  .pixel-button {
-    @apply pixel-border bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 hover:from-yellow-500 hover:via-orange-500 hover:to-red-600 transition-all duration-300 px-8 py-4 uppercase font-bold text-white;
+  /* Bologna buttons */
+  .bologna-button-home {
+    @apply bg-white text-red-600 border-2 border-red-600 hover:bg-red-600 hover:text-white;
+    @apply font-bold px-4 py-2 rounded transition-all duration-300;
     font-family: 'Bebas Neue', 'Anton', sans-serif;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-    animation: nike-glow 2s ease-in-out infinite;
-    letter-spacing: 2px;
-    font-weight: 800;
-    font-size: 1.1rem;
-  }
-  
-  .pixel-card {
-    @apply pixel-border bg-black bg-opacity-85 backdrop-blur-lg p-6;
-    border: 4px solid;
-    border-image: linear-gradient(45deg, #FF6B35, #F7931E, #FFD23F, #FF6B35) 1;
+    text-shadow: none;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
   }
 
-  /* NBA JAM / Rocky style headings */
-  .nba-jam-heading {
-    @apply font-bold text-white;
+  .bologna-button-stats {
+    @apply bg-blue-600 text-white border-2 border-blue-600 hover:bg-white hover:text-blue-600;
+    @apply font-bold px-4 py-2 rounded transition-all duration-300;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    text-shadow: none;
+    box-shadow: 0 4px 15px rgba(0, 82, 204, 0.3);
+  }
+
+  .bologna-button-primary {
+    @apply bg-gradient-to-r from-red-600 to-blue-600 text-white border-2 border-white;
+    @apply font-bold px-6 py-3 rounded transition-all duration-300 hover:scale-105;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+  }
+
+  /* Bologna tabs */
+  .bologna-tabs {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(220, 20, 60, 0.3);
+    border-radius: 12px;
+  }
+
+  .bologna-tab {
+    @apply text-white font-bold transition-all duration-300;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  }
+
+  .bologna-tab[data-state="active"] {
+    @apply bg-gradient-to-r from-red-600 to-blue-600 text-white;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.5);
+  }
+
+  /* Bologna cards */
+  .bologna-card {
+    @apply bg-white bg-opacity-90 backdrop-blur-lg p-6 rounded-xl;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #DC143C, #0052CC, #FFFFFF, #DC143C) 1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Bologna text styles */
+  .bologna-heading {
+    @apply font-bold text-red-600;
     font-family: 'Bebas Neue', 'Anton', sans-serif;
     font-weight: 900;
     letter-spacing: 3px;
-    font-size: clamp(1.2rem, 5vw, 2.5rem);
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 12px rgba(255, 107, 53, 0.7);
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 12px rgba(220, 20, 60, 0.7);
     text-transform: uppercase;
   }
 
-  /* Nike/NBA style readable text */
-  .nike-text {
+  .bologna-text {
     font-family: 'Bebas Neue', 'Anton', sans-serif;
-    font-weight: 800;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-    color: white;
-    font-size: 1.1rem;
-  }
-
-  /* Playground names - NBA/Nike style */
-  .playground-name {
-    font-family: 'Bebas Neue', 'Anton', sans-serif;
-    font-weight: 900;
-    font-size: 1.4rem;
-    color: #FFD23F;
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .glass-card {
-    @apply bg-black bg-opacity-85 backdrop-blur-lg;
-    border: 3px solid;
-    border-image: linear-gradient(45deg, #FF6B35, #F7931E, #FFD23F) 1;
-    box-shadow: 0 0 30px rgba(255, 107, 53, 0.5), inset 0 0 30px rgba(255, 107, 53, 0.15);
-  }
-  
-  /* Header and login area - NBA style */
-  .header-text {
-    font-family: 'Bebas Neue', 'Anton', sans-serif;
-    font-weight: 900;
-    color: #FFD23F;
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
-    font-size: 1.2rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  
-  .login-button {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600;
-    @apply border-[3px] border-blue-400 text-white font-bold px-6 py-3 rounded;
-    font-family: 'Bebas Neue', 'Anton', sans-serif;
-    font-weight: 900;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-    transition: all 0.3s ease;
+    font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-  }
-  
-  .login-button:hover {
-    @apply bg-gradient-to-r from-purple-600 to-pink-600;
-    @apply border-pink-400;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
-    transform: scale(1.05);
-  }
-  
-  /* Enhanced chat elements */
-  .chat-message {
-    @apply my-3 p-4 rounded-lg;
-    font-family: 'Bebas Neue', 'Saira Condensed', sans-serif;
-    font-weight: 600;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    color: #0052CC;
   }
-  
-  .chat-message-user {
-    @apply bg-gradient-to-r from-red-600 to-orange-500 ml-auto mr-2 max-w-[80%];
-    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
-  }
-  
-  .chat-message-other {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600 mr-auto ml-2 max-w-[80%];
-    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
-  }
-  
-  /* Date display - Rocky/NBA style */
-  .date-display {
+
+  .bologna-date-display {
     font-family: 'Bebas Neue', 'Anton', sans-serif;
     font-weight: 900;
-    color: #FFD23F;
-    text-shadow: 3px 3px 6px rgba(0,0,0,0.9);
-    font-size: 1rem;
+    color: #FFFFFF;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.9), 0 0 10px rgba(220, 20, 60, 0.8);
+    font-size: 1.1rem;
     letter-spacing: 2px;
     text-transform: uppercase;
   }
 
-  /* Enhanced shoes icon */
-  .shoes-icon {
-    @apply cursor-pointer transition-all duration-300;
-    filter: drop-shadow(0 0 12px rgba(255, 107, 53, 0.8));
-    font-size: 2rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
-  }
-  
-  .shoes-icon:hover {
-    transform: scale(1.2) rotate(10deg);
-    filter: drop-shadow(0 0 20px rgba(255, 210, 63, 1));
-    animation: neon-pulse 1s ease-in-out infinite;
+  /* Bologna footer */
+  .bologna-footer {
+    @apply bg-red-600 bg-opacity-90 backdrop-blur-md border-t-4 border-white py-6;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
   }
 
-  /* Rating stars horizontal layout */
-  .star-rating {
-    @apply flex items-center gap-1;
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .bologna-card {
+      @apply p-4;
+      margin: 1rem 0;
+    }
+
+    .bologna-button-home,
+    .bologna-button-stats,
+    .bologna-button-primary {
+      @apply px-3 py-2 text-sm;
+      min-width: auto;
+    }
+
+    .bologna-heading {
+      font-size: 1.2rem;
+    }
+
+    .bologna-text {
+      font-size: 0.9rem;
+    }
+
+    .bologna-date-display {
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .bologna-tab {
+      @apply text-xs px-2;
+    }
   }
 
-  .star {
-    @apply cursor-pointer transition-all duration-200;
-    color: #666;
+  @media (max-width: 480px) {
+    .bologna-card {
+      @apply p-3;
+    }
+
+    .bologna-button-home,
+    .bologna-button-stats {
+      @apply w-full mb-2;
+    }
+
+    .bologna-heading {
+      font-size: 1rem;
+    }
+
+    .bologna-text {
+      font-size: 0.8rem;
+    }
+
+    .bologna-date-display {
+      font-size: 0.8rem;
+    }
   }
 
-  .star.filled {
-    color: #FFD23F;
-    filter: drop-shadow(0 0 8px rgba(255, 210, 63, 0.8));
-  }
-
-  .star:hover {
-    transform: scale(1.2);
-    filter: drop-shadow(0 0 10px rgba(255, 210, 63, 1));
-  }
-
-  /* Weather cartoon style */
-  .weather-cartoon {
-    background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFE4B5 100%);
-    border: 4px solid #000;
-    border-radius: 12px;
-    box-shadow: 8px 8px 0px 0px rgba(0,0,0,0.8), 0 0 20px rgba(135, 206, 235, 0.5);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .weather-cartoon::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 2px,
-      rgba(255,255,255,0.1) 2px,
-      rgba(255,255,255,0.1) 4px
-    );
-    animation: float 20s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-10px) rotate(180deg); }
-  }
-
-  /* Retro game styling */
+  /* Game styles */
   .retro-game {
     background: linear-gradient(135deg, #000 0%, #1a1a2e 50%, #16213e 100%);
     border: 4px solid #0ff;
@@ -432,13 +372,43 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.8; }
   }
+
+  /* Keep existing styles */
+  .pixel-border {
+    @apply border-4 border-white shadow-[8px_8px_0px_0px_rgba(0,0,0,0.9)];
+    box-shadow: 8px 8px 0px 0px rgba(0,0,0,0.9), 0 0 25px rgba(220, 20, 60, 0.4);
+  }
+  
+  .pixel-button {
+    @apply pixel-border bg-gradient-to-r from-red-600 via-blue-500 to-white hover:from-white hover:via-blue-500 hover:to-red-600 transition-all duration-300 px-8 py-4 uppercase font-bold text-white;
+    font-family: 'Bebas Neue', 'Anton', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+    animation: bologna-glow 2s ease-in-out infinite;
+    letter-spacing: 2px;
+    font-weight: 800;
+    font-size: 1.1rem;
+  }
+  
+  .pixel-card {
+    @apply pixel-border bg-white bg-opacity-90 backdrop-blur-lg p-6;
+    border: 4px solid;
+    border-image: linear-gradient(45deg, #DC143C, #0052CC, #FFFFFF, #DC143C) 1;
+  }
+
+  .glass-card {
+    @apply bg-white bg-opacity-90 backdrop-blur-lg;
+    border: 3px solid;
+    border-image: linear-gradient(45deg, #DC143C, #0052CC, #FFFFFF) 1;
+    box-shadow: 0 0 30px rgba(220, 20, 60, 0.5), inset 0 0 30px rgba(0, 82, 204, 0.15);
+  }
+
+  /* Hide Lovable badge */
+  .lovable-badge {
+    display: none !important;
+  }
 }
 
 /* Hide Lovable badge */
-.lovable-badge {
-  display: none !important;
-}
-
 iframe[title="Lovable badge"] {
   display: none !important;
 }
