@@ -108,6 +108,16 @@ const BasketShootGame = () => {
     setParticles([]);
   };
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.target as HTMLButtonElement;
+    target.style.transform = 'scale(0.95)';
+  };
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const target = e.target as HTMLButtonElement;
+    target.style.transform = 'scale(1)';
+  };
+
   return (
     <div
       style={{
@@ -309,8 +319,8 @@ const BasketShootGame = () => {
             transition: 'all 0.2s ease',
             fontFamily: "'Press Start 2P', cursive"
           }}
-          onMouseDown={(e) => e.target.style.transform = 'scale(0.95)'}
-          onMouseUp={(e) => e.target.style.transform = 'scale(1)'}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
         >
           🚀 TIRA!
         </button>
