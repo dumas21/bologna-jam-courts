@@ -5,7 +5,6 @@ import Header from "@/components/Header";
 import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
-import ShootTheHoop from "@/components/ShootTheHoop";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDays, BarChart, Home } from "lucide-react";
@@ -144,7 +143,7 @@ const Index = () => {
         </div>
         
         <Tabs defaultValue="map" className="w-full">
-          <TabsList className="w-full grid grid-cols-4 mb-4 bologna-tabs">
+          <TabsList className="w-full grid grid-cols-3 mb-4 bologna-tabs">
             <TabsTrigger 
               value="map" 
               className="bologna-tab text-sm"
@@ -159,13 +158,6 @@ const Index = () => {
               onClick={() => playSoundEffect('tab')}
             >
               Lista Italia
-            </TabsTrigger>
-            <TabsTrigger 
-              value="game" 
-              className="bologna-tab text-sm"
-              onClick={() => playSoundEffect('tab')}
-            >
-              🏀 Gioco
             </TabsTrigger>
             <TabsTrigger 
               value="events" 
@@ -205,12 +197,6 @@ const Index = () => {
                   A breve altri playground in altre città italiane
                 </p>
               </div>
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="game" className="animate-pixel-fade-in">
-            <div className="bologna-card">
-              <ShootTheHoop />
             </div>
           </TabsContent>
           
