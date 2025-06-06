@@ -108,21 +108,21 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bologna-theme">
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="container mx-auto p-4 flex-1">
         <Logo />
         
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-          <div className="bologna-date-display text-center md:text-left">
+          <div className="text-center md:text-left">
             {currentDate}
           </div>
           
           <div className="flex gap-2 flex-wrap justify-center">
             <Button 
               onClick={scrollToTop}
-              className="bologna-button-home text-sm flex items-center gap-2"
+              className="text-sm flex items-center gap-2"
             >
               <Home size={16} />
               <span className="hidden md:inline">Home</span>
@@ -133,7 +133,7 @@ const Index = () => {
                 playSoundEffect('click');
                 navigate('/stats');
               }}
-              className="bologna-button-stats text-sm flex items-center gap-2"
+              className="text-sm flex items-center gap-2"
             >
               <BarChart size={16} />
               <span className="hidden md:inline">Statistiche</span>
@@ -143,10 +143,10 @@ const Index = () => {
         </div>
         
         <Tabs defaultValue="map" className="w-full">
-          <TabsList className="w-full grid grid-cols-3 mb-4 bologna-tabs">
+          <TabsList className="w-full grid grid-cols-3 mb-4">
             <TabsTrigger 
               value="map" 
-              className="bologna-tab text-sm"
+              className="text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               <span className="hidden md:inline">Lista Bologna</span>
@@ -154,14 +154,14 @@ const Index = () => {
             </TabsTrigger>
             <TabsTrigger 
               value="italia" 
-              className="bologna-tab text-sm"
+              className="text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               Lista Italia
             </TabsTrigger>
             <TabsTrigger 
               value="events" 
-              className="bologna-tab text-sm"
+              className="text-sm"
               onClick={() => playSoundEffect('tab')}
             >
               <CalendarDays size={16} className="mr-1" />
@@ -170,7 +170,7 @@ const Index = () => {
           </TabsList>
           
           <TabsContent value="map" className="animate-pixel-fade-in">
-            <div className="bologna-card">
+            <div>
               <MapView 
                 playgrounds={playgrounds} 
                 selectedPlayground={selectedPlayground}
@@ -190,10 +190,10 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="italia" className="animate-pixel-fade-in">
-            <div className="bologna-card h-64 flex flex-col items-center justify-center">
+            <div className="h-64 flex flex-col items-center justify-center">
               <div className="text-center space-y-4">
-                <h2 className="bologna-heading text-xl">LISTA ITALIA</h2>
-                <p className="bologna-text text-base max-w-md">
+                <h2 className="text-xl">LISTA ITALIA</h2>
+                <p className="text-base max-w-md">
                   A breve altri playground in altre città italiane
                 </p>
               </div>
@@ -201,13 +201,13 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="events" className="animate-pixel-fade-in">
-            <div className="bologna-card h-64 flex flex-col items-center justify-center">
-              <p className="bologna-text text-base mb-4">
+            <div className="h-64 flex flex-col items-center justify-center">
+              <p className="text-base mb-4">
                 {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
               </p>
               {!isLoggedIn && (
                 <Button 
-                  className="mt-4 bologna-button-primary"
+                  className="mt-4"
                   onClick={() => navigate('/login')}
                 >
                   Accedi ora
@@ -218,9 +218,9 @@ const Index = () => {
         </Tabs>
       </main>
       
-      <footer className="bologna-footer">
+      <footer>
         <div className="container mx-auto px-4 text-center">
-          <p className="font-press-start text-xs text-white/80">
+          <p className="font-press-start text-xs">
             PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
           </p>
         </div>

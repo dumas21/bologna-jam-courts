@@ -36,12 +36,16 @@ export interface WeatherData {
   icon: string;
 }
 
-// Tipo playground aggiornato - rimossi lat e lng
+// Tipo playground aggiornato con tutte le proprietà necessarie
 export interface Playground {
   id: string;
   name: string;
-  address: string;      // equivalente a location
+  address: string;
+  type?: string;
+  opening_hours?: string;
   openHours: string;
+  latitude?: number;
+  longitude?: number;
   hasShade: boolean;
   hasFountain: boolean;
   hasAmenities: boolean;
@@ -52,6 +56,11 @@ export interface Playground {
   rating?: number;
   ratingCount?: number;
   comments: Comment[];
+  features?: {
+    water: boolean;
+    shade: boolean;
+    lighting: boolean;
+  };
 }
 
 // Tipo pubblico per mostrare solo nickname/id (senza email)

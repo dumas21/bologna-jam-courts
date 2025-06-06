@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Playground, Comment, CheckInRecord, RegisteredUser } from "@/types/playground";
 import { playgroundData as initialData } from "@/data/playgroundData";
@@ -265,6 +264,15 @@ export function usePlaygrounds() {
   const getTodayCheckins = () => {
     return checkInRecords;
   };
+
+  // Convert checkInRecords array to object format for backward compatibility
+  const checkInRecordsObject = checkInRecords.reduce((acc, record) => {
+    if (!acc[record.playgroundId]) {
+      acc[record.playgroundId] = [];
+    }
+    acc[record.playgroundId].push(record.nickname);
+    return acc;
+  }, {} as { [playgroundId: string]: string[] });
   
   return { 
     playgrounds, 
@@ -276,7 +284,7 @@ export function usePlaygrounds() {
     updatePlayground,
     addPlayground,
     hasUserCheckedIn,
-    checkInRecords,
+    checkInRecords: checkInRecordsObject,
     getTodayCheckins,
     resetAttendanceCounts
   };

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { Playground } from '@/types/playground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +9,6 @@ import { useToast } from '@/components/ui/use-toast';
 import PlaygroundRating from './PlaygroundRating';
 import PlaygroundChat from './PlaygroundChat';
 import UserList from './UserList';
-import WeatherInfo from './WeatherInfo';
 import { useUser } from '@/contexts/UserContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -25,30 +25,6 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
   const { isLoggedIn, nickname } = useUser();
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [weatherData, setWeatherData] = useState(null);
-
-  useEffect(() => {
-    const fetchWeatherData = async () => {
-      try {
-        const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${playground.latitude}&lon=${playground.longitude}&appid=${process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY}&units=metric&lang=it`
-        );
-        const data = await response.json();
-        setWeatherData(data);
-      } catch (error) {
-        console.error("Errore nel recupero dei dati meteo:", error);
-        toast({
-          title: "Errore meteo",
-          description: "Impossibile caricare le informazioni meteo",
-          variant: "destructive"
-        });
-      }
-    };
-
-    if (playground.latitude && playground.longitude) {
-      fetchWeatherData();
-    }
-  }, [playground.latitude, playground.longitude, toast]);
 
   const handleCheckInClick = async () => {
     setIsCheckingIn(true);
@@ -90,18 +66,18 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
   const checkInCount = checkInRecords[playground.id]?.length || 0;
 
   return (
-    <Card className="bologna-card mt-4">
+    <Card className="mt-4">
       <CardHeader>
-        <CardTitle className="bologna-heading flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between">
           {playground.name}
-          <Badge variant="secondary" className="bologna-text">{playground.type}</Badge>
+          {playground.type && <Badge variant="secondary">{playground.type}</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="details" className="w-full">
           <TabsList className="w-full grid grid-cols-2">
-            <TabsTrigger value="details" className="bologna-tab text-sm">Dettagli</TabsTrigger>
-            <TabsTrigger value="community" className="bologna-tab text-sm">Community</TabsTrigger>
+            <TabsTrigger value="details" className="text-sm">Dettagli</TabsTrigger>
+            <TabsTrigger value="community" className="text-sm">Community</TabsTrigger>
           </TabsList>
           <TabsContent value="details">
             <div className="space-y-4">
@@ -111,36 +87,33 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
                   href={`https://www.google.com/maps/search/?api=1&query=${playground.address}`}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="bologna-text hover:text-blue-700 transition-colors"
+                  className="hover:text-blue-700 transition-colors"
                 >
                   {playground.address}
                 </a>
               </div>
               <div className="flex items-center gap-2">
                 <Clock size={16} className="text-blue-500" />
-                <span className="bologna-text">Orario: {playground.opening_hours || 'Non disponibile'}</span>
+                <span>Orario: {playground.openHours || 'Non disponibile'}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Users size={16} className="text-green-500" />
-                <span className="bologna-text">
+                <span>
                   {checkInCount} persone hanno fatto check-in
                 </span>
               </div>
-              {weatherData && (
-                <WeatherInfo weatherData={weatherData} />
-              )}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
-                  {playground.features.water && <Droplets size={16} className="text-blue-400" />}
-                  {playground.features.water && <span className="bologna-text">Acqua potabile</span>}
+                  {playground.hasFountain && <Droplets size={16} className="text-blue-400" />}
+                  {playground.hasFountain && <span>Acqua potabile</span>}
                 </div>
                 <div className="flex items-center gap-2">
-                  {playground.features.shade && <TreePine size={16} className="text-green-600" />}
-                  {playground.features.shade && <span className="bologna-text">Ombra disponibile</span>}
+                  {playground.hasShade && <TreePine size={16} className="text-green-600" />}
+                  {playground.hasShade && <span>Ombra disponibile</span>}
                 </div>
                 <div className="flex items-center gap-2">
-                  {playground.features.lighting && <Lightbulb size={16} className="text-yellow-500" />}
-                  {playground.features.lighting && <span className="bologna-text">Illuminazione notturna</span>}
+                  {playground.hasLighting && <Lightbulb size={16} className="text-yellow-500" />}
+                  {playground.hasLighting && <span>Illuminazione notturna</span>}
                 </div>
               </div>
               <div className="flex justify-between items-center">
@@ -150,7 +123,6 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
                       variant="destructive" 
                       onClick={handleCheckOutClick} 
                       disabled={isCheckingOut}
-                      className="bologna-button-primary"
                     >
                       {isCheckingOut ? (
                         <>
@@ -168,7 +140,6 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
                     <Button 
                       onClick={handleCheckInClick} 
                       disabled={isCheckingIn}
-                      className="bologna-button-primary"
                     >
                       {isCheckingIn ? (
                         <>
@@ -184,18 +155,18 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
                     </Button>
                   )
                 ) : (
-                  <Button disabled className="bologna-button-primary">
+                  <Button disabled>
                     Login per Check-in
                   </Button>
                 )}
-                <PlaygroundRating playgroundId={playground.id} />
+                <PlaygroundRating playground={playground} />
               </div>
             </div>
           </TabsContent>
           <TabsContent value="community">
             <div className="space-y-4">
-              <PlaygroundChat playgroundId={playground.id} />
-              <UserList playgroundId={playground.id} />
+              <PlaygroundChat playground={playground} />
+              <UserList playground={playground} />
             </div>
           </TabsContent>
         </Tabs>
