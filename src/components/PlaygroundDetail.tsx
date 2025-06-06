@@ -65,12 +65,16 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
   const isUserCheckedIn = isLoggedIn && hasUserCheckedIn(playground.id, nickname || 'unknown');
   const checkInCount = checkInRecords[playground.id]?.length || 0;
 
-  // Convert checked-in users to RegisteredUser format for UserList
+  // Convert checked-in users to a simple format compatible with UserList
   const checkedInUsers = (checkInRecords[playground.id] || []).map((userNickname, index) => ({
     id: `${playground.id}-${index}`,
     nickname: userNickname,
+    email: `${userNickname}@playground.local`,
+    password: '',
+    registrationDate: new Date().toISOString(),
+    isAdmin: false,
     createdAt: new Date().toISOString(),
-    isAdmin: false
+    checkedIn: true
   }));
 
   return (
