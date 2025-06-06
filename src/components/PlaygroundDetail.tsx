@@ -65,6 +65,14 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
   const isUserCheckedIn = isLoggedIn && hasUserCheckedIn(playground.id, nickname || 'unknown');
   const checkInCount = checkInRecords[playground.id]?.length || 0;
 
+  // Convert checked-in users to RegisteredUser format for UserList
+  const checkedInUsers = (checkInRecords[playground.id] || []).map((userNickname, index) => ({
+    id: `${playground.id}-${index}`,
+    nickname: userNickname,
+    createdAt: new Date().toISOString(),
+    isAdmin: false
+  }));
+
   return (
     <Card className="mt-4 arcade-card">
       <CardHeader>
@@ -168,7 +176,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
           <TabsContent value="community">
             <div className="space-y-4">
               <PlaygroundChat playground={playground} />
-              <UserList playground={playground} />
+              <UserList users={checkedInUsers} />
             </div>
           </TabsContent>
         </Tabs>
