@@ -66,54 +66,54 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
   const checkInCount = checkInRecords[playground.id]?.length || 0;
 
   return (
-    <Card className="mt-4">
+    <Card className="mt-4 arcade-card">
       <CardHeader>
-        <CardTitle className="flex items-center justify-between">
+        <CardTitle className="flex items-center justify-between arcade-title">
           {playground.name}
-          {playground.type && <Badge variant="secondary">{playground.type}</Badge>}
+          {playground.type && <Badge variant="secondary" className="arcade-badge">{playground.type}</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="details" className="w-full">
-          <TabsList className="w-full grid grid-cols-2">
-            <TabsTrigger value="details" className="text-sm">Dettagli</TabsTrigger>
-            <TabsTrigger value="community" className="text-sm">Community</TabsTrigger>
+        <Tabs defaultValue="details" className="w-full arcade-tabs">
+          <TabsList className="w-full grid grid-cols-2 arcade-tab-list">
+            <TabsTrigger value="details" className="text-sm arcade-tab">DETTAGLI</TabsTrigger>
+            <TabsTrigger value="community" className="text-sm arcade-tab">COMMUNITY</TabsTrigger>
           </TabsList>
           <TabsContent value="details">
             <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <MapPin size={16} className="text-red-500" />
+              <div className="flex items-center gap-2 arcade-info">
+                <MapPin size={16} className="text-red-600 arcade-icon" />
                 <a 
                   href={`https://www.google.com/maps/search/?api=1&query=${playground.address}`}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="hover:text-blue-700 transition-colors"
+                  className="hover:text-blue-600 transition-colors arcade-link"
                 >
                   {playground.address}
                 </a>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock size={16} className="text-blue-500" />
-                <span>Orario: {playground.openHours || 'Non disponibile'}</span>
+              <div className="flex items-center gap-2 arcade-info">
+                <Clock size={16} className="text-blue-600 arcade-icon" />
+                <span>ORARIO: {playground.openHours || 'NON DISPONIBILE'}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Users size={16} className="text-green-500" />
+              <div className="flex items-center gap-2 arcade-info">
+                <Users size={16} className="text-green-500 arcade-icon" />
                 <span>
-                  {checkInCount} persone hanno fatto check-in
+                  {checkInCount} GIOCATORI CONNESSI
                 </span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-2">
-                  {playground.hasFountain && <Droplets size={16} className="text-blue-400" />}
-                  {playground.hasFountain && <span>Acqua potabile</span>}
+                <div className="flex items-center gap-2 arcade-feature">
+                  {playground.hasFountain && <Droplets size={16} className="text-blue-400 arcade-icon" />}
+                  {playground.hasFountain && <span>ACQUA POTABILE</span>}
                 </div>
-                <div className="flex items-center gap-2">
-                  {playground.hasShade && <TreePine size={16} className="text-green-600" />}
-                  {playground.hasShade && <span>Ombra disponibile</span>}
+                <div className="flex items-center gap-2 arcade-feature">
+                  {playground.hasShade && <TreePine size={16} className="text-green-600 arcade-icon" />}
+                  {playground.hasShade && <span>OMBRA DISPONIBILE</span>}
                 </div>
-                <div className="flex items-center gap-2">
-                  {playground.hasLighting && <Lightbulb size={16} className="text-yellow-500" />}
-                  {playground.hasLighting && <span>Illuminazione notturna</span>}
+                <div className="flex items-center gap-2 arcade-feature">
+                  {playground.hasLighting && <Lightbulb size={16} className="text-yellow-500 arcade-icon" />}
+                  {playground.hasLighting && <span>ILLUMINAZIONE NOTTURNA</span>}
                 </div>
               </div>
               <div className="flex justify-between items-center">
@@ -123,16 +123,17 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
                       variant="destructive" 
                       onClick={handleCheckOutClick} 
                       disabled={isCheckingOut}
+                      className="arcade-button arcade-button-danger"
                     >
                       {isCheckingOut ? (
                         <>
                           <Clock className="mr-2 h-4 w-4 animate-spin" />
-                          Check-out...
+                          CHECK-OUT...
                         </>
                       ) : (
                         <>
                           <XCircle className="mr-2 h-4 w-4" />
-                          Check-out
+                          CHECK-OUT
                         </>
                       )}
                     </Button>
@@ -140,23 +141,24 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
                     <Button 
                       onClick={handleCheckInClick} 
                       disabled={isCheckingIn}
+                      className="arcade-button arcade-button-primary"
                     >
                       {isCheckingIn ? (
                         <>
                           <Clock className="mr-2 h-4 w-4 animate-spin" />
-                          Check-in...
+                          CHECK-IN...
                         </>
                       ) : (
                         <>
                           <CheckCircle className="mr-2 h-4 w-4" />
-                          Check-in
+                          DAI BOLOGNA! CHECK-IN
                         </>
                       )}
                     </Button>
                   )
                 ) : (
-                  <Button disabled>
-                    Login per Check-in
+                  <Button disabled className="arcade-button arcade-button-disabled">
+                    LOGIN PER CHECK-IN
                   </Button>
                 )}
                 <PlaygroundRating playground={playground} />

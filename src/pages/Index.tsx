@@ -7,7 +7,7 @@ import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDays, BarChart, Home } from "lucide-react";
+import { CalendarDays, BarChart, Home, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -25,6 +25,13 @@ const Index = () => {
   // Format current date
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
 
+  // Play coin sound on load
+  useEffect(() => {
+    const audio = new Audio('/sounds/coin-insert.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(err => console.log('Audio playback error:', err));
+  }, []);
+
   // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -39,22 +46,21 @@ const Index = () => {
       if (loginTime) {
         const loginTimestamp = parseInt(loginTime);
         const now = Date.now();
-        const twentyFourHours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        const twentyFourHours = 24 * 60 * 60 * 1000;
         
         if (now - loginTimestamp > twentyFourHours) {
           logout();
           toast({
-            title: "Sessione scaduta",
+            title: "SESSIONE SCADUTA",
             description: "Sei stato disconnesso automaticamente dopo 24 ore",
             variant: "destructive"
           });
         } else {
-          // Set a timeout for the remaining time
           const remainingTime = twentyFourHours - (now - loginTimestamp);
           const timeoutId = setTimeout(() => {
             logout();
             toast({
-              title: "Sessione scaduta",
+              title: "SESSIONE SCADUTA",
               description: "Sei stato disconnesso automaticamente dopo 24 ore",
               variant: "destructive"
             });
@@ -84,7 +90,7 @@ const Index = () => {
   const handleCheckIn = (playgroundId: string, userNickname: string) => {
     if (!isLoggedIn) {
       toast({
-        title: "Login richiesto",
+        title: "LOGIN RICHIESTO",
         description: "Devi effettuare il login per fare check-in",
         variant: "destructive"
       });
@@ -97,7 +103,7 @@ const Index = () => {
   const handleCheckOut = (playgroundId: string, userNickname: string) => {
     if (!isLoggedIn) {
       toast({
-        title: "Login richiesto",
+        title: "LOGIN RICHIESTO",
         description: "Devi effettuare il login per fare check-out",
         variant: "destructive"
       });
@@ -108,24 +114,47 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col arcade-container">
+      {/* CRT Screen Effect */}
+      <div className="crt-overlay"></div>
+      
+      {/* Neptune Background */}
+      <div className="neptune-background"></div>
+      
       <Header />
       
-      <main className="container mx-auto p-4 flex-1">
+      <main className="container mx-auto p-4 flex-1 relative z-10">
         <Logo />
         
+        {/* Flashing Start Game Button */}
+        <div className="text-center mb-6">
+          <Button 
+            onClick={() => {
+              playSoundEffect('click');
+              toast({
+                title: "BENVENUTO IN BOLOGNA JAM!",
+                description: "TIRA OMM! Trova il tuo playground preferito!",
+              });
+            }}
+            className="arcade-start-button animate-pulse"
+          >
+            <Zap className="mr-2 h-5 w-5" />
+            INIZIA PARTITA - DAI BOLOGNA!
+          </Button>
+        </div>
+        
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
-          <div className="text-center md:text-left">
-            {currentDate}
+          <div className="text-center md:text-left arcade-date">
+            {currentDate.toUpperCase()}
           </div>
           
           <div className="flex gap-2 flex-wrap justify-center">
             <Button 
               onClick={scrollToTop}
-              className="text-sm flex items-center gap-2"
+              className="arcade-button arcade-button-home"
             >
               <Home size={16} />
-              <span className="hidden md:inline">Home</span>
+              <span className="hidden md:inline">HOME</span>
             </Button>
             
             <Button 
@@ -133,44 +162,44 @@ const Index = () => {
                 playSoundEffect('click');
                 navigate('/stats');
               }}
-              className="text-sm flex items-center gap-2"
+              className="arcade-button arcade-button-stats"
             >
               <BarChart size={16} />
-              <span className="hidden md:inline">Statistiche</span>
-              <span className="inline md:hidden">Stats</span>
+              <span className="hidden md:inline">STATISTICHE</span>
+              <span className="inline md:hidden">STATS</span>
             </Button>
           </div>
         </div>
         
-        <Tabs defaultValue="map" className="w-full">
-          <TabsList className="w-full grid grid-cols-3 mb-4">
+        <Tabs defaultValue="map" className="w-full arcade-main-tabs">
+          <TabsList className="w-full grid grid-cols-3 mb-4 arcade-main-tab-list">
             <TabsTrigger 
               value="map" 
-              className="text-sm"
+              className="text-sm arcade-main-tab"
               onClick={() => playSoundEffect('tab')}
             >
-              <span className="hidden md:inline">Lista Bologna</span>
-              <span className="inline md:hidden">Bologna</span>
+              <span className="hidden md:inline">BOLOGNA PLAYGROUNDS</span>
+              <span className="inline md:hidden">BOLOGNA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="italia" 
-              className="text-sm"
+              className="text-sm arcade-main-tab"
               onClick={() => playSoundEffect('tab')}
             >
-              Lista Italia
+              LISTA ITALIA
             </TabsTrigger>
             <TabsTrigger 
               value="events" 
-              className="text-sm"
+              className="text-sm arcade-main-tab"
               onClick={() => playSoundEffect('tab')}
             >
               <CalendarDays size={16} className="mr-1" />
-              <span className="hidden md:inline">Eventi</span>
+              <span className="hidden md:inline">EVENTI</span>
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="map" className="animate-pixel-fade-in">
-            <div>
+          <TabsContent value="map" className="arcade-fade-in">
+            <div className="arcade-section">
               <MapView 
                 playgrounds={playgrounds} 
                 selectedPlayground={selectedPlayground}
@@ -189,39 +218,60 @@ const Index = () => {
             )}
           </TabsContent>
           
-          <TabsContent value="italia" className="animate-pixel-fade-in">
-            <div className="h-64 flex flex-col items-center justify-center">
+          <TabsContent value="italia" className="arcade-fade-in">
+            <div className="arcade-section h-64 flex flex-col items-center justify-center">
               <div className="text-center space-y-4">
-                <h2 className="text-xl">LISTA ITALIA</h2>
-                <p className="text-base max-w-md">
-                  A breve altri playground in altre città italiane
+                <h2 className="text-xl arcade-heading">LISTA ITALIA</h2>
+                <p className="text-base max-w-md arcade-text">
+                  A BREVE ALTRI PLAYGROUND IN ALTRE CITTÀ ITALIANE
                 </p>
+                <div className="arcade-mini-leaderboard">
+                  <h3 className="text-lg mb-2">TOP CITIES COMING SOON:</h3>
+                  <div className="space-y-1 text-sm">
+                    <div>1. MILANO - COMING SOON</div>
+                    <div>2. ROMA - COMING SOON</div>
+                    <div>3. NAPOLI - COMING SOON</div>
+                  </div>
+                </div>
               </div>
             </div>
           </TabsContent>
           
-          <TabsContent value="events" className="animate-pixel-fade-in">
-            <div className="h-64 flex flex-col items-center justify-center">
-              <p className="text-base mb-4">
-                {isLoggedIn ? 'Eventi disponibili presto' : 'Eventi disponibili dopo il login'}
+          <TabsContent value="events" className="arcade-fade-in">
+            <div className="arcade-section h-64 flex flex-col items-center justify-center">
+              <p className="text-base mb-4 arcade-text">
+                {isLoggedIn ? 'EVENTI DISPONIBILI PRESTO - BO!' : 'EVENTI DISPONIBILI DOPO IL LOGIN - TIRA OMM!'}
               </p>
               {!isLoggedIn && (
                 <Button 
-                  className="mt-4"
+                  className="mt-4 arcade-button arcade-button-primary"
                   onClick={() => navigate('/login')}
                 >
-                  Accedi ora
+                  ACCEDI ORA - DAI!
                 </Button>
+              )}
+              {isLoggedIn && (
+                <div className="arcade-mini-leaderboard">
+                  <h3 className="text-lg mb-2">PROSSIMI EVENTI:</h3>
+                  <div className="space-y-1 text-sm">
+                    <div>🏀 TORNEO FORTITUDO - 15 GEN</div>
+                    <div>🏀 SFIDA VIRTUS - 22 GEN</div>
+                    <div>🏀 BOLOGNA JAM FEST - 30 GEN</div>
+                  </div>
+                </div>
               )}
             </div>
           </TabsContent>
         </Tabs>
       </main>
       
-      <footer>
+      <footer className="arcade-footer">
         <div className="container mx-auto px-4 text-center">
           <p className="font-press-start text-xs">
-            PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
+            PLAYGROUND JAM BOLOGNA &copy; 2025 - MATTEO BERGAMI
+          </p>
+          <p className="text-xs mt-2 arcade-motto">
+            "DAI BOLOGNA! TIRA OMM!"
           </p>
         </div>
       </footer>
