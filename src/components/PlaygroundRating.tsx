@@ -7,13 +7,18 @@ import { useToast } from '@/components/ui/use-toast';
 
 interface PlaygroundRatingProps {
   playground: Playground;
+  onRatingUpdate?: (playgroundId: string, newRating: number, newRatingCount: number) => void;
 }
 
-const PlaygroundRating = ({ playground }: PlaygroundRatingProps) => {
+const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps) => {
   const { toast } = useToast();
-  const { isLoggedIn } = useUser();
+  const { isLoggedIn, nickname } = useUser();
   const [hoveredRating, setHoveredRating] = useState(0);
-  const [hasVoted, setHasVoted] = useState(false);
+  const [hasVoted, setHasVoted] = useState(() => {
+    // Check if user has already voted for this playground
+    const voted = localStorage.getItem(`voted_${playground.id}_${nickname}`);
+    return voted === 'true';
+  });
   
   // Calculate the average rating (rounding to nearest 0.1)
   const rating = playground.rating || 0;
@@ -37,8 +42,20 @@ const PlaygroundRating = ({ playground }: PlaygroundRatingProps) => {
       return;
     }
     
-    // In real app, this would update the backend
+    // Calculate new rating
+    const currentCount = playground.ratingCount || 0;
+    const currentTotal = (playground.rating || 0) * currentCount;
+    const newCount = currentCount + 1;
+    const newRating = (currentTotal + stars) / newCount;
+    
+    // Update local storage to mark as voted
+    localStorage.setItem(`voted_${playground.id}_${nickname}`, 'true');
     setHasVoted(true);
+    
+    // Call the update function if provided
+    if (onRatingUpdate) {
+      onRatingUpdate(playground.id, newRating, newCount);
+    }
     
     // Play sound effect
     const audio = new Audio('/sounds/rating.mp3');
@@ -73,8 +90,9 @@ const PlaygroundRating = ({ playground }: PlaygroundRatingProps) => {
                 star 
                 ${starValue <= (hoveredRating || rating) ? 'filled' : ''} 
                 ${hoveredRating && starValue <= hoveredRating ? 'text-yellow-400' : ''}
+                ${!hasVoted && isLoggedIn ? 'cursor-pointer' : 'cursor-default'}
               `}
-              onMouseEnter={() => !hasVoted && setHoveredRating(starValue)}
+              onMouseEnter={() => !hasVoted && isLoggedIn && setHoveredRating(starValue)}
               onMouseLeave={() => setHoveredRating(0)}
               onClick={() => handleRatingClick(starValue)}
             />

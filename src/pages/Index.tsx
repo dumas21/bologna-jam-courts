@@ -19,7 +19,7 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isLoggedIn, nickname, logout } = useUser();
-  const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords } = usePlaygrounds();
+  const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords, updatePlayground } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
   // Format current date
@@ -84,7 +84,7 @@ const Index = () => {
   
   const playSoundEffect = (action: string) => {
     const audio = new Audio(`/sounds/${action}.mp3`);
-    audio.play().catch(err => console.log('Audio playback error:', err));
+    audio.play().catch(err => console.log('Audio playbook error:', err));
   };
 
   const handleCheckIn = (playgroundId: string, userNickname: string) => {
@@ -111,6 +111,23 @@ const Index = () => {
     }
     
     return checkOut(playgroundId, userNickname);
+  };
+
+  const handleRatingUpdate = (playgroundId: string, newRating: number, newRatingCount: number) => {
+    const updatedPlayground = playgrounds.find(p => p.id === playgroundId);
+    if (updatedPlayground) {
+      const updated = {
+        ...updatedPlayground,
+        rating: newRating,
+        ratingCount: newRatingCount
+      };
+      updatePlayground(updated);
+      
+      // Update selected playground if it's the same one
+      if (selectedPlayground?.id === playgroundId) {
+        setSelectedPlayground(updated);
+      }
+    }
   };
 
   return (
@@ -197,6 +214,7 @@ const Index = () => {
                 onCheckOut={handleCheckOut}
                 hasUserCheckedIn={hasUserCheckedIn}
                 checkInRecords={checkInRecords}
+                onRatingUpdate={handleRatingUpdate}
               />
             )}
           </TabsContent>
@@ -252,9 +270,6 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center">
           <p className="font-press-start text-xs">
             PLAYGROUND JAM BOLOGNA &copy; 2025 - MATTEO BERGAMI
-          </p>
-          <p className="text-xs mt-2 arcade-motto">
-            "TIRA OMM!"
           </p>
         </div>
       </footer>

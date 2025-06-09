@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,9 +36,9 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     
-    /* Arcade Bologna colors */
-    --arcade-blue: #0050A0;
-    --arcade-red: #D72638;
+    /* Arcade Bologna colors - INVERTITI */
+    --arcade-blue: #D72638;
+    --arcade-red: #0050A0;
     --arcade-white: #ffffff;
   }
 
@@ -81,7 +80,7 @@
 
   body {
     font-family: 'Press Start 2P', monospace;
-    background: linear-gradient(90deg, var(--arcade-blue) 0%, var(--arcade-blue) 50%, var(--arcade-red) 50%, var(--arcade-red) 100%);
+    background: linear-gradient(90deg, var(--arcade-red) 0%, var(--arcade-red) 50%, var(--arcade-blue) 50%, var(--arcade-blue) 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: var(--arcade-white);
@@ -172,6 +171,73 @@
   @keyframes pixel-fade-in {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Weather Cartoon Style */
+  .weather-cartoon {
+    background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFD700 100%);
+    border: 4px solid #000;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .weather-cartoon::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, #FFD700 30%, transparent 30%);
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .nike-text {
+    font-family: 'Orbitron', 'Press Start 2P', monospace;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .font-orbitron {
+    font-family: 'Orbitron', monospace;
+  }
+
+  @keyframes animate-neon-glow {
+    0%, 100% { 
+      filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor);
+    }
+    50% { 
+      filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor);
+    }
+  }
+
+  .animate-neon-glow {
+    animation: animate-neon-glow 2s ease-in-out infinite;
+  }
+
+  /* Star Rating */
+  .star-rating {
+    display: flex;
+    gap: 2px;
+  }
+
+  .star {
+    cursor: pointer;
+    color: #666;
+    transition: all 0.2s ease;
+    filter: drop-shadow(1px 1px 0px #000);
+  }
+
+  .star:hover {
+    transform: scale(1.1);
+  }
+
+  .star.filled {
+    color: #FFD700;
+    filter: drop-shadow(1px 1px 0px #000) drop-shadow(0 0 10px #FFD700);
   }
 }
 

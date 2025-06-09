@@ -9,6 +9,7 @@ import { useToast } from '@/components/ui/use-toast';
 import PlaygroundRating from './PlaygroundRating';
 import PlaygroundChat from './PlaygroundChat';
 import UserList from './UserList';
+import WeatherInfo from './WeatherInfo';
 import { useUser } from '@/contexts/UserContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -18,9 +19,17 @@ interface PlaygroundDetailProps {
   onCheckOut: (playgroundId: string, userNickname: string) => boolean | undefined;
   hasUserCheckedIn: (playgroundId: string, userNickname: string) => boolean;
   checkInRecords: { [playgroundId: string]: string[] };
+  onRatingUpdate?: (playgroundId: string, newRating: number, newRatingCount: number) => void;
 }
 
-const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheckIn, onCheckOut, hasUserCheckedIn, checkInRecords }) => {
+const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ 
+  playground, 
+  onCheckIn, 
+  onCheckOut, 
+  hasUserCheckedIn, 
+  checkInRecords,
+  onRatingUpdate 
+}) => {
   const { toast } = useToast();
   const { isLoggedIn, nickname } = useUser();
   const [isCheckingIn, setIsCheckingIn] = useState(false);
@@ -86,6 +95,8 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
         </CardTitle>
       </CardHeader>
       <CardContent>
+        <WeatherInfo playgroundName={playground.name} location={playground.address} />
+        
         <Tabs defaultValue="details" className="w-full arcade-tabs">
           <TabsList className="w-full grid grid-cols-2 arcade-tab-list">
             <TabsTrigger value="details" className="text-sm arcade-tab">DETTAGLI</TabsTrigger>
@@ -173,7 +184,10 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
                     LOGIN PER CHECK-IN
                   </Button>
                 )}
-                <PlaygroundRating playground={playground} />
+                <PlaygroundRating 
+                  playground={playground} 
+                  onRatingUpdate={onRatingUpdate}
+                />
               </div>
             </div>
           </TabsContent>
