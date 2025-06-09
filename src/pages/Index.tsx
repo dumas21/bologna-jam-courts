@@ -7,7 +7,7 @@ import PlaygroundDetail from "@/components/PlaygroundDetail";
 import Logo from "@/components/Logo";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDays, BarChart, Home, Zap } from "lucide-react";
+import { CalendarDays, BarChart, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -126,24 +126,7 @@ const Index = () => {
       <main className="container mx-auto p-4 flex-1 relative z-10">
         <Logo />
         
-        {/* Flashing Start Game Button */}
-        <div className="text-center mb-6">
-          <Button 
-            onClick={() => {
-              playSoundEffect('click');
-              toast({
-                title: "BENVENUTO IN BOLOGNA JAM!",
-                description: "TIRA OMM! Trova il tuo playground preferito!",
-              });
-            }}
-            className="arcade-start-button animate-pulse"
-          >
-            <Zap className="mr-2 h-5 w-5" />
-            INIZIA PARTITA - DAI BOLOGNA!
-          </Button>
-        </div>
-        
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
           <div className="text-center md:text-left arcade-date">
             {currentDate.toUpperCase()}
           </div>
@@ -240,14 +223,14 @@ const Index = () => {
           <TabsContent value="events" className="arcade-fade-in">
             <div className="arcade-section h-64 flex flex-col items-center justify-center">
               <p className="text-base mb-4 arcade-text">
-                {isLoggedIn ? 'EVENTI DISPONIBILI PRESTO - BO!' : 'EVENTI DISPONIBILI DOPO IL LOGIN - TIRA OMM!'}
+                {isLoggedIn ? 'EVENTI DISPONIBILI PRESTO' : 'EVENTI DISPONIBILI DOPO IL LOGIN'}
               </p>
               {!isLoggedIn && (
                 <Button 
                   className="mt-4 arcade-button arcade-button-primary"
                   onClick={() => navigate('/login')}
                 >
-                  ACCEDI ORA - DAI!
+                  ACCEDI ORA
                 </Button>
               )}
               {isLoggedIn && (
@@ -271,7 +254,7 @@ const Index = () => {
             PLAYGROUND JAM BOLOGNA &copy; 2025 - MATTEO BERGAMI
           </p>
           <p className="text-xs mt-2 arcade-motto">
-            "DAI BOLOGNA! TIRA OMM!"
+            "TIRA OMM!"
           </p>
         </div>
       </footer>
