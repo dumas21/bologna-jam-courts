@@ -71,7 +71,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({ playground, onCheck
     nickname: userNickname,
     email: `${userNickname}@playground.local`,
     password: '',
-    registrationDate: new Date().toISOString(),
+    registrationDate: Date.now(),
     isAdmin: false,
     createdAt: new Date().toISOString(),
     checkedIn: true
