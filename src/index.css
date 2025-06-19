@@ -7,20 +7,35 @@
 html {
   background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
   height: 100% !important;
+  font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
 }
 
 body {
   background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
   font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
-  color: white !important;
+  color: #FF6B35 !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
+  text-transform: uppercase !important;
+  font-weight: 900 !important;
+  letter-spacing: 3px !important;
+  text-shadow: 6px 6px 0px #000, -3px -3px 0px #0000FF, 0 0 15px #FF6B35 !important;
 }
 
 #root {
   background: transparent !important;
   min-height: 100vh !important;
+  font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
+  color: #FF6B35 !important;
+}
+
+/* FORZO I FONT OVUNQUE */
+* {
+  font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 900 !important;
+  letter-spacing: 2px !important;
 }
 
 @import './styles/base.css';

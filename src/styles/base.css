@@ -79,27 +79,27 @@
     @apply border-border;
   }
 
-  /* Typography arcade anni 80 - NBA Jam style con ITC Machine - BOLD E GRANDE */
+  /* Typography arcade anni 80 - NBA Jam style con ITC Machine - MASSIVE E BOLD */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'ITC Machine', 'Bungee', 'Press Start 2P', monospace;
-    text-shadow: 8px 8px 0px #000, -4px -4px 0px #0000FF, 0 0 20px #FF4500, 0 0 30px #FF4500;
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    line-height: 1.1;
-    font-weight: 900;
-    color: #FF4500;
-    font-size: 2rem;
+    font-family: 'ITC Machine', 'Bungee', 'Press Start 2P', monospace !important;
+    text-shadow: 10px 10px 0px #000, -5px -5px 0px #0000FF, 0 0 25px #FF4500, 0 0 40px #FF4500 !important;
+    letter-spacing: 6px !important;
+    text-transform: uppercase !important;
+    line-height: 1.1 !important;
+    font-weight: 900 !important;
+    color: #FF4500 !important;
+    font-size: 2.5rem !important;
   }
   
-  p, span, div {
-    font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace;
-    text-shadow: 4px 4px 0px #000, -2px -2px 0px #0000FF, 0 0 10px #FF6B35;
-    letter-spacing: 2px;
-    line-height: 1.4;
-    text-transform: uppercase;
-    color: #FF6B35;
-    font-weight: 900;
-    font-size: 14px;
+  p, span, div, button, a, label, input, textarea {
+    font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace !important;
+    text-shadow: 6px 6px 0px #000, -3px -3px 0px #0000FF, 0 0 15px #FF6B35 !important;
+    letter-spacing: 3px !important;
+    line-height: 1.4 !important;
+    text-transform: uppercase !important;
+    color: #FF6B35 !important;
+    font-weight: 900 !important;
+    font-size: 16px !important;
   }
 
   .font-orbitron {
@@ -123,13 +123,13 @@
   }
 
   .nike-text {
-    font-family: 'ITC Machine', 'Russo One', 'Press Start 2P', monospace;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    text-shadow: 6px 6px 0px #000, -3px -3px 0px #0000FF, 0 0 20px #FF4500, 0 0 30px #FF4500;
-    color: #FF4500;
-    font-size: 1.5rem;
+    font-family: 'ITC Machine', 'Russo One', 'Press Start 2P', monospace !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 6px !important;
+    text-shadow: 8px 8px 0px #000, -4px -4px 0px #0000FF, 0 0 25px #FF4500, 0 0 40px #FF4500 !important;
+    color: #FF4500 !important;
+    font-size: 2rem !important;
   }
 
   /* Star Rating */
@@ -159,4 +159,3 @@
     filter: drop-shadow(2px 2px 0px #000) drop-shadow(0 0 10px var(--neon-yellow));
   }
 }
-

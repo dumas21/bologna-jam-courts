@@ -43,7 +43,7 @@ const Header = () => {
   return (
     <header className="bg-black bg-opacity-80 border-b-4 border-white p-4 relative z-20">
       <div className="container mx-auto flex flex-col items-center gap-4">
-        {/* Logo Section */}
+        {/* Logo Section - MOLTO PIÙ GRANDE */}
         <div 
           className="cursor-pointer select-none"
           onClick={handleHomeClick}
@@ -51,7 +51,7 @@ const Header = () => {
           <img 
             src="/lovable-uploads/e4d6bab9-96f0-4ad5-a830-7af99d4433b5.png" 
             alt="Playground Jam Bologna Logo"
-            className="h-16 md:h-20 lg:h-24 w-auto object-contain arcade-icon"
+            className="h-32 md:h-40 lg:h-48 xl:h-56 w-auto object-contain arcade-icon"
           />
         </div>
         
@@ -66,7 +66,7 @@ const Header = () => {
                   playSoundEffect('click');
                   navigate('/login');
                 }}
-                className="arcade-button arcade-button-primary"
+                className="arcade-button arcade-button-primary arcade-text"
               >
                 <User size={16} className="mr-2" />
                 LOGIN
@@ -78,7 +78,7 @@ const Header = () => {
                     playSoundEffect('click');
                     setShowUserMenu(!showUserMenu);
                   }}
-                  className="arcade-button arcade-button-primary"
+                  className="arcade-button arcade-button-primary arcade-text"
                 >
                   <User size={16} className="mr-2" />
                   {nickname}
@@ -90,7 +90,7 @@ const Header = () => {
                       <div className="space-y-2">
                         <Button 
                           onClick={handleLogout}
-                          className="w-full justify-start arcade-button arcade-button-danger"
+                          className="w-full justify-start arcade-button arcade-button-danger arcade-text"
                         >
                           <LogOut size={16} className="mr-2" />
                           LOGOUT
