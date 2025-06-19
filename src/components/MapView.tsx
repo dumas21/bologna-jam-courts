@@ -1,5 +1,5 @@
 
-import { Users, Lightbulb, Signpost } from "lucide-react";
+import { Users, Lightbulb } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -65,16 +65,21 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                     {playground.hasLighting && (
                       <Lightbulb size={16} className="text-yellow-400 animate-neon-glow flex-shrink-0" />
                     )}
-                    {/* Enhanced Signpost Icon for Google Maps */}
+                    {/* Enhanced Basketball Icon for Google Maps */}
                     <div 
-                      className="signpost-icon flex items-center justify-center w-10 h-10 bg-black bg-opacity-80 rounded-full border-2 border-orange-500 hover:bg-orange-500 transition-colors touch-manipulation"
+                      className="basketball-icon flex items-center justify-center w-10 h-10 bg-orange-600 rounded-full border-2 border-orange-400 hover:bg-orange-500 transition-colors touch-manipulation shadow-lg"
                       onClick={(e) => {
                         e.stopPropagation();
                         openGoogleMaps(playground.address);
                       }}
                       title="Apri in Google Maps"
                     >
-                      <Signpost size={16} className="text-orange-500 hover:text-white transition-colors" />
+                      <div className="w-6 h-6 rounded-full bg-orange-400 relative overflow-hidden">
+                        <div className="absolute inset-0 border-2 border-orange-800 rounded-full"></div>
+                        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-orange-800"></div>
+                        <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-full h-0.5 bg-orange-800"></div>
+                        <div className="absolute top-1/4 left-1/4 w-2 h-2 border border-orange-800 rounded-full"></div>
+                      </div>
                     </div>
                   </div>
                 </div>

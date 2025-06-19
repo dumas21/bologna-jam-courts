@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,46 +24,30 @@ const Login = () => {
 
     try {
       if (isLogin) {
-        const success = login(email, password);
-        if (success) {
-          toast({
-            title: "LOGIN EFFETTUATO",
-            description: "Benvenuto in Playground Jam Bologna!",
-          });
-          
-          // Play success sound
-          const audio = new Audio('/sounds/coin-insert.mp3');
-          audio.play().catch(err => console.log('Audio playback error:', err));
-          
-          navigate("/");
-        } else {
-          toast({
-            title: "ERRORE LOGIN",
-            description: "Credenziali non valide",
-            variant: "destructive",
-          });
-        }
+        login(email, password);
+        toast({
+          title: "LOGIN EFFETTUATO",
+          description: "Benvenuto in Playground Jam Bologna!",
+        });
+        
+        // Play success sound
+        const audio = new Audio('/sounds/coin-insert.mp3');
+        audio.play().catch(err => console.log('Audio playback error:', err));
+        
+        navigate("/");
       } else {
         // Simple registration simulation - in a real app this would call an API
-        const success = login(email, password); // Use login for now since register doesn't exist
-        if (success) {
-          toast({
-            title: "REGISTRAZIONE COMPLETATA",
-            description: "Account creato con successo!",
-          });
-          
-          // Play success sound
-          const audio = new Audio('/sounds/coin-insert.mp3');
-          audio.play().catch(err => console.log('Audio playback error:', err));
-          
-          navigate("/");
-        } else {
-          toast({
-            title: "ERRORE REGISTRAZIONE",
-            description: "Impossibile creare l'account",
-            variant: "destructive",
-          });
-        }
+        login(email, password);
+        toast({
+          title: "REGISTRAZIONE COMPLETATA",
+          description: "Account creato con successo!",
+        });
+        
+        // Play success sound
+        const audio = new Audio('/sounds/coin-insert.mp3');
+        audio.play().catch(err => console.log('Audio playback error:', err));
+        
+        navigate("/");
       }
     } catch (error) {
       toast({
