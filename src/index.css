@@ -1,4 +1,5 @@
 
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -28,16 +29,51 @@ body {
   font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
 }
 
-/* FORZO IL COLORE NERO PER METEO, CHAT E PLAYGROUND */
+/* Imposta colori di base per testo e sfondo, con contrasto elevato */
 body, .meteo, .chat, .playground {
-    background-color: #fff !important;
-    color: #222 !important;
+    background-color: #ffffff !important; /* Sfondo bianco */
+    color: #222222 !important;            /* Testo scuro */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* RIMUOVO TUTTE LE REGOLE CHE FORZANO IL COLORE BIANCO */
+/* Tema scuro automatico basato sulla preferenza utente */
+@media (prefers-color-scheme: dark) {
+    body, .meteo, .chat, .playground {
+        background-color: #121212 !important;
+        color: #e0e0e0 !important;
+    }
+}
+
+/* Migliora la leggibilità dei link */
+a {
+    color: #1a73e8;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover, a:focus {
+    color: #0049b7;
+    text-decoration: underline;
+}
+
+/* Migliora la responsività e spaziatura */
+.container, .meteo, .chat, .playground {
+    padding: 1rem;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* Accessibilità: focus visibile */
+:focus {
+    outline: 3px solid #1a73e8;
+    outline-offset: 2px;
+}
 
 @import './styles/base.css';
 @import './styles/background.css';
 @import './styles/animations.css';
 @import './styles/arcade-components.css';
 @import './styles/responsive.css';
+
