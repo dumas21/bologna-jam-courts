@@ -2,7 +2,7 @@
 @layer base {
   body {
     font-family: 'Press Start 2P', monospace;
-    background: linear-gradient(135deg, #D72638 0%, #0050A0 100%) !important;
+    background: linear-gradient(to right, #D72638 50%, #0050A0 50%) !important;
     color: var(--arcade-white);
     min-height: 100vh;
     overflow-x: hidden;
@@ -13,7 +13,7 @@
 
   /* Forzo il background per essere sicuro */
   html, body, #root {
-    background: linear-gradient(135deg, #D72638 0%, #0050A0 100%) !important;
+    background: linear-gradient(to right, #D72638 50%, #0050A0 50%) !important;
   }
 
   /* Immagine di sfondo nella parte alta */

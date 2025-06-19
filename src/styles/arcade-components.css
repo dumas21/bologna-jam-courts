@@ -131,28 +131,31 @@
     text-shadow: 2px 2px 0px #000, 0 0 10px #FFD700;
   }
 
-  /* Arcade Text Elements - Mobile Optimized con stile retro MIGLIORATO */
+  /* Arcade Text Elements - TITOLO SUPER VISIBILE stile NBA JAM */
   .arcade-title {
-    font-family: 'Bungee', 'Press Start 2P', monospace;
-    color: var(--neon-yellow);
+    font-family: 'Press Start 2P', monospace;
+    color: #FFD700;
     text-shadow: 
-      4px 4px 0px #000,
-      -2px -2px 0px #000,
-      2px -2px 0px #000,
-      -2px 2px 0px #000,
+      4px 4px 0px #000000,
+      -2px -2px 0px #000000,
+      2px -2px 0px #000000,
+      -2px 2px 0px #000000,
+      6px 6px 0px #000000,
       0 0 20px #FFD700,
       0 0 40px #FFD700,
-      0 0 60px #FF6B35;
+      0 0 60px #FF6B35,
+      0 0 80px #FF6B35;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     font-weight: 400;
-    background: linear-gradient(45deg, #FFD700, #FF6B35, #FFD700);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    animation: super-title-glow 2s ease-in-out infinite;
+    background: linear-gradient(45deg, #FFD700, #FFFF00, #FFD700);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: title-glow 2.5s ease-in-out infinite;
-    font-size: 1.2rem;
-    line-height: 1.2;
+    filter: drop-shadow(3px 3px 0px #000000);
   }
 
   .arcade-heading {
@@ -281,26 +284,58 @@
     font-family: 'Press Start 2P', monospace;
   }
 
-  /* Animazione speciale per il titolo */
-  @keyframes title-glow {
+  /* Animazione super speciale per il titolo principale */
+  @keyframes super-title-glow {
     0%, 100% { 
       text-shadow: 
-        4px 4px 0px #000,
-        -2px -2px 0px #000,
-        2px -2px 0px #000,
-        -2px 2px 0px #000,
+        4px 4px 0px #000000,
+        -2px -2px 0px #000000,
+        2px -2px 0px #000000,
+        -2px 2px 0px #000000,
+        6px 6px 0px #000000,
         0 0 20px #FFD700,
-        0 0 40px #FFD700;
+        0 0 40px #FFD700,
+        0 0 60px #FF6B35;
+      transform: scale(1);
+    }
+    25% {
+      text-shadow: 
+        4px 4px 0px #000000,
+        -2px -2px 0px #000000,
+        2px -2px 0px #000000,
+        -2px 2px 0px #000000,
+        6px 6px 0px #000000,
+        0 0 30px #FFD700,
+        0 0 60px #FFD700,
+        0 0 80px #FF6B35,
+        0 0 100px #FF6B35;
+      transform: scale(1.02);
     }
     50% { 
       text-shadow: 
-        4px 4px 0px #000,
-        -2px -2px 0px #000,
-        2px -2px 0px #000,
-        -2px 2px 0px #000,
+        4px 4px 0px #000000,
+        -2px -2px 0px #000000,
+        2px -2px 0px #000000,
+        -2px 2px 0px #000000,
+        6px 6px 0px #000000,
+        0 0 40px #FFD700,
+        0 0 80px #FFD700,
+        0 0 100px #FF6B35,
+        0 0 120px #FF6B35;
+      transform: scale(1.05);
+    }
+    75% {
+      text-shadow: 
+        4px 4px 0px #000000,
+        -2px -2px 0px #000000,
+        2px -2px 0px #000000,
+        -2px 2px 0px #000000,
+        6px 6px 0px #000000,
         0 0 30px #FFD700,
         0 0 60px #FFD700,
-        0 0 80px #FF6B35;
+        0 0 80px #FF6B35,
+        0 0 100px #FF6B35;
+      transform: scale(1.02);
     }
   }
 }
