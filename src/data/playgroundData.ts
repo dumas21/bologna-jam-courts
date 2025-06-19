@@ -9,7 +9,7 @@ export const playgroundData: Playground[] = [
     openHours: "06:00 - 23:00",
     hasShade: true,
     hasFountain: false,
-    hasAmenities: true,
+    hasAmenities: true, // Bar, chioschi e servizi igienici
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -23,9 +23,9 @@ export const playgroundData: Playground[] = [
     name: "Parco della Montagnola",
     address: "Via Irnerio, 8, 40126 Bologna BO",
     openHours: "08:00 - 22:00",
-    hasShade: true,
+    hasShade: true, // Circondato da alberi che offrono buona ombra naturale
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No bar diretti, ma nelle vicinanze
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -39,9 +39,9 @@ export const playgroundData: Playground[] = [
     name: "Giardini Nanetti (PalaDozza)",
     address: "Via dello Sport, 40127 Bologna BO",
     openHours: "07:00 - 21:00",
-    hasShade: false,
+    hasShade: false, // Parzialmente, vicino ad alberi e strutture
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No ristori diretti, ma bar nelle vicinanze del PalaDozza
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -55,9 +55,9 @@ export const playgroundData: Playground[] = [
     name: "Parco Davide Penazzi",
     address: "Via Libia, 40137 Bologna BO",
     openHours: "08:00 - 20:00",
-    hasShade: true,
+    hasShade: true, // Inserito in un'area verde con alberi che offrono ombra
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No ristori diretti, ma panchine e aree di sosta
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -71,9 +71,9 @@ export const playgroundData: Playground[] = [
     name: "Giardini Graziella Fava",
     address: "Via della Beverara, 40131 Bologna BO",
     openHours: "07:00 - 22:00",
-    hasShade: true,
+    hasShade: true, // Circondato da alberi e verde pubblico
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No bar diretti, ma parco attrezzato con panchine
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -87,9 +87,9 @@ export const playgroundData: Playground[] = [
     name: "Parco Talon",
     address: "Via Talon, 40133 Bologna BO",
     openHours: "08:00 - 20:00",
-    hasShade: false,
+    hasShade: false, // Parzialmente, alcune zone con alberi ma abbastanza esposto
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No ristori diretti, area verde con panchine
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -103,9 +103,9 @@ export const playgroundData: Playground[] = [
     name: "Parco 11 Settembre",
     address: "Via Emilia Levante, 40131 Bologna BO",
     openHours: "08:00 - 21:00",
-    hasShade: false,
+    hasShade: false, // Parzialmente, alcune zone con alberi ma campo abbastanza esposto
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No ristori diretti, ma parco attrezzato
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -119,9 +119,9 @@ export const playgroundData: Playground[] = [
     name: "Parco Nord (Corticella)",
     address: "Via Marco Emilio Lepido, 40132 Bologna BO",
     openHours: "08:00 - 22:00",
-    hasShade: true,
+    hasShade: true, // Campo inserito in area verde con alberi
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No ristori diretti, ma area verde con panchine
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -135,9 +135,9 @@ export const playgroundData: Playground[] = [
     name: "Parco 2 Agosto",
     address: "Via 2 Agosto 1980, 40127 Bologna BO",
     openHours: "08:30 - 21:00",
-    hasShade: false,
+    hasShade: false, // Parzialmente, alcune zone con alberi
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No ristori diretti
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -151,9 +151,9 @@ export const playgroundData: Playground[] = [
     name: "Parco Villa Bernaroli",
     address: "Via della Beverara, 40131 Bologna BO",
     openHours: "07:30 - 21:30",
-    hasShade: true,
+    hasShade: true, // Circondato da verde e alberi
     hasFountain: false,
-    hasAmenities: false,
+    hasAmenities: false, // No ristori diretti, ma area verde attrezzata
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,

@@ -24,7 +24,7 @@ const Login = () => {
 
     try {
       if (isLogin) {
-        login(email, password);
+        login(email);
         toast({
           title: "LOGIN EFFETTUATO",
           description: "Benvenuto in Playground Jam Bologna!",
@@ -37,7 +37,7 @@ const Login = () => {
         navigate("/");
       } else {
         // Simple registration simulation - in a real app this would call an API
-        login(email, password);
+        login(email);
         toast({
           title: "REGISTRAZIONE COMPLETATA",
           description: "Account creato con successo!",
