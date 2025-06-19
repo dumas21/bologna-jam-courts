@@ -1,3 +1,4 @@
+
 @layer components {
   /* Arcade Text Elements - TITOLO SUPER VISIBILE stile NBA JAM / Street Fighter con ITC Machine */
   .arcade-title {
@@ -67,41 +68,41 @@
 
   .arcade-date-enhanced {
     font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace !important;
-    color: #FF0000 !important;
+    color: #FFD700 !important;
     text-shadow: 
       6px 6px 0px #000000,
-      -3px -3px 0px #0000FF,
-      0 0 20px #FF0000,
+      -3px -3px 0px #000000,
+      0 0 20px #FFD700,
       0 0 30px #FF4500,
-      0 0 40px #0000FF !important;
+      0 0 40px #FFD700 !important;
     text-transform: uppercase !important;
     letter-spacing: 4px !important;
     animation: date-glow 2.5s ease-in-out infinite !important;
     font-weight: 900 !important;
     font-size: 14px !important;
-    background: linear-gradient(45deg, #FF0000, #0000FF, #FF4500, #FF0000);
+    background: linear-gradient(45deg, #FFD700, #FF4500, #FFD700, #FF6B35);
     background-size: 400% 400%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(4px 4px 0px #000000);
+    filter: drop-shadow(6px 6px 0px #000000) drop-shadow(0px 0px 15px #FFD700);
   }
 
   @keyframes date-glow {
     0%, 100% {
       text-shadow: 
         6px 6px 0px #000000,
-        -3px -3px 0px #0000FF,
-        0 0 20px #FF0000,
+        -3px -3px 0px #000000,
+        0 0 20px #FFD700,
         0 0 30px #FF4500;
     }
     50% {
       text-shadow: 
         6px 6px 0px #000000,
-        -3px -3px 0px #FF0000,
-        0 0 25px #0000FF,
-        0 0 35px #FF0000,
-        0 0 45px #0000FF;
+        -3px -3px 0px #000000,
+        0 0 25px #FF6B35,
+        0 0 35px #FFD700,
+        0 0 45px #FF4500;
     }
   }
 
