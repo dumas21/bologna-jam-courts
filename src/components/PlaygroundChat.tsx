@@ -146,13 +146,13 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   
   return (
     <div className="bg-white p-6 rounded-lg border-4 border-orange-500 shadow-lg">
-      <h3 className="text-orange-500 text-lg mb-4 flex items-center font-bold" style={{textShadow: '2px 2px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '3px'}}>
+      <h3 className="text-black text-lg mb-4 flex items-center font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '3px'}}>
         <MessageSquare size={20} className="mr-3 text-blue-600" /> 
         CHAT DI {playground.name.toUpperCase()}
       </h3>
       
       <div className="bg-gray-50 p-4 rounded-md mb-6 h-64 overflow-y-auto shadow-inner border-2 border-gray-200">
-        <div className="text-sm text-center text-blue-600 mb-4 font-bold" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
+        <div className="text-sm text-center text-black mb-4 font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
           CHAT VALIDA FINO AL {chatResetDate}
         </div>
         
@@ -160,21 +160,21 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
           <div className="space-y-4">
             {comments.map((comment, index) => (
               <div key={comment.id || index} className="p-4 rounded-lg bg-white border-2 border-gray-200 shadow-sm">
-                <div className="text-base text-gray-800 break-words leading-relaxed font-bold" style={{textShadow: '1px 1px 0px #FFF', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '12px'}}>
+                <div className="text-base text-black break-words leading-relaxed font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '12px'}}>
                   {sanitizeText(comment.text)}
                 </div>
-                <div className="text-sm text-gray-600 mt-3 flex justify-between items-center">
-                  <span className="font-bold text-blue-600" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '10px'}}>
+                <div className="text-sm text-black mt-3 flex justify-between items-center">
+                  <span className="font-bold text-blue-600" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '10px'}}>
                     {sanitizeText(comment.user)}
                   </span>
-                  <span className="font-bold" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '10px'}}>{format(new Date(comment.timestamp), 'dd/MM/yyyy HH:mm', { locale: it })}</span>
+                  <span className="font-bold text-black" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '10px'}}>{format(new Date(comment.timestamp), 'dd/MM/yyyy HH:mm', { locale: it })}</span>
                 </div>
               </div>
             ))}
           </div>
         ) : (
           <div className="h-full flex items-center justify-center">
-            <p className="text-gray-500 font-bold text-sm text-center" style={{textShadow: '1px 1px 0px #FFF', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
+            <p className="text-black font-bold text-sm text-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
               NESSUN MESSAGGIO NELLA CHAT DI {sanitizeText(playground.name.toUpperCase())}
             </p>
           </div>
@@ -183,10 +183,10 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       
       {!isLoggedIn ? (
         <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4 text-center">
-          <p className="text-red-700 font-bold text-sm mb-2" style={{textShadow: '1px 1px 0px #FFF', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
+          <p className="text-black font-bold text-sm mb-2" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
             DEVI EFFETTUARE IL LOGIN PER SCRIVERE IN CHAT
           </p>
-          <p className="text-red-600 text-xs font-bold" style={{textShadow: '1px 1px 0px #FFF', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>
+          <p className="text-black text-xs font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>
             Vai alla pagina di login e inserisci il tuo nickname
           </p>
         </div>
@@ -195,21 +195,21 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
           <div className="flex-1">
             <Textarea 
               placeholder={`Scrivi nella chat di ${playground.name}... (max 500 caratteri)`}
-              className="bg-white text-gray-800 border-2 border-gray-300 min-h-[80px] text-base resize-none font-bold"
-              style={{textShadow: '1px 1px 0px #FFF', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '12px'}}
+              className="bg-white text-black border-2 border-gray-300 min-h-[80px] text-base resize-none font-bold"
+              style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '12px'}}
               value={message}
               onChange={handleMessageChange}
               onKeyDown={handleKeyPress}
               maxLength={500}
             />
-            <div className="text-xs text-gray-500 mt-1 font-bold" style={{textShadow: '1px 1px 0px #FFF', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>
+            <div className="text-xs text-black mt-1 font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>
               {message.length}/500 caratteri
             </div>
           </div>
           <Button 
             onClick={handleSendMessage}
             className="bg-blue-600 hover:bg-blue-700 text-white h-[80px] px-6 flex items-center justify-center rounded-lg font-bold"
-            style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}
+            style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}
             disabled={!message.trim() || message.length > 500}
           >
             <Send size={20} />
