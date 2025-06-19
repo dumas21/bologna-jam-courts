@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -157,19 +156,19 @@
     color: #FF6B35 !important;
   }
 
-  /* PLAYGROUND NAME STYLE - STILE ORIGINALE ANNI 80 */
+  /* PLAYGROUND NAME STYLE - STILE ORIGINALE ANNI 80 CON GLOW RIDOTTO */
   .playground-name {
     font-family: 'Press Start 2P', monospace !important;
     color: #FF6B35 !important;
-    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FFD700 !important;
+    text-shadow: 2px 2px 0px #000, 0 0 5px #FF6B35 !important;
     text-transform: uppercase !important;
     letter-spacing: 2px !important;
     background: rgba(0, 0, 0, 0.9) !important;
     padding: 8px 12px !important;
     border-radius: 8px !important;
     border: 2px solid #FF6B35 !important;
-    box-shadow: 0 0 15px rgba(255, 107, 53, 0.6) !important;
-    animation: neon-glow 3s ease-in-out infinite !important;
+    box-shadow: 0 0 8px rgba(255, 107, 53, 0.4) !important;
+    font-weight: 400 !important;
   }
 
   /* SYNTHWAVE BACKGROUND */
