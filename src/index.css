@@ -3,63 +3,355 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ARCADE ANNI 80 - STILE ORIGINALE RIPRISTINATO */
-html, body {
-  background: linear-gradient(180deg, 
-    #0f0f23 0%, 
-    #1a0033 30%, 
-    #330066 60%, 
-    #000011 100%) !important;
-  color: #FFFFFF !important;
-  font-family: 'Press Start 2P', 'JetBrains Mono', monospace !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  height: 100% !important;
-  min-height: 100vh !important;
-  text-transform: uppercase !important;
-  font-weight: 400 !important;
-  letter-spacing: 1px !important;
+/* IMPORT FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&display=swap');
+
+/* ========== ARCADE ANNI 80 - STILE COMPLETO ========== */
+
+@layer base {
+  :root {
+    --arcade-red: #D72638;
+    --arcade-blue: #0050A0;
+    --arcade-white: #ffffff;
+    --neon-orange: #FF6B35;
+    --neon-yellow: #FFD700;
+  }
+
+  /* BACKGROUND PRINCIPALE */
+  html, body {
+    background: linear-gradient(180deg, 
+      #0f0f23 0%, 
+      #1a0033 30%, 
+      #330066 60%, 
+      #000011 100%) !important;
+    color: #FFFFFF !important;
+    font-family: 'Press Start 2P', monospace !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    min-height: 100vh !important;
+    text-transform: uppercase !important;
+    font-weight: 400 !important;
+    letter-spacing: 1px !important;
+  }
+
+  #root {
+    background: transparent !important;
+    min-height: 100vh !important;
+    font-family: 'Press Start 2P', monospace !important;
+  }
+
+  /* Effetto scanline leggero */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.02),
+      rgba(255,255,255,0.02) 2px,
+      transparent 3px,
+      transparent 4px
+    );
+    z-index: 1000;
+  }
+
+  /* Grid pattern */
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image: 
+      linear-gradient(rgba(255,107,53,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,53,0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: 999;
+  }
+
+  /* TYPOGRAPHY ARCADE ORIGINALE */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Press Start 2P', monospace !important;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35 !important;
+    letter-spacing: 2px !important;
+    text-transform: uppercase !important;
+    line-height: 1.2 !important;
+    font-weight: 400 !important;
+    color: #FF6B35 !important;
+  }
+  
+  p, span, div, button, a, label, input, textarea {
+    font-family: 'Press Start 2P', monospace !important;
+    text-shadow: 1px 1px 0px #000 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.4 !important;
+    text-transform: uppercase !important;
+    color: #FFFFFF !important;
+    font-weight: 400 !important;
+  }
+
+  /* ANIMAZIONI ARCADE */
+  @keyframes neon-glow {
+    0%, 100% { 
+      text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    }
+    50% { 
+      text-shadow: 2px 2px 0px #000, 0 0 20px #FF6B35, 0 0 30px #FFD700;
+    }
+  }
+
+  @keyframes arcade-pulse {
+    0%, 100% { 
+      transform: scale(1);
+      box-shadow: 0 0 15px rgba(255, 107, 53, 0.6);
+    }
+    50% { 
+      transform: scale(1.02);
+      box-shadow: 0 0 25px rgba(255, 107, 53, 0.8), 0 0 35px rgba(255, 215, 0, 0.4);
+    }
+  }
+
+  @keyframes neonPulse {
+    from {
+      box-shadow: 0 0 15px rgba(255, 107, 53, 0.6);
+    }
+    to {
+      box-shadow: 0 0 25px rgba(255, 107, 53, 0.8), 0 0 35px rgba(255, 215, 0, 0.4);
+    }
+  }
+
+  .animate-neon-glow {
+    animation: neon-glow 3s ease-in-out infinite;
+  }
+
+  .animate-arcade-pulse {
+    animation: arcade-pulse 3s ease-in-out infinite;
+  }
+
+  .animate-neon-pulse {
+    animation: neonPulse 2s infinite alternate;
+  }
+
+  /* TESTO NEON ARCADE */
+  .retro-neon-text {
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    font-weight: 400;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  .nike-text {
+    font-family: 'Press Start 2P', monospace !important;
+    font-weight: 400 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35 !important;
+    color: #FF6B35 !important;
+  }
+
+  /* PLAYGROUND NAME STYLE - STILE ORIGINALE ANNI 80 */
+  .playground-name {
+    font-family: 'Press Start 2P', monospace !important;
+    color: #FF6B35 !important;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FFD700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    border: 2px solid #FF6B35 !important;
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.6) !important;
+    animation: neon-glow 3s ease-in-out infinite !important;
+  }
+
+  /* SYNTHWAVE BACKGROUND */
+  .synthwave-bg {
+    background: linear-gradient(180deg, 
+      #0f0f23 0%, 
+      #1a0033 30%, 
+      #330066 60%, 
+      #000011 100%);
+  }
+
+  /* RETRO GRID */
+  .retro-grid {
+    background-image: 
+      linear-gradient(rgba(255,107,53,0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,107,53,0.2) 1px, transparent 1px);
+    background-size: 50px 50px;
+    position: relative;
+  }
+
+  .retro-grid::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, 
+      rgba(255,107,53,0.1) 0%, 
+      rgba(255,215,0,0.1) 50%, 
+      rgba(255,107,53,0.1) 100%);
+    pointer-events: none;
+  }
+
+  /* GLOW EFFECTS */
+  .retro-neon-glow {
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.6) !important;
+    border: 2px solid #FF6B35 !important;
+  }
+
+  .retro-neon-glow:hover {
+    box-shadow: 0 0 25px rgba(255, 107, 53, 0.8) !important;
+    border-color: #FFD700 !important;
+  }
 }
 
-#root {
-  background: transparent !important;
-  min-height: 100vh !important;
-  font-family: 'Press Start 2P', 'JetBrains Mono', monospace !important;
-}
+@layer components {
+  /* ARCADE BUTTONS */
+  .arcade-button {
+    font-family: 'Press Start 2P', monospace !important;
+    border: 3px solid #ff55aa !important;
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 44px !important;
+    min-width: 44px !important;
+    touch-action: manipulation !important;
+    letter-spacing: 2px !important;
+    color: #FFFFFF !important;
+    background-color: #ff0055 !important;
+    box-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055, 0 0 20px #ff55aa !important;
+    animation: neonPulse 2s infinite alternate !important;
+    padding: 12px 16px !important;
+    text-transform: uppercase !important;
+    font-weight: 400 !important;
+  }
 
-/* Effetto scanline leggero */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255,255,255,0.02),
-    rgba(255,255,255,0.02) 2px,
-    transparent 3px,
-    transparent 4px
-  );
-  z-index: 1000;
-}
+  .arcade-button:active {
+    transform: scale(0.98) !important;
+    box-shadow: 0 0 15px #ff0055, 0 0 25px #ff0055, 0 0 35px #ff55aa !important;
+  }
 
-/* Grid pattern */
-body::after {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background-image: 
-    linear-gradient(rgba(255,107,53,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,107,53,0.1) 1px, transparent 1px);
-  background-size: 50px 50px;
-  z-index: 999;
+  .arcade-button:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 
+      0 0 15px #ff0055,
+      0 0 25px #ff0055,
+      0 0 35px #ff55aa,
+      0 4px 15px rgba(255, 255, 255, 0.3) !important;
+  }
+
+  /* ARCADE CARDS */
+  .arcade-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 3px solid #FF6B35;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+    position: relative;
+    touch-action: manipulation;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #D72638, #FF6B35, #D72638);
+    z-index: -1;
+    border-radius: 8px;
+  }
+
+  /* WEATHER CARTOON STYLE */
+  .weather-cartoon {
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 3px solid #FF6B35 !important;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
+  }
+
+  .weather-cartoon::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background: #FFD700;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #FFD700;
+    z-index: 1;
+  }
+
+  /* ARCADE SECTIONS */
+  .arcade-section {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    padding: 1rem;
+    position: relative;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  /* ARCADE TABS */
+  .arcade-tabs {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-tab-list {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    padding: 4px;
+    gap: 2px;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-tab {
+    font-family: 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0px #000;
+    color: var(--arcade-white);
+    border: 2px solid transparent;
+    background: transparent;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 8px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    touch-action: manipulation;
+    transition: all 0.3s ease;
+    font-weight: 400;
+  }
+
+  .arcade-tab[data-state="active"] {
+    background: linear-gradient(45deg, #D72638, #FF6B35);
+    border-color: var(--arcade-white);
+    box-shadow: 0 0 15px #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FFD700;
+  }
 }
 
 /* Link arcade style */
@@ -76,7 +368,7 @@ a:hover, a:focus {
   text-decoration: underline !important;
 }
 
-/* Pulsanti neon arcade */
+/* Pulsanti neon arcade generici */
 button, .btn {
   background: linear-gradient(45deg, #ff6b35, #ffd700) !important;
   border: 2px solid #ffffff !important;
@@ -97,9 +389,35 @@ button:hover, .btn:hover {
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.8) !important;
 }
 
-@import './styles/base.css';
-@import './styles/background.css';
-@import './styles/animations.css';
-@import './styles/arcade-components.css';
-@import './styles/responsive.css';
-@import './styles/retro-80s.css';
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .arcade-button {
+    padding: 8px 12px !important;
+    font-size: 8px !important;
+    min-height: 44px;
+  }
+
+  .arcade-tab {
+    padding: 10px 6px;
+    font-size: 8px;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-size: 0.8rem !important;
+    letter-spacing: 1px !important;
+  }
+
+  p, span, div, button, a, label, input, textarea {
+    font-size: 0.6rem !important;
+    letter-spacing: 0.5px !important;
+  }
+}
+
+/* Nascondi badge Lovable */
+iframe[title="Lovable badge"],
+div[data-testid="lovable-badge"],
+[data-lovable-badge],
+.lovable-edit-button,
+.lovable-badge {
+  display: none !important;
+}
