@@ -15,6 +15,11 @@ export function usePlaygrounds() {
     const saved = localStorage.getItem("playgroundData");
     if (saved) {
       const parsedData = JSON.parse(saved);
+      // Controlla se ci sono meno di 10 playground e ripristina i dati originali
+      if (parsedData.length < 10) {
+        console.log("Meno di 10 playground trovati, ripristino dati originali:", initialData);
+        return initialData;
+      }
       console.log("Dati caricati da localStorage:", parsedData);
       return parsedData;
     }
