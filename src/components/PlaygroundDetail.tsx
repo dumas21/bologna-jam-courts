@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Playground } from '@/types/playground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -191,7 +190,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
               </div>
             </div>
           </TabsContent>
-          <TabsContent value="community">
+          <TabsContent value="community" className="community">
             <div className="space-y-4">
               <PlaygroundChat playground={playground} />
               <UserList users={checkedInUsers} />
