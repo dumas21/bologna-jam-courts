@@ -113,12 +113,6 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
             <div className="text-black text-lg font-black font-orbitron" style={{color: '#000000'}}>{weather.windSpeed} KM/H</div>
           </div>
         </div>
-        
-        <div className="mt-4 pt-3 border-t-2 border-gray-300">
-          <p className="text-black text-xs font-bold text-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>
-            📍 {location.toUpperCase()}
-          </p>
-        </div>
       </div>
     </div>
   );

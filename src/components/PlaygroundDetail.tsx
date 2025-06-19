@@ -110,6 +110,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-blue-600 transition-colors arcade-link"
+                  style={{color: '#FFFFFF', textShadow: '1px 1px 0px #000'}}
                 >
                   {playground.address}
                 </a>
