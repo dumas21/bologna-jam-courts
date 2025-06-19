@@ -13,7 +13,6 @@ html {
 body {
   background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
   font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
-  color: #FFFFFF !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
@@ -27,18 +26,9 @@ body {
   background: transparent !important;
   min-height: 100vh !important;
   font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
-  color: #FFFFFF !important;
 }
 
-/* FORZO I FONT OVUNQUE SENZA OMBRE E CON TESTO BIANCO */
-* {
-  font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
-  text-transform: uppercase !important;
-  font-weight: 600 !important;
-  letter-spacing: 1px !important;
-  text-shadow: none !important;
-  color: #FFFFFF !important;
-}
+/* RIMUOVO TUTTE LE REGOLE CHE FORZANO IL COLORE BIANCO */
 
 @import './styles/base.css';
 @import './styles/background.css';

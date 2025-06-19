@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Cloud, Sun, CloudRain, CloudSnow, Zap } from 'lucide-react';
 
@@ -63,7 +64,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
         <div className="relative z-10 flex items-center justify-center h-24">
           <div className="flex items-center space-x-2">
             <Zap size={24} className="text-orange-500 animate-bounce" />
-            <p className="text-black text-sm font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000 !important'}}>LOADING WEATHER...</p>
+            <p className="text-black text-sm font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>LOADING WEATHER...</p>
             <Zap size={24} className="text-orange-500 animate-bounce" />
           </div>
         </div>
@@ -75,7 +76,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
     return (
       <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-red-500">
         <div className="relative z-10 flex items-center justify-center h-24">
-          <p className="text-black text-sm font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000 !important'}}>WEATHER ERROR!</p>
+          <p className="text-black text-sm font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>WEATHER ERROR!</p>
         </div>
       </div>
     );
@@ -85,36 +86,36 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
     <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-orange-500">
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-black text-sm font-bold flex items-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000 !important'}}>
+          <h4 className="text-black text-sm font-bold flex items-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>
             {getWeatherIcon(weather.condition)}
-            <span className="ml-3">METEO {playgroundName.toUpperCase()}</span>
+            <span className="ml-3" style={{color: '#000000'}}>METEO {playgroundName.toUpperCase()}</span>
           </h4>
         </div>
         
         <div className="grid grid-cols-2 gap-4">
           <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000 !important'}}>TEMP</div>
-            <div className="text-black text-2xl font-black font-orbitron" style={{color: '#000000 !important'}}>{weather.temperature}°C</div>
+            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>TEMP</div>
+            <div className="text-black text-2xl font-black font-orbitron" style={{color: '#000000'}}>{weather.temperature}°C</div>
           </div>
           
           <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000 !important'}}>STATO</div>
-            <div className="text-black text-xs font-black font-orbitron" style={{color: '#000000 !important'}}>{weather.condition.toUpperCase()}</div>
+            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>STATO</div>
+            <div className="text-black text-xs font-black font-orbitron" style={{color: '#000000'}}>{weather.condition.toUpperCase()}</div>
           </div>
           
           <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000 !important'}}>UMIDITÀ</div>
-            <div className="text-black text-lg font-black font-orbitron" style={{color: '#000000 !important'}}>{weather.humidity}%</div>
+            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>UMIDITÀ</div>
+            <div className="text-black text-lg font-black font-orbitron" style={{color: '#000000'}}>{weather.humidity}%</div>
           </div>
           
           <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000 !important'}}>VENTO</div>
-            <div className="text-black text-lg font-black font-orbitron" style={{color: '#000000 !important'}}>{weather.windSpeed} KM/H</div>
+            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>VENTO</div>
+            <div className="text-black text-lg font-black font-orbitron" style={{color: '#000000'}}>{weather.windSpeed} KM/H</div>
           </div>
         </div>
         
         <div className="mt-4 pt-3 border-t-2 border-gray-300">
-          <p className="text-black text-xs font-bold text-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000 !important'}}>
+          <p className="text-black text-xs font-bold text-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>
             📍 {location.toUpperCase()}
           </p>
         </div>
