@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -37,8 +38,8 @@
     --sidebar-ring: 217.2 91.2% 59.8%;
     
     /* Arcade Bologna colors - Red left, Blue right */
-    --arcade-blue: #0050A0;
     --arcade-red: #D72638;
+    --arcade-blue: #0050A0;
     --arcade-white: #ffffff;
   }
 
@@ -87,9 +88,12 @@
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
+    /* Improved scrolling */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
   
-  /* CRT Effect */
+  /* Lighter CRT Effect for better performance */
   .crt-overlay {
     position: fixed;
     top: 0;
@@ -99,32 +103,25 @@
     background: repeating-linear-gradient(
       0deg,
       transparent,
-      transparent 2px,
-      rgba(0, 0, 0, 0.1) 2px,
-      rgba(0, 0, 0, 0.1) 4px
+      transparent 3px,
+      rgba(0, 0, 0, 0.05) 3px,
+      rgba(0, 0, 0, 0.05) 6px
     );
     pointer-events: none;
     z-index: 1000;
-    animation: scan-lines 0.1s linear infinite;
   }
 
-  @keyframes scan-lines {
-    0% { transform: translateY(0px); }
-    100% { transform: translateY(4px); }
-  }
-
-  /* Neptune Background */
+  /* Simplified Neptune Background */
   .neptune-background {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 300px;
-    height: 300px;
+    width: 250px;
+    height: 250px;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='8' fill='%23FFD700'/%3E%3Crect x='45' y='48' width='10' height='20' fill='%23FFD700'/%3E%3Ccircle cx='50' cy='75' r='12' fill='%23FF6B35'/%3E%3Ctext x='50' y='85' text-anchor='middle' font-family='monospace' font-size='6' fill='white'%3ENETTUNO%3C/text%3E%3C/svg%3E") center/contain no-repeat;
-    opacity: 0.1;
+    opacity: 0.08;
     z-index: 1;
-    filter: blur(1px);
   }
 
   /* Arcade Container */
@@ -133,51 +130,51 @@
     z-index: 10;
   }
 
-  /* Typography */
+  /* Responsive Typography */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Press Start 2P', monospace;
-    text-shadow: 3px 3px 0px #000, 0 0 10px currentColor;
-    letter-spacing: 2px;
+    text-shadow: 2px 2px 0px #000;
+    letter-spacing: 1px;
     text-transform: uppercase;
+    line-height: 1.4;
   }
   
   p, span, div {
     font-family: 'Press Start 2P', monospace;
-    text-shadow: 2px 2px 0px #000;
-    letter-spacing: 1px;
+    text-shadow: 1px 1px 0px #000;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
   }
 
-  /* Animations */
+  /* Simplified Animations */
   @keyframes neon-glow {
     0%, 100% { 
-      text-shadow: 2px 2px 0px #000, 0 0 10px currentColor, 0 0 20px currentColor;
+      text-shadow: 1px 1px 0px #000, 0 0 5px currentColor;
     }
     50% { 
-      text-shadow: 2px 2px 0px #000, 0 0 20px currentColor, 0 0 40px currentColor;
+      text-shadow: 1px 1px 0px #000, 0 0 10px currentColor;
     }
   }
 
   @keyframes arcade-pulse {
     0%, 100% { 
       transform: scale(1);
-      box-shadow: 0 0 15px currentColor;
     }
     50% { 
-      transform: scale(1.05);
-      box-shadow: 0 0 30px currentColor;
+      transform: scale(1.02);
     }
   }
 
   @keyframes pixel-fade-in {
-    0% { opacity: 0; transform: translateY(10px); }
+    0% { opacity: 0; transform: translateY(5px); }
     100% { opacity: 1; transform: translateY(0); }
   }
 
   /* Weather Cartoon Style */
   .weather-cartoon {
     background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFD700 100%);
-    border: 4px solid #000;
-    border-radius: 15px;
+    border: 3px solid #000;
+    border-radius: 12px;
     position: relative;
     overflow: hidden;
   }
@@ -185,10 +182,10 @@
   .weather-cartoon::before {
     content: '';
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 40px;
-    height: 40px;
+    top: 8px;
+    right: 8px;
+    width: 30px;
+    height: 30px;
     background: radial-gradient(circle, #FFD700 30%, transparent 30%);
     border-radius: 50%;
     z-index: 1;
@@ -198,24 +195,15 @@
     font-family: 'Orbitron', 'Press Start 2P', monospace;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
   }
 
   .font-orbitron {
     font-family: 'Orbitron', monospace;
   }
 
-  @keyframes animate-neon-glow {
-    0%, 100% { 
-      filter: drop-shadow(0 0 5px currentColor) drop-shadow(0 0 10px currentColor);
-    }
-    50% { 
-      filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor);
-    }
-  }
-
   .animate-neon-glow {
-    animation: animate-neon-glow 2s ease-in-out infinite;
+    animation: neon-glow 2s ease-in-out infinite;
   }
 
   /* Star Rating */
@@ -229,6 +217,12 @@
     color: #666;
     transition: all 0.2s ease;
     filter: drop-shadow(1px 1px 0px #000);
+    /* Better touch targets */
+    min-width: 24px;
+    min-height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .star:hover {
@@ -237,25 +231,33 @@
 
   .star.filled {
     color: #FFD700;
-    filter: drop-shadow(1px 1px 0px #000) drop-shadow(0 0 10px #FFD700);
+    filter: drop-shadow(1px 1px 0px #000) drop-shadow(0 0 5px #FFD700);
   }
 }
 
 @layer components {
-  /* Arcade Buttons */
+  /* Arcade Buttons - Mobile Optimized */
   .arcade-button {
-    @apply font-bold px-6 py-3 text-xs uppercase tracking-wider;
+    @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
     font-family: 'Press Start 2P', monospace;
-    border: 4px solid var(--arcade-white);
-    text-shadow: 2px 2px 0px #000;
+    border: 3px solid var(--arcade-white);
+    text-shadow: 1px 1px 0px #000;
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
+    /* Better touch targets */
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+  }
+
+  .arcade-button:active {
+    transform: scale(0.98);
   }
 
   .arcade-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   }
 
   .arcade-button-primary {
@@ -290,18 +292,20 @@
   }
 
   .arcade-start-button {
-    @apply arcade-button arcade-button-primary text-lg px-8 py-4;
+    @apply arcade-button arcade-button-primary text-sm px-6 py-4;
     animation: arcade-pulse 1.5s ease-in-out infinite;
-    font-size: 14px;
+    font-size: 12px;
   }
 
-  /* Arcade Cards */
+  /* Arcade Cards - Mobile Optimized */
   .arcade-card {
-    background: rgba(0, 0, 0, 0.8);
-    border: 4px solid var(--arcade-white);
-    border-radius: 0;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid var(--arcade-white);
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
     position: relative;
+    /* Better touch interaction */
+    touch-action: manipulation;
   }
 
   .arcade-card::before {
@@ -313,14 +317,14 @@
     bottom: -2px;
     background: linear-gradient(45deg, var(--arcade-red), var(--arcade-blue), var(--arcade-red));
     z-index: -1;
-    border-radius: 4px;
+    border-radius: 8px;
   }
 
-  /* Arcade Tabs */
+  /* Arcade Tabs - Mobile Optimized */
   .arcade-tabs {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     border: 2px solid var(--arcade-white);
-    border-radius: 0;
+    border-radius: 8px;
   }
 
   .arcade-main-tabs {
@@ -328,89 +332,103 @@
   }
 
   .arcade-tab-list, .arcade-main-tab-list {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     border: 2px solid var(--arcade-white);
-    border-radius: 0;
+    border-radius: 8px;
     padding: 4px;
+    gap: 2px;
   }
 
   .arcade-tab, .arcade-main-tab {
     @apply font-bold transition-all duration-300;
     font-family: 'Press Start 2P', monospace;
-    text-shadow: 2px 2px 0px #000;
+    text-shadow: 1px 1px 0px #000;
     color: var(--arcade-white);
     border: 2px solid transparent;
     background: transparent;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    padding: 12px 8px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    /* Better touch targets */
+    touch-action: manipulation;
   }
 
   .arcade-tab[data-state="active"], .arcade-main-tab[data-state="active"] {
     background: linear-gradient(45deg, var(--arcade-red), var(--arcade-blue));
     border-color: var(--arcade-white);
-    box-shadow: 0 0 15px currentColor;
+    box-shadow: 0 0 10px currentColor;
   }
 
-  /* Arcade Text Elements */
+  /* Arcade Text Elements - Mobile Optimized */
   .arcade-title {
     font-family: 'Press Start 2P', monospace;
     color: var(--arcade-white);
-    text-shadow: 3px 3px 0px #000, 0 0 15px currentColor;
+    text-shadow: 2px 2px 0px #000, 0 0 10px currentColor;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
   }
 
   .arcade-heading {
     font-family: 'Press Start 2P', monospace;
     color: var(--arcade-red);
-    text-shadow: 3px 3px 0px #000, 0 0 15px var(--arcade-red);
+    text-shadow: 2px 2px 0px #000, 0 0 10px var(--arcade-red);
     animation: neon-glow 2s ease-in-out infinite;
   }
 
   .arcade-text {
     font-family: 'Press Start 2P', monospace;
     color: var(--arcade-white);
-    text-shadow: 2px 2px 0px #000;
+    text-shadow: 1px 1px 0px #000;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1.6;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
   }
 
   .arcade-date {
     font-family: 'Press Start 2P', monospace;
     color: var(--arcade-white);
-    text-shadow: 3px 3px 0px #000, 0 0 15px var(--arcade-blue);
+    text-shadow: 2px 2px 0px #000, 0 0 10px var(--arcade-blue);
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1px;
     animation: neon-glow 3s ease-in-out infinite;
   }
 
   .arcade-info {
     color: var(--arcade-white);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
 
   .arcade-feature {
     color: var(--arcade-white);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
 
   .arcade-link {
     color: var(--arcade-white);
     text-decoration: underline;
-    text-shadow: 2px 2px 0px #000;
+    text-shadow: 1px 1px 0px #000;
+    /* Better touch targets */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px;
   }
 
   .arcade-link:hover {
     color: var(--arcade-blue);
-    text-shadow: 2px 2px 0px #000, 0 0 10px var(--arcade-blue);
+    text-shadow: 1px 1px 0px #000, 0 0 5px var(--arcade-blue);
   }
 
   /* Arcade Icons */
   .arcade-icon {
-    filter: drop-shadow(2px 2px 0px #000);
+    filter: drop-shadow(1px 1px 0px #000);
   }
 
   /* Arcade Badge */
@@ -419,16 +437,16 @@
     color: var(--arcade-white);
     border: 2px solid var(--arcade-white);
     font-family: 'Press Start 2P', monospace;
-    text-shadow: 2px 2px 0px #000;
+    text-shadow: 1px 1px 0px #000;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
   }
 
   /* Arcade Sections */
   .arcade-section {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.8);
     border: 2px solid var(--arcade-white);
-    border-radius: 0;
+    border-radius: 8px;
     padding: 1rem;
     position: relative;
   }
@@ -436,29 +454,30 @@
   /* Arcade Footer */
   .arcade-footer {
     background: rgba(0, 0, 0, 0.9);
-    border-top: 4px solid var(--arcade-white);
+    border-top: 3px solid var(--arcade-white);
     padding: 1.5rem 0;
     position: relative;
   }
 
   .arcade-motto {
     color: var(--arcade-red);
-    text-shadow: 2px 2px 0px #000, 0 0 10px var(--arcade-red);
+    text-shadow: 1px 1px 0px #000, 0 0 5px var(--arcade-red);
     animation: neon-glow 2s ease-in-out infinite;
   }
 
   /* Mini Leaderboard */
   .arcade-mini-leaderboard {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     border: 2px solid var(--arcade-white);
     padding: 1rem;
     margin-top: 1rem;
     text-align: left;
+    border-radius: 8px;
   }
 
   .arcade-mini-leaderboard h3 {
     color: var(--arcade-blue);
-    text-shadow: 2px 2px 0px #000, 0 0 10px var(--arcade-blue);
+    text-shadow: 1px 1px 0px #000, 0 0 5px var(--arcade-blue);
     margin-bottom: 0.5rem;
     text-align: center;
   }
@@ -471,71 +490,146 @@
   /* Mobile Optimizations */
   @media (max-width: 768px) {
     .arcade-button {
-      @apply px-4 py-2 text-xs;
+      @apply px-3 py-2 text-xs;
+      min-height: 44px;
+      font-size: 10px;
     }
 
     .arcade-start-button {
-      @apply px-6 py-3 text-sm;
+      @apply px-4 py-3 text-xs;
       font-size: 10px;
+      min-height: 44px;
     }
 
     .arcade-card {
       margin: 0.5rem 0;
       border-width: 2px;
+      border-radius: 8px;
     }
 
     .arcade-title {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
     }
 
     .arcade-text {
       font-size: 0.7rem;
       line-height: 1.4;
+      letter-spacing: 0.3px;
     }
 
     .arcade-date {
       font-size: 0.7rem;
+      letter-spacing: 0.5px;
     }
 
     .neptune-background {
-      width: 200px;
-      height: 200px;
+      width: 180px;
+      height: 180px;
       opacity: 0.05;
+    }
+
+    /* Better scroll areas */
+    .scroll-area {
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: var(--arcade-blue) transparent;
+    }
+
+    .scroll-area::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .scroll-area::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 4px;
+    }
+
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: var(--arcade-blue);
+      border-radius: 4px;
+    }
+
+    .scroll-area::-webkit-scrollbar-thumb:hover {
+      background: var(--arcade-red);
     }
   }
 
   @media (max-width: 480px) {
     .arcade-button {
-      @apply px-3 py-2;
+      @apply px-2 py-2;
       font-size: 8px;
+      min-height: 44px;
+      letter-spacing: 0.3px;
     }
 
     .arcade-start-button {
-      @apply px-4 py-2;
+      @apply px-3 py-2;
       font-size: 8px;
+      min-height: 44px;
     }
 
     .arcade-title {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.3px;
     }
 
     .arcade-text {
       font-size: 0.6rem;
+      letter-spacing: 0.2px;
     }
 
     .arcade-date {
       font-size: 0.6rem;
+      letter-spacing: 0.3px;
     }
 
     .neptune-background {
-      width: 150px;
-      height: 150px;
+      width: 120px;
+      height: 120px;
       opacity: 0.03;
     }
 
     .arcade-mini-leaderboard {
-      padding: 0.5rem;
+      padding: 0.75rem;
       font-size: 0.6rem;
+    }
+
+    /* Improved tab spacing */
+    .arcade-tab, .arcade-main-tab {
+      padding: 10px 6px;
+      font-size: 8px;
+      gap: 4px;
+    }
+  }
+
+  /* Ultra small screens */
+  @media (max-width: 360px) {
+    .arcade-button {
+      font-size: 7px;
+      padding: 8px 6px;
+    }
+
+    .arcade-start-button {
+      font-size: 7px;
+      padding: 10px 8px;
+    }
+
+    .arcade-title {
+      font-size: 0.6rem;
+    }
+
+    .arcade-text {
+      font-size: 0.55rem;
+    }
+
+    .arcade-date {
+      font-size: 0.55rem;
+    }
+
+    .arcade-tab, .arcade-main-tab {
+      padding: 8px 4px;
+      font-size: 7px;
     }
   }
 
