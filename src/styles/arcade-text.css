@@ -55,7 +55,7 @@
   .arcade-date-enhanced {
     font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
     color: #0066FF !important;
-    text-shadow: 1px 1px 0px #000000 !important;
+    text-shadow: none !important;
     text-transform: uppercase !important;
     letter-spacing: 4px !important;
     font-weight: 900 !important;
@@ -69,10 +69,10 @@
 
   @keyframes date-glow-blue {
     0%, 100% {
-      text-shadow: 1px 1px 0px #000000;
+      text-shadow: none;
     }
     50% {
-      text-shadow: 1px 1px 0px #000000;
+      text-shadow: none;
     }
   }
 
