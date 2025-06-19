@@ -173,7 +173,10 @@ const Index = () => {
             <TabsTrigger 
               value="map" 
               className="text-xs md:text-sm arcade-main-tab py-3 px-2"
-              onClick={() => playSoundEffect('tab')}
+              onClick={(e) => {
+                e.preventDefault();
+                playSoundEffect('tab');
+              }}
             >
               <span className="hidden sm:inline">BOLOGNA PLAYGROUNDS</span>
               <span className="inline sm:hidden">BOLOGNA</span>
@@ -181,7 +184,10 @@ const Index = () => {
             <TabsTrigger 
               value="italia" 
               className="text-xs md:text-sm arcade-main-tab py-3 px-2"
-              onClick={() => playSoundEffect('tab')}
+              onClick={(e) => {
+                e.preventDefault();
+                playSoundEffect('tab');
+              }}
             >
               <span className="hidden sm:inline">LISTA ITALIA</span>
               <span className="inline sm:hidden">ITALIA</span>
