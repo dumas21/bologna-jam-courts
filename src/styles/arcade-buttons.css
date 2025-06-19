@@ -1,11 +1,11 @@
 
 @layer components {
-  /* Arcade Buttons - Mobile Optimized con stile retro e ITC Machine */
+  /* Arcade Buttons - Mobile Optimized con stile retro e Joystix */
   .arcade-button {
     @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
-    font-family: 'ITC Machine', 'Press Start 2P', monospace;
-    border: 3px solid var(--arcade-white);
-    text-shadow: 2px 2px 0px #000, 0 0 5px #FF6B35;
+    font-family: 'JetBrains Mono', monospace;
+    border: 3px solid #FFFFFF;
+    text-shadow: none;
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
@@ -13,6 +13,7 @@
     min-width: 44px;
     touch-action: manipulation;
     letter-spacing: 2px;
+    color: #FFFFFF;
   }
 
   .arcade-button:active {
@@ -21,32 +22,31 @@
 
   .arcade-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
-    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FF6B35;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
   }
 
   .arcade-button-primary {
     background: linear-gradient(45deg, #D72638, #FF6B35);
-    color: var(--arcade-white);
-    animation: neon-glow 2s ease-in-out infinite;
+    color: #FFFFFF;
+    border-color: #FFFFFF;
   }
 
   .arcade-button-danger {
     background: var(--arcade-red);
-    color: var(--arcade-white);
-    border-color: var(--arcade-white);
+    color: #FFFFFF;
+    border-color: #FFFFFF;
   }
 
   .arcade-button-home {
-    background: var(--arcade-white);
-    color: var(--arcade-blue);
-    border-color: var(--arcade-blue);
+    background: rgba(0, 0, 0, 0.8);
+    color: #FFFFFF;
+    border-color: #FFFFFF;
   }
 
   .arcade-button-stats {
-    background: var(--arcade-blue);
-    color: var(--arcade-white);
-    border-color: var(--arcade-white);
+    background: rgba(0, 0, 0, 0.8);
+    color: #FFFFFF;
+    border-color: #FFFFFF;
   }
 
   .arcade-button-disabled {
@@ -58,7 +58,6 @@
 
   .arcade-start-button {
     @apply arcade-button arcade-button-primary text-sm px-6 py-4;
-    animation: arcade-pulse 1.5s ease-in-out infinite;
     font-size: 12px;
   }
 }
