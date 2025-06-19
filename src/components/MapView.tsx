@@ -1,123 +1,14 @@
-
 import { Users, Lightbulb, Clock, Star } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import BasketballWithFlames from "./BasketballWithFlames";
 
 interface MapViewProps {
   playgrounds: Playground[];
   selectedPlayground: Playground | null;
   onSelectPlayground: (playground: Playground) => void;
 }
-
-const BasketballIcon = ({ size = 18, className = "" }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    className={className}
-    fill="currentColor"
-  >
-    {/* Gradiente per effetto 3D migliorato */}
-    <defs>
-      <radialGradient id="basketballGradient" cx="0.25" cy="0.25" r="0.9">
-        <stop offset="0%" stopColor="#ff8c42" />
-        <stop offset="30%" stopColor="#e55100" />
-        <stop offset="70%" stopColor="#d84315" />
-        <stop offset="100%" stopColor="#bf360c" />
-      </radialGradient>
-      <filter id="basketballShadow" x="-50%" y="-50%" width="200%" height="200%">
-        <feDropShadow dx="2" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.4"/>
-      </filter>
-      <filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
-        <feOffset dx="1" dy="1" result="offset"/>
-        <feFlood floodColor="#8d4e00" floodOpacity="0.3"/>
-        <feComposite in2="offset" operator="in"/>
-      </filter>
-    </defs>
-    
-    {/* Cerchio principale della palla con ombra */}
-    <circle 
-      cx="12" 
-      cy="12" 
-      r="10.5" 
-      fill="url(#basketballGradient)" 
-      filter="url(#basketballShadow)"
-      stroke="#8d4e00" 
-      strokeWidth="0.3"
-    />
-    
-    {/* Linee curve verticali - più realistiche */}
-    <path 
-      d="M12 1.5 Q15.8 6.2 15.8 12 Q15.8 17.8 12 22.5" 
-      stroke="#8d4e00" 
-      strokeWidth="2.2" 
-      fill="none"
-      strokeLinecap="round"
-      opacity="0.8"
-    />
-    <path 
-      d="M12 1.5 Q8.2 6.2 8.2 12 Q8.2 17.8 12 22.5" 
-      stroke="#8d4e00" 
-      strokeWidth="2.2" 
-      fill="none"
-      strokeLinecap="round"
-      opacity="0.8"
-    />
-    
-    {/* Linee curve orizzontali - più realistiche */}
-    <path 
-      d="M1.5 12 Q6.2 8.2 12 8.2 Q17.8 8.2 22.5 12" 
-      stroke="#8d4e00" 
-      strokeWidth="2.2" 
-      fill="none"
-      strokeLinecap="round"
-      opacity="0.8"
-    />
-    <path 
-      d="M1.5 12 Q6.2 15.8 12 15.8 Q17.8 15.8 22.5 12" 
-      stroke="#8d4e00" 
-      strokeWidth="2.2" 
-      fill="none"
-      strokeLinecap="round"
-      opacity="0.8"
-    />
-    
-    {/* Highlight principale più pronunciato */}
-    <ellipse 
-      cx="8.5" 
-      cy="7.5" 
-      rx="3.5" 
-      ry="2.5" 
-      fill="#ffab70" 
-      opacity="0.6"
-      transform="rotate(-25 8.5 7.5)"
-    />
-    
-    {/* Secondo highlight più piccolo */}
-    <ellipse 
-      cx="9" 
-      cy="8" 
-      rx="1.5" 
-      ry="1" 
-      fill="#ffd700" 
-      opacity="0.4"
-      transform="rotate(-25 9 8)"
-    />
-    
-    {/* Texture aggiuntiva per realismo */}
-    <circle 
-      cx="12" 
-      cy="12" 
-      r="10.5" 
-      fill="none"
-      stroke="#6d1b00" 
-      strokeWidth="0.1"
-      opacity="0.3"
-    />
-  </svg>
-);
 
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
   const { isLoggedIn, nickname } = useUser();
@@ -155,9 +46,9 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
   };
   
   return (
-    <div className="relative w-full bg-black bg-opacity-90 backdrop-blur-sm border-2 md:border-3 border-orange-500 p-3 md:p-4 overflow-hidden rounded-lg">
+    <div className="relative w-full bg-black bg-opacity-90 backdrop-blur-sm border-2 md:border-3 border-orange-500 p-3 md:p-4 overflow-hidden rounded-lg synthwave-bg">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 md:mb-6 gap-2 md:gap-4">
-        <div className="text-xs md:text-sm nike-text text-white bg-black bg-opacity-90 px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-orange-500 text-center w-full sm:w-auto">
+        <div className="text-xs md:text-sm nike-text text-white bg-black bg-opacity-90 px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-orange-500 text-center w-full sm:w-auto retro-neon-text">
           PLAYGROUND BOLOGNA - {playgrounds.length} CAMPI DISPONIBILI
         </div>
       </div>
@@ -183,7 +74,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                 <div className="p-3 md:p-4 space-y-3">
                   {/* Nome e controlli principali */}
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
-                    <div className="playground-name bg-black bg-opacity-90 px-3 py-2 rounded-lg text-sm md:text-base font-bold text-white flex-1 text-center sm:text-left border border-orange-400">
+                    <div className="playground-name bg-black bg-opacity-90 px-3 py-2 rounded-lg text-sm md:text-base font-bold text-white flex-1 text-center sm:text-left border border-orange-400 retro-chrome">
                       {playground.name.toUpperCase()}
                     </div>
                     
@@ -200,13 +91,16 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                         </div>
                       )}
                       
-                      {/* Pulsante Basketball Maps migliorato */}
+                      {/* Pulsante Basketball Maps con fiamme */}
                       <button 
-                        className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 rounded-full border-3 border-white shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation"
+                        className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 hover:from-purple-500 hover:via-pink-400 hover:to-red-400 rounded-full border-3 border-cyan-400 shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation retro-neon-glow"
                         onClick={(e) => openGoogleMaps(playground.address, e)}
                         title="Apri in Google Maps"
+                        style={{
+                          boxShadow: '0 0 20px #ff00ff, inset 0 0 20px rgba(255,255,255,0.1)'
+                        }}
                       >
-                        <BasketballIcon size={20} className="text-white drop-shadow-lg" />
+                        <BasketballWithFlames size={24} className="drop-shadow-lg" />
                       </button>
                     </div>
                   </div>
@@ -214,7 +108,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                   {/* Info principali in card compatte */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm">
                     <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
-                      <BasketballIcon size={12} className="text-orange-400 mr-2 flex-shrink-0" />
+                      <BasketballWithFlames size={12} className="text-orange-400 mr-2 flex-shrink-0" />
                       <span className="text-white/90 nike-text truncate">{playground.address}</span>
                     </div>
                     
