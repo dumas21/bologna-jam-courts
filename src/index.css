@@ -3,39 +3,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* FORZO LO SFONDO ROSSO/BLU */
+/* SFONDO ROSSO/BLU PULITO */
 html {
   background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
   height: 100% !important;
-  font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
+  font-family: 'Exo 2', 'Rajdhani', 'Orbitron', sans-serif !important;
 }
 
 body {
   background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
-  font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
-  color: #FF6B35 !important;
+  font-family: 'Exo 2', 'Rajdhani', 'Orbitron', sans-serif !important;
+  color: #333 !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
   text-transform: uppercase !important;
-  font-weight: 900 !important;
-  letter-spacing: 3px !important;
-  text-shadow: 6px 6px 0px #000, -3px -3px 0px #0000FF, 0 0 15px #FF6B35 !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+  text-shadow: none !important;
 }
 
 #root {
   background: transparent !important;
   min-height: 100vh !important;
-  font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
-  color: #FF6B35 !important;
+  font-family: 'Exo 2', 'Rajdhani', 'Orbitron', sans-serif !important;
+  color: #333 !important;
 }
 
-/* FORZO I FONT OVUNQUE */
+/* FORZO I FONT OVUNQUE SENZA OMBRE */
 * {
-  font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
+  font-family: 'Exo 2', 'Rajdhani', 'Orbitron', sans-serif !important;
   text-transform: uppercase !important;
-  font-weight: 900 !important;
-  letter-spacing: 2px !important;
+  font-weight: 600 !important;
+  letter-spacing: 1px !important;
+  text-shadow: none !important;
 }
 
 @import './styles/base.css';
