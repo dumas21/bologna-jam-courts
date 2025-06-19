@@ -1,0 +1,104 @@
+
+@layer components {
+  /* Arcade Text Elements - TITOLO SUPER VISIBILE stile NBA JAM / Street Fighter */
+  .arcade-title {
+    font-family: 'Press Start 2P', monospace;
+    color: #FFFF00;
+    text-shadow: 
+      5px 5px 0px #000000,
+      -3px -3px 0px #000000,
+      3px -3px 0px #000000,
+      -3px 3px 0px #000000,
+      7px 7px 0px #FF0000,
+      -4px -4px 0px #FF0000,
+      4px -4px 0px #FF0000,
+      -4px 4px 0px #FF0000,
+      0 0 30px #FFFF00,
+      0 0 50px #FFFF00,
+      0 0 70px #FF6B35,
+      0 0 90px #FF6B35,
+      0 0 110px #FF0000;
+    text-transform: uppercase;
+    letter-spacing: 6px;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1.1;
+    animation: super-retro-glow 1.8s ease-in-out infinite;
+    background: linear-gradient(45deg, #FFFF00, #FFD700, #FF6B35, #FF0000, #FFFF00);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(4px 4px 0px #000000) drop-shadow(0px 0px 20px #FFFF00);
+    transform: perspective(500px) rotateX(10deg);
+  }
+
+  .arcade-heading {
+    font-family: 'Bungee', 'Press Start 2P', monospace;
+    color: #FF6B35;
+    text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35;
+    animation: neon-glow 2s ease-in-out infinite;
+    font-weight: 400;
+  }
+
+  .arcade-text {
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
+    color: var(--arcade-white);
+    text-shadow: 2px 2px 0px #000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    font-weight: 400;
+    font-size: 10px;
+  }
+
+  .arcade-date {
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
+    color: var(--arcade-white);
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: neon-glow 3s ease-in-out infinite;
+    font-weight: 400;
+  }
+
+  .arcade-info {
+    color: var(--arcade-white);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
+    font-size: 10px;
+  }
+
+  .arcade-feature {
+    color: var(--arcade-white);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
+    font-size: 10px;
+  }
+
+  .arcade-link {
+    color: var(--arcade-white);
+    text-decoration: underline;
+    text-shadow: 2px 2px 0px #000;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
+    font-size: 10px;
+  }
+
+  .arcade-link:hover {
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+  }
+
+  .arcade-motto {
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    animation: neon-glow 2s ease-in-out infinite;
+    font-family: 'Press Start 2P', monospace;
+  }
+}

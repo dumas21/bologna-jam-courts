@@ -1,0 +1,48 @@
+
+@layer components {
+  /* Arcade Tabs - Mobile Optimized con trasparenza */
+  .arcade-tabs {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-main-tabs {
+    background: transparent;
+  }
+
+  .arcade-tab-list, .arcade-main-tab-list {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    padding: 4px;
+    gap: 2px;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-tab, .arcade-main-tab {
+    @apply font-bold transition-all duration-300;
+    font-family: 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0px #000;
+    color: var(--arcade-white);
+    border: 2px solid transparent;
+    background: transparent;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 8px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    touch-action: manipulation;
+  }
+
+  .arcade-tab[data-state="active"], .arcade-main-tab[data-state="active"] {
+    background: linear-gradient(45deg, #D72638, #FF6B35);
+    border-color: var(--arcade-white);
+    box-shadow: 0 0 15px #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FFD700;
+  }
+}

@@ -1,0 +1,64 @@
+
+@layer components {
+  /* Arcade Buttons - Mobile Optimized con stile retro */
+  .arcade-button {
+    @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
+    font-family: 'Press Start 2P', monospace;
+    border: 3px solid var(--arcade-white);
+    text-shadow: 2px 2px 0px #000, 0 0 5px #FF6B35;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    letter-spacing: 2px;
+  }
+
+  .arcade-button:active {
+    transform: scale(0.98);
+  }
+
+  .arcade-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FF6B35;
+  }
+
+  .arcade-button-primary {
+    background: linear-gradient(45deg, #D72638, #FF6B35);
+    color: var(--arcade-white);
+    animation: neon-glow 2s ease-in-out infinite;
+  }
+
+  .arcade-button-danger {
+    background: var(--arcade-red);
+    color: var(--arcade-white);
+    border-color: var(--arcade-white);
+  }
+
+  .arcade-button-home {
+    background: var(--arcade-white);
+    color: var(--arcade-blue);
+    border-color: var(--arcade-blue);
+  }
+
+  .arcade-button-stats {
+    background: var(--arcade-blue);
+    color: var(--arcade-white);
+    border-color: var(--arcade-white);
+  }
+
+  .arcade-button-disabled {
+    background: #666;
+    color: #ccc;
+    border-color: #999;
+    opacity: 0.6;
+  }
+
+  .arcade-start-button {
+    @apply arcade-button arcade-button-primary text-sm px-6 py-4;
+    animation: arcade-pulse 1.5s ease-in-out infinite;
+    font-size: 12px;
+  }
+}

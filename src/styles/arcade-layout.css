@@ -1,0 +1,42 @@
+
+@layer components {
+  /* Arcade Sections - Con trasparenza */
+  .arcade-section {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    padding: 1rem;
+    position: relative;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Arcade Footer */
+  .arcade-footer {
+    background: rgba(0, 0, 0, 0.8);
+    border-top: 3px solid #FF6B35;
+    padding: 1.5rem 0;
+    position: relative;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Mini Leaderboard */
+  .arcade-mini-leaderboard {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FF6B35;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: left;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-mini-leaderboard h3 {
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+  }
+}

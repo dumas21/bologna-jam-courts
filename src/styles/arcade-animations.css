@@ -1,0 +1,90 @@
+
+@layer components {
+  /* Animazione super speciale per il titolo principale - STILE ARCADE ANNI 80 */
+  @keyframes super-retro-glow {
+    0% { 
+      text-shadow: 
+        5px 5px 0px #000000,
+        -3px -3px 0px #000000,
+        3px -3px 0px #000000,
+        -3px 3px 0px #000000,
+        7px 7px 0px #FF0000,
+        -4px -4px 0px #FF0000,
+        4px -4px 0px #FF0000,
+        -4px 4px 0px #FF0000,
+        0 0 30px #FFFF00,
+        0 0 50px #FFFF00,
+        0 0 70px #FF6B35;
+      transform: perspective(500px) rotateX(10deg) scale(1);
+      background-position: 0% 50%;
+    }
+    25% {
+      text-shadow: 
+        5px 5px 0px #000000,
+        -3px -3px 0px #000000,
+        3px -3px 0px #000000,
+        -3px 3px 0px #000000,
+        7px 7px 0px #FF0000,
+        -4px -4px 0px #FF0000,
+        4px -4px 0px #FF0000,
+        -4px 4px 0px #FF0000,
+        0 0 40px #FFFF00,
+        0 0 70px #FFFF00,
+        0 0 90px #FF6B35,
+        0 0 110px #FF0000;
+      transform: perspective(500px) rotateX(10deg) scale(1.02);
+      background-position: 25% 50%;
+    }
+    50% { 
+      text-shadow: 
+        5px 5px 0px #000000,
+        -3px -3px 0px #000000,
+        3px -3px 0px #000000,
+        -3px 3px 0px #000000,
+        7px 7px 0px #FF0000,
+        -4px -4px 0px #FF0000,
+        4px -4px 0px #FF0000,
+        -4px 4px 0px #FF0000,
+        0 0 50px #FFFF00,
+        0 0 80px #FFFF00,
+        0 0 100px #FF6B35,
+        0 0 120px #FF0000,
+        0 0 140px #FFFF00;
+      transform: perspective(500px) rotateX(10deg) scale(1.05);
+      background-position: 50% 50%;
+    }
+    75% {
+      text-shadow: 
+        5px 5px 0px #000000,
+        -3px -3px 0px #000000,
+        3px -3px 0px #000000,
+        -3px 3px 0px #000000,
+        7px 7px 0px #FF0000,
+        -4px -4px 0px #FF0000,
+        4px -4px 0px #FF0000,
+        -4px 4px 0px #FF0000,
+        0 0 40px #FFFF00,
+        0 0 70px #FFFF00,
+        0 0 90px #FF6B35,
+        0 0 110px #FF0000;
+      transform: perspective(500px) rotateX(10deg) scale(1.02);
+      background-position: 75% 50%;
+    }
+    100% {
+      text-shadow: 
+        5px 5px 0px #000000,
+        -3px -3px 0px #000000,
+        3px -3px 0px #000000,
+        -3px 3px 0px #000000,
+        7px 7px 0px #FF0000,
+        -4px -4px 0px #FF0000,
+        4px -4px 0px #FF0000,
+        -4px 4px 0px #FF0000,
+        0 0 30px #FFFF00,
+        0 0 50px #FFFF00,
+        0 0 70px #FF6B35;
+      transform: perspective(500px) rotateX(10deg) scale(1);
+      background-position: 100% 50%;
+    }
+  }
+}

@@ -1,0 +1,42 @@
+
+@layer components {
+  /* Arcade Cards - Mobile Optimized con trasparenza */
+  .arcade-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 3px solid #FF6B35;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+    position: relative;
+    touch-action: manipulation;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #D72638, #FF6B35, #D72638);
+    z-index: -1;
+    border-radius: 8px;
+  }
+
+  /* Arcade Badge */
+  .arcade-badge {
+    background: linear-gradient(45deg, #D72638, #FF6B35);
+    color: var(--arcade-white);
+    border: 2px solid var(--arcade-white);
+    font-family: 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0px #000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 8px;
+  }
+
+  /* Arcade Icons */
+  .arcade-icon {
+    filter: drop-shadow(2px 2px 0px #000);
+  }
+}
