@@ -73,7 +73,8 @@ const Index = () => {
   }, [isLoggedIn, logout, toast]);
 
   useEffect(() => {
-    console.log("Playgrounds caricati:", playgrounds);
+    console.log("PLAYGROUND DEBUG - Numero di playgrounds caricati:", playgrounds.length);
+    console.log("PLAYGROUND DEBUG - Lista completa playgrounds:", playgrounds.map(p => ({ id: p.id, name: p.name })));
   }, [playgrounds]);
   
   const handleSelectPlayground = (playground: Playground) => {
