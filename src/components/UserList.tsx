@@ -11,8 +11,8 @@ type Props = {
 
 const UserList: React.FC<Props> = ({ users }) => {
   return (
-    <div className="bg-white rounded-md p-4 text-black">
-      <h2 className="font-press-start text-sm mb-4 flex items-center">
+    <div className="bg-white rounded-md p-4 text-black border-4 border-orange-500">
+      <h2 className="font-press-start text-sm mb-4 flex items-center text-black">
         <User size={16} className="mr-2 text-jam-purple" />
         Lista Iscritti
       </h2>
@@ -28,7 +28,7 @@ const UserList: React.FC<Props> = ({ users }) => {
                   </span>
                   <div className="flex items-center text-xs text-gray-600 mt-1">
                     <CalendarDays size={12} className="mr-1" />
-                    <span>
+                    <span className="text-black">
                       {format(new Date(user.createdAt), "dd MMMM yyyy", { locale: it })}
                     </span>
                   </div>
@@ -54,7 +54,7 @@ const UserList: React.FC<Props> = ({ users }) => {
       )}
       
       <div className="mt-4 pt-2 border-t text-xs text-gray-500">
-        <p>
+        <p className="text-black">
           Per privacy, vengono mostrati solo i nickname degli utenti.
           Le informazioni sono gestite secondo la nostra{' '}
           <button 
