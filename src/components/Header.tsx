@@ -30,15 +30,22 @@ const Header = () => {
     audio.play().catch(err => console.log('Audio playbook error:', err));
   };
 
+  const handleHomeClick = () => {
+    playSoundEffect('click');
+    // Scroll to top instead of navigate to avoid page reload
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // If we're not on the home page, navigate
+    if (window.location.pathname !== '/') {
+      navigate('/');
+    }
+  };
+
   return (
     <header className="bg-black bg-opacity-80 border-b-4 border-white p-4 relative z-20">
       <div className="container mx-auto flex justify-between items-center">
         <div 
-          className="arcade-title text-lg cursor-pointer"
-          onClick={() => {
-            playSoundEffect('click');
-            navigate('/');
-          }}
+          className="arcade-title text-lg cursor-pointer select-none"
+          onClick={handleHomeClick}
         >
           PLAYGROUND JAM BOLOGNA
         </div>
