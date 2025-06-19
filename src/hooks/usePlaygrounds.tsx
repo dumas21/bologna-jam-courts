@@ -4,6 +4,7 @@ import { playgroundData as initialData } from "@/data/playgroundData";
 import { getDailyResetTime } from "@/utils/timeUtils";
 import { useToast } from "@/components/ui/use-toast";
 import { v4 as uuidv4 } from 'uuid';
+import { checkInRateLimiter, sanitizeText, validatePlaygroundName } from "@/utils/security";
 
 export type { CheckInRecord, RegisteredUser };
 
@@ -132,8 +133,32 @@ export function usePlaygrounds() {
   };
   
   const checkIn = (playgroundId: string, nickname: string, displayNickname: string = "") => {
+    // Enhanced security checks
+    const sanitizedNickname = sanitizeText(nickname);
+    const sanitizedDisplayNickname = displayNickname ? sanitizeText(displayNickname) : "";
+    
+    if (!sanitizedNickname) {
+      toast({
+        title: "Errore di sicurezza",
+        description: "Nickname non valido",
+        variant: "destructive",
+      });
+      return false;
+    }
+    
+    // Check rate limiting
+    if (!checkInRateLimiter.isAllowed(sanitizedNickname)) {
+      const remainingTime = Math.ceil(checkInRateLimiter.getRemainingTime(sanitizedNickname) / 1000);
+      toast({
+        title: "Troppi check-in",
+        description: `Aspetta ${remainingTime} secondi prima di fare un altro check-in`,
+        variant: "destructive",
+      });
+      return false;
+    }
+    
     const existingRecord = checkInRecords.find(
-      record => record.playgroundId === playgroundId && record.nickname === nickname
+      record => record.playgroundId === playgroundId && record.nickname === sanitizedNickname
     );
     
     if (existingRecord) {
@@ -144,11 +169,16 @@ export function usePlaygrounds() {
       return false;
     }
     
-    const userNickname = displayNickname || nickname;
+    const userNickname = sanitizedDisplayNickname || sanitizedNickname;
     
     setCheckInRecords(current => [
       ...current, 
-      { playgroundId, email: nickname, nickname: userNickname, timestamp: Date.now() }
+      { 
+        playgroundId, 
+        email: sanitizedNickname, 
+        nickname: userNickname, 
+        timestamp: Date.now() 
+      }
     ]);
     
     setPlaygrounds(current =>
@@ -168,8 +198,19 @@ export function usePlaygrounds() {
   };
   
   const checkOut = (playgroundId: string, nickname: string) => {
+    const sanitizedNickname = sanitizeText(nickname);
+    
+    if (!sanitizedNickname) {
+      toast({
+        title: "Errore di sicurezza",
+        description: "Nickname non valido",
+        variant: "destructive",
+      });
+      return false;
+    }
+    
     const recordExists = checkInRecords.some(
-      record => record.playgroundId === playgroundId && record.nickname === nickname
+      record => record.playgroundId === playgroundId && record.nickname === sanitizedNickname
     );
     
     if (!recordExists) {
@@ -182,7 +223,7 @@ export function usePlaygrounds() {
     
     setCheckInRecords(current => 
       current.filter(
-        record => !(record.playgroundId === playgroundId && record.nickname === nickname)
+        record => !(record.playgroundId === playgroundId && record.nickname === sanitizedNickname)
       )
     );
     
@@ -199,21 +240,39 @@ export function usePlaygrounds() {
   };
   
   const updatePlayground = (updatedPlayground: Playground) => {
+    // Validate and sanitize playground data
+    const nameValidation = validatePlaygroundName(updatedPlayground.name);
+    if (!nameValidation.isValid) {
+      toast({
+        title: "Errore validazione",
+        description: nameValidation.error,
+        variant: "destructive",
+      });
+      return false;
+    }
+    
+    const sanitizedPlayground = {
+      ...updatedPlayground,
+      name: sanitizeText(updatedPlayground.name),
+      address: sanitizeText(updatedPlayground.address),
+      type: updatedPlayground.type ? sanitizeText(updatedPlayground.type) : undefined,
+    };
+    
     setPlaygrounds(current => {
-      const existingPlaygroundIndex = current.findIndex(pg => pg.id === updatedPlayground.id);
+      const existingPlaygroundIndex = current.findIndex(pg => pg.id === sanitizedPlayground.id);
       
       if (existingPlaygroundIndex >= 0) {
         const updatedPlaygrounds = [...current];
-        updatedPlaygrounds[existingPlaygroundIndex] = updatedPlayground;
+        updatedPlaygrounds[existingPlaygroundIndex] = sanitizedPlayground;
         return updatedPlaygrounds;
       } else {
-        return [...current, updatedPlayground];
+        return [...current, sanitizedPlayground];
       }
     });
     
     toast({
       title: "Playground aggiornato",
-      description: `${updatedPlayground.name} è stato aggiornato con successo.`,
+      description: `${sanitizedPlayground.name} è stato aggiornato con successo.`,
     });
     
     const audio = new Audio('/sounds/add.mp3');
@@ -223,11 +282,29 @@ export function usePlaygrounds() {
   };
   
   const addPlayground = (newPlayground: Playground) => {
-    setPlaygrounds(current => [...current, newPlayground]);
+    // Validate and sanitize new playground data
+    const nameValidation = validatePlaygroundName(newPlayground.name);
+    if (!nameValidation.isValid) {
+      toast({
+        title: "Errore validazione",
+        description: nameValidation.error,
+        variant: "destructive",
+      });
+      return false;
+    }
+    
+    const sanitizedPlayground = {
+      ...newPlayground,
+      name: sanitizeText(newPlayground.name),
+      address: sanitizeText(newPlayground.address),
+      type: newPlayground.type ? sanitizeText(newPlayground.type) : undefined,
+    };
+    
+    setPlaygrounds(current => [...current, sanitizedPlayground]);
     
     toast({
       title: "Playground aggiunto",
-      description: `${newPlayground.name} è stato aggiunto con successo.`,
+      description: `${sanitizedPlayground.name} è stato aggiunto con successo.`,
     });
     
     const audio = new Audio('/sounds/add.mp3');
@@ -237,8 +314,9 @@ export function usePlaygrounds() {
   };
   
   const hasUserCheckedIn = (playgroundId: string, nickname: string) => {
+    const sanitizedNickname = sanitizeText(nickname);
     return checkInRecords.some(
-      record => record.playgroundId === playgroundId && record.nickname === nickname
+      record => record.playgroundId === playgroundId && record.nickname === sanitizedNickname
     );
   };
   

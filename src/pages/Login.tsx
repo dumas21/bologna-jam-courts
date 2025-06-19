@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 import { User, Mail, Lock, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
+import { validateNickname, sanitizeText } from "@/utils/security";
 
 const Login = () => {
   const { toast } = useToast();
@@ -23,8 +25,74 @@ const Login = () => {
     setIsLoading(true);
 
     try {
+      // Enhanced validation
+      if (!email.trim()) {
+        toast({
+          title: "ERRORE",
+          description: "L'email è obbligatoria",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!password.trim()) {
+        toast({
+          title: "ERRORE",
+          description: "La password è obbligatoria",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast({
+          title: "ERRORE",
+          description: "Inserisci un'email valida",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Password strength validation
+      if (password.length < 6) {
+        toast({
+          title: "ERRORE",
+          description: "La password deve essere di almeno 6 caratteri",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      let finalNickname = sanitizeText(email.split('@')[0]); // Default nickname from email
+
+      if (!isLogin) {
+        // Registration validation
+        if (!nickname.trim()) {
+          toast({
+            title: "ERRORE",
+            description: "Il nickname è obbligatorio per la registrazione",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        const nicknameValidation = validateNickname(nickname);
+        if (!nicknameValidation.isValid) {
+          toast({
+            title: "ERRORE",
+            description: nicknameValidation.error,
+            variant: "destructive",
+          });
+          return;
+        }
+
+        finalNickname = sanitizeText(nickname);
+      }
+
       if (isLogin) {
-        login(email);
+        login(finalNickname);
         toast({
           title: "LOGIN EFFETTUATO",
           description: "Benvenuto in Playground Jam Bologna!",
@@ -37,7 +105,7 @@ const Login = () => {
         navigate("/");
       } else {
         // Simple registration simulation - in a real app this would call an API
-        login(email);
+        login(finalNickname);
         toast({
           title: "REGISTRAZIONE COMPLETATA",
           description: "Account creato con successo!",
@@ -88,7 +156,7 @@ const Login = () => {
                 {!isLogin && (
                   <div>
                     <label className="block text-sm font-medium mb-2 arcade-label">
-                      NICKNAME
+                      NICKNAME *
                     </label>
                     <div className="relative">
                       <User size={16} className="absolute left-3 top-3 text-gray-400" />
@@ -97,16 +165,20 @@ const Login = () => {
                         value={nickname}
                         onChange={(e) => setNickname(e.target.value)}
                         className="pl-10 arcade-input"
-                        placeholder="Il tuo nickname"
+                        placeholder="Il tuo nickname (2-20 caratteri)"
+                        maxLength={20}
                         required
                       />
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      Solo lettere, numeri, spazi, trattini e underscore
                     </div>
                   </div>
                 )}
                 
                 <div>
                   <label className="block text-sm font-medium mb-2 arcade-label">
-                    EMAIL
+                    EMAIL *
                   </label>
                   <div className="relative">
                     <Mail size={16} className="absolute left-3 top-3 text-gray-400" />
@@ -123,7 +195,7 @@ const Login = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-2 arcade-label">
-                    PASSWORD
+                    PASSWORD *
                   </label>
                   <div className="relative">
                     <Lock size={16} className="absolute left-3 top-3 text-gray-400" />
@@ -132,7 +204,8 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pl-10 arcade-input"
-                      placeholder="La tua password"
+                      placeholder="La tua password (min 6 caratteri)"
+                      minLength={6}
                       required
                     />
                   </div>

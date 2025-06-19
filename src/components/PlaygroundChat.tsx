@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
+import { sanitizeText, validateContentLength, chatRateLimiter } from "@/utils/security";
 
 interface PlaygroundChatProps {
   playground: Playground;
@@ -50,7 +51,16 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
   };
   
   const handleSendMessage = () => {
-    if (!message.trim()) return;
+    const trimmedMessage = message.trim();
+    
+    if (!trimmedMessage) {
+      toast({
+        title: "MESSAGGIO VUOTO",
+        description: "Inserisci un messaggio prima di inviare",
+        variant: "destructive"
+      });
+      return;
+    }
     
     if (!isLoggedIn || !nickname) {
       toast({
@@ -61,11 +71,44 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       return;
     }
     
+    // Validate content length
+    if (!validateContentLength(trimmedMessage, 500)) {
+      toast({
+        title: "MESSAGGIO TROPPO LUNGO",
+        description: "Il messaggio non può superare i 500 caratteri",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Check rate limiting
+    if (!chatRateLimiter.isAllowed(nickname)) {
+      const remainingTime = Math.ceil(chatRateLimiter.getRemainingTime(nickname) / 1000);
+      toast({
+        title: "TROPPI MESSAGGI",
+        description: `Aspetta ${remainingTime} secondi prima di inviare un altro messaggio`,
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Sanitize the message content
+    const sanitizedMessage = sanitizeText(trimmedMessage);
+    
+    if (!sanitizedMessage || sanitizedMessage.length === 0) {
+      toast({
+        title: "CONTENUTO NON VALIDO",
+        description: "Il messaggio contiene contenuto non permesso",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     playSoundEffect('message');
     
     const newComment: Comment = {
-      id: `comment-${Date.now()}`,
-      text: message,
+      id: `comment-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      text: sanitizedMessage,
       user: nickname,
       timestamp: Date.now(),
       playgroundId: playground.id
@@ -92,6 +135,14 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       handleSendMessage();
     }
   };
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    // Limit input length in real-time
+    if (value.length <= 500) {
+      setMessage(value);
+    }
+  };
   
   return (
     <div className="bg-white p-6 rounded-lg border-4 border-orange-500 shadow-lg">
@@ -108,10 +159,14 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         {comments && comments.length > 0 ? (
           <div className="space-y-4">
             {comments.map((comment, index) => (
-              <div key={index} className="p-4 rounded-lg bg-white border-2 border-gray-200 shadow-sm">
-                <div className="text-base text-black break-words leading-relaxed nike-text">{comment.text}</div>
+              <div key={comment.id || index} className="p-4 rounded-lg bg-white border-2 border-gray-200 shadow-sm">
+                <div className="text-base text-black break-words leading-relaxed nike-text">
+                  {sanitizeText(comment.text)}
+                </div>
                 <div className="text-sm text-gray-600 mt-3 flex justify-between items-center">
-                  <span className="font-bold text-blue-600 nike-text">{comment.user}</span>
+                  <span className="font-bold text-blue-600 nike-text">
+                    {sanitizeText(comment.user)}
+                  </span>
                   <span className="nike-text">{format(new Date(comment.timestamp), 'dd/MM/yyyy HH:mm', { locale: it })}</span>
                 </div>
               </div>
@@ -120,7 +175,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         ) : (
           <div className="h-full flex items-center justify-center">
             <p className="text-gray-500 nike-text text-sm text-center">
-              NESSUN MESSAGGIO NELLA CHAT DI {playground.name.toUpperCase()}
+              NESSUN MESSAGGIO NELLA CHAT DI {sanitizeText(playground.name.toUpperCase())}
             </p>
           </div>
         )}
@@ -137,17 +192,23 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         </div>
       ) : (
         <div className="flex gap-4 items-end">
-          <Textarea 
-            placeholder={`Scrivi nella chat di ${playground.name}...`}
-            className="bg-white text-black border-2 border-gray-300 min-h-[80px] flex-1 text-base resize-none nike-text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyPress}
-          />
+          <div className="flex-1">
+            <Textarea 
+              placeholder={`Scrivi nella chat di ${playground.name}... (max 500 caratteri)`}
+              className="bg-white text-black border-2 border-gray-300 min-h-[80px] text-base resize-none nike-text"
+              value={message}
+              onChange={handleMessageChange}
+              onKeyDown={handleKeyPress}
+              maxLength={500}
+            />
+            <div className="text-xs text-gray-500 mt-1 nike-text">
+              {message.length}/500 caratteri
+            </div>
+          </div>
           <Button 
             onClick={handleSendMessage}
             className="bg-blue-600 hover:bg-blue-700 text-white h-[80px] px-6 flex items-center justify-center rounded-lg nike-text"
-            disabled={!message.trim()}
+            disabled={!message.trim() || message.length > 500}
           >
             <Send size={20} />
           </Button>
