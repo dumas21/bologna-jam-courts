@@ -60,12 +60,12 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   
   if (loading) {
     return (
-      <div className="weather-cartoon p-6 mb-6 relative">
+      <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-orange-500">
         <div className="relative z-10 flex items-center justify-center h-24">
           <div className="flex items-center space-x-2">
-            <Zap size={24} className="text-black animate-bounce" />
-            <p className="text-black text-xs font-bold nike-text">LOADING WEATHER...</p>
-            <Zap size={24} className="text-black animate-bounce" />
+            <Zap size={24} className="text-orange-500 animate-bounce" />
+            <p className="text-orange-500 text-sm font-bold" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>LOADING WEATHER...</p>
+            <Zap size={24} className="text-orange-500 animate-bounce" />
           </div>
         </div>
       </div>
@@ -74,48 +74,48 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   
   if (!weather) {
     return (
-      <div className="weather-cartoon p-6 mb-6 relative">
+      <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-red-500">
         <div className="relative z-10 flex items-center justify-center h-24">
-          <p className="text-black text-xs font-bold nike-text">WEATHER ERROR!</p>
+          <p className="text-red-600 text-sm font-bold" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>WEATHER ERROR!</p>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="weather-cartoon p-6 mb-6 relative">
+    <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-orange-500">
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="font-press-start text-xs text-black nike-text flex items-center">
+          <h4 className="text-orange-500 text-sm font-bold flex items-center" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
             {getWeatherIcon(weather.condition)}
             <span className="ml-3">METEO {playgroundName.toUpperCase()}</span>
           </h4>
         </div>
         
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
-            <div className="text-black text-xs font-bold mb-1 nike-text">TEMP</div>
-            <div className="text-black text-2xl font-black font-orbitron">{weather.temperature}°C</div>
+          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
+            <div className="text-orange-500 text-xs font-bold mb-1" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>TEMP</div>
+            <div className="text-blue-600 text-2xl font-black font-orbitron">{weather.temperature}°C</div>
           </div>
           
-          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
-            <div className="text-black text-xs font-bold mb-1 nike-text">STATO</div>
-            <div className="text-black text-xs font-black font-orbitron">{weather.condition.toUpperCase()}</div>
+          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
+            <div className="text-orange-500 text-xs font-bold mb-1" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>STATO</div>
+            <div className="text-blue-600 text-xs font-black font-orbitron">{weather.condition.toUpperCase()}</div>
           </div>
           
-          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
-            <div className="text-black text-xs font-bold mb-1 nike-text">UMIDITÀ</div>
-            <div className="text-black text-lg font-black font-orbitron">{weather.humidity}%</div>
+          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
+            <div className="text-orange-500 text-xs font-bold mb-1" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>UMIDITÀ</div>
+            <div className="text-blue-600 text-lg font-black font-orbitron">{weather.humidity}%</div>
           </div>
           
-          <div className="text-center bg-black bg-opacity-20 rounded-lg p-3 border-2 border-black">
-            <div className="text-black text-xs font-bold mb-1 nike-text">VENTO</div>
-            <div className="text-black text-lg font-black font-orbitron">{weather.windSpeed} KM/H</div>
+          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
+            <div className="text-orange-500 text-xs font-bold mb-1" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px'}}>VENTO</div>
+            <div className="text-blue-600 text-lg font-black font-orbitron">{weather.windSpeed} KM/H</div>
           </div>
         </div>
         
-        <div className="mt-4 pt-3 border-t-2 border-black">
-          <p className="text-black text-xs font-bold nike-text text-center">
+        <div className="mt-4 pt-3 border-t-2 border-gray-300">
+          <p className="text-orange-500 text-xs font-bold text-center" style={{textShadow: '1px 1px 0px #000', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px'}}>
             📍 {location.toUpperCase()}
           </p>
         </div>

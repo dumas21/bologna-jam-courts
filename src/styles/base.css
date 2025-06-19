@@ -79,10 +79,10 @@
     @apply border-border;
   }
 
-  /* Typography arcade anni 80 - NBA Jam style con ITC Machine - MASSIVE E BOLD */
+  /* Typography arcade anni 80 - NBA Jam style con ITC Machine - PULITO E LEGGIBILE */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'ITC Machine', 'Bungee', 'Press Start 2P', monospace !important;
-    text-shadow: 10px 10px 0px #000, 0 0 25px #FF4500, 0 0 40px #FF4500 !important;
+    text-shadow: 2px 2px 0px #000 !important;
     letter-spacing: 6px !important;
     text-transform: uppercase !important;
     line-height: 1.1 !important;
@@ -93,7 +93,7 @@
   
   p, span, div, button, a, label, input, textarea {
     font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace !important;
-    text-shadow: 6px 6px 0px #000, 0 0 15px #FF6B35 !important;
+    text-shadow: 1px 1px 0px #000 !important;
     letter-spacing: 3px !important;
     line-height: 1.4 !important;
     text-transform: uppercase !important;
@@ -127,7 +127,7 @@
     font-weight: 900 !important;
     text-transform: uppercase !important;
     letter-spacing: 6px !important;
-    text-shadow: 8px 8px 0px #000, -4px -4px 0px #0000FF, 0 0 25px #FF4500, 0 0 40px #FF4500 !important;
+    text-shadow: 2px 2px 0px #000 !important;
     color: #FF4500 !important;
     font-size: 2rem !important;
   }
@@ -142,7 +142,7 @@
     cursor: pointer;
     color: #666;
     transition: all 0.2s ease;
-    filter: drop-shadow(2px 2px 0px #000);
+    filter: drop-shadow(1px 1px 0px #000);
     min-width: 24px;
     min-height: 24px;
     display: flex;
@@ -156,6 +156,6 @@
 
   .star.filled {
     color: var(--neon-yellow);
-    filter: drop-shadow(2px 2px 0px #000) drop-shadow(0 0 10px var(--neon-yellow));
+    filter: drop-shadow(1px 1px 0px #000);
   }
 }

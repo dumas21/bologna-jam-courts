@@ -1,22 +1,10 @@
+
 @layer components {
   /* Arcade Text Elements - TITOLO SUPER VISIBILE stile NBA JAM / Street Fighter con ITC Machine */
   .arcade-title {
     font-family: 'ITC Machine', 'Press Start 2P', monospace;
     color: #FF4500;
-    text-shadow: 
-      8px 8px 0px #000000,
-      -5px -5px 0px #000000,
-      5px -5px 0px #000000,
-      -5px 5px 0px #000000,
-      12px 12px 0px #0000FF,
-      -6px -6px 0px #0000FF,
-      6px -6px 0px #0000FF,
-      -6px 6px 0px #0000FF,
-      0 0 30px #FF4500,
-      0 0 50px #FF4500,
-      0 0 70px #FF6B35,
-      0 0 90px #FF6B35,
-      0 0 110px #FF0000;
+    text-shadow: 2px 2px 0px #000000;
     text-transform: uppercase;
     letter-spacing: 8px;
     font-weight: 900;
@@ -28,14 +16,13 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(8px 8px 0px #000000) drop-shadow(0px 0px 25px #FF4500);
     transform: perspective(500px) rotateX(10deg);
   }
 
   .arcade-heading {
     font-family: 'ITC Machine', 'Bungee', 'Press Start 2P', monospace;
     color: #FF4500;
-    text-shadow: 6px 6px 0px #000, 0 0 20px #FF4500;
+    text-shadow: 2px 2px 0px #000;
     animation: neon-glow 2s ease-in-out infinite;
     font-weight: 900;
     font-size: 2rem;
@@ -46,7 +33,7 @@
   .arcade-text {
     font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace;
     color: #FF6B35;
-    text-shadow: 4px 4px 0px #000;
+    text-shadow: 1px 1px 0px #000;
     text-transform: uppercase;
     letter-spacing: 2px;
     line-height: 1.4;
@@ -57,7 +44,7 @@
   .arcade-date {
     font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace;
     color: #FF4500;
-    text-shadow: 4px 4px 0px #000, 0 0 15px #FF4500;
+    text-shadow: 1px 1px 0px #000;
     text-transform: uppercase;
     letter-spacing: 3px;
     animation: neon-glow 3s ease-in-out infinite;
@@ -68,7 +55,7 @@
   .arcade-date-enhanced {
     font-family: 'ITC Machine', 'Press Start 2P', monospace !important;
     color: #0066FF !important;
-    text-shadow: 6px 6px 0px #000000 !important;
+    text-shadow: 1px 1px 0px #000000 !important;
     text-transform: uppercase !important;
     letter-spacing: 4px !important;
     font-weight: 900 !important;
@@ -82,19 +69,10 @@
 
   @keyframes date-glow-blue {
     0%, 100% {
-      text-shadow: 
-        6px 6px 0px #000000,
-        -3px -3px 0px #000000,
-        0 0 20px #0066FF,
-        0 0 30px #0066FF;
+      text-shadow: 1px 1px 0px #000000;
     }
     50% {
-      text-shadow: 
-        6px 6px 0px #000000,
-        -3px -3px 0px #000000,
-        0 0 25px #0088FF,
-        0 0 35px #0066FF,
-        0 0 45px #0044FF;
+      text-shadow: 1px 1px 0px #000000;
     }
   }
 
@@ -105,7 +83,7 @@
     font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace;
     font-size: 12px;
     font-weight: 900;
-    text-shadow: 3px 3px 0px #000;
+    text-shadow: 1px 1px 0px #000;
   }
 
   .arcade-feature {
@@ -115,13 +93,13 @@
     font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace;
     font-size: 12px;
     font-weight: 900;
-    text-shadow: 3px 3px 0px #000;
+    text-shadow: 1px 1px 0px #000;
   }
 
   .arcade-link {
     color: #FF6B35;
     text-decoration: underline;
-    text-shadow: 4px 4px 0px #000;
+    text-shadow: 1px 1px 0px #000;
     min-height: 44px;
     display: inline-flex;
     align-items: center;
@@ -135,12 +113,12 @@
 
   .arcade-link:hover {
     color: #FF4500;
-    text-shadow: 4px 4px 0px #000, 0 0 15px #FF4500;
+    text-shadow: 1px 1px 0px #000;
   }
 
   .arcade-motto {
     color: #FF4500;
-    text-shadow: 6px 6px 0px #000, 0 0 20px #FF4500;
+    text-shadow: 2px 2px 0px #000;
     animation: neon-glow 2s ease-in-out infinite;
     font-family: 'ITC Machine', 'Press Start 2P', monospace;
     font-weight: 900;
