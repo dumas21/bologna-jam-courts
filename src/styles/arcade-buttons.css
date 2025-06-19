@@ -3,61 +3,63 @@
   /* Arcade Buttons - Mobile Optimized con stile retro e Joystix */
   .arcade-button {
     @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
-    font-family: 'JetBrains Mono', monospace;
-    border: 3px solid #FFFFFF;
-    text-shadow: none;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    min-height: 44px;
-    min-width: 44px;
-    touch-action: manipulation;
-    letter-spacing: 2px;
-    color: #FFFFFF;
+    font-family: 'JetBrains Mono', monospace !important;
+    border: 3px solid #FFFFFF !important;
+    text-shadow: none !important;
+    transition: all 0.2s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 44px !important;
+    min-width: 44px !important;
+    touch-action: manipulation !important;
+    letter-spacing: 2px !important;
+    color: #FFFFFF !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
   }
 
   .arcade-button:active {
-    transform: scale(0.98);
+    transform: scale(0.98) !important;
   }
 
   .arcade-button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
   }
 
   .arcade-button-primary {
-    background: linear-gradient(45deg, #D72638, #FF6B35);
-    color: #FFFFFF;
-    border-color: #FFFFFF;
+    background: linear-gradient(45deg, #D72638, #FF6B35) !important;
+    color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
   }
 
   .arcade-button-danger {
-    background: var(--arcade-red);
-    color: #FFFFFF;
-    border-color: #FFFFFF;
+    background: var(--arcade-red) !important;
+    color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
   }
 
   .arcade-button-home {
-    background: rgba(0, 0, 0, 0.8);
-    color: #FFFFFF;
-    border-color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.9) !important;
+    color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
   }
 
   .arcade-button-stats {
-    background: rgba(0, 0, 0, 0.8);
-    color: #FFFFFF;
-    border-color: #FFFFFF;
+    background: rgba(0, 0, 0, 0.9) !important;
+    color: #FFFFFF !important;
+    border-color: #FFFFFF !important;
   }
 
   .arcade-button-disabled {
-    background: #666;
-    color: #ccc;
-    border-color: #999;
-    opacity: 0.6;
+    background: #666 !important;
+    color: #ccc !important;
+    border-color: #999 !important;
+    opacity: 0.6 !important;
   }
 
   .arcade-start-button {
     @apply arcade-button arcade-button-primary text-sm px-6 py-4;
-    font-size: 12px;
+    font-size: 12px !important;
+    color: #FFFFFF !important;
   }
 }

@@ -2,53 +2,53 @@
 @layer components {
   /* Arcade Text Elements - LEGGIBILI E PULITI */
   .arcade-title {
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    color: #FFFFFF;
-    text-shadow: none;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    font-weight: 800;
-    font-size: 2.5rem;
-    line-height: 1.2;
-    background: linear-gradient(45deg, #FF4500, #FFD700, #FF6B35, #FF0000, #FF4500);
-    background-size: 400% 400%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 4px !important;
+    font-weight: 800 !important;
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+    background: linear-gradient(45deg, #FF4500, #FFD700, #FF6B35, #FF0000, #FF4500) !important;
+    background-size: 400% 400% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
   }
 
   .arcade-heading {
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    color: #FFFFFF;
-    text-shadow: none;
-    font-weight: 800;
-    font-size: 1.8rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    font-weight: 800 !important;
+    font-size: 1.8rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3px !important;
   }
 
   .arcade-text {
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    color: #FFFFFF;
-    text-shadow: none;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    line-height: 1.4;
-    font-weight: 600;
-    font-size: 14px;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    line-height: 1.4 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
   }
 
   .arcade-date {
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    color: #FFFFFF;
-    text-shadow: none;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-weight: 700;
-    font-size: 14px;
-    background-color: rgba(0, 0, 0, 0.7);
-    padding: 8px 16px;
-    border-radius: 4px;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
+    padding: 8px 16px !important;
+    border-radius: 4px !important;
   }
 
   .arcade-date-enhanced {
@@ -64,58 +64,58 @@
     justify-content: center !important;
     min-height: 44px !important;
     padding: 8px 16px !important;
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: rgba(0, 0, 0, 0.9) !important;
     border-radius: 6px !important;
     border: 2px solid #FFFFFF !important;
   }
 
   .arcade-info {
-    color: #FFFFFF;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    font-size: 14px;
-    font-weight: 600;
-    text-shadow: none;
+    color: #FFFFFF !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
   }
 
   .arcade-feature {
-    color: #FFD700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    font-size: 14px;
-    font-weight: 600;
-    text-shadow: none;
+    color: #FFD700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
   }
 
   .arcade-link {
-    color: #00BFFF;
-    text-decoration: underline;
-    text-shadow: none;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    padding: 8px;
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: #00BFFF !important;
+    text-decoration: underline !important;
+    text-shadow: none !important;
+    min-height: 44px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 8px !important;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
   }
 
   .arcade-link:hover {
-    color: #FFD700;
-    text-shadow: none;
+    color: #FFD700 !important;
+    text-shadow: none !important;
   }
 
   .arcade-motto {
-    color: #FFFFFF;
-    text-shadow: none;
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace;
-    font-weight: 800;
-    font-size: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    font-weight: 800 !important;
+    font-size: 1.5rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3px !important;
   }
 }
