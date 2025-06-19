@@ -1,0 +1,269 @@
+
+@layer components {
+  /* Arcade Buttons - Mobile Optimized con stile retro */
+  .arcade-button {
+    @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
+    font-family: 'Press Start 2P', monospace;
+    border: 3px solid var(--arcade-white);
+    text-shadow: 2px 2px 0px #000, 0 0 5px #FF6B35;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+    min-height: 44px;
+    min-width: 44px;
+    touch-action: manipulation;
+    letter-spacing: 2px;
+  }
+
+  .arcade-button:active {
+    transform: scale(0.98);
+  }
+
+  .arcade-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FF6B35;
+  }
+
+  .arcade-button-primary {
+    background: linear-gradient(45deg, #D72638, #FF6B35);
+    color: var(--arcade-white);
+    animation: neon-glow 2s ease-in-out infinite;
+  }
+
+  .arcade-button-danger {
+    background: var(--arcade-red);
+    color: var(--arcade-white);
+    border-color: var(--arcade-white);
+  }
+
+  .arcade-button-home {
+    background: var(--arcade-white);
+    color: var(--arcade-blue);
+    border-color: var(--arcade-blue);
+  }
+
+  .arcade-button-stats {
+    background: var(--arcade-blue);
+    color: var(--arcade-white);
+    border-color: var(--arcade-white);
+  }
+
+  .arcade-button-disabled {
+    background: #666;
+    color: #ccc;
+    border-color: #999;
+    opacity: 0.6;
+  }
+
+  .arcade-start-button {
+    @apply arcade-button arcade-button-primary text-sm px-6 py-4;
+    animation: arcade-pulse 1.5s ease-in-out infinite;
+    font-size: 12px;
+  }
+
+  /* Arcade Cards - Mobile Optimized con trasparenza */
+  .arcade-card {
+    background: rgba(0, 0, 0, 0.6);
+    border: 3px solid #FF6B35;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
+    position: relative;
+    touch-action: manipulation;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #D72638, #FF6B35, #D72638);
+    z-index: -1;
+    border-radius: 8px;
+  }
+
+  /* Arcade Tabs - Mobile Optimized con trasparenza */
+  .arcade-tabs {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-main-tabs {
+    background: transparent;
+  }
+
+  .arcade-tab-list, .arcade-main-tab-list {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    padding: 4px;
+    gap: 2px;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-tab, .arcade-main-tab {
+    @apply font-bold transition-all duration-300;
+    font-family: 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0px #000;
+    color: var(--arcade-white);
+    border: 2px solid transparent;
+    background: transparent;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 8px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    touch-action: manipulation;
+  }
+
+  .arcade-tab[data-state="active"], .arcade-main-tab[data-state="active"] {
+    background: linear-gradient(45deg, #D72638, #FF6B35);
+    border-color: var(--arcade-white);
+    box-shadow: 0 0 15px #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FFD700;
+  }
+
+  /* Arcade Text Elements - Mobile Optimized con stile retro */
+  .arcade-title {
+    font-family: 'Press Start 2P', monospace;
+    color: var(--arcade-white);
+    text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35, 0 0 25px #FF6B35;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 400;
+  }
+
+  .arcade-heading {
+    font-family: 'Press Start 2P', monospace;
+    color: #FF6B35;
+    text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35;
+    animation: neon-glow 2s ease-in-out infinite;
+    font-weight: 400;
+  }
+
+  .arcade-text {
+    font-family: 'Press Start 2P', monospace;
+    color: var(--arcade-white);
+    text-shadow: 2px 2px 0px #000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    font-weight: 400;
+    font-size: 10px;
+  }
+
+  .arcade-date {
+    font-family: 'Press Start 2P', monospace;
+    color: var(--arcade-white);
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: neon-glow 3s ease-in-out infinite;
+    font-weight: 400;
+  }
+
+  .arcade-info {
+    color: var(--arcade-white);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+  }
+
+  .arcade-feature {
+    color: var(--arcade-white);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+  }
+
+  .arcade-link {
+    color: var(--arcade-white);
+    text-decoration: underline;
+    text-shadow: 2px 2px 0px #000;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+  }
+
+  .arcade-link:hover {
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+  }
+
+  /* Arcade Icons */
+  .arcade-icon {
+    filter: drop-shadow(2px 2px 0px #000);
+  }
+
+  /* Arcade Badge */
+  .arcade-badge {
+    background: linear-gradient(45deg, #D72638, #FF6B35);
+    color: var(--arcade-white);
+    border: 2px solid var(--arcade-white);
+    font-family: 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0px #000;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 8px;
+  }
+
+  /* Arcade Sections - Con trasparenza */
+  .arcade-section {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid #FF6B35;
+    border-radius: 8px;
+    padding: 1rem;
+    position: relative;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  /* Arcade Footer */
+  .arcade-footer {
+    background: rgba(0, 0, 0, 0.8);
+    border-top: 3px solid #FF6B35;
+    padding: 1.5rem 0;
+    position: relative;
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-motto {
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    animation: neon-glow 2s ease-in-out infinite;
+    font-family: 'Press Start 2P', monospace;
+  }
+
+  /* Mini Leaderboard */
+  .arcade-mini-leaderboard {
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #FF6B35;
+    padding: 1rem;
+    margin-top: 1rem;
+    text-align: left;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+    backdrop-filter: blur(10px);
+  }
+
+  .arcade-mini-leaderboard h3 {
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    font-family: 'Press Start 2P', monospace;
+  }
+}

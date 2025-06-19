@@ -1,0 +1,116 @@
+
+@layer base {
+  body {
+    font-family: 'Press Start 2P', monospace;
+    background: linear-gradient(135deg, #D72638 0%, #0050A0 100%);
+    color: var(--arcade-white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Immagine di sfondo sovrapposta con trasparenza */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/lovable-uploads/627550a7-0b89-4129-ba18-8298086abc9f.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Overlay scuro leggero per migliorare la leggibilità */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  /* Lighter CRT Effect for better performance */
+  .crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.05) 3px,
+      rgba(0, 0, 0, 0.05) 6px
+    );
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  /* Rimuovo il vecchio Neptune background */
+  .neptune-background {
+    display: none;
+  }
+
+  /* Arcade Container */
+  .arcade-container {
+    position: relative;
+    z-index: 10;
+  }
+
+  /* Weather Cartoon Style */
+  .weather-cartoon {
+    background: rgba(135, 206, 235, 0.2);
+    border: 3px solid #000;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+  }
+
+  .weather-cartoon::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, #FFD700 30%, transparent 30%);
+    border-radius: 50%;
+    z-index: 1;
+  }
+}
+
+/* Hide Lovable badge */
+iframe[title="Lovable badge"] {
+  display: none !important;
+}
+
+div[data-testid="lovable-badge"] {
+  display: none !important;
+}
+
+[data-lovable-badge] {
+  display: none !important;
+}
+
+.lovable-edit-button {
+  display: none !important;
+}
+
+.lovable-badge {
+  display: none !important;
+}
