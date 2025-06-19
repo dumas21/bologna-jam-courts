@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
@@ -5,7 +6,7 @@ import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarDays, BarChart, Home } from "lucide-react";
+import { BarChart, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -139,19 +140,19 @@ const Index = () => {
       
       <Header />
       
-      <main className="container mx-auto p-4 flex-1 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-          <div className="text-center md:text-left arcade-date">
+      <main className="container mx-auto p-2 md:p-4 flex-1 relative z-10">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-6 gap-2 md:gap-4">
+          <div className="text-center md:text-left arcade-date text-xs md:text-sm">
             {currentDate.toUpperCase()}
           </div>
           
-          <div className="flex gap-2 flex-wrap justify-center">
+          <div className="flex gap-1 md:gap-2 flex-wrap justify-center">
             <Button 
               onClick={scrollToTop}
-              className="arcade-button arcade-button-home"
+              className="arcade-button arcade-button-home text-xs px-2 py-2 md:px-4 md:py-3"
             >
-              <Home size={16} />
-              <span className="hidden md:inline">HOME</span>
+              <Home size={14} />
+              <span className="hidden sm:inline ml-1">HOME</span>
             </Button>
             
             <Button 
@@ -159,44 +160,36 @@ const Index = () => {
                 playSoundEffect('click');
                 navigate('/stats');
               }}
-              className="arcade-button arcade-button-stats"
+              className="arcade-button arcade-button-stats text-xs px-2 py-2 md:px-4 md:py-3"
             >
-              <BarChart size={16} />
-              <span className="hidden md:inline">STATISTICHE</span>
-              <span className="inline md:hidden">STATS</span>
+              <BarChart size={14} />
+              <span className="hidden sm:inline ml-1">STATS</span>
             </Button>
           </div>
         </div>
         
         <Tabs defaultValue="map" className="w-full arcade-main-tabs">
-          <TabsList className="w-full grid grid-cols-3 mb-4 arcade-main-tab-list">
+          <TabsList className="w-full grid grid-cols-2 mb-2 md:mb-4 arcade-main-tab-list h-auto">
             <TabsTrigger 
               value="map" 
-              className="text-sm arcade-main-tab"
+              className="text-xs md:text-sm arcade-main-tab py-3 px-2"
               onClick={() => playSoundEffect('tab')}
             >
-              <span className="hidden md:inline">BOLOGNA PLAYGROUNDS</span>
-              <span className="inline md:hidden">BOLOGNA</span>
+              <span className="hidden sm:inline">BOLOGNA PLAYGROUNDS</span>
+              <span className="inline sm:hidden">BOLOGNA</span>
             </TabsTrigger>
             <TabsTrigger 
               value="italia" 
-              className="text-sm arcade-main-tab"
+              className="text-xs md:text-sm arcade-main-tab py-3 px-2"
               onClick={() => playSoundEffect('tab')}
             >
-              LISTA ITALIA
-            </TabsTrigger>
-            <TabsTrigger 
-              value="events" 
-              className="text-sm arcade-main-tab"
-              onClick={() => playSoundEffect('tab')}
-            >
-              <CalendarDays size={16} className="mr-1" />
-              <span className="hidden md:inline">EVENTI</span>
+              <span className="hidden sm:inline">LISTA ITALIA</span>
+              <span className="inline sm:hidden">ITALIA</span>
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="map" className="arcade-fade-in">
-            <div className="arcade-section">
+          <TabsContent value="map" className="arcade-fade-in mt-2">
+            <div className="arcade-section p-2 md:p-4">
               <MapView 
                 playgrounds={playgrounds} 
                 selectedPlayground={selectedPlayground}
@@ -205,27 +198,29 @@ const Index = () => {
             </div>
             
             {selectedPlayground && (
-              <PlaygroundDetail 
-                playground={selectedPlayground} 
-                onCheckIn={handleCheckIn}
-                onCheckOut={handleCheckOut}
-                hasUserCheckedIn={hasUserCheckedIn}
-                checkInRecords={checkInRecords}
-                onRatingUpdate={handleRatingUpdate}
-              />
+              <div className="mt-2 md:mt-4">
+                <PlaygroundDetail 
+                  playground={selectedPlayground} 
+                  onCheckIn={handleCheckIn}
+                  onCheckOut={handleCheckOut}
+                  hasUserCheckedIn={hasUserCheckedIn}
+                  checkInRecords={checkInRecords}
+                  onRatingUpdate={handleRatingUpdate}
+                />
+              </div>
             )}
           </TabsContent>
           
-          <TabsContent value="italia" className="arcade-fade-in">
-            <div className="arcade-section h-64 flex flex-col items-center justify-center">
-              <div className="text-center space-y-4">
-                <h2 className="text-xl arcade-heading">LISTA ITALIA</h2>
-                <p className="text-base max-w-md arcade-text">
+          <TabsContent value="italia" className="arcade-fade-in mt-2">
+            <div className="arcade-section h-48 md:h-64 flex flex-col items-center justify-center p-4">
+              <div className="text-center space-y-2 md:space-y-4">
+                <h2 className="text-base md:text-xl arcade-heading">LISTA ITALIA</h2>
+                <p className="text-xs md:text-base max-w-md arcade-text">
                   A BREVE ALTRI PLAYGROUND IN ALTRE CITTÀ ITALIANE
                 </p>
                 <div className="arcade-mini-leaderboard">
-                  <h3 className="text-lg mb-2">TOP CITIES COMING SOON:</h3>
-                  <div className="space-y-1 text-sm">
+                  <h3 className="text-sm md:text-lg mb-2">TOP CITIES COMING SOON:</h3>
+                  <div className="space-y-1 text-xs md:text-sm">
                     <div>1. MILANO - COMING SOON</div>
                     <div>2. ROMA - COMING SOON</div>
                     <div>3. NAPOLI - COMING SOON</div>
@@ -234,22 +229,11 @@ const Index = () => {
               </div>
             </div>
           </TabsContent>
-          
-          <TabsContent value="events" className="arcade-fade-in">
-            <div className="arcade-section h-64 flex flex-col items-center justify-center">
-              <div className="text-center space-y-4">
-                <h2 className="text-xl arcade-heading">EVENTI</h2>
-                <p className="text-lg arcade-text">
-                  A BREVE EVENTI
-                </p>
-              </div>
-            </div>
-          </TabsContent>
         </Tabs>
       </main>
       
-      <footer className="arcade-footer">
-        <div className="container mx-auto px-4 text-center">
+      <footer className="arcade-footer mt-2 md:mt-4">
+        <div className="container mx-auto px-2 md:px-4 text-center py-2 md:py-4">
           <p className="font-press-start text-xs">
             PLAYGROUND JAM BOLOGNA &copy; 2025 - MATTEO BERGAMI
           </p>
