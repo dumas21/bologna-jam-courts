@@ -274,6 +274,23 @@ export function usePlaygrounds() {
     return acc;
   }, {} as { [playgroundId: string]: string[] });
   
+  const resetToOriginalData = () => {
+    setPlaygrounds(initialData);
+    setCheckInRecords([]);
+    localStorage.removeItem("playgroundData");
+    localStorage.removeItem("checkInRecords");
+    
+    toast({
+      title: "DATI RIPRISTINATI",
+      description: "I playground sono stati ripristinati ai dati originali (10 campi).",
+    });
+    
+    const audio = new Audio('/sounds/reset.mp3');
+    audio.play().catch(err => console.log('Audio playback error:', err));
+    
+    return true;
+  };
+  
   return { 
     playgrounds, 
     totalCheckIns,
@@ -286,6 +303,7 @@ export function usePlaygrounds() {
     hasUserCheckedIn,
     checkInRecords: checkInRecordsObject,
     getTodayCheckins,
-    resetAttendanceCounts
+    resetAttendanceCounts,
+    resetToOriginalData
   };
 }

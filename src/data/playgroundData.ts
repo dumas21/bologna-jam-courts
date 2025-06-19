@@ -3,22 +3,6 @@ import { Playground } from "@/types/playground";
 
 export const playgroundData: Playground[] = [
   {
-    id: "pm",
-    name: "Parco della Montagnola",
-    address: "Via Irnerio, 8, 40126 Bologna BO",
-    openHours: "08:00 - 22:00",
-    hasShade: true,
-    hasFountain: false,
-    hasAmenities: false,
-    hasLighting: true,
-    currentPlayers: 0,
-    totalCheckins: 0,
-    basketCount: 2,
-    rating: 3.8,
-    ratingCount: 24,
-    comments: []
-  },
-  {
     id: "gm",
     name: "Giardini Margherita",
     address: "Via Castiglione, 40136 Bologna BO",
@@ -32,6 +16,22 @@ export const playgroundData: Playground[] = [
     basketCount: 4,
     rating: 4.7,
     ratingCount: 42,
+    comments: []
+  },
+  {
+    id: "pm",
+    name: "Parco della Montagnola",
+    address: "Via Irnerio, 8, 40126 Bologna BO",
+    openHours: "08:00 - 22:00",
+    hasShade: true,
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: true,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.8,
+    ratingCount: 24,
     comments: []
   },
   {
