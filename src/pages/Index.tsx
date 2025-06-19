@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
@@ -132,9 +131,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col arcade-container">
-      {/* CRT Screen Effect */}
-      <div className="crt-overlay"></div>
-      
       {/* Neptune Background */}
       <div className="neptune-background"></div>
       
