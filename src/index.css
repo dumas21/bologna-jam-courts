@@ -80,17 +80,32 @@
   }
 
   body {
-    font-family: 'Press Start 2P', monospace;
-    background: linear-gradient(90deg, var(--arcade-red) 0%, var(--arcade-red) 50%, var(--arcade-blue) 50%, var(--arcade-blue) 100%);
-    background-attachment: fixed;
+    font-family: 'Black Ops One', 'Press Start 2P', monospace;
+    background: #1a1a1a;
+    background-image: url('/lovable-uploads/627550a7-0b89-4129-ba18-8298086abc9f.png');
+    background-size: 400px 400px;
+    background-position: center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     color: var(--arcade-white);
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
-    /* Improved scrolling */
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+  }
+
+  /* Dark overlay per migliorare la leggibilità */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 0;
+    pointer-events: none;
   }
   
   /* Lighter CRT Effect for better performance */
@@ -111,17 +126,9 @@
     z-index: 1000;
   }
 
-  /* Simplified Neptune Background */
+  /* Rimuovo il vecchio Neptune background */
   .neptune-background {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 250px;
-    height: 250px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='40' r='8' fill='%23FFD700'/%3E%3Crect x='45' y='48' width='10' height='20' fill='%23FFD700'/%3E%3Ccircle cx='50' cy='75' r='12' fill='%23FF6B35'/%3E%3Ctext x='50' y='85' text-anchor='middle' font-family='monospace' font-size='6' fill='white'%3ENETTUNO%3C/text%3E%3C/svg%3E") center/contain no-repeat;
-    opacity: 0.08;
-    z-index: 1;
+    display: none;
   }
 
   /* Arcade Container */
@@ -130,29 +137,31 @@
     z-index: 10;
   }
 
-  /* Responsive Typography */
+  /* Responsive Typography - Stile del logo */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Press Start 2P', monospace;
-    text-shadow: 2px 2px 0px #000;
-    letter-spacing: 1px;
+    font-family: 'Black Ops One', 'Anton', 'Bebas Neue', 'Press Start 2P', monospace;
+    text-shadow: 3px 3px 0px #000, 0 0 10px #FF6B35;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    line-height: 1.4;
+    line-height: 1.2;
+    font-weight: 400;
   }
   
   p, span, div {
-    font-family: 'Press Start 2P', monospace;
-    text-shadow: 1px 1px 0px #000;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
+    font-family: 'Anton', 'Bebas Neue', 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0px #000;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    text-transform: uppercase;
   }
 
   /* Simplified Animations */
   @keyframes neon-glow {
     0%, 100% { 
-      text-shadow: 1px 1px 0px #000, 0 0 5px currentColor;
+      text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FF6B35;
     }
     50% { 
-      text-shadow: 1px 1px 0px #000, 0 0 10px currentColor;
+      text-shadow: 2px 2px 0px #000, 0 0 20px #FF6B35, 0 0 30px #FF6B35, 0 0 40px #FF6B35;
     }
   }
 
@@ -192,10 +201,11 @@
   }
 
   .nike-text {
-    font-family: 'Orbitron', 'Press Start 2P', monospace;
-    font-weight: 900;
+    font-family: 'Black Ops One', 'Anton', 'Bebas Neue', monospace;
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
   }
 
   .font-orbitron {
@@ -217,7 +227,6 @@
     color: #666;
     transition: all 0.2s ease;
     filter: drop-shadow(1px 1px 0px #000);
-    /* Better touch targets */
     min-width: 24px;
     min-height: 24px;
     display: flex;
@@ -236,19 +245,19 @@
 }
 
 @layer components {
-  /* Arcade Buttons - Mobile Optimized */
+  /* Arcade Buttons - Mobile Optimized con stile del logo */
   .arcade-button {
     @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Black Ops One', 'Anton', 'Press Start 2P', monospace;
     border: 3px solid var(--arcade-white);
-    text-shadow: 1px 1px 0px #000;
+    text-shadow: 2px 2px 0px #000, 0 0 5px #FF6B35;
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
-    /* Better touch targets */
     min-height: 44px;
     min-width: 44px;
     touch-action: manipulation;
+    letter-spacing: 2px;
   }
 
   .arcade-button:active {
@@ -257,11 +266,12 @@
 
   .arcade-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.5);
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FF6B35;
   }
 
   .arcade-button-primary {
-    background: linear-gradient(45deg, var(--arcade-red), var(--arcade-blue));
+    background: linear-gradient(45deg, #D72638, #FF6B35);
     color: var(--arcade-white);
     animation: neon-glow 2s ease-in-out infinite;
   }
@@ -300,11 +310,10 @@
   /* Arcade Cards - Mobile Optimized */
   .arcade-card {
     background: rgba(0, 0, 0, 0.85);
-    border: 3px solid var(--arcade-white);
+    border: 3px solid #FF6B35;
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
     position: relative;
-    /* Better touch interaction */
     touch-action: manipulation;
   }
 
@@ -315,7 +324,7 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, var(--arcade-red), var(--arcade-blue), var(--arcade-red));
+    background: linear-gradient(45deg, #D72638, #FF6B35, #D72638);
     z-index: -1;
     border-radius: 8px;
   }
@@ -323,7 +332,7 @@
   /* Arcade Tabs - Mobile Optimized */
   .arcade-tabs {
     background: rgba(0, 0, 0, 0.8);
-    border: 2px solid var(--arcade-white);
+    border: 2px solid #FF6B35;
     border-radius: 8px;
   }
 
@@ -333,7 +342,7 @@
 
   .arcade-tab-list, .arcade-main-tab-list {
     background: rgba(0, 0, 0, 0.85);
-    border: 2px solid var(--arcade-white);
+    border: 2px solid #FF6B35;
     border-radius: 8px;
     padding: 4px;
     gap: 2px;
@@ -341,145 +350,155 @@
 
   .arcade-tab, .arcade-main-tab {
     @apply font-bold transition-all duration-300;
-    font-family: 'Press Start 2P', monospace;
-    text-shadow: 1px 1px 0px #000;
+    font-family: 'Black Ops One', 'Anton', 'Press Start 2P', monospace;
+    text-shadow: 2px 2px 0px #000;
     color: var(--arcade-white);
     border: 2px solid transparent;
     background: transparent;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     padding: 12px 8px;
     min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 6px;
-    /* Better touch targets */
     touch-action: manipulation;
   }
 
   .arcade-tab[data-state="active"], .arcade-main-tab[data-state="active"] {
-    background: linear-gradient(45deg, var(--arcade-red), var(--arcade-blue));
+    background: linear-gradient(45deg, #D72638, #FF6B35);
     border-color: var(--arcade-white);
-    box-shadow: 0 0 10px currentColor;
+    box-shadow: 0 0 15px #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FFD700;
   }
 
-  /* Arcade Text Elements - Mobile Optimized */
+  /* Arcade Text Elements - Mobile Optimized con stile del logo */
   .arcade-title {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Black Ops One', 'Anton', 'Press Start 2P', monospace;
     color: var(--arcade-white);
-    text-shadow: 2px 2px 0px #000, 0 0 10px currentColor;
+    text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35, 0 0 25px #FF6B35;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    font-weight: 400;
   }
 
   .arcade-heading {
-    font-family: 'Press Start 2P', monospace;
-    color: var(--arcade-red);
-    text-shadow: 2px 2px 0px #000, 0 0 10px var(--arcade-red);
+    font-family: 'Black Ops One', 'Anton', monospace;
+    color: #FF6B35;
+    text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35;
     animation: neon-glow 2s ease-in-out infinite;
+    font-weight: 400;
   }
 
   .arcade-text {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Anton', 'Bebas Neue', monospace;
     color: var(--arcade-white);
-    text-shadow: 1px 1px 0px #000;
+    text-shadow: 2px 2px 0px #000;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    line-height: 1.5;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    font-weight: 400;
   }
 
   .arcade-date {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Black Ops One', 'Anton', monospace;
     color: var(--arcade-white);
-    text-shadow: 2px 2px 0px #000, 0 0 10px var(--arcade-blue);
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     animation: neon-glow 3s ease-in-out infinite;
+    font-weight: 400;
   }
 
   .arcade-info {
     color: var(--arcade-white);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    font-family: 'Anton', monospace;
   }
 
   .arcade-feature {
     color: var(--arcade-white);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    font-family: 'Anton', monospace;
   }
 
   .arcade-link {
     color: var(--arcade-white);
     text-decoration: underline;
-    text-shadow: 1px 1px 0px #000;
-    /* Better touch targets */
+    text-shadow: 2px 2px 0px #000;
     min-height: 44px;
     display: inline-flex;
     align-items: center;
     padding: 8px;
+    font-family: 'Anton', monospace;
   }
 
   .arcade-link:hover {
-    color: var(--arcade-blue);
-    text-shadow: 1px 1px 0px #000, 0 0 5px var(--arcade-blue);
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
   }
 
   /* Arcade Icons */
   .arcade-icon {
-    filter: drop-shadow(1px 1px 0px #000);
+    filter: drop-shadow(2px 2px 0px #000);
   }
 
   /* Arcade Badge */
   .arcade-badge {
-    background: linear-gradient(45deg, var(--arcade-red), var(--arcade-blue));
+    background: linear-gradient(45deg, #D72638, #FF6B35);
     color: var(--arcade-white);
     border: 2px solid var(--arcade-white);
-    font-family: 'Press Start 2P', monospace;
-    text-shadow: 1px 1px 0px #000;
+    font-family: 'Black Ops One', 'Anton', monospace;
+    text-shadow: 2px 2px 0px #000;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
   }
 
   /* Arcade Sections */
   .arcade-section {
     background: rgba(0, 0, 0, 0.8);
-    border: 2px solid var(--arcade-white);
+    border: 2px solid #FF6B35;
     border-radius: 8px;
     padding: 1rem;
     position: relative;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
   }
 
   /* Arcade Footer */
   .arcade-footer {
     background: rgba(0, 0, 0, 0.9);
-    border-top: 3px solid var(--arcade-white);
+    border-top: 3px solid #FF6B35;
     padding: 1.5rem 0;
     position: relative;
   }
 
   .arcade-motto {
-    color: var(--arcade-red);
-    text-shadow: 1px 1px 0px #000, 0 0 5px var(--arcade-red);
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
     animation: neon-glow 2s ease-in-out infinite;
+    font-family: 'Black Ops One', monospace;
   }
 
   /* Mini Leaderboard */
   .arcade-mini-leaderboard {
     background: rgba(0, 0, 0, 0.85);
-    border: 2px solid var(--arcade-white);
+    border: 2px solid #FF6B35;
     padding: 1rem;
     margin-top: 1rem;
     text-align: left;
     border-radius: 8px;
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
   }
 
   .arcade-mini-leaderboard h3 {
-    color: var(--arcade-blue);
-    text-shadow: 1px 1px 0px #000, 0 0 5px var(--arcade-blue);
+    color: #FF6B35;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
     margin-bottom: 0.5rem;
     text-align: center;
+    font-family: 'Black Ops One', monospace;
   }
 
   /* Animations */
@@ -487,7 +506,7 @@
     animation: pixel-fade-in 0.5s ease-out;
   }
 
-  /* Mobile Optimizations */
+  /* ... keep existing code (mobile optimizations and responsive styles) the same ... */
   @media (max-width: 768px) {
     .arcade-button {
       @apply px-3 py-2 text-xs;
@@ -509,31 +528,25 @@
 
     .arcade-title {
       font-size: 0.8rem;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
     }
 
     .arcade-text {
       font-size: 0.7rem;
-      line-height: 1.4;
-      letter-spacing: 0.3px;
+      line-height: 1.3;
+      letter-spacing: 0.5px;
     }
 
     .arcade-date {
       font-size: 0.7rem;
-      letter-spacing: 0.5px;
-    }
-
-    .neptune-background {
-      width: 180px;
-      height: 180px;
-      opacity: 0.05;
+      letter-spacing: 1px;
     }
 
     /* Better scroll areas */
     .scroll-area {
       -webkit-overflow-scrolling: touch;
       scrollbar-width: thin;
-      scrollbar-color: var(--arcade-blue) transparent;
+      scrollbar-color: #FF6B35 transparent;
     }
 
     .scroll-area::-webkit-scrollbar {
@@ -546,12 +559,12 @@
     }
 
     .scroll-area::-webkit-scrollbar-thumb {
-      background: var(--arcade-blue);
+      background: #FF6B35;
       border-radius: 4px;
     }
 
     .scroll-area::-webkit-scrollbar-thumb:hover {
-      background: var(--arcade-red);
+      background: #D72638;
     }
   }
 
@@ -560,7 +573,7 @@
       @apply px-2 py-2;
       font-size: 8px;
       min-height: 44px;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
     }
 
     .arcade-start-button {
@@ -571,23 +584,17 @@
 
     .arcade-title {
       font-size: 0.7rem;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
     }
 
     .arcade-text {
       font-size: 0.6rem;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
     }
 
     .arcade-date {
       font-size: 0.6rem;
-      letter-spacing: 0.3px;
-    }
-
-    .neptune-background {
-      width: 120px;
-      height: 120px;
-      opacity: 0.03;
+      letter-spacing: 0.5px;
     }
 
     .arcade-mini-leaderboard {

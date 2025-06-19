@@ -79,6 +79,9 @@ export default {
 				'orbitron': ['Orbitron', 'monospace'],
 				'exo': ['"Exo 2"', 'sans-serif'],
 				'saira': ['"Saira Condensed"', 'sans-serif'],
+				'bebas': ['"Bebas Neue"', 'cursive'],
+				'anton': ['Anton', 'sans-serif'],
+				'black-ops': ['"Black Ops One"', 'cursive'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
