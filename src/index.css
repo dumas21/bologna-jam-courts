@@ -28,6 +28,12 @@ body {
   font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
 }
 
+/* FORZO IL COLORE NERO PER METEO, CHAT E PLAYGROUND */
+body, .meteo, .chat, .playground {
+    background-color: #fff !important;
+    color: #222 !important;
+}
+
 /* RIMUOVO TUTTE LE REGOLE CHE FORZANO IL COLORE BIANCO */
 
 @import './styles/base.css';
