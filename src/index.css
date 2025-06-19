@@ -3,9 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SFONDO PRINCIPALE - ARCADE STYLE */
+/* SFONDO PRINCIPALE - ARCADE STYLE ENHANCED */
 html, body {
-  background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+  background: radial-gradient(circle at center, #0a0a2a 0%, #000010 90%) !important;
   color: #39ff14 !important;
   font-family: 'Press Start 2P', 'JetBrains Mono', 'Exo 2', monospace !important;
   margin: 0 !important;
@@ -15,7 +15,11 @@ html, body {
   text-transform: uppercase !important;
   font-weight: 600 !important;
   letter-spacing: 1px !important;
-  text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14 !important;
+  text-shadow: 
+    0 0 5px #39ff14,
+    0 0 10px #39ff14,
+    0 0 20px #0f0,
+    0 0 30px #0f0 !important;
 }
 
 #root {
@@ -24,12 +28,35 @@ html, body {
   font-family: 'Press Start 2P', 'JetBrains Mono', monospace !important;
 }
 
+/* Effetto scanline tipico arcade */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0,0,0,0.1),
+    rgba(0,0,0,0.1) 2px,
+    transparent 3px,
+    transparent 4px
+  );
+  z-index: 1000;
+}
+
 /* Forzo il background arcade su tutto */
 body, .meteo, .chat, .playground {
-  background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+  background: radial-gradient(circle at center, #0a0a2a 0%, #000010 90%) !important;
   color: #39ff14 !important;
   font-family: 'Press Start 2P', cursive, monospace !important;
-  text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14 !important;
+  text-shadow: 
+    0 0 5px #39ff14,
+    0 0 10px #39ff14,
+    0 0 20px #0f0,
+    0 0 30px #0f0 !important;
   transition: color 0.3s ease, background 0.3s ease;
   padding: 1rem;
 }
@@ -37,7 +64,7 @@ body, .meteo, .chat, .playground {
 /* Tema scuro automatico */
 @media (prefers-color-scheme: dark) {
     html, body, .meteo, .chat, .playground {
-        background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+        background: radial-gradient(circle at center, #0a0a2a 0%, #000010 90%) !important;
         color: #39ff14 !important;
     }
 }
@@ -46,17 +73,21 @@ body, .meteo, .chat, .playground {
 a {
   color: #ff0055 !important;
   text-decoration: none !important;
-  text-shadow: 0 0 8px #ff0055 !important;
+  text-shadow: 
+    0 0 8px #ff0055,
+    0 0 15px #ff55aa !important;
   transition: color 0.2s ease !important;
 }
 
 a:hover, a:focus {
   color: #ff55aa !important;
-  text-shadow: 0 0 15px #ff55aa !important;
+  text-shadow: 
+    0 0 15px #ff55aa,
+    0 0 25px #ff55aa !important;
   text-decoration: underline !important;
 }
 
-/* Pulsanti arcade */
+/* Pulsanti neon lampeggianti */
 button, .btn {
   background-color: #ff0055 !important;
   border: 2px solid #ff55aa !important;
@@ -64,7 +95,27 @@ button, .btn {
   font-family: 'Press Start 2P', monospace !important;
   padding: 10px 20px !important;
   cursor: pointer !important;
-  box-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055 !important;
+  box-shadow:
+    0 0 5px #ff0055,
+    0 0 10px #ff0055,
+    0 0 20px #ff55aa !important;
+  animation: neonPulse 2s infinite alternate !important;
+}
+
+@keyframes neonPulse {
+  from {
+    box-shadow:
+      0 0 5px #ff0055,
+      0 0 10px #ff0055,
+      0 0 15px #ff55aa;
+  }
+  to {
+    box-shadow:
+      0 0 10px #ff0055,
+      0 0 20px #ff0055,
+      0 0 30px #ff55aa,
+      0 0 40px #ff55aa;
+  }
 }
 
 /* Container responsivi */
@@ -83,7 +134,7 @@ button, .btn {
 
 /* Rimuovo COMPLETAMENTE il background rosso/blu */
 html::before, html::after,
-body::before, body::after,
+body::after,
 #root::before, #root::after {
     display: none !important;
 }

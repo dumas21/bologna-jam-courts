@@ -1,11 +1,13 @@
 
 @layer components {
-  /* Arcade Buttons - Mobile Optimized con stile retro e Joystix */
+  /* Arcade Buttons - Enhanced Neon Style */
   .arcade-button {
     @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
-    font-family: 'JetBrains Mono', monospace !important;
-    border: 3px solid #FFFFFF !important;
-    text-shadow: none !important;
+    font-family: 'Press Start 2P', monospace !important;
+    border: 3px solid #ff55aa !important;
+    text-shadow: 
+      0 0 5px #fff,
+      0 0 10px #fff !important;
     transition: all 0.2s ease !important;
     position: relative !important;
     overflow: hidden !important;
@@ -14,40 +16,53 @@
     touch-action: manipulation !important;
     letter-spacing: 2px !important;
     color: #FFFFFF !important;
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: #ff0055 !important;
+    box-shadow:
+      0 0 5px #ff0055,
+      0 0 10px #ff0055,
+      0 0 20px #ff55aa !important;
+    animation: neonPulse 2s infinite alternate !important;
   }
 
   .arcade-button:active {
     transform: scale(0.98) !important;
+    box-shadow:
+      0 0 15px #ff0055,
+      0 0 25px #ff0055,
+      0 0 35px #ff55aa !important;
   }
 
   .arcade-button:hover {
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 
+      0 0 15px #ff0055,
+      0 0 25px #ff0055,
+      0 0 35px #ff55aa,
+      0 4px 15px rgba(255, 255, 255, 0.3) !important;
   }
 
   .arcade-button-primary {
-    background: linear-gradient(45deg, #D72638, #FF6B35) !important;
+    background: linear-gradient(45deg, #ff0055, #ff55aa) !important;
     color: #FFFFFF !important;
     border-color: #FFFFFF !important;
   }
 
   .arcade-button-danger {
-    background: var(--arcade-red) !important;
+    background: #ff0055 !important;
     color: #FFFFFF !important;
-    border-color: #FFFFFF !important;
+    border-color: #ff55aa !important;
   }
 
   .arcade-button-home {
-    background: rgba(0, 0, 0, 0.9) !important;
+    background: rgba(255, 0, 85, 0.9) !important;
     color: #FFFFFF !important;
-    border-color: #FFFFFF !important;
+    border-color: #ff55aa !important;
   }
 
   .arcade-button-stats {
-    background: rgba(0, 0, 0, 0.9) !important;
+    background: rgba(255, 0, 85, 0.9) !important;
     color: #FFFFFF !important;
-    border-color: #FFFFFF !important;
+    border-color: #ff55aa !important;
   }
 
   .arcade-button-disabled {
@@ -55,11 +70,13 @@
     color: #ccc !important;
     border-color: #999 !important;
     opacity: 0.6 !important;
+    animation: none !important;
   }
 
   .arcade-start-button {
     @apply arcade-button arcade-button-primary text-sm px-6 py-4;
     font-size: 12px !important;
     color: #FFFFFF !important;
+    animation: neonPulse 1.5s infinite alternate !important;
   }
 }

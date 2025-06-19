@@ -1,35 +1,107 @@
 
 @layer base {
-  /* Simplified Animations */
+  /* Enhanced Animations with Neon Effects */
   @keyframes neon-glow {
     0%, 100% { 
-      text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FF6B35;
+      text-shadow: 
+        2px 2px 0px #000, 
+        0 0 10px #FF6B35, 
+        0 0 20px #FF6B35,
+        0 0 30px #FF6B35;
     }
     50% { 
-      text-shadow: 2px 2px 0px #000, 0 0 20px #FF6B35, 0 0 30px #FF6B35, 0 0 40px #FF6B35;
+      text-shadow: 
+        2px 2px 0px #000, 
+        0 0 20px #FF6B35, 
+        0 0 30px #FF6B35, 
+        0 0 40px #FF6B35,
+        0 0 50px #FF6B35;
     }
   }
 
   @keyframes arcade-pulse {
     0%, 100% { 
       transform: scale(1);
+      box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
     }
     50% { 
       transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(255, 107, 53, 0.8);
     }
   }
 
   @keyframes pixel-fade-in {
-    0% { opacity: 0; transform: translateY(5px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% { 
+      opacity: 0; 
+      transform: translateY(5px); 
+      filter: blur(2px);
+    }
+    100% { 
+      opacity: 1; 
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes neonPulse {
+    from {
+      box-shadow:
+        0 0 5px #ff0055,
+        0 0 10px #ff0055,
+        0 0 15px #ff55aa;
+      text-shadow:
+        0 0 5px #39ff14,
+        0 0 10px #39ff14;
+    }
+    to {
+      box-shadow:
+        0 0 10px #ff0055,
+        0 0 20px #ff0055,
+        0 0 30px #ff55aa,
+        0 0 40px #ff55aa;
+      text-shadow:
+        0 0 10px #39ff14,
+        0 0 20px #39ff14,
+        0 0 30px #0f0;
+    }
+  }
+
+  @keyframes scanline {
+    0% {
+      transform: translateY(-100vh);
+    }
+    100% {
+      transform: translateY(100vh);
+    }
   }
 
   .animate-neon-glow {
     animation: neon-glow 2s ease-in-out infinite;
   }
 
+  .animate-arcade-pulse {
+    animation: arcade-pulse 2s ease-in-out infinite;
+  }
+
+  .animate-neon-pulse {
+    animation: neonPulse 2s infinite alternate;
+  }
+
   /* Animations */
   .arcade-fade-in {
     animation: pixel-fade-in 0.5s ease-out;
+  }
+
+  /* Scanline effect for extra retro feel */
+  .scanline-effect::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #39ff14, transparent);
+    animation: scanline 3s linear infinite;
+    z-index: 1001;
   }
 }

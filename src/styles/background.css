@@ -4,9 +4,9 @@
     box-sizing: border-box;
   }
 
-  /* FORZO IL BACKGROUND ARCADE SU TUTTO */
+  /* FORZO IL BACKGROUND ARCADE SU TUTTO - ENHANCED */
   html, body, #root {
-    background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+    background: radial-gradient(circle at center, #0a0a2a 0%, #000010 90%) !important;
     color: #39ff14 !important;
     height: 100% !important;
     min-height: 100vh !important;
@@ -24,11 +24,11 @@
 
   /* RIMUOVO COMPLETAMENTE IL BACKGROUND ROSSO/BLU */
   .min-h-screen {
-    background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+    background: radial-gradient(circle at center, #0a0a2a 0%, #000010 90%) !important;
   }
 
   /* Rimuovo tutti gli overlay e background alternativi */
-  body::after, body::before,
+  body::after,
   html::after, html::before,
   #root::after, #root::before {
     display: none !important;
@@ -46,14 +46,18 @@
     background: transparent !important;
   }
 
-  /* Weather Cartoon Style */
+  /* Weather Cartoon Style - Enhanced Neon */
   .weather-cartoon {
-    background: rgba(0, 0, 0, 0.3) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
     border: 3px solid #FFD700 !important;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(5px);
+    box-shadow: 
+      0 0 10px #FFD700,
+      0 0 20px #FFD700,
+      inset 0 0 10px rgba(255, 215, 0, 0.1);
   }
 
   .weather-cartoon::before {
@@ -66,6 +70,7 @@
     background: radial-gradient(circle, #FFD700 30%, transparent 30%);
     border-radius: 50%;
     z-index: 1;
+    box-shadow: 0 0 15px #FFD700;
   }
 
   /* Forzo tutti i container principali ad avere background trasparente */
