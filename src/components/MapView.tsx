@@ -1,5 +1,5 @@
 
-import { Users, Lightbulb, MapPin, Clock, Star } from "lucide-react";
+import { Users, Lightbulb, Clock, Star } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,6 +9,42 @@ interface MapViewProps {
   selectedPlayground: Playground | null;
   onSelectPlayground: (playground: Playground) => void;
 }
+
+const BasketballIcon = ({ size = 18, className = "" }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    className={className}
+    fill="currentColor"
+  >
+    <circle cx="12" cy="12" r="10" fill="#ff6b35" />
+    <path 
+      d="M12 2 C12 2, 16 6, 16 12 C16 18, 12 22, 12 22" 
+      stroke="#000" 
+      strokeWidth="1.5" 
+      fill="none"
+    />
+    <path 
+      d="M12 2 C12 2, 8 6, 8 12 C8 18, 12 22, 12 22" 
+      stroke="#000" 
+      strokeWidth="1.5" 
+      fill="none"
+    />
+    <path 
+      d="M2 12 C2 12, 6 8, 12 8 C18 8, 22 12, 22 12" 
+      stroke="#000" 
+      strokeWidth="1.5" 
+      fill="none"
+    />
+    <path 
+      d="M2 12 C2 12, 6 16, 12 16 C18 16, 22 12, 22 12" 
+      stroke="#000" 
+      strokeWidth="1.5" 
+      fill="none"
+    />
+  </svg>
+);
 
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
   const { isLoggedIn, nickname } = useUser();
@@ -91,13 +127,13 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                         </div>
                       )}
                       
-                      {/* Pulsante Maps migliorato per mobile */}
+                      {/* Pulsante Basketball Maps migliorato */}
                       <button 
-                        className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-orange-600 hover:bg-orange-500 rounded-full border-2 border-orange-400 transition-all duration-200 shadow-lg active:scale-90 touch-manipulation"
+                        className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 rounded-full border-3 border-white shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation"
                         onClick={(e) => openGoogleMaps(playground.address, e)}
                         title="Apri in Google Maps"
                       >
-                        <MapPin size={18} className="text-white" />
+                        <BasketballIcon size={20} className="text-white drop-shadow-lg" />
                       </button>
                     </div>
                   </div>
@@ -105,7 +141,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                   {/* Info principali in card compatte */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm">
                     <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
-                      <MapPin size={12} className="text-orange-400 mr-2 flex-shrink-0" />
+                      <BasketballIcon size={12} className="text-orange-400 mr-2 flex-shrink-0" />
                       <span className="text-white/90 nike-text truncate">{playground.address}</span>
                     </div>
                     
