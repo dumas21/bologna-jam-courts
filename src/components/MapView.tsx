@@ -29,6 +29,22 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
     audio.play().catch(err => console.log('Basketball sound error:', err));
   };
   
+  const scrollToPlaygroundDetails = () => {
+    // Scroll to playground details section
+    setTimeout(() => {
+      const detailsSection = document.querySelector('[data-playground-details]');
+      if (detailsSection) {
+        detailsSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 100);
+    
+    const audio = new Audio('/sounds/select.mp3');
+    audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
+  
   return (
     <div className="relative w-full bg-black bg-opacity-90 backdrop-blur-sm border-2 md:border-3 border-orange-500 p-3 md:p-4 overflow-hidden rounded-lg">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 md:mb-6 gap-2 md:gap-4">
@@ -144,12 +160,18 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                     </div>
                   )}
                   
-                  {/* Indicatore di selezione */}
+                  {/* Indicatore di selezione con pulsante per andare ai dettagli */}
                   {selectedPlayground?.id === playground.id && (
                     <div className="text-center">
-                      <div className="inline-block bg-white text-black px-4 py-2 rounded-full text-xs font-bold animate-pulse">
-                        ✓ SELEZIONATO - SCORRI GIÙ PER DETTAGLI
-                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          scrollToPlaygroundDetails();
+                        }}
+                        className="inline-block bg-white text-black px-4 py-2 rounded-full text-xs font-bold animate-pulse hover:bg-gray-200 transition-colors cursor-pointer"
+                      >
+                        ✓ VAI A METEO E CHAT
+                      </button>
                     </div>
                   )}
                 </div>

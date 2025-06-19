@@ -198,7 +198,7 @@ const Index = () => {
             </div>
             
             {selectedPlayground && (
-              <div className="mt-2 md:mt-4">
+              <div className="mt-2 md:mt-4" data-playground-details>
                 <PlaygroundDetail 
                   playground={selectedPlayground} 
                   onCheckIn={handleCheckIn}
