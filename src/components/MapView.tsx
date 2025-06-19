@@ -18,30 +18,70 @@ const BasketballIcon = ({ size = 18, className = "" }) => (
     className={className}
     fill="currentColor"
   >
-    <circle cx="12" cy="12" r="10" fill="#ff6b35" />
+    {/* Gradiente per effetto 3D */}
+    <defs>
+      <radialGradient id="basketballGradient" cx="0.3" cy="0.3" r="0.8">
+        <stop offset="0%" stopColor="#ff8c42" />
+        <stop offset="70%" stopColor="#e55100" />
+        <stop offset="100%" stopColor="#bf360c" />
+      </radialGradient>
+      <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="1" dy="1" stdDeviation="1" floodColor="#000" floodOpacity="0.3"/>
+      </filter>
+    </defs>
+    
+    {/* Cerchio principale della palla */}
+    <circle 
+      cx="12" 
+      cy="12" 
+      r="10" 
+      fill="url(#basketballGradient)" 
+      filter="url(#shadow)"
+      stroke="#8d4e00" 
+      strokeWidth="0.5"
+    />
+    
+    {/* Linee curve verticali del basket */}
     <path 
-      d="M12 2 C12 2, 16 6, 16 12 C16 18, 12 22, 12 22" 
-      stroke="#000" 
-      strokeWidth="1.5" 
+      d="M12 2 C12 2, 15.5 6.5, 15.5 12 C15.5 17.5, 12 22, 12 22" 
+      stroke="#8d4e00" 
+      strokeWidth="1.8" 
       fill="none"
+      strokeLinecap="round"
     />
     <path 
-      d="M12 2 C12 2, 8 6, 8 12 C8 18, 12 22, 12 22" 
-      stroke="#000" 
-      strokeWidth="1.5" 
+      d="M12 2 C12 2, 8.5 6.5, 8.5 12 C8.5 17.5, 12 22, 12 22" 
+      stroke="#8d4e00" 
+      strokeWidth="1.8" 
       fill="none"
+      strokeLinecap="round"
+    />
+    
+    {/* Linee curve orizzontali del basket */}
+    <path 
+      d="M2 12 C2 12, 6.5 8.5, 12 8.5 C17.5 8.5, 22 12, 22 12" 
+      stroke="#8d4e00" 
+      strokeWidth="1.8" 
+      fill="none"
+      strokeLinecap="round"
     />
     <path 
-      d="M2 12 C2 12, 6 8, 12 8 C18 8, 22 12, 22 12" 
-      stroke="#000" 
-      strokeWidth="1.5" 
+      d="M2 12 C2 12, 6.5 15.5, 12 15.5 C17.5 15.5, 22 12, 22 12" 
+      stroke="#8d4e00" 
+      strokeWidth="1.8" 
       fill="none"
+      strokeLinecap="round"
     />
-    <path 
-      d="M2 12 C2 12, 6 16, 12 16 C18 16, 22 12, 22 12" 
-      stroke="#000" 
-      strokeWidth="1.5" 
-      fill="none"
+    
+    {/* Highlight per effetto lucido */}
+    <ellipse 
+      cx="9.5" 
+      cy="8.5" 
+      rx="2.5" 
+      ry="1.5" 
+      fill="#ffab70" 
+      opacity="0.4"
+      transform="rotate(-30 9.5 8.5)"
     />
   </svg>
 );
