@@ -1,95 +1,105 @@
 
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* SFONDO ROSSO/BLU PULITO */
-html {
-  background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
-  height: 100% !important;
-  font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
-}
-
-body {
-  background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
-  font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+/* SFONDO PRINCIPALE - ARCADE STYLE */
+html, body {
+  background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+  color: #39ff14 !important;
+  font-family: 'Press Start 2P', 'JetBrains Mono', 'Exo 2', monospace !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
+  min-height: 100vh !important;
   text-transform: uppercase !important;
   font-weight: 600 !important;
   letter-spacing: 1px !important;
-  text-shadow: none !important;
+  text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14 !important;
 }
 
 #root {
   background: transparent !important;
   min-height: 100vh !important;
-  font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+  font-family: 'Press Start 2P', 'JetBrains Mono', monospace !important;
 }
 
-/* Sfondo arcade con griglia neon */
+/* Forzo il background arcade su tutto */
 body, .meteo, .chat, .playground {
-  background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%);
-  color: #39ff14; /* Verde neon */
-  font-family: 'Press Start 2P', cursive, monospace; /* Font pixel arcade */
-  text-shadow:
-    0 0 5px #39ff14,
-    0 0 10px #39ff14,
-    0 0 20px #0f0,
-    0 0 30px #0f0,
-    0 0 40px #0f0;
+  background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+  color: #39ff14 !important;
+  font-family: 'Press Start 2P', cursive, monospace !important;
+  text-shadow: 0 0 5px #39ff14, 0 0 10px #39ff14 !important;
   transition: color 0.3s ease, background 0.3s ease;
   padding: 1rem;
 }
 
-/* Tema scuro automatico basato sulla preferenza utente */
+/* Tema scuro automatico */
 @media (prefers-color-scheme: dark) {
-    body, .meteo, .chat, .playground {
-        background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%);
-        color: #39ff14;
+    html, body, .meteo, .chat, .playground {
+        background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+        color: #39ff14 !important;
     }
 }
 
 /* Link in stile neon arcade */
 a {
-  color: #ff0055;
-  text-decoration: none;
-  text-shadow: 0 0 8px #ff0055;
-  transition: color 0.2s ease;
+  color: #ff0055 !important;
+  text-decoration: none !important;
+  text-shadow: 0 0 8px #ff0055 !important;
+  transition: color 0.2s ease !important;
 }
 
 a:hover, a:focus {
-  color: #ff55aa;
-  text-shadow: 0 0 15px #ff55aa;
-  text-decoration: underline;
+  color: #ff55aa !important;
+  text-shadow: 0 0 15px #ff55aa !important;
+  text-decoration: underline !important;
 }
 
-/* Pulsante arcade lampeggiante */
+/* Pulsanti arcade */
 button, .btn {
-  background-color: #ff0055;
-  border: 2px solid #ff55aa;
-  color: #fff;
-  font-family: 'Press Start 2P', monospace;
-  padding: 10px 20px;
-  cursor: pointer;
-  box-shadow:
-    0 0 5px #ff0055,
-    0 0 10px #ff0055;
+  background-color: #ff0055 !important;
+  border: 2px solid #ff55aa !important;
+  color: #fff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  padding: 10px 20px !important;
+  cursor: pointer !important;
+  box-shadow: 0 0 5px #ff0055, 0 0 10px #ff0055 !important;
 }
 
-/* Migliora la responsività e spaziatura */
+/* Container responsivi */
 .container, .meteo, .chat, .playground {
     padding: 1rem;
     max-width: 960px;
     margin: 0 auto;
+    background: transparent !important;
 }
 
-/* Accessibilità: focus visibile */
+/* Accessibilità */
 :focus {
-    outline: 3px solid #39ff14;
+    outline: 3px solid #39ff14 !important;
     outline-offset: 2px;
+}
+
+/* Rimuovo COMPLETAMENTE il background rosso/blu */
+html::before, html::after,
+body::before, body::after,
+#root::before, #root::after {
+    display: none !important;
+}
+
+/* Forzo il background su tutti gli elementi principali */
+* {
+    box-sizing: border-box;
+}
+
+/* Nascondi badge Lovable */
+iframe[title="Lovable badge"],
+div[data-testid="lovable-badge"],
+[data-lovable-badge],
+.lovable-edit-button,
+.lovable-badge {
+  display: none !important;
 }
 
 @import './styles/base.css';
@@ -97,4 +107,3 @@ button, .btn {
 @import './styles/animations.css';
 @import './styles/arcade-components.css';
 @import './styles/responsive.css';
-

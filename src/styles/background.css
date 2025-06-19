@@ -4,16 +4,16 @@
     box-sizing: border-box;
   }
 
-  html {
-    background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
+  /* FORZO IL BACKGROUND ARCADE SU TUTTO */
+  html, body, #root {
+    background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
+    color: #39ff14 !important;
     height: 100% !important;
+    min-height: 100vh !important;
   }
 
   body {
     font-family: 'Press Start 2P', monospace !important;
-    background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
-    color: #ffffff !important;
-    min-height: 100vh !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow-x: hidden;
@@ -22,18 +22,15 @@
     scroll-behavior: smooth;
   }
 
-  /* Forzo il background per essere sicuro */
-  html, body, #root, .min-h-screen {
-    background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
+  /* RIMUOVO COMPLETAMENTE IL BACKGROUND ROSSO/BLU */
+  .min-h-screen {
+    background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%) !important;
   }
 
-  /* Rimuovo COMPLETAMENTE l'immagine di sfondo che potrebbe causare problemi */
-  body::after {
-    display: none !important;
-  }
-
-  /* Rimuovo l'overlay scuro */
-  body::before {
+  /* Rimuovo tutti gli overlay e background alternativi */
+  body::after, body::before,
+  html::after, html::before,
+  #root::after, #root::before {
     display: none !important;
   }
 
@@ -51,8 +48,8 @@
 
   /* Weather Cartoon Style */
   .weather-cartoon {
-    background: rgba(0, 0, 0, 0.3);
-    border: 3px solid #FFD700;
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 3px solid #FFD700 !important;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
