@@ -98,6 +98,41 @@
     font-weight: 400 !important;
   }
 
+  /* ========== ECCEZIONI PER CHAT E LOGIN - TESTO NERO SU BIANCO ========== */
+  
+  /* Chat messages - black text on white background */
+  .arcade-card .bg-white p,
+  .arcade-card .bg-white span,
+  .arcade-card .bg-white div,
+  .arcade-card .rounded-lg p,
+  .arcade-card .rounded-lg span,
+  .arcade-card .rounded-lg div,
+  .bg-white p,
+  .bg-white span,
+  .bg-white div:not(.text-blue-600):not(.text-red-400):not(.text-blue-800):not(.text-blue-700) {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+
+  /* Login page - black text on white background */
+  .arcade-card p,
+  .arcade-card span,
+  .arcade-card div:not(.arcade-title):not(.arcade-button):not(.text-blue-600):not(.text-red-400):not(.text-blue-800):not(.text-blue-700),
+  .arcade-card label,
+  .arcade-input,
+  .arcade-input::placeholder {
+    color: #000000 !important;
+    text-shadow: none !important;
+  }
+
+  /* Keep specific colored text as is */
+  .text-blue-600,
+  .text-blue-700,
+  .text-blue-800,
+  .text-red-400 {
+    text-shadow: none !important;
+  }
+
   /* ANIMAZIONI ARCADE - RIDOTTE */
   @keyframes neon-glow {
     0%, 100% { 
