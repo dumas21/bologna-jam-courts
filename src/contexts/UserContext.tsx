@@ -1,5 +1,5 @@
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 interface UserContextType {
   isLoggedIn: boolean;
@@ -18,20 +18,64 @@ const UserContext = createContext<UserContextType>({
 });
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
-    const saved = localStorage.getItem("userLoggedIn");
-    return saved ? JSON.parse(saved) : false;
-  });
-  
-  const [nickname, setNickname] = useState<string>(() => {
-    const saved = localStorage.getItem("userNickname");
-    return saved ? JSON.parse(saved) : "";
-  });
-  
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => {
-    const saved = localStorage.getItem("isUserAdmin");
-    return saved ? JSON.parse(saved) : false;
-  });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [nickname, setNickname] = useState<string>("");
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  // Inizializza lo stato dall'localStorage solo se valido
+  useEffect(() => {
+    const initializeUserState = () => {
+      try {
+        const savedLoggedIn = localStorage.getItem("userLoggedIn");
+        const savedNickname = localStorage.getItem("userNickname");
+        const savedAdmin = localStorage.getItem("isUserAdmin");
+        const loginTime = localStorage.getItem("userLoginTime");
+
+        // Verifica se i dati sono validi e non troppo vecchi
+        if (savedLoggedIn && savedNickname && loginTime) {
+          const loginTimestamp = parseInt(loginTime);
+          const now = Date.now();
+          const twentyFourHours = 24 * 60 * 60 * 1000;
+
+          // Se il login è più vecchio di 24 ore, pulisci tutto
+          if (now - loginTimestamp > twentyFourHours) {
+            clearUserData();
+            return;
+          }
+
+          // Solo se tutti i controlli passano, ripristina lo stato
+          const parsedLoggedIn = JSON.parse(savedLoggedIn);
+          const parsedNickname = JSON.parse(savedNickname);
+          const parsedAdmin = savedAdmin ? JSON.parse(savedAdmin) : false;
+
+          if (parsedLoggedIn && parsedNickname && typeof parsedNickname === 'string') {
+            setIsLoggedIn(true);
+            setNickname(parsedNickname);
+            setIsAdmin(parsedAdmin);
+          } else {
+            clearUserData();
+          }
+        } else {
+          clearUserData();
+        }
+      } catch (error) {
+        console.log('Errore nel caricamento dei dati utente, pulizia in corso:', error);
+        clearUserData();
+      }
+    };
+
+    initializeUserState();
+  }, []);
+
+  const clearUserData = () => {
+    localStorage.removeItem("userLoggedIn");
+    localStorage.removeItem("userNickname");
+    localStorage.removeItem("isUserAdmin");
+    localStorage.removeItem("userLoginTime");
+    setIsLoggedIn(false);
+    setNickname("");
+    setIsAdmin(false);
+  };
 
   const login = (nickname: string, isAdmin: boolean = false) => {
     const adminStatus = nickname.toLowerCase() === "matteo" || isAdmin;
@@ -50,13 +94,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem("userLoggedIn");
-    localStorage.removeItem("userNickname");
-    localStorage.removeItem("isUserAdmin");
-    localStorage.removeItem("userLoginTime");
-    setIsLoggedIn(false);
-    setNickname("");
-    setIsAdmin(false);
+    clearUserData();
   };
 
   return (
