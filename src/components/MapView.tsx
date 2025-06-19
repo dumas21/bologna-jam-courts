@@ -1,3 +1,4 @@
+
 import { Users, Lightbulb, Clock, Star } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
@@ -72,9 +73,21 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               >
                 {/* Header compatto e mobile-friendly */}
                 <div className="p-3 md:p-4 space-y-3">
-                  {/* Nome e controlli principali */}
+                  {/* Nome con stile retro anni 80 RIPRISTINATO */}
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
-                    <div className="playground-name bg-black bg-opacity-90 px-3 py-2 rounded-lg text-sm md:text-base font-bold text-white flex-1 text-center sm:text-left border border-orange-400 retro-chrome">
+                    <div className="playground-name text-sm md:text-base font-bold flex-1 text-center sm:text-left retro-neon-text animate-neon-glow" 
+                         style={{
+                           fontFamily: "'Press Start 2P', monospace",
+                           color: "#FF6B35",
+                           textShadow: "2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FFD700",
+                           textTransform: "uppercase",
+                           letterSpacing: "2px",
+                           background: "rgba(0, 0, 0, 0.9)",
+                           padding: "8px 12px",
+                           borderRadius: "8px",
+                           border: "2px solid #FF6B35",
+                           boxShadow: "0 0 15px rgba(255, 107, 53, 0.6)"
+                         }}>
                       {playground.name.toUpperCase()}
                     </div>
                     
