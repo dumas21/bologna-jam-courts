@@ -3,25 +3,9 @@ import { Playground } from "@/types/playground";
 
 export const playgroundData: Playground[] = [
   {
-    id: "gm",
-    name: "Giardini Margherita",
-    address: "Via Castiglione, 40136 Bologna",
-    openHours: "06:00 - 23:00",
-    hasShade: true,
-    hasFountain: true,
-    hasAmenities: true,
-    hasLighting: true,
-    currentPlayers: 0,
-    totalCheckins: 0,
-    basketCount: 4,
-    rating: 4.7,
-    ratingCount: 42,
-    comments: []
-  },
-  {
     id: "pm",
     name: "Parco della Montagnola",
-    address: "Via Irnerio, 8, 40126 Bologna",
+    address: "Via Irnerio, 8, 40126 Bologna BO",
     openHours: "08:00 - 22:00",
     hasShade: true,
     hasFountain: false,
@@ -35,9 +19,25 @@ export const playgroundData: Playground[] = [
     comments: []
   },
   {
+    id: "gm",
+    name: "Giardini Margherita",
+    address: "Via Castiglione, 40136 Bologna BO",
+    openHours: "06:00 - 23:00",
+    hasShade: true,
+    hasFountain: false,
+    hasAmenities: true,
+    hasLighting: true,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 4,
+    rating: 4.7,
+    ratingCount: 42,
+    comments: []
+  },
+  {
     id: "gn",
     name: "Giardini Nanetti (PalaDozza)",
-    address: "Via dello Sport, 40127 Bologna",
+    address: "Via dello Sport, 40127 Bologna BO",
     openHours: "07:00 - 21:00",
     hasShade: false,
     hasFountain: false,
@@ -53,7 +53,7 @@ export const playgroundData: Playground[] = [
   {
     id: "pdp",
     name: "Parco Davide Penazzi",
-    address: "Via Libia, 40137 Bologna",
+    address: "Via Libia, 40137 Bologna BO",
     openHours: "08:00 - 20:00",
     hasShade: true,
     hasFountain: false,
@@ -69,11 +69,11 @@ export const playgroundData: Playground[] = [
   {
     id: "fava",
     name: "Giardini Graziella Fava",
-    address: "Via della Beverara, 40131 Bologna",
+    address: "Via della Beverara, 40131 Bologna BO",
     openHours: "07:00 - 22:00",
     hasShade: true,
     hasFountain: false,
-    hasAmenities: true,
+    hasAmenities: false,
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
@@ -85,7 +85,7 @@ export const playgroundData: Playground[] = [
   {
     id: "talon",
     name: "Parco Talon",
-    address: "Via Talon, 40133 Bologna",
+    address: "Via Talon, 40133 Bologna BO",
     openHours: "08:00 - 20:00",
     hasShade: false,
     hasFountain: false,
@@ -101,7 +101,7 @@ export const playgroundData: Playground[] = [
   {
     id: "set11",
     name: "Parco 11 Settembre",
-    address: "Via Emilia Levante, 40131 Bologna",
+    address: "Via Emilia Levante, 40131 Bologna BO",
     openHours: "08:00 - 21:00",
     hasShade: false,
     hasFountain: false,
@@ -117,7 +117,7 @@ export const playgroundData: Playground[] = [
   {
     id: "pnord",
     name: "Parco Nord (Corticella)",
-    address: "Via Marco Emilio Lepido, 40132 Bologna",
+    address: "Via Marco Emilio Lepido, 40132 Bologna BO",
     openHours: "08:00 - 22:00",
     hasShade: true,
     hasFountain: false,
@@ -133,7 +133,7 @@ export const playgroundData: Playground[] = [
   {
     id: "ago2",
     name: "Parco 2 Agosto",
-    address: "Via 2 Agosto 1980, 40127 Bologna",
+    address: "Via 2 Agosto 1980, 40127 Bologna BO",
     openHours: "08:30 - 21:00",
     hasShade: false,
     hasFountain: false,
@@ -149,7 +149,7 @@ export const playgroundData: Playground[] = [
   {
     id: "vber",
     name: "Parco Villa Bernaroli",
-    address: "Via della Beverara, 40131 Bologna",
+    address: "Via della Beverara, 40131 Bologna BO",
     openHours: "07:30 - 21:30",
     hasShade: true,
     hasFountain: false,
