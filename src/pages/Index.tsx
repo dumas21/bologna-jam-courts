@@ -17,7 +17,7 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { isLoggedIn, nickname, logout } = useUser();
-  const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords, updatePlayground, resetToOriginalData } = usePlaygrounds();
+  const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords, updatePlayground } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
   // Format current date
@@ -129,12 +129,6 @@ const Index = () => {
     }
   };
 
-  const handleResetData = () => {
-    if (window.confirm("Sei sicuro di voler ripristinare tutti i playground ai dati originali? Questa azione cancellerà tutti i check-in e le modifiche.")) {
-      resetToOriginalData();
-    }
-  };
-
   return (
     <div className="min-h-screen flex flex-col arcade-container">
       {/* CRT Screen Effect */}
@@ -170,13 +164,6 @@ const Index = () => {
               <BarChart size={16} />
               <span className="hidden md:inline">STATISTICHE</span>
               <span className="inline md:hidden">STATS</span>
-            </Button>
-
-            <Button 
-              onClick={handleResetData}
-              className="arcade-button bg-red-600 hover:bg-red-700 text-white"
-            >
-              RESET DATI
             </Button>
           </div>
         </div>
