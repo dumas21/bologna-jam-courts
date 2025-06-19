@@ -1,125 +1,102 @@
 
-import { useNavigate } from "react-router-dom";
-import { useUser } from "@/contexts/UserContext";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { 
-  User, 
-  LogOut, 
-  ShieldCheck, 
-  MapPin, 
-  Plus, 
-  Home 
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Card, CardContent } from "@/components/ui/card";
+import { LogOut, User, Settings } from "lucide-react";
+import { useUser } from "@/contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
 const Header = () => {
-  const { isLoggedIn, nickname, isAdmin, logout } = useUser();
-  const navigate = useNavigate();
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { isLoggedIn, nickname, logout } = useUser();
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = () => {
     logout();
+    setShowUserMenu(false);
     toast({
-      title: "Logout effettuato",
-      description: "Hai effettuato il logout con successo",
+      title: "LOGOUT EFFETTUATO",
+      description: "Sei stato disconnesso con successo",
     });
-    navigate("/");
+    
+    const audio = new Audio('/sounds/logout.mp3');
+    audio.play().catch(err => console.log('Audio playback error:', err));
   };
 
-  const playSoundEffect = () => {
-    const audio = new Audio('/sounds/click.mp3');
+  const playSoundEffect = (action: string) => {
+    const audio = new Audio(`/sounds/${action}.mp3`);
     audio.play().catch(err => console.log('Audio playback error:', err));
   };
 
   return (
-    <header className="bg-black bg-opacity-80 backdrop-blur-md sticky top-0 z-10 border-b-4 border-red-600">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        <Link to="/" className="text-white hover:text-red-600 transition-colors">
-          <div className="flex items-center">
-            <MapPin className="text-red-600" />
-            <span className="font-press-start text-xs ml-1 hidden sm:inline">
-              PLAYGROUND JAM
-            </span>
-            <span className="font-press-start text-xs ml-1 sm:hidden">
-              PJ
-            </span>
-          </div>
-        </Link>
-
-        <nav className="flex items-center gap-2 sm:gap-4">
-          <Link 
-            to="/" 
-            className="text-white hover:text-red-600 transition-colors px-2 py-1"
-            onClick={playSoundEffect}
-          >
-            <Home className="h-4 w-4 sm:hidden" />
-            <span className="font-press-start text-xs hidden sm:inline">Home</span>
-          </Link>
-          
-          {isLoggedIn ? (
-            <>
-              <Link 
-                to="/add-playground" 
-                className="text-white hover:text-red-600 transition-colors px-2 py-1"
-                onClick={playSoundEffect}
-              >
-                <Plus className="h-4 w-4 sm:hidden" />
-                <span className="font-press-start text-xs hidden sm:inline">Aggiungi</span>
-              </Link>
-              
-              {isAdmin && (
-                <Link 
-                  to="/admin" 
-                  className="text-white hover:text-red-600 transition-colors px-2 py-1"
-                  onClick={playSoundEffect}
-                >
-                  <ShieldCheck className="h-4 w-4 sm:hidden" />
-                  <span className="font-press-start text-xs hidden sm:inline">Admin</span>
-                </Link>
-              )}
-              
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0 rounded-full">
-                    <span className="sr-only">User menu</span>
-                    <User className="h-4 w-4 text-red-600" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-black text-white border border-red-600">
-                  <DropdownMenuLabel className="font-press-start text-xs">
-                    {nickname}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    onClick={handleLogout}
-                    className="font-press-start text-xs cursor-pointer flex items-center text-red-600"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </>
-          ) : (
-            <Link 
-              to="/login" 
-              className="text-white hover:text-red-600 transition-colors px-2 py-1"
-              onClick={playSoundEffect}
+    <header className="bg-black bg-opacity-80 border-b-4 border-white p-4 relative z-20">
+      <div className="container mx-auto flex justify-between items-center">
+        <div 
+          className="arcade-title text-lg cursor-pointer"
+          onClick={() => {
+            playSoundEffect('click');
+            navigate('/');
+          }}
+        >
+          PLAYGROUND JAM BOLOGNA
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {!isLoggedIn ? (
+            <Button 
+              onClick={() => {
+                playSoundEffect('click');
+                navigate('/login');
+              }}
+              className="arcade-button arcade-button-primary"
             >
-              <User className="h-4 w-4 sm:hidden" />
-              <span className="font-press-start text-xs hidden sm:inline">Login</span>
-            </Link>
+              <User size={16} className="mr-2" />
+              LOGIN
+            </Button>
+          ) : (
+            <div className="relative">
+              <Button 
+                onClick={() => {
+                  playSoundEffect('click');
+                  setShowUserMenu(!showUserMenu);
+                }}
+                className="arcade-button arcade-button-primary"
+              >
+                <User size={16} className="mr-2" />
+                {nickname}
+              </Button>
+              
+              {showUserMenu && (
+                <Card className="absolute right-0 top-full mt-2 w-48 z-50 arcade-card">
+                  <CardContent className="p-2">
+                    <div className="space-y-2">
+                      <Button 
+                        onClick={() => {
+                          playSoundEffect('click');
+                          navigate('/admin');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full justify-start arcade-button arcade-button-stats"
+                      >
+                        <Settings size={16} className="mr-2" />
+                        ADMIN
+                      </Button>
+                      <Button 
+                        onClick={handleLogout}
+                        className="w-full justify-start arcade-button arcade-button-danger"
+                      >
+                        <LogOut size={16} className="mr-2" />
+                        LOGOUT
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           )}
-        </nav>
+        </div>
       </div>
     </header>
   );

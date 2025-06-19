@@ -36,9 +36,9 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
     
-    /* Arcade Bologna colors - INVERTITI */
-    --arcade-blue: #D72638;
-    --arcade-red: #0050A0;
+    /* Arcade Bologna colors - Blue left, Red right */
+    --arcade-blue: #0050A0;
+    --arcade-red: #D72638;
     --arcade-white: #ffffff;
   }
 
@@ -80,7 +80,7 @@
 
   body {
     font-family: 'Press Start 2P', monospace;
-    background: linear-gradient(90deg, var(--arcade-red) 0%, var(--arcade-red) 50%, var(--arcade-blue) 50%, var(--arcade-blue) 100%);
+    background: linear-gradient(90deg, var(--arcade-blue) 0%, var(--arcade-blue) 50%, var(--arcade-red) 50%, var(--arcade-red) 100%);
     background-attachment: fixed;
     background-repeat: no-repeat;
     color: var(--arcade-white);

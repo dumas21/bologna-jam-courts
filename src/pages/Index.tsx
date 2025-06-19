@@ -240,27 +240,12 @@ const Index = () => {
           
           <TabsContent value="events" className="arcade-fade-in">
             <div className="arcade-section h-64 flex flex-col items-center justify-center">
-              <p className="text-base mb-4 arcade-text">
-                {isLoggedIn ? 'EVENTI DISPONIBILI PRESTO' : 'EVENTI DISPONIBILI DOPO IL LOGIN'}
-              </p>
-              {!isLoggedIn && (
-                <Button 
-                  className="mt-4 arcade-button arcade-button-primary"
-                  onClick={() => navigate('/login')}
-                >
-                  ACCEDI ORA
-                </Button>
-              )}
-              {isLoggedIn && (
-                <div className="arcade-mini-leaderboard">
-                  <h3 className="text-lg mb-2">PROSSIMI EVENTI:</h3>
-                  <div className="space-y-1 text-sm">
-                    <div>🏀 TORNEO FORTITUDO - 15 GEN</div>
-                    <div>🏀 SFIDA VIRTUS - 22 GEN</div>
-                    <div>🏀 BOLOGNA JAM FEST - 30 GEN</div>
-                  </div>
-                </div>
-              )}
+              <div className="text-center space-y-4">
+                <h2 className="text-xl arcade-heading">EVENTI</h2>
+                <p className="text-lg arcade-text">
+                  A BREVE EVENTI
+                </p>
+              </div>
             </div>
           </TabsContent>
         </Tabs>
