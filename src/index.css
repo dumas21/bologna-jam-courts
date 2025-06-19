@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -79,7 +80,7 @@
   }
 
   body {
-    font-family: 'Black Ops One', 'Press Start 2P', monospace;
+    font-family: 'Press Start 2P', monospace;
     background: linear-gradient(135deg, #D72638 0%, #0050A0 100%);
     background-image: url('/lovable-uploads/627550a7-0b89-4129-ba18-8298086abc9f.png');
     background-size: cover;
@@ -102,7 +103,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.3);
     z-index: 0;
     pointer-events: none;
   }
@@ -136,9 +137,9 @@
     z-index: 10;
   }
 
-  /* Responsive Typography - Stile del logo */
+  /* Responsive Typography - Stile retro arcade */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Black Ops One', 'Anton', 'Bebas Neue', 'Press Start 2P', monospace;
+    font-family: 'Press Start 2P', monospace;
     text-shadow: 3px 3px 0px #000, 0 0 10px #FF6B35;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -147,7 +148,7 @@
   }
   
   p, span, div {
-    font-family: 'Anton', 'Bebas Neue', 'Press Start 2P', monospace;
+    font-family: 'Press Start 2P', monospace;
     text-shadow: 2px 2px 0px #000;
     letter-spacing: 1px;
     line-height: 1.4;
@@ -180,11 +181,12 @@
 
   /* Weather Cartoon Style */
   .weather-cartoon {
-    background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFD700 100%);
+    background: rgba(135, 206, 235, 0.2);
     border: 3px solid #000;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
   }
 
   .weather-cartoon::before {
@@ -200,7 +202,7 @@
   }
 
   .nike-text {
-    font-family: 'Black Ops One', 'Anton', 'Bebas Neue', monospace;
+    font-family: 'Press Start 2P', monospace;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -244,10 +246,10 @@
 }
 
 @layer components {
-  /* Arcade Buttons - Mobile Optimized con stile del logo */
+  /* Arcade Buttons - Mobile Optimized con stile retro */
   .arcade-button {
     @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
-    font-family: 'Black Ops One', 'Anton', 'Press Start 2P', monospace;
+    font-family: 'Press Start 2P', monospace;
     border: 3px solid var(--arcade-white);
     text-shadow: 2px 2px 0px #000, 0 0 5px #FF6B35;
     transition: all 0.2s ease;
@@ -306,14 +308,15 @@
     font-size: 12px;
   }
 
-  /* Arcade Cards - Mobile Optimized */
+  /* Arcade Cards - Mobile Optimized con trasparenza */
   .arcade-card {
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.6);
     border: 3px solid #FF6B35;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(255, 107, 53, 0.3);
     position: relative;
     touch-action: manipulation;
+    backdrop-filter: blur(10px);
   }
 
   .arcade-card::before {
@@ -328,11 +331,12 @@
     border-radius: 8px;
   }
 
-  /* Arcade Tabs - Mobile Optimized */
+  /* Arcade Tabs - Mobile Optimized con trasparenza */
   .arcade-tabs {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6);
     border: 2px solid #FF6B35;
     border-radius: 8px;
+    backdrop-filter: blur(10px);
   }
 
   .arcade-main-tabs {
@@ -340,16 +344,17 @@
   }
 
   .arcade-tab-list, .arcade-main-tab-list {
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.7);
     border: 2px solid #FF6B35;
     border-radius: 8px;
     padding: 4px;
     gap: 2px;
+    backdrop-filter: blur(10px);
   }
 
   .arcade-tab, .arcade-main-tab {
     @apply font-bold transition-all duration-300;
-    font-family: 'Black Ops One', 'Anton', 'Press Start 2P', monospace;
+    font-family: 'Press Start 2P', monospace;
     text-shadow: 2px 2px 0px #000;
     color: var(--arcade-white);
     border: 2px solid transparent;
@@ -372,9 +377,9 @@
     text-shadow: 2px 2px 0px #000, 0 0 10px #FFD700;
   }
 
-  /* Arcade Text Elements - Mobile Optimized con stile del logo */
+  /* Arcade Text Elements - Mobile Optimized con stile retro */
   .arcade-title {
-    font-family: 'Black Ops One', 'Anton', 'Press Start 2P', monospace;
+    font-family: 'Press Start 2P', monospace;
     color: var(--arcade-white);
     text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35, 0 0 25px #FF6B35;
     text-transform: uppercase;
@@ -383,7 +388,7 @@
   }
 
   .arcade-heading {
-    font-family: 'Black Ops One', 'Anton', monospace;
+    font-family: 'Press Start 2P', monospace;
     color: #FF6B35;
     text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35;
     animation: neon-glow 2s ease-in-out infinite;
@@ -391,17 +396,18 @@
   }
 
   .arcade-text {
-    font-family: 'Anton', 'Bebas Neue', monospace;
+    font-family: 'Press Start 2P', monospace;
     color: var(--arcade-white);
     text-shadow: 2px 2px 0px #000;
     text-transform: uppercase;
     letter-spacing: 1px;
     line-height: 1.4;
     font-weight: 400;
+    font-size: 10px;
   }
 
   .arcade-date {
-    font-family: 'Black Ops One', 'Anton', monospace;
+    font-family: 'Press Start 2P', monospace;
     color: var(--arcade-white);
     text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
     text-transform: uppercase;
@@ -414,14 +420,16 @@
     color: var(--arcade-white);
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-family: 'Anton', monospace;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
   }
 
   .arcade-feature {
     color: var(--arcade-white);
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-family: 'Anton', monospace;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
   }
 
   .arcade-link {
@@ -432,7 +440,8 @@
     display: inline-flex;
     align-items: center;
     padding: 8px;
-    font-family: 'Anton', monospace;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
   }
 
   .arcade-link:hover {
@@ -450,46 +459,50 @@
     background: linear-gradient(45deg, #D72638, #FF6B35);
     color: var(--arcade-white);
     border: 2px solid var(--arcade-white);
-    font-family: 'Black Ops One', 'Anton', monospace;
+    font-family: 'Press Start 2P', monospace;
     text-shadow: 2px 2px 0px #000;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-size: 8px;
   }
 
-  /* Arcade Sections */
+  /* Arcade Sections - Con trasparenza */
   .arcade-section {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6);
     border: 2px solid #FF6B35;
     border-radius: 8px;
     padding: 1rem;
     position: relative;
     box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+    backdrop-filter: blur(10px);
   }
 
   /* Arcade Footer */
   .arcade-footer {
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.8);
     border-top: 3px solid #FF6B35;
     padding: 1.5rem 0;
     position: relative;
+    backdrop-filter: blur(10px);
   }
 
   .arcade-motto {
     color: #FF6B35;
     text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
     animation: neon-glow 2s ease-in-out infinite;
-    font-family: 'Black Ops One', monospace;
+    font-family: 'Press Start 2P', monospace;
   }
 
   /* Mini Leaderboard */
   .arcade-mini-leaderboard {
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.7);
     border: 2px solid #FF6B35;
     padding: 1rem;
     margin-top: 1rem;
     text-align: left;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(255, 107, 53, 0.2);
+    backdrop-filter: blur(10px);
   }
 
   .arcade-mini-leaderboard h3 {
@@ -497,7 +510,7 @@
     text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
     margin-bottom: 0.5rem;
     text-align: center;
-    font-family: 'Black Ops One', monospace;
+    font-family: 'Press Start 2P', monospace;
   }
 
   /* Animations */
@@ -505,17 +518,17 @@
     animation: pixel-fade-in 0.5s ease-out;
   }
 
-  /* ... keep existing code (mobile optimizations and responsive styles) the same ... */
+  /* Mobile optimizations */
   @media (max-width: 768px) {
     .arcade-button {
       @apply px-3 py-2 text-xs;
       min-height: 44px;
-      font-size: 10px;
+      font-size: 8px;
     }
 
     .arcade-start-button {
       @apply px-4 py-3 text-xs;
-      font-size: 10px;
+      font-size: 8px;
       min-height: 44px;
     }
 
@@ -526,19 +539,23 @@
     }
 
     .arcade-title {
-      font-size: 0.8rem;
+      font-size: 0.6rem;
       letter-spacing: 1px;
     }
 
     .arcade-text {
-      font-size: 0.7rem;
+      font-size: 0.5rem;
       line-height: 1.3;
       letter-spacing: 0.5px;
     }
 
     .arcade-date {
-      font-size: 0.7rem;
+      font-size: 0.5rem;
       letter-spacing: 1px;
+    }
+
+    .arcade-info, .arcade-feature, .arcade-link {
+      font-size: 0.5rem;
     }
 
     /* Better scroll areas */
@@ -570,72 +587,80 @@
   @media (max-width: 480px) {
     .arcade-button {
       @apply px-2 py-2;
-      font-size: 8px;
+      font-size: 6px;
       min-height: 44px;
       letter-spacing: 0.5px;
     }
 
     .arcade-start-button {
       @apply px-3 py-2;
-      font-size: 8px;
+      font-size: 6px;
       min-height: 44px;
     }
 
     .arcade-title {
-      font-size: 0.7rem;
+      font-size: 0.5rem;
       letter-spacing: 0.5px;
     }
 
     .arcade-text {
-      font-size: 0.6rem;
+      font-size: 0.45rem;
       letter-spacing: 0.3px;
     }
 
     .arcade-date {
-      font-size: 0.6rem;
+      font-size: 0.45rem;
       letter-spacing: 0.5px;
     }
 
     .arcade-mini-leaderboard {
       padding: 0.75rem;
-      font-size: 0.6rem;
+      font-size: 0.45rem;
     }
 
     /* Improved tab spacing */
     .arcade-tab, .arcade-main-tab {
       padding: 10px 6px;
-      font-size: 8px;
+      font-size: 6px;
       gap: 4px;
+    }
+
+    .arcade-info, .arcade-feature, .arcade-link {
+      font-size: 0.45rem;
     }
   }
 
   /* Ultra small screens */
   @media (max-width: 360px) {
     .arcade-button {
-      font-size: 7px;
+      font-size: 5px;
       padding: 8px 6px;
     }
 
     .arcade-start-button {
-      font-size: 7px;
+      font-size: 5px;
       padding: 10px 8px;
     }
 
     .arcade-title {
-      font-size: 0.6rem;
+      font-size: 0.4rem;
     }
 
     .arcade-text {
-      font-size: 0.55rem;
+      font-size: 0.4rem;
     }
 
     .arcade-date {
-      font-size: 0.55rem;
+      font-size: 0.4rem;
     }
 
     .arcade-tab, .arcade-main-tab {
       padding: 8px 4px;
-      font-size: 7px;
+      font-size: 5px;
+    }
+
+    .arcade-info, .arcade-feature, .arcade-link {
+      font-size: 0.4rem;
     }
   }
 
