@@ -11,8 +11,8 @@ type Props = {
 
 const UserList: React.FC<Props> = ({ users }) => {
   return (
-    <div className="bg-white rounded-md p-4 text-black border-4 border-orange-500">
-      <h2 className="font-press-start text-sm mb-4 flex items-center text-black">
+    <div className="bg-white rounded-md p-4 border-4 border-orange-500" style={{ color: '#000000' }}>
+      <h2 className="font-press-start text-sm mb-4 flex items-center" style={{ color: '#000000' }}>
         <User size={16} className="mr-2 text-jam-purple" />
         Lista Iscritti
       </h2>
@@ -28,12 +28,12 @@ const UserList: React.FC<Props> = ({ users }) => {
                   </span>
                   <div className="flex items-center text-xs text-gray-600 mt-1">
                     <CalendarDays size={12} className="mr-1" />
-                    <span className="text-black">
+                    <span style={{ color: '#000000' }}>
                       {format(new Date(user.createdAt), "dd MMMM yyyy", { locale: it })}
                     </span>
                   </div>
                   {/* NEVER show email address - only nickname for privacy */}
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-xs text-gray-500 mt-1" style={{ color: '#000000' }}>
                     Privacy protetta - solo nickname visibile
                   </p>
                 </div>
@@ -48,13 +48,13 @@ const UserList: React.FC<Props> = ({ users }) => {
           ))}
         </ul>
       ) : (
-        <p className="text-gray-500 flex items-center justify-center h-20">
+        <p className="text-gray-500 flex items-center justify-center h-20" style={{ color: '#000000' }}>
           Nessun utente registrato
         </p>
       )}
       
       <div className="mt-4 pt-2 border-t text-xs text-gray-500">
-        <p className="text-black">
+        <p style={{ color: '#000000' }}>
           Per privacy, vengono mostrati solo i nickname degli utenti.
           Le informazioni sono gestite secondo la nostra{' '}
           <button 
