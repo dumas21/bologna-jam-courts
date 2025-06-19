@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { Playground } from '@/types/playground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Clock, Users, Droplets, TreePine, Lightbulb, CheckCircle, XCircle, Signpost } from 'lucide-react';
+import { MapPin, Clock, Users, Droplets, TreePine, Lightbulb, CheckCircle, XCircle, SignpostBig } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import PlaygroundRating from './PlaygroundRating';
 import PlaygroundChat from './PlaygroundChat';
@@ -104,7 +105,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
           <TabsContent value="details">
             <div className="space-y-4">
               <div className="flex items-center gap-2 arcade-info">
-                <Signpost size={16} className="text-orange-600 arcade-icon" />
+                <SignpostBig size={16} className="text-orange-600 arcade-icon" />
                 <a 
                   href={`https://www.google.com/maps/search/?api=1&query=${playground.address}`}
                   target="_blank" 

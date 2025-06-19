@@ -86,9 +86,9 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
     <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-orange-500">
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="text-black text-sm font-bold flex items-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>
+          <h4 className="text-white text-sm font-bold flex items-center" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#FFFFFF', textShadow: '2px 2px 0px #000'}}>
             {getWeatherIcon(weather.condition)}
-            <span className="ml-3" style={{color: '#000000'}}>METEO {playgroundName.toUpperCase()}</span>
+            <span className="ml-3" style={{color: '#FFFFFF', textShadow: '2px 2px 0px #000'}}>METEO {playgroundName.toUpperCase()}</span>
           </h4>
         </div>
         
