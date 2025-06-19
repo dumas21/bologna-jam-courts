@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
@@ -129,6 +130,11 @@ const Index = () => {
     }
   };
 
+  const handleBolognaTabClick = () => {
+    playSoundEffect('tab');
+    scrollToTop();
+  };
+
   return (
     <div className="min-h-screen flex flex-col arcade-container">
       {/* Neptune Background */}
@@ -169,10 +175,7 @@ const Index = () => {
             <TabsTrigger 
               value="map" 
               className="text-xs md:text-sm arcade-main-tab py-3 px-2"
-              onClick={(e) => {
-                e.preventDefault();
-                playSoundEffect('tab');
-              }}
+              onClick={handleBolognaTabClick}
             >
               <span className="hidden sm:inline">BOLOGNA PLAYGROUNDS</span>
               <span className="inline sm:hidden">BOLOGNA</span>
