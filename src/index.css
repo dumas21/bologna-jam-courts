@@ -3,6 +3,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* FORZO LO SFONDO ROSSO/BLU */
+html {
+  background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
+  height: 100% !important;
+}
+
+body {
+  background: linear-gradient(to right, #FF0000 50%, #0000FF 50%) !important;
+  font-family: 'Press Start 2P', monospace !important;
+  color: white !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+}
+
+#root {
+  background: transparent !important;
+  min-height: 100vh !important;
+}
+
 @import './styles/base.css';
 @import './styles/background.css';
 @import './styles/animations.css';
