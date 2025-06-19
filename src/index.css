@@ -29,33 +29,54 @@ body {
   font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
 }
 
-/* Imposta colori di base per testo e sfondo, con contrasto elevato */
+/* Sfondo arcade con griglia neon */
 body, .meteo, .chat, .playground {
-    background-color: #ffffff !important; /* Sfondo bianco */
-    color: #222222 !important;            /* Testo scuro */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    line-height: 1.6;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%);
+  color: #39ff14; /* Verde neon */
+  font-family: 'Press Start 2P', cursive, monospace; /* Font pixel arcade */
+  text-shadow:
+    0 0 5px #39ff14,
+    0 0 10px #39ff14,
+    0 0 20px #0f0,
+    0 0 30px #0f0,
+    0 0 40px #0f0;
+  transition: color 0.3s ease, background 0.3s ease;
+  padding: 1rem;
 }
 
 /* Tema scuro automatico basato sulla preferenza utente */
 @media (prefers-color-scheme: dark) {
     body, .meteo, .chat, .playground {
-        background-color: #121212 !important;
-        color: #e0e0e0 !important;
+        background: radial-gradient(circle at center, #0f0f2f 0%, #000010 80%);
+        color: #39ff14;
     }
 }
 
-/* Migliora la leggibilità dei link */
+/* Link in stile neon arcade */
 a {
-    color: #1a73e8;
-    text-decoration: none;
-    transition: color 0.2s ease;
+  color: #ff0055;
+  text-decoration: none;
+  text-shadow: 0 0 8px #ff0055;
+  transition: color 0.2s ease;
 }
 
 a:hover, a:focus {
-    color: #0049b7;
-    text-decoration: underline;
+  color: #ff55aa;
+  text-shadow: 0 0 15px #ff55aa;
+  text-decoration: underline;
+}
+
+/* Pulsante arcade lampeggiante */
+button, .btn {
+  background-color: #ff0055;
+  border: 2px solid #ff55aa;
+  color: #fff;
+  font-family: 'Press Start 2P', monospace;
+  padding: 10px 20px;
+  cursor: pointer;
+  box-shadow:
+    0 0 5px #ff0055,
+    0 0 10px #ff0055;
 }
 
 /* Migliora la responsività e spaziatura */
@@ -67,7 +88,7 @@ a:hover, a:focus {
 
 /* Accessibilità: focus visibile */
 :focus {
-    outline: 3px solid #1a73e8;
+    outline: 3px solid #39ff14;
     outline-offset: 2px;
 }
 
