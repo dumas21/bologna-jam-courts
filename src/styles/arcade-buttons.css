@@ -1,9 +1,9 @@
 
 @layer components {
-  /* Arcade Buttons - Mobile Optimized con stile retro */
+  /* Arcade Buttons - Mobile Optimized con stile retro e ITC Machine */
   .arcade-button {
     @apply font-bold px-4 py-3 text-xs uppercase tracking-wide;
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'ITC Machine', 'Press Start 2P', monospace;
     border: 3px solid var(--arcade-white);
     text-shadow: 2px 2px 0px #000, 0 0 5px #FF6B35;
     transition: all 0.2s ease;

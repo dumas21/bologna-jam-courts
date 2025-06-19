@@ -4,6 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Audiowide&display=swap');
+@import url('https://fonts.cdnfonts.com/css/itc-machine');
 
 @layer base {
   :root {
@@ -78,9 +79,9 @@
     @apply border-border;
   }
 
-  /* Typography arcade anni 80 - NBA Jam style */
+  /* Typography arcade anni 80 - NBA Jam style con ITC Machine */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bungee', 'Press Start 2P', monospace;
+    font-family: 'ITC Machine', 'Bungee', 'Press Start 2P', monospace;
     text-shadow: 4px 4px 0px #000, 0 0 15px var(--neon-orange), 0 0 25px var(--neon-orange);
     letter-spacing: 3px;
     text-transform: uppercase;
@@ -90,7 +91,7 @@
   }
   
   p, span, div {
-    font-family: 'Audiowide', 'Press Start 2P', monospace;
+    font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace;
     text-shadow: 2px 2px 0px #000, 0 0 8px var(--neon-orange);
     letter-spacing: 1.5px;
     line-height: 1.4;
@@ -114,8 +115,12 @@
     font-family: 'Audiowide', monospace;
   }
 
+  .font-itc-machine {
+    font-family: 'ITC Machine', monospace;
+  }
+
   .nike-text {
-    font-family: 'Russo One', 'Press Start 2P', monospace;
+    font-family: 'ITC Machine', 'Russo One', 'Press Start 2P', monospace;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 3px;
