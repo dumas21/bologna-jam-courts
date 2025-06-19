@@ -2,13 +2,18 @@
 @layer base {
   body {
     font-family: 'Press Start 2P', monospace;
-    background: linear-gradient(135deg, #D72638 0%, #0050A0 100%);
+    background: linear-gradient(135deg, #D72638 0%, #0050A0 100%) !important;
     color: var(--arcade-white);
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
+  }
+
+  /* Forzo il background per essere sicuro */
+  html, body, #root {
+    background: linear-gradient(135deg, #D72638 0%, #0050A0 100%) !important;
   }
 
   /* Immagine di sfondo nella parte alta */
@@ -24,7 +29,7 @@
     background-position: center top;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    opacity: 0.4;
+    opacity: 0.3;
     z-index: 0;
     pointer-events: none;
   }
@@ -37,7 +42,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(0, 0, 0, 0.1);
     z-index: 1;
     pointer-events: none;
   }
@@ -51,6 +56,7 @@
   .arcade-container {
     position: relative;
     z-index: 10;
+    background: transparent !important;
   }
 
   /* Weather Cartoon Style */

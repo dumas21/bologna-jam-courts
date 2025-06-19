@@ -131,18 +131,32 @@
     text-shadow: 2px 2px 0px #000, 0 0 10px #FFD700;
   }
 
-  /* Arcade Text Elements - Mobile Optimized con stile retro */
+  /* Arcade Text Elements - Mobile Optimized con stile retro MIGLIORATO */
   .arcade-title {
-    font-family: 'Press Start 2P', monospace;
-    color: var(--arcade-white);
-    text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35, 0 0 25px #FF6B35;
+    font-family: 'Bungee', 'Press Start 2P', monospace;
+    color: var(--neon-yellow);
+    text-shadow: 
+      4px 4px 0px #000,
+      -2px -2px 0px #000,
+      2px -2px 0px #000,
+      -2px 2px 0px #000,
+      0 0 20px #FFD700,
+      0 0 40px #FFD700,
+      0 0 60px #FF6B35;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
     font-weight: 400;
+    background: linear-gradient(45deg, #FFD700, #FF6B35, #FFD700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: title-glow 2.5s ease-in-out infinite;
+    font-size: 1.2rem;
+    line-height: 1.2;
   }
 
   .arcade-heading {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Bungee', 'Press Start 2P', monospace;
     color: #FF6B35;
     text-shadow: 3px 3px 0px #000, 0 0 15px #FF6B35;
     animation: neon-glow 2s ease-in-out infinite;
@@ -150,7 +164,7 @@
   }
 
   .arcade-text {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
     color: var(--arcade-white);
     text-shadow: 2px 2px 0px #000;
     text-transform: uppercase;
@@ -161,7 +175,7 @@
   }
 
   .arcade-date {
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
     color: var(--arcade-white);
     text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35;
     text-transform: uppercase;
@@ -174,7 +188,7 @@
     color: var(--arcade-white);
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
     font-size: 10px;
   }
 
@@ -182,7 +196,7 @@
     color: var(--arcade-white);
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
     font-size: 10px;
   }
 
@@ -194,7 +208,7 @@
     display: inline-flex;
     align-items: center;
     padding: 8px;
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Audiowide', 'Press Start 2P', monospace;
     font-size: 10px;
   }
 
@@ -265,5 +279,28 @@
     margin-bottom: 0.5rem;
     text-align: center;
     font-family: 'Press Start 2P', monospace;
+  }
+
+  /* Animazione speciale per il titolo */
+  @keyframes title-glow {
+    0%, 100% { 
+      text-shadow: 
+        4px 4px 0px #000,
+        -2px -2px 0px #000,
+        2px -2px 0px #000,
+        -2px 2px 0px #000,
+        0 0 20px #FFD700,
+        0 0 40px #FFD700;
+    }
+    50% { 
+      text-shadow: 
+        4px 4px 0px #000,
+        -2px -2px 0px #000,
+        2px -2px 0px #000,
+        -2px 2px 0px #000,
+        0 0 30px #FFD700,
+        0 0 60px #FFD700,
+        0 0 80px #FF6B35;
+    }
   }
 }
