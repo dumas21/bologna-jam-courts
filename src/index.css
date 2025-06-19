@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SFONDO PRINCIPALE - RETRO 80s STYLE - VERSIONE LEGGIBILE */
+/* ARCADE ANNI 80 - STILE ORIGINALE RIPRISTINATO */
 html, body {
   background: linear-gradient(180deg, 
     #0f0f23 0%, 
@@ -11,24 +11,23 @@ html, body {
     #330066 60%, 
     #000011 100%) !important;
   color: #FFFFFF !important;
-  font-family: 'JetBrains Mono', 'Exo 2', monospace !important;
+  font-family: 'Press Start 2P', 'JetBrains Mono', monospace !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
   min-height: 100vh !important;
   text-transform: uppercase !important;
-  font-weight: 600 !important;
+  font-weight: 400 !important;
   letter-spacing: 1px !important;
-  /* Rimosso il text-shadow verde eccessivo */
 }
 
 #root {
   background: transparent !important;
   min-height: 100vh !important;
-  font-family: 'JetBrains Mono', 'Exo 2', monospace !important;
+  font-family: 'Press Start 2P', 'JetBrains Mono', monospace !important;
 }
 
-/* Effetto scanline più leggero */
+/* Effetto scanline leggero */
 body::before {
   content: "";
   position: fixed;
@@ -39,15 +38,15 @@ body::before {
   pointer-events: none;
   background: repeating-linear-gradient(
     0deg,
-    rgba(255,255,255,0.01),
-    rgba(255,255,255,0.01) 2px,
+    rgba(255,255,255,0.02),
+    rgba(255,255,255,0.02) 2px,
     transparent 3px,
     transparent 4px
   );
   z-index: 1000;
 }
 
-/* Grid pattern più leggero */
+/* Grid pattern */
 body::after {
   content: "";
   position: fixed;
@@ -57,41 +56,45 @@ body::after {
   height: 100%;
   pointer-events: none;
   background-image: 
-    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    linear-gradient(rgba(255,107,53,0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,107,53,0.1) 1px, transparent 1px);
   background-size: 50px 50px;
   z-index: 999;
 }
 
-/* Link migliorati - meno aggressivi */
+/* Link arcade style */
 a {
   color: #ff6b35 !important;
   text-decoration: none !important;
-  /* Rimosso il text-shadow eccessivo */
-  transition: color 0.2s ease !important;
+  text-shadow: 0 0 5px rgba(255, 107, 53, 0.5) !important;
+  transition: all 0.3s ease !important;
 }
 
 a:hover, a:focus {
   color: #ffd700 !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.8) !important;
   text-decoration: underline !important;
 }
 
-/* Pulsanti neon più leggibili */
+/* Pulsanti neon arcade */
 button, .btn {
   background: linear-gradient(45deg, #ff6b35, #ffd700) !important;
   border: 2px solid #ffffff !important;
   color: #000000 !important;
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: 'Press Start 2P', monospace !important;
   padding: 10px 20px !important;
   cursor: pointer !important;
-  font-weight: 700 !important;
-  /* Rimosso il box-shadow eccessivo e l'animazione */
+  font-weight: 400 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  box-shadow: 0 0 10px rgba(255, 107, 53, 0.5) !important;
+  transition: all 0.3s ease !important;
 }
 
 button:hover, .btn:hover {
   background: linear-gradient(45deg, #ffd700, #ff6b35) !important;
-  transform: translateY(-1px) !important;
-  transition: all 0.2s ease !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8) !important;
 }
 
 @import './styles/base.css';

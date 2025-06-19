@@ -4,16 +4,20 @@
     box-sizing: border-box;
   }
 
-  /* BACKGROUND LEGGIBILE - ENHANCED */
+  /* BACKGROUND ARCADE ANNI 80 */
   html, body, #root {
-    background: radial-gradient(circle at center, #0a0a2a 0%, #000010 90%) !important;
+    background: linear-gradient(180deg, 
+      #0f0f23 0%, 
+      #1a0033 30%, 
+      #330066 60%, 
+      #000011 100%) !important;
     color: #FFFFFF !important;
     height: 100% !important;
     min-height: 100vh !important;
   }
 
   body {
-    font-family: 'JetBrains Mono', monospace !important;
+    font-family: 'Press Start 2P', monospace !important;
     margin: 0 !important;
     padding: 0 !important;
     overflow-x: hidden;
@@ -22,34 +26,26 @@
     scroll-behavior: smooth;
   }
 
-  /* RIMUOVO COMPLETAMENTE GLI OVERLAY VERDI */
   .min-h-screen {
-    background: radial-gradient(circle at center, #0a0a2a 0%, #000010 90%) !important;
+    background: transparent !important;
   }
 
-  /* Rimuovo tutti gli overlay e background alternativi */
-  body::after,
-  html::after, html::before,
-  #root::after, #root::before {
-    display: none !important;
-  }
-
-  /* Arcade Container con background trasparente */
+  /* Arcade Container */
   .arcade-container {
     position: relative;
     z-index: 10;
     background: transparent !important;
   }
 
-  /* Weather Cartoon Style - Più leggibile */
+  /* Weather Cartoon Style - Arcade */
   .weather-cartoon {
-    background: rgba(0, 0, 0, 0.7) !important;
-    border: 2px solid #ffd700 !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    border: 3px solid #FF6B35 !important;
     border-radius: 12px;
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(5px);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 20px rgba(255, 107, 53, 0.6);
   }
 
   .weather-cartoon::before {
@@ -59,12 +55,12 @@
     right: 8px;
     width: 20px;
     height: 20px;
-    background: #ffd700;
+    background: #FFD700;
     border-radius: 50%;
+    box-shadow: 0 0 10px #FFD700;
     z-index: 1;
   }
 
-  /* Forzo tutti i container principali ad avere background trasparente */
   .container, main, div[class*="container"] {
     background: transparent !important;
   }

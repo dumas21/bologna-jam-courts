@@ -81,27 +81,25 @@
     @apply border-border;
   }
 
-  /* Typography arcade migliorata - LEGGIBILE */
+  /* Typography arcade ORIGINALE RIPRISTINATA */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
-    text-shadow: none !important;
+    font-family: 'Press Start 2P', monospace !important;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35 !important;
     letter-spacing: 2px !important;
     text-transform: uppercase !important;
     line-height: 1.2 !important;
-    font-weight: 800 !important;
-    color: #FFFFFF !important;
-    font-size: 2.2rem !important;
+    font-weight: 400 !important;
+    color: #FF6B35 !important;
   }
   
   p, span, div, button, a, label, input, textarea {
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
-    text-shadow: none !important;
+    font-family: 'Press Start 2P', monospace !important;
+    text-shadow: 1px 1px 0px #000 !important;
     letter-spacing: 1px !important;
     line-height: 1.4 !important;
     text-transform: uppercase !important;
     color: #FFFFFF !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
+    font-weight: 400 !important;
   }
 
   .font-orbitron {
@@ -129,20 +127,19 @@
   }
 
   .font-joystix {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Press Start 2P', monospace;
   }
 
   .nike-text {
-    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
-    font-weight: 800 !important;
+    font-family: 'Press Start 2P', monospace !important;
+    font-weight: 400 !important;
     text-transform: uppercase !important;
-    letter-spacing: 4px !important;
-    text-shadow: none !important;
-    color: #FFFFFF !important;
-    font-size: 1.8rem !important;
+    letter-spacing: 2px !important;
+    text-shadow: 2px 2px 0px #000, 0 0 10px #FF6B35 !important;
+    color: #FF6B35 !important;
   }
 
-  /* Star Rating leggibile */
+  /* Star Rating */
   .star-rating {
     display: flex;
     gap: 2px;
@@ -152,12 +149,7 @@
     cursor: pointer;
     color: #666;
     transition: all 0.2s ease;
-    filter: none;
-    min-width: 24px;
-    min-height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    filter: drop-shadow(2px 2px 0px #000);
   }
 
   .star:hover {
@@ -166,6 +158,6 @@
 
   .star.filled {
     color: #ffd700;
-    filter: none;
+    filter: drop-shadow(2px 2px 0px #000) drop-shadow(0 0 10px #FFD700);
   }
 }
