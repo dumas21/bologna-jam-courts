@@ -79,24 +79,27 @@
     @apply border-border;
   }
 
-  /* Typography arcade anni 80 - NBA Jam style con ITC Machine */
+  /* Typography arcade anni 80 - NBA Jam style con ITC Machine - BOLD E GRANDE */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'ITC Machine', 'Bungee', 'Press Start 2P', monospace;
-    text-shadow: 4px 4px 0px #000, 0 0 15px var(--neon-orange), 0 0 25px var(--neon-orange);
-    letter-spacing: 3px;
+    text-shadow: 8px 8px 0px #000, -4px -4px 0px #0000FF, 0 0 20px #FF4500, 0 0 30px #FF4500;
+    letter-spacing: 4px;
     text-transform: uppercase;
     line-height: 1.1;
-    font-weight: 400;
-    color: var(--neon-yellow);
+    font-weight: 900;
+    color: #FF4500;
+    font-size: 2rem;
   }
   
   p, span, div {
     font-family: 'ITC Machine', 'Audiowide', 'Press Start 2P', monospace;
-    text-shadow: 2px 2px 0px #000, 0 0 8px var(--neon-orange);
-    letter-spacing: 1.5px;
+    text-shadow: 4px 4px 0px #000, -2px -2px 0px #0000FF, 0 0 10px #FF6B35;
+    letter-spacing: 2px;
     line-height: 1.4;
     text-transform: uppercase;
-    color: var(--arcade-white);
+    color: #FF6B35;
+    font-weight: 900;
+    font-size: 14px;
   }
 
   .font-orbitron {
@@ -121,11 +124,12 @@
 
   .nike-text {
     font-family: 'ITC Machine', 'Russo One', 'Press Start 2P', monospace;
-    font-weight: 400;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 3px;
-    text-shadow: 3px 3px 0px #000, 0 0 15px var(--neon-orange), 0 0 25px var(--neon-orange);
-    color: var(--neon-yellow);
+    letter-spacing: 4px;
+    text-shadow: 6px 6px 0px #000, -3px -3px 0px #0000FF, 0 0 20px #FF4500, 0 0 30px #FF4500;
+    color: #FF4500;
+    font-size: 1.5rem;
   }
 
   /* Star Rating */
@@ -155,3 +159,4 @@
     filter: drop-shadow(2px 2px 0px #000) drop-shadow(0 0 10px var(--neon-yellow));
   }
 }
+
