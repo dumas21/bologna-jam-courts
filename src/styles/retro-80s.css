@@ -1,10 +1,10 @@
 
 @layer base {
-  /* Retro 80s Style Inspired */
+  /* Retro 80s Style - VERSIONE LEGGIBILE */
   .retro-grid {
     background-image: 
-      linear-gradient(cyan 1px, transparent 1px),
-      linear-gradient(90deg, cyan 1px, transparent 1px);
+      linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
     background-size: 50px 50px;
     position: relative;
   }
@@ -17,48 +17,27 @@
     right: 0;
     bottom: 0;
     background: linear-gradient(180deg, 
-      rgba(255,0,255,0.1) 0%, 
-      rgba(0,255,255,0.1) 50%, 
-      rgba(255,255,0,0.1) 100%);
+      rgba(255,107,53,0.05) 0%, 
+      rgba(255,215,0,0.05) 50%, 
+      rgba(255,107,53,0.05) 100%);
     pointer-events: none;
   }
 
-  /* Neon text effects */
+  /* Testo neon più leggibile */
   .retro-neon-text {
-    color: #ff00ff;
-    text-shadow: 
-      0 0 5px #ff00ff,
-      0 0 10px #ff00ff,
-      0 0 15px #ff00ff,
-      0 0 20px #ff00ff;
-    animation: neon-flicker 2s infinite alternate;
+    color: #ffd700;
+    /* Rimosso il text-shadow eccessivo */
+    font-weight: 700;
   }
 
-  @keyframes neon-flicker {
-    0%, 100% {
-      text-shadow: 
-        0 0 5px #ff00ff,
-        0 0 10px #ff00ff,
-        0 0 15px #ff00ff,
-        0 0 20px #ff00ff;
-    }
-    50% {
-      text-shadow: 
-        0 0 2px #ff00ff,
-        0 0 5px #ff00ff,
-        0 0 8px #ff00ff,
-        0 0 12px #ff00ff;
-    }
-  }
-
-  /* Chrome/metallic effects */
+  /* Chrome/metallic effects migliorati */
   .retro-chrome {
     background: linear-gradient(45deg, 
-      #ff00ff 0%, 
-      #00ffff 25%, 
-      #ffff00 50%, 
-      #ff00ff 75%, 
-      #00ffff 100%);
+      #ff6b35 0%, 
+      #ffd700 25%, 
+      #ffffff 50%, 
+      #ffd700 75%, 
+      #ff6b35 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -72,5 +51,14 @@
       #1a0033 30%, 
       #330066 60%, 
       #000011 100%);
+  }
+
+  /* Glow più leggero per elementi interattivi */
+  .retro-neon-glow {
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.3) !important;
+  }
+
+  .retro-neon-glow:hover {
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.5) !important;
   }
 }

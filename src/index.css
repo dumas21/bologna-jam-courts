@@ -3,15 +3,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SFONDO PRINCIPALE - RETRO 80s STYLE */
+/* SFONDO PRINCIPALE - RETRO 80s STYLE - VERSIONE LEGGIBILE */
 html, body {
   background: linear-gradient(180deg, 
     #0f0f23 0%, 
     #1a0033 30%, 
     #330066 60%, 
     #000011 100%) !important;
-  color: #00ffff !important;
-  font-family: 'Press Start 2P', 'JetBrains Mono', 'Exo 2', monospace !important;
+  color: #FFFFFF !important;
+  font-family: 'JetBrains Mono', 'Exo 2', monospace !important;
   margin: 0 !important;
   padding: 0 !important;
   height: 100% !important;
@@ -19,20 +19,16 @@ html, body {
   text-transform: uppercase !important;
   font-weight: 600 !important;
   letter-spacing: 1px !important;
-  text-shadow: 
-    0 0 5px #00ffff,
-    0 0 10px #00ffff,
-    0 0 20px #0ff,
-    0 0 30px #0ff !important;
+  /* Rimosso il text-shadow verde eccessivo */
 }
 
 #root {
   background: transparent !important;
   min-height: 100vh !important;
-  font-family: 'Press Start 2P', 'JetBrains Mono', monospace !important;
+  font-family: 'JetBrains Mono', 'Exo 2', monospace !important;
 }
 
-/* Effetto scanline tipico arcade retro */
+/* Effetto scanline più leggero */
 body::before {
   content: "";
   position: fixed;
@@ -43,15 +39,15 @@ body::before {
   pointer-events: none;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0,255,255,0.03),
-    rgba(0,255,255,0.03) 2px,
+    rgba(255,255,255,0.01),
+    rgba(255,255,255,0.01) 2px,
     transparent 3px,
     transparent 4px
   );
   z-index: 1000;
 }
 
-/* Grid pattern retro */
+/* Grid pattern più leggero */
 body::after {
   content: "";
   position: fixed;
@@ -61,66 +57,42 @@ body::after {
   height: 100%;
   pointer-events: none;
   background-image: 
-    linear-gradient(rgba(0,255,255,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,255,0.1) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
   background-size: 50px 50px;
   z-index: 999;
 }
 
-/* ... keep existing code (forzo il background, tema scuro, link, pulsanti, container, accessibilità, etc) */
-
-/* Link in stile neon retro */
+/* Link migliorati - meno aggressivi */
 a {
-  color: #ff00ff !important;
+  color: #ff6b35 !important;
   text-decoration: none !important;
-  text-shadow: 
-    0 0 8px #ff00ff,
-    0 0 15px #ff55aa !important;
+  /* Rimosso il text-shadow eccessivo */
   transition: color 0.2s ease !important;
 }
 
 a:hover, a:focus {
-  color: #00ffff !important;
-  text-shadow: 
-    0 0 15px #00ffff,
-    0 0 25px #00ffff !important;
+  color: #ffd700 !important;
   text-decoration: underline !important;
 }
 
-/* Pulsanti neon retro */
+/* Pulsanti neon più leggibili */
 button, .btn {
-  background: linear-gradient(45deg, #ff00ff, #00ffff) !important;
+  background: linear-gradient(45deg, #ff6b35, #ffd700) !important;
   border: 2px solid #ffffff !important;
-  color: #fff !important;
-  font-family: 'Press Start 2P', monospace !important;
+  color: #000000 !important;
+  font-family: 'JetBrains Mono', monospace !important;
   padding: 10px 20px !important;
   cursor: pointer !important;
-  box-shadow:
-    0 0 5px #ff00ff,
-    0 0 10px #ff00ff,
-    0 0 20px #00ffff !important;
-  animation: retroPulse 2s infinite alternate !important;
+  font-weight: 700 !important;
+  /* Rimosso il box-shadow eccessivo e l'animazione */
 }
 
-@keyframes retroPulse {
-  from {
-    box-shadow:
-      0 0 5px #ff00ff,
-      0 0 10px #ff00ff,
-      0 0 15px #00ffff;
-    text-shadow: 0 0 5px #fff;
-  }
-  to {
-    box-shadow:
-      0 0 10px #ff00ff,
-      0 0 20px #ff00ff,
-      0 0 30px #00ffff,
-      0 0 40px #00ffff;
-    text-shadow: 0 0 10px #fff, 0 0 15px #fff;
-  }
+button:hover, .btn:hover {
+  background: linear-gradient(45deg, #ffd700, #ff6b35) !important;
+  transform: translateY(-1px) !important;
+  transition: all 0.2s ease !important;
 }
-
-/* ... keep existing code (container responsivi, accessibilità, nascondi badge, imports) */
 
 @import './styles/base.css';
 @import './styles/background.css';

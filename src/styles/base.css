@@ -81,7 +81,7 @@
     @apply border-border;
   }
 
-  /* Typography arcade migliorata - font più leggibili senza ombre */
+  /* Typography arcade migliorata - LEGGIBILE */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
     text-shadow: none !important;
@@ -142,7 +142,7 @@
     font-size: 1.8rem !important;
   }
 
-  /* Star Rating */
+  /* Star Rating leggibile */
   .star-rating {
     display: flex;
     gap: 2px;
@@ -165,7 +165,7 @@
   }
 
   .star.filled {
-    color: var(--neon-yellow);
+    color: #ffd700;
     filter: none;
   }
 }
