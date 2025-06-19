@@ -6,7 +6,7 @@ const DateDisplay = () => {
   const currentDate = format(new Date(), "EEEE d MMMM yyyy", { locale: it });
   
   return (
-    <div className="text-center md:text-left arcade-date text-xs md:text-sm">
+    <div className="text-center md:text-left arcade-date-enhanced text-xs md:text-sm">
       {currentDate.toUpperCase()}
     </div>
   );
