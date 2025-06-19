@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { LogOut, User, Settings } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -27,7 +27,7 @@ const Header = () => {
 
   const playSoundEffect = (action: string) => {
     const audio = new Audio(`/sounds/${action}.mp3`);
-    audio.play().catch(err => console.log('Audio playback error:', err));
+    audio.play().catch(err => console.log('Audio playbook error:', err));
   };
 
   return (
@@ -72,17 +72,6 @@ const Header = () => {
                 <Card className="absolute right-0 top-full mt-2 w-48 z-50 arcade-card">
                   <CardContent className="p-2">
                     <div className="space-y-2">
-                      <Button 
-                        onClick={() => {
-                          playSoundEffect('click');
-                          navigate('/admin');
-                          setShowUserMenu(false);
-                        }}
-                        className="w-full justify-start arcade-button arcade-button-stats"
-                      >
-                        <Settings size={16} className="mr-2" />
-                        ADMIN
-                      </Button>
                       <Button 
                         onClick={handleLogout}
                         className="w-full justify-start arcade-button arcade-button-danger"

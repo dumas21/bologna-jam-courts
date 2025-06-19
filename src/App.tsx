@@ -10,7 +10,6 @@ import NotFound from "./pages/NotFound";
 import AddPlayground from "./pages/AddPlayground";
 import Login from "./pages/Login";
 import Stats from "./pages/Stats";
-import Admin from "./pages/Admin";
 import CookieBanner from "./components/CookieBanner";
 
 const queryClient = new QueryClient();
@@ -29,7 +28,6 @@ function App() {
                 <Route path="/add-playground" element={<AddPlayground />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/stats" element={<Stats />} />
-                <Route path="/admin" element={<Admin />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
