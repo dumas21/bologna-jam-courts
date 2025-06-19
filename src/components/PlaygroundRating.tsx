@@ -79,18 +79,21 @@ const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps)
         </span>
       </div>
       
-      <div className="star-rating">
+      <div className="flex items-center gap-1">
         {[...Array(5)].map((_, index) => {
           const starValue = index + 1;
+          const filled = starValue <= (hoveredRating || rating);
+          const isHovered = hoveredRating && starValue <= hoveredRating;
+          
           return (
             <Star
               key={index}
               size={20}
               className={`
-                star 
-                ${starValue <= (hoveredRating || rating) ? 'filled' : ''} 
-                ${hoveredRating && starValue <= hoveredRating ? 'text-yellow-400' : ''}
-                ${!hasVoted && isLoggedIn ? 'cursor-pointer' : 'cursor-default'}
+                transition-all duration-200 transform
+                ${filled ? 'text-yellow-400 fill-current' : 'text-gray-400'} 
+                ${isHovered ? 'text-yellow-300 scale-110' : ''}
+                ${!hasVoted && isLoggedIn ? 'cursor-pointer hover:scale-110' : 'cursor-default'}
               `}
               onMouseEnter={() => !hasVoted && isLoggedIn && setHoveredRating(starValue)}
               onMouseLeave={() => setHoveredRating(0)}

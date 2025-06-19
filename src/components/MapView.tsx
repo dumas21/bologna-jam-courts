@@ -18,70 +18,103 @@ const BasketballIcon = ({ size = 18, className = "" }) => (
     className={className}
     fill="currentColor"
   >
-    {/* Gradiente per effetto 3D */}
+    {/* Gradiente per effetto 3D migliorato */}
     <defs>
-      <radialGradient id="basketballGradient" cx="0.3" cy="0.3" r="0.8">
+      <radialGradient id="basketballGradient" cx="0.25" cy="0.25" r="0.9">
         <stop offset="0%" stopColor="#ff8c42" />
-        <stop offset="70%" stopColor="#e55100" />
+        <stop offset="30%" stopColor="#e55100" />
+        <stop offset="70%" stopColor="#d84315" />
         <stop offset="100%" stopColor="#bf360c" />
       </radialGradient>
-      <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
-        <feDropShadow dx="1" dy="1" stdDeviation="1" floodColor="#000" floodOpacity="0.3"/>
+      <filter id="basketballShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="2" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.4"/>
+      </filter>
+      <filter id="innerShadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1"/>
+        <feOffset dx="1" dy="1" result="offset"/>
+        <feFlood floodColor="#8d4e00" floodOpacity="0.3"/>
+        <feComposite in2="offset" operator="in"/>
       </filter>
     </defs>
     
-    {/* Cerchio principale della palla */}
+    {/* Cerchio principale della palla con ombra */}
     <circle 
       cx="12" 
       cy="12" 
-      r="10" 
+      r="10.5" 
       fill="url(#basketballGradient)" 
-      filter="url(#shadow)"
+      filter="url(#basketballShadow)"
       stroke="#8d4e00" 
-      strokeWidth="0.5"
+      strokeWidth="0.3"
     />
     
-    {/* Linee curve verticali del basket */}
+    {/* Linee curve verticali - più realistiche */}
     <path 
-      d="M12 2 C12 2, 15.5 6.5, 15.5 12 C15.5 17.5, 12 22, 12 22" 
+      d="M12 1.5 Q15.8 6.2 15.8 12 Q15.8 17.8 12 22.5" 
       stroke="#8d4e00" 
-      strokeWidth="1.8" 
+      strokeWidth="2.2" 
       fill="none"
       strokeLinecap="round"
+      opacity="0.8"
     />
     <path 
-      d="M12 2 C12 2, 8.5 6.5, 8.5 12 C8.5 17.5, 12 22, 12 22" 
+      d="M12 1.5 Q8.2 6.2 8.2 12 Q8.2 17.8 12 22.5" 
       stroke="#8d4e00" 
-      strokeWidth="1.8" 
+      strokeWidth="2.2" 
       fill="none"
       strokeLinecap="round"
-    />
-    
-    {/* Linee curve orizzontali del basket */}
-    <path 
-      d="M2 12 C2 12, 6.5 8.5, 12 8.5 C17.5 8.5, 22 12, 22 12" 
-      stroke="#8d4e00" 
-      strokeWidth="1.8" 
-      fill="none"
-      strokeLinecap="round"
-    />
-    <path 
-      d="M2 12 C2 12, 6.5 15.5, 12 15.5 C17.5 15.5, 22 12, 22 12" 
-      stroke="#8d4e00" 
-      strokeWidth="1.8" 
-      fill="none"
-      strokeLinecap="round"
+      opacity="0.8"
     />
     
-    {/* Highlight per effetto lucido */}
+    {/* Linee curve orizzontali - più realistiche */}
+    <path 
+      d="M1.5 12 Q6.2 8.2 12 8.2 Q17.8 8.2 22.5 12" 
+      stroke="#8d4e00" 
+      strokeWidth="2.2" 
+      fill="none"
+      strokeLinecap="round"
+      opacity="0.8"
+    />
+    <path 
+      d="M1.5 12 Q6.2 15.8 12 15.8 Q17.8 15.8 22.5 12" 
+      stroke="#8d4e00" 
+      strokeWidth="2.2" 
+      fill="none"
+      strokeLinecap="round"
+      opacity="0.8"
+    />
+    
+    {/* Highlight principale più pronunciato */}
     <ellipse 
-      cx="9.5" 
-      cy="8.5" 
-      rx="2.5" 
-      ry="1.5" 
+      cx="8.5" 
+      cy="7.5" 
+      rx="3.5" 
+      ry="2.5" 
       fill="#ffab70" 
+      opacity="0.6"
+      transform="rotate(-25 8.5 7.5)"
+    />
+    
+    {/* Secondo highlight più piccolo */}
+    <ellipse 
+      cx="9" 
+      cy="8" 
+      rx="1.5" 
+      ry="1" 
+      fill="#ffd700" 
       opacity="0.4"
-      transform="rotate(-30 9.5 8.5)"
+      transform="rotate(-25 9 8)"
+    />
+    
+    {/* Texture aggiuntiva per realismo */}
+    <circle 
+      cx="12" 
+      cy="12" 
+      r="10.5" 
+      fill="none"
+      stroke="#6d1b00" 
+      strokeWidth="0.1"
+      opacity="0.3"
     />
   </svg>
 );
