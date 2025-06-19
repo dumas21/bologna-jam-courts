@@ -1,5 +1,5 @@
 
-import { Users, Lightbulb } from "lucide-react";
+import { Users, Lightbulb, Signpost } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -65,16 +65,16 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                     {playground.hasLighting && (
                       <Lightbulb size={16} className="text-yellow-400 animate-neon-glow flex-shrink-0" />
                     )}
-                    {/* Enhanced Basketball Shoes Icon for Google Maps */}
+                    {/* Enhanced Signpost Icon for Google Maps */}
                     <div 
-                      className="shoes-icon flex items-center justify-center w-10 h-10 bg-black bg-opacity-80 rounded-full border-2 border-orange-500 hover:bg-orange-500 transition-colors touch-manipulation"
+                      className="signpost-icon flex items-center justify-center w-10 h-10 bg-black bg-opacity-80 rounded-full border-2 border-orange-500 hover:bg-orange-500 transition-colors touch-manipulation"
                       onClick={(e) => {
                         e.stopPropagation();
                         openGoogleMaps(playground.address);
                       }}
                       title="Apri in Google Maps"
                     >
-                      <span className="text-lg">👟</span>
+                      <Signpost size={16} className="text-orange-500 hover:text-white transition-colors" />
                     </div>
                   </div>
                 </div>

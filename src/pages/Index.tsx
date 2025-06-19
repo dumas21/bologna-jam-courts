@@ -4,7 +4,6 @@ import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
-import Logo from "@/components/Logo";
 import { Playground } from "@/types/playground";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarDays, BarChart, Home } from "lucide-react";
@@ -142,8 +141,6 @@ const Index = () => {
       <Header />
       
       <main className="container mx-auto p-4 flex-1 relative z-10">
-        <Logo />
-        
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
           <div className="text-center md:text-left arcade-date">
             {currentDate.toUpperCase()}

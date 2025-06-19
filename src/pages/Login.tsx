@@ -1,118 +1,181 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
-import { useUser } from "@/contexts/UserContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@/contexts/UserContext";
+import { User, Mail, Lock, ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
-import Logo from "@/components/Logo";
-import { UserCheck } from "lucide-react";
 
 const Login = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
-  const { login } = useUser();
-  
+  const navigate = useNavigate();
+  const { login, register } = useUser();
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
-  
-  const playSound = (sound: string) => {
-    const audio = new Audio(`/sounds/${sound}.mp3`);
-    audio.play().catch(err => console.log('Audio playback error:', err));
-  };
-  
-  const handleLogin = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!nickname.trim()) {
-      playSound("error");
+    setIsLoading(true);
+
+    try {
+      if (isLogin) {
+        const success = login(email, password);
+        if (success) {
+          toast({
+            title: "LOGIN EFFETTUATO",
+            description: "Benvenuto in Playground Jam Bologna!",
+          });
+          
+          // Play success sound
+          const audio = new Audio('/sounds/coin-insert.mp3');
+          audio.play().catch(err => console.log('Audio playback error:', err));
+          
+          navigate("/");
+        } else {
+          toast({
+            title: "ERRORE LOGIN",
+            description: "Credenziali non valide",
+            variant: "destructive",
+          });
+        }
+      } else {
+        const success = register(email, password, nickname);
+        if (success) {
+          toast({
+            title: "REGISTRAZIONE COMPLETATA",
+            description: "Account creato con successo!",
+          });
+          
+          // Play success sound
+          const audio = new Audio('/sounds/coin-insert.mp3');
+          audio.play().catch(err => console.log('Audio playback error:', err));
+          
+          navigate("/");
+        } else {
+          toast({
+            title: "ERRORE REGISTRAZIONE",
+            description: "Email già esistente",
+            variant: "destructive",
+          });
+        }
+      }
+    } catch (error) {
       toast({
-        title: "Nickname mancante",
-        description: "Inserisci un nickname per continuare",
-        variant: "destructive"
+        title: "ERRORE",
+        description: "Si è verificato un errore imprevisto",
+        variant: "destructive",
       });
-      return;
+    } finally {
+      setIsLoading(false);
     }
-    
-    if (nickname.trim().length < 2) {
-      playSound("error");
-      toast({
-        title: "Nickname troppo corto",
-        description: "Il nickname deve avere almeno 2 caratteri",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    playSound("success");
-    login(nickname.trim(), nickname.toLowerCase() === "matteo");
-    
-    toast({
-      title: "Accesso effettuato",
-      description: `Benvenuto, ${nickname}! Ricorda di portare la palla e di tenere pulito!`,
-    });
-    
-    navigate("/");
   };
-  
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col arcade-container">
+      <div className="crt-overlay"></div>
+      <div className="neptune-background"></div>
+      
       <Header />
       
-      <main className="container mx-auto p-4 flex-1 flex flex-col items-center justify-center">
-        <Logo />
-        
-        <div className="max-w-md w-full mt-8">
-          <div className="bg-gradient-to-r from-jam-purple to-jam-blue p-1 rounded mb-6">
-            <h2 className="nike-text text-lg text-center py-3 font-bold text-white">
-              INSERISCI IL TUO NICKNAME
-            </h2>
-          </div>
-          
-          <div className="pixel-card p-8">
-            <form onSubmit={handleLogin} className="space-y-6">
-              <div className="space-y-2">
-                <label className="nike-text text-base text-jam-orange">
-                  Nickname
-                </label>
-                <div className="relative">
-                  <UserCheck className="absolute left-3 top-3 h-4 w-4 text-white/60" />
-                  <Input
-                    type="text"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    className="bg-white text-black pl-10 font-saira font-semibold text-lg"
-                    placeholder="Scegli il tuo nickname"
-                    maxLength={20}
-                  />
+      <main className="container mx-auto p-4 flex-1 flex items-center justify-center relative z-10">
+        <div className="w-full max-w-md">
+          <Button
+            onClick={() => navigate("/")}
+            className="mb-6 arcade-button arcade-button-secondary"
+          >
+            <ArrowLeft size={16} className="mr-2" />
+            INDIETRO
+          </Button>
+
+          <Card className="arcade-card">
+            <CardHeader>
+              <CardTitle className="arcade-title text-center">
+                {isLogin ? "LOGIN" : "REGISTRAZIONE"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {!isLogin && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2 arcade-label">
+                      NICKNAME
+                    </label>
+                    <div className="relative">
+                      <User size={16} className="absolute left-3 top-3 text-gray-400" />
+                      <Input
+                        type="text"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        className="pl-10 arcade-input"
+                        placeholder="Il tuo nickname"
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2 arcade-label">
+                    EMAIL
+                  </label>
+                  <div className="relative">
+                    <Mail size={16} className="absolute left-3 top-3 text-gray-400" />
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 arcade-input"
+                      placeholder="La tua email"
+                      required
+                    />
+                  </div>
                 </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 arcade-label">
+                    PASSWORD
+                  </label>
+                  <div className="relative">
+                    <Lock size={16} className="absolute left-3 top-3 text-gray-400" />
+                    <Input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 arcade-input"
+                      placeholder="La tua password"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full arcade-button arcade-button-primary"
+                >
+                  {isLoading ? "CARICAMENTO..." : (isLogin ? "LOGIN" : "REGISTRATI")}
+                </Button>
+              </form>
+
+              <div className="mt-4 text-center">
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="arcade-link"
+                >
+                  {isLogin ? "Non hai un account? REGISTRATI" : "Hai già un account? LOGIN"}
+                </button>
               </div>
-              
-              <Button 
-                type="submit" 
-                className="pixel-button w-full text-lg py-4"
-                onClick={() => playSound("click")}
-              >
-                ENTRA
-              </Button>
-            </form>
-            
-            <div className="mt-4 text-center">
-              <p className="text-sm text-white/90 nike-text">
-                Il tuo nickname sarà visibile agli altri utenti nella chat dei playground
-              </p>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
-      
-      <footer className="bg-black bg-opacity-80 border-t-4 border-jam-purple py-4">
-        <div className="container mx-auto px-4 text-center">
-          <p className="font-press-start text-xs text-white/60">
-            PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };
