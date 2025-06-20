@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -150,6 +149,18 @@
     color: #FFFFFF !important;
     text-shadow: 2px 2px 0px #000000 !important;
     font-weight: 600 !important;
+  }
+
+  /* TESTO CONDIZIONI METEO - BIANCO E LEGGIBILE */
+  .weather-cartoon .bg-gray-100 div {
+    color: #FFFFFF !important;
+    text-shadow: 1px 1px 0px #000000 !important;
+    font-weight: 600 !important;
+  }
+
+  .weather-cartoon .bg-gray-100 {
+    background: rgba(0, 0, 0, 0.7) !important;
+    border: 2px solid #FF6B35 !important;
   }
 
   /* ANIMAZIONI ARCADE - RIDOTTE */
