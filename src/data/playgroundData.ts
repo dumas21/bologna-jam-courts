@@ -1,4 +1,3 @@
-
 import { Playground } from "@/types/playground";
 
 export const playgroundData: Playground[] = [
@@ -18,7 +17,14 @@ export const playgroundData: Playground[] = [
     ratingCount: 42,
     comments: [],
     district: "murri",
-    refreshmentType: "interno"
+    refreshmentType: "interno",
+    currentEvent: {
+      id: "torneo-2025",
+      name: "43° TORNEO DEI GIARDINI MARGHERITA",
+      playgroundId: "gm",
+      isActive: true,
+      link: "https://www.instagram.com/torneogiardinimargherita/"
+    }
   },
   {
     id: "pm",

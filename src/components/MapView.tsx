@@ -1,5 +1,5 @@
 
-import { Users, Lightbulb, Clock, Star } from "lucide-react";
+import { Users, Lightbulb, Clock, Star, Calendar, ExternalLink } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -28,6 +28,14 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
     // Play basketball sound
     const audio = new Audio('/sounds/click.mp3');
     audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
+
+  const openEventLink = (link: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(link, '_blank');
+    
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Event link sound error:', err));
   };
   
   const scrollToPlaygroundDetails = () => {
@@ -73,6 +81,26 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               >
                 {/* Header compatto e mobile-friendly */}
                 <div className="p-3 md:p-4 space-y-3">
+                  {/* Evento in corso - mostrato in evidenza */}
+                  {playground.currentEvent && playground.currentEvent.isActive && (
+                    <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-lg border-2 border-yellow-400 animate-pulse">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Calendar size={16} className="text-yellow-300" />
+                          <span className="text-xs font-bold text-yellow-300">EVENTO IN CORSO</span>
+                        </div>
+                        <ExternalLink size={12} className="text-yellow-300" />
+                      </div>
+                      <button
+                        onClick={(e) => playground.currentEvent?.link && openEventLink(playground.currentEvent.link, e)}
+                        className="text-white font-bold text-sm mt-1 hover:text-yellow-300 transition-colors text-left w-full"
+                        style={{ fontFamily: "'Press Start 2P', monospace" }}
+                      >
+                        {playground.currentEvent.name}
+                      </button>
+                    </div>
+                  )}
+
                   {/* Nome con stile retro anni 80 RIPRISTINATO */}
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                     <div className="playground-name text-sm md:text-base font-bold flex-1 text-center sm:text-left retro-neon-text animate-neon-glow" 
@@ -137,7 +165,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                     
                     <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
                       <Star size={12} className="text-yellow-400 mr-2 flex-shrink-0" />
-                      <span className="text-white/90 nike-text">{playground.rating.toFixed(1)} ({playground.ratingCount})</span>
+                      <span className="text-white/90 nike-text">{playground.rating?.toFixed(1)} ({playground.ratingCount})</span>
                     </div>
                   </div>
                   

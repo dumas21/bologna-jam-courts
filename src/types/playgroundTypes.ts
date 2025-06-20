@@ -36,6 +36,15 @@ export interface WeatherData {
   icon: string;
 }
 
+// Tipo evento
+export interface PlaygroundEvent {
+  id: string;
+  name: string;
+  playgroundId: string;
+  isActive: boolean;
+  link?: string;
+}
+
 // Tipo playground aggiornato con tutte le proprietà necessarie
 export interface Playground {
   id: string;
@@ -63,6 +72,7 @@ export interface Playground {
   };
   district?: string; // Nuovo campo per il quartiere
   refreshmentType?: "interno" | "esterno" | "no"; // Nuovo campo per il tipo di ristoro
+  currentEvent?: PlaygroundEvent; // Evento in corso
 }
 
 // Tipo pubblico per mostrare solo nickname/id (senza email)
