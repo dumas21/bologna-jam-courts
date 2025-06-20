@@ -61,7 +61,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   // STILE BIANCO ASSOLUTO - MASSIMA PRIORITÀ
   const forceWhiteText = {
     color: '#FFFFFF',
-    textShadow: 'none',
+    textShadow: '1px 1px 3px #000',
     fontWeight: 'bold',
     letterSpacing: '1px',
     fontSize: 'inherit'
@@ -69,7 +69,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   
   if (loading) {
     return (
-      <div style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
+      <div className="weather-section" style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '96px'}}>
           <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
             <Zap size={24} className="text-orange-500 animate-bounce" />
@@ -83,7 +83,7 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   
   if (!weather) {
     return (
-      <div style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
+      <div className="weather-section" style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '96px'}}>
           <p style={{...forceWhiteText, fontSize: '14px'}}>WEATHER ERROR!</p>
         </div>
@@ -92,15 +92,21 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   }
   
   return (
-    <div style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
+    <div className="weather-section" style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
       <div>
-        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
-          <h4 style={{...forceWhiteText, fontSize: '14px', display: 'flex', alignItems: 'center'}}>
-            {getWeatherIcon(weather.condition)}
-            <span style={{...forceWhiteText, marginLeft: '12px'}}>
-              METEO {playgroundName.toUpperCase()}
-            </span>
-          </h4>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+          {getWeatherIcon(weather.condition)}
+          <span
+            style={{
+              color: '#fff',
+              fontWeight: 'bold',
+              textShadow: '1px 1px 3px #000',
+              fontSize: '18px',
+              letterSpacing: '1px'
+            }}
+          >
+            METEO {playgroundName.toUpperCase()}
+          </span>
         </div>
         
         <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px'}}>
