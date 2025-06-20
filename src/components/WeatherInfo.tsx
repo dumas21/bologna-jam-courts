@@ -58,13 +58,21 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
     }
   };
   
+  // Stili inline per forzare il bianco
+  const whiteTextStyle = {
+    color: '#FFFFFF !important',
+    textShadow: 'none !important',
+    fontWeight: 'bold',
+    letterSpacing: '1px'
+  };
+  
   if (loading) {
     return (
-      <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-orange-500">
+      <div className="weather-cartoon p-6 mb-6 relative bg-black rounded-lg border-4 border-orange-500">
         <div className="relative z-10 flex items-center justify-center h-24">
           <div className="flex items-center space-x-2">
             <Zap size={24} className="text-orange-500 animate-bounce" />
-            <p className="text-black text-sm font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>LOADING WEATHER...</p>
+            <p style={whiteTextStyle} className="text-sm font-bold">LOADING WEATHER...</p>
             <Zap size={24} className="text-orange-500 animate-bounce" />
           </div>
         </div>
@@ -74,56 +82,45 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   
   if (!weather) {
     return (
-      <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-red-500">
+      <div className="weather-cartoon p-6 mb-6 relative bg-black rounded-lg border-4 border-red-500">
         <div className="relative z-10 flex items-center justify-center h-24">
-          <p className="text-black text-sm font-bold" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '2px', color: '#000000'}}>WEATHER ERROR!</p>
+          <p style={whiteTextStyle} className="text-sm font-bold">WEATHER ERROR!</p>
         </div>
       </div>
     );
   }
   
   return (
-    <div className="weather-cartoon p-6 mb-6 relative bg-white rounded-lg border-4 border-orange-500">
+    <div className="weather-cartoon p-6 mb-6 relative bg-black rounded-lg border-4 border-orange-500">
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
-          <h4 className="weather-label playground-name text-sm font-bold flex items-center" style={{
-            fontFamily: 'JetBrains Mono, Press Start 2P, monospace', 
-            textTransform: 'uppercase', 
-            letterSpacing: '2px', 
-            color: '#FFFFFF !important', 
-            textShadow: '2px 2px 0px #000000',
-            fontWeight: '600'
-          }}>
+          <h4 className="weather-label playground-name text-sm font-bold flex items-center" style={whiteTextStyle}>
             {getWeatherIcon(weather.condition)}
-            <span className="ml-3 playground-name" style={{
-              color: '#FFFFFF !important', 
-              textShadow: '2px 2px 0px #000000',
-              fontWeight: '600'
-            }}>
+            <span className="ml-3 playground-name" style={whiteTextStyle}>
               METEO {playgroundName.toUpperCase()}
             </span>
           </h4>
         </div>
         
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>TEMP</div>
-            <div className="text-black text-2xl font-black font-orbitron" style={{color: '#000000'}}>{weather.temperature}°C</div>
+          <div className="text-center bg-black rounded-lg p-3 border-2 border-orange-500">
+            <div style={whiteTextStyle} className="text-xs font-bold mb-1">TEMP</div>
+            <div style={whiteTextStyle} className="text-2xl font-black">{weather.temperature}°C</div>
           </div>
           
-          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>STATO</div>
-            <div className="text-black text-xs font-black font-orbitron" style={{color: '#000000'}}>{weather.condition.toUpperCase()}</div>
+          <div className="text-center bg-black rounded-lg p-3 border-2 border-orange-500">
+            <div style={whiteTextStyle} className="text-xs font-bold mb-1">STATO</div>
+            <div style={whiteTextStyle} className="text-xs font-black">{weather.condition.toUpperCase()}</div>
           </div>
           
-          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>UMIDITÀ</div>
-            <div className="text-black text-lg font-black font-orbitron" style={{color: '#000000'}}>{weather.humidity}%</div>
+          <div className="text-center bg-black rounded-lg p-3 border-2 border-orange-500">
+            <div style={whiteTextStyle} className="text-xs font-bold mb-1">UMIDITÀ</div>
+            <div style={whiteTextStyle} className="text-lg font-black">{weather.humidity}%</div>
           </div>
           
-          <div className="text-center bg-gray-100 rounded-lg p-3 border-2 border-gray-300">
-            <div className="text-black text-xs font-bold mb-1" style={{fontFamily: 'JetBrains Mono, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', color: '#000000'}}>VENTO</div>
-            <div className="text-black text-lg font-black font-orbitron" style={{color: '#000000'}}>{weather.windSpeed} KM/H</div>
+          <div className="text-center bg-black rounded-lg p-3 border-2 border-orange-500">
+            <div style={whiteTextStyle} className="text-xs font-bold mb-1">VENTO</div>
+            <div style={whiteTextStyle} className="text-lg font-black">{weather.windSpeed} KM/H</div>
           </div>
         </div>
       </div>
