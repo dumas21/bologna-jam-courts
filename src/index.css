@@ -151,19 +151,44 @@
     font-weight: 600 !important;
   }
 
-  /* TESTO CONDIZIONI METEO - BIANCO E LEGGIBILE */
+  /* TESTO CONDIZIONI METEO - GIALLO ARCADE VISIBILE */
   .weather-cartoon .bg-gray-100 div {
-    color: #FFFFFF !important;
-    text-shadow: 1px 1px 0px #000000 !important;
+    color: #FFD600 !important;
+    text-shadow: 1px 1px 2px #000000 !important;
     font-weight: 600 !important;
+    letter-spacing: 1px !important;
   }
 
   .weather-cartoon .bg-gray-100 {
-    background: rgba(0, 0, 0, 0.7) !important;
+    background: rgba(0, 0, 0, 0.8) !important;
     border: 2px solid #FF6B35 !important;
   }
 
-  /* ANIMAZIONI ARCADE - RIDOTTE */
+  /* WIDGET METEO SPECIFICO - TUTTI GLI ELEMENTI */
+  #meteo-widget,
+  .weather-widget,
+  .weather-description,
+  #weather-condition,
+  #weather-label {
+    color: #FFD600 !important;
+    font-weight: 600 !important;
+    text-shadow: 1px 1px 2px #000000 !important;
+    letter-spacing: 1px !important;
+  }
+
+  /* SELETTORI GENERICI PER CONDIZIONI METEO */
+  .weather-section .playground-name,
+  .weather-condition,
+  .weather-temp,
+  .weather-status {
+    color: #FFD600 !important;
+    font-weight: bold !important;
+    text-shadow: 1px 1px 3px #000000 !important;
+    letter-spacing: 1px !important;
+    font-size: 1.1em !important;
+  }
+
+  /* ========== ANIMAZIONI ARCADE - RIDOTTE ========== */
   @keyframes neon-glow {
     0%, 100% { 
       text-shadow: 2px 2px 0px #000;
