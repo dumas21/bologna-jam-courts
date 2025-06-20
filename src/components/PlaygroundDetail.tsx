@@ -111,33 +111,32 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-blue-600 transition-colors arcade-link"
-                  style={{color: '#FFFFFF', textShadow: '1px 1px 0px #000'}}
                 >
                   {playground.address}
                 </a>
               </div>
               <div className="flex items-center gap-2 arcade-info">
                 <Clock size={16} className="text-blue-600 arcade-icon" />
-                <span>ORARIO: {playground.openHours || 'NON DISPONIBILE'}</span>
+                <span className="arcade-text">ORARIO: {playground.openHours || 'NON DISPONIBILE'}</span>
               </div>
               <div className="flex items-center gap-2 arcade-info">
                 <Users size={16} className="text-green-500 arcade-icon" />
-                <span>
+                <span className="arcade-text">
                   {checkInCount} GIOCATORI CONNESSI
                 </span>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-2 arcade-feature">
                   {playground.hasFountain && <Droplets size={16} className="text-blue-400 arcade-icon" />}
-                  {playground.hasFountain && <span>ACQUA POTABILE</span>}
+                  {playground.hasFountain && <span className="arcade-text">ACQUA POTABILE</span>}
                 </div>
                 <div className="flex items-center gap-2 arcade-feature">
                   {playground.hasShade && <TreePine size={16} className="text-green-600 arcade-icon" />}
-                  {playground.hasShade && <span>OMBRA DISPONIBILE</span>}
+                  {playground.hasShade && <span className="arcade-text">OMBRA DISPONIBILE</span>}
                 </div>
                 <div className="flex items-center gap-2 arcade-feature">
                   {playground.hasLighting && <Lightbulb size={16} className="text-yellow-500 arcade-icon" />}
-                  {playground.hasLighting && <span>ILLUMINAZIONE NOTTURNA</span>}
+                  {playground.hasLighting && <span className="arcade-text">ILLUMINAZIONE NOTTURNA</span>}
                 </div>
               </div>
               <div className="flex justify-between items-center">
