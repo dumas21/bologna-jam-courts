@@ -49,21 +49,39 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
     }
   };
   
-  const forceWhiteText = {
-    color: '#FFFFFF',
-    textShadow: '1px 1px 3px rgba(0,0,0,0.8)',
+  // Stile ancora più aggressivo per forzare il bianco
+  const forceAbsoluteWhite = {
+    color: '#FFFFFF !important',
+    textShadow: '2px 2px 4px rgba(0,0,0,1)',
     fontWeight: 'bold',
     letterSpacing: '1px',
-    fontSize: 'inherit'
+    fontSize: 'inherit',
+    WebkitTextFillColor: '#FFFFFF',
+    textDecoration: 'none',
+    outline: 'none'
   };
   
   if (loading) {
     return (
-      <div style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
+      <div style={{
+        backgroundColor: '#000000', 
+        border: '4px solid #FF6B35', 
+        borderRadius: '8px', 
+        padding: '24px', 
+        marginBottom: '24px',
+        color: '#FFFFFF'
+      }}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '96px'}}>
           <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
             <Zap size={24} className="text-orange-500 animate-bounce" />
-            <p style={{...forceWhiteText, fontSize: '14px'}}>LOADING WEATHER...</p>
+            <p style={{
+              ...forceAbsoluteWhite, 
+              fontSize: '14px',
+              margin: 0,
+              padding: 0
+            }}>
+              LOADING WEATHER...
+            </p>
             <Zap size={24} className="text-orange-500 animate-bounce" />
           </div>
         </div>
@@ -73,39 +91,89 @@ const WeatherInfo: React.FC<WeatherInfoProps> = ({ playgroundName, location }) =
   
   if (!weather) {
     return (
-      <div style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
+      <div style={{
+        backgroundColor: '#000000', 
+        border: '4px solid #FF6B35', 
+        borderRadius: '8px', 
+        padding: '24px', 
+        marginBottom: '24px',
+        color: '#FFFFFF'
+      }}>
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '96px'}}>
-          <p style={{...forceWhiteText, fontSize: '14px'}}>WEATHER ERROR!</p>
+          <p style={{
+            ...forceAbsoluteWhite, 
+            fontSize: '14px',
+            margin: 0,
+            padding: 0
+          }}>
+            WEATHER ERROR!
+          </p>
         </div>
       </div>
     );
   }
   
   return (
-    <div style={{backgroundColor: '#000000', border: '4px solid #FF6B35', borderRadius: '8px', padding: '24px', marginBottom: '24px'}}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+    <div style={{
+      backgroundColor: '#000000', 
+      border: '4px solid #FF6B35', 
+      borderRadius: '8px', 
+      padding: '24px', 
+      marginBottom: '24px',
+      color: '#FFFFFF'
+    }}>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 8, 
+        marginBottom: 12,
+        color: '#FFFFFF'
+      }}>
         {getWeatherIcon(weather.condition)}
         <span style={{
-          color: '#FFFFFF',
+          color: '#FFFFFF !important',
           fontWeight: 'bold',
-          textShadow: '1px 1px 3px rgba(0,0,0,0.8)',
+          textShadow: '2px 2px 4px rgba(0,0,0,1)',
           fontSize: '18px',
-          letterSpacing: '1px'
+          letterSpacing: '1px',
+          WebkitTextFillColor: '#FFFFFF',
+          margin: 0,
+          padding: 0
         }}>
           {playgroundName}
         </span>
       </div>
-      <p style={{...forceWhiteText, fontSize: '16px', margin: '8px 0'}}>
-        Condizione: {weather.condition}
+      <p style={{
+        ...forceAbsoluteWhite, 
+        fontSize: '16px', 
+        margin: '8px 0',
+        padding: 0
+      }}>
+        Condizione: <span style={forceAbsoluteWhite}>{weather.condition}</span>
       </p>
-      <p style={{...forceWhiteText, fontSize: '16px', margin: '8px 0'}}>
-        Temperatura: {weather.temperature}°C
+      <p style={{
+        ...forceAbsoluteWhite, 
+        fontSize: '16px', 
+        margin: '8px 0',
+        padding: 0
+      }}>
+        Temperatura: <span style={forceAbsoluteWhite}>{weather.temperature}°C</span>
       </p>
-      <p style={{...forceWhiteText, fontSize: '16px', margin: '8px 0'}}>
-        Umidità: {weather.humidity}%
+      <p style={{
+        ...forceAbsoluteWhite, 
+        fontSize: '16px', 
+        margin: '8px 0',
+        padding: 0
+      }}>
+        Umidità: <span style={forceAbsoluteWhite}>{weather.humidity}%</span>
       </p>
-      <p style={{...forceWhiteText, fontSize: '16px', margin: '8px 0'}}>
-        Velocità vento: {weather.windSpeed} km/h
+      <p style={{
+        ...forceAbsoluteWhite, 
+        fontSize: '16px', 
+        margin: '8px 0',
+        padding: 0
+      }}>
+        Velocità vento: <span style={forceAbsoluteWhite}>{weather.windSpeed} km/h</span>
       </p>
     </div>
   );
