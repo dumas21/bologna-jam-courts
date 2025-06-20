@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -76,7 +77,12 @@
     z-index: 999;
   }
 
-  /* TYPOGRAPHY ARCADE ORIGINALE - GLOW RIDOTTO */
+  /* ========== TUTTO IL TESTO BIANCO ========== */
+  * {
+    color: #FFFFFF !important;
+  }
+
+  /* TYPOGRAPHY ARCADE ORIGINALE - TUTTO BIANCO */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Press Start 2P', monospace !important;
     text-shadow: 2px 2px 0px #000 !important;
@@ -84,7 +90,7 @@
     text-transform: uppercase !important;
     line-height: 1.2 !important;
     font-weight: 400 !important;
-    color: #FF6B35 !important;
+    color: #FFFFFF !important;
   }
   
   p, span, div, button, a, label, input, textarea {
@@ -142,7 +148,7 @@
     text-shadow: none !important;
   }
 
-  /* ========== METEO WIDGET - TESTO SEMPRE LEGGIBILE ========== */
+  /* ========== METEO WIDGET - TESTO SEMPRE BIANCO ========== */
   .weather-cartoon h4,
   .weather-cartoon .weather-label,
   .playground-name {
@@ -151,9 +157,9 @@
     font-weight: 600 !important;
   }
 
-  /* TESTO CONDIZIONI METEO - GIALLO ARCADE VISIBILE */
+  /* TESTO CONDIZIONI METEO - BIANCO */
   .weather-cartoon .bg-gray-100 div {
-    color: #FFD600 !important;
+    color: #FFFFFF !important;
     text-shadow: 1px 1px 2px #000000 !important;
     font-weight: 600 !important;
     letter-spacing: 1px !important;
@@ -164,24 +170,24 @@
     border: 2px solid #FF6B35 !important;
   }
 
-  /* WIDGET METEO SPECIFICO - TUTTI GLI ELEMENTI */
+  /* WIDGET METEO SPECIFICO - TUTTI GLI ELEMENTI BIANCHI */
   #meteo-widget,
   .weather-widget,
   .weather-description,
   #weather-condition,
   #weather-label {
-    color: #FFD600 !important;
+    color: #FFFFFF !important;
     font-weight: 600 !important;
     text-shadow: 1px 1px 2px #000000 !important;
     letter-spacing: 1px !important;
   }
 
-  /* SELETTORI GENERICI PER CONDIZIONI METEO */
+  /* SELETTORI GENERICI PER CONDIZIONI METEO - TUTTO BIANCO */
   .weather-section .playground-name,
   .weather-condition,
   .weather-temp,
   .weather-status {
-    color: #FFD600 !important;
+    color: #FFFFFF !important;
     font-weight: bold !important;
     text-shadow: 1px 1px 3px #000000 !important;
     letter-spacing: 1px !important;
