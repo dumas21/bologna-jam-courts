@@ -1,8 +1,11 @@
 
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MapView from "@/components/MapView";
 import PlaygroundDetail from "@/components/PlaygroundDetail";
-import { Playground } from "@/types/playground";
+import PlaygroundFiltersComponent from "@/components/PlaygroundFilters";
+import PlaygroundList from "@/components/PlaygroundList";
+import { Playground, PlaygroundFilters } from "@/types/playground";
 
 interface MainTabsProps {
   playgrounds: Playground[];
@@ -29,32 +32,43 @@ const MainTabs = ({
   playSoundEffect,
   scrollToTop
 }: MainTabsProps) => {
-  const handleBolognaTabClick = () => {
+  const [filters, setFilters] = useState<PlaygroundFilters>({
+    district: "",
+    shade: "",
+    refreshment: ""
+  });
+
+  const handleTabClick = (action: string) => {
     playSoundEffect('tab');
     scrollToTop();
   };
 
   return (
     <Tabs defaultValue="map" className="w-full arcade-main-tabs">
-      <TabsList className="w-full grid grid-cols-2 mb-2 md:mb-4 arcade-main-tab-list h-auto">
+      <TabsList className="w-full grid grid-cols-3 mb-2 md:mb-4 arcade-main-tab-list h-auto">
         <TabsTrigger 
           value="map" 
           className="text-xs md:text-sm arcade-main-tab py-3 px-2"
-          onClick={handleBolognaTabClick}
+          onClick={() => handleTabClick('map')}
         >
-          <span className="hidden sm:inline">BOLOGNA PLAYGROUNDS</span>
-          <span className="inline sm:hidden">BOLOGNA</span>
+          <span className="hidden sm:inline">MAPPA</span>
+          <span className="inline sm:hidden">MAP</span>
+        </TabsTrigger>
+        <TabsTrigger 
+          value="list" 
+          className="text-xs md:text-sm arcade-main-tab py-3 px-2"
+          onClick={() => handleTabClick('list')}
+        >
+          <span className="hidden sm:inline">LISTA</span>
+          <span className="inline sm:hidden">LIST</span>
         </TabsTrigger>
         <TabsTrigger 
           value="italia" 
           className="text-xs md:text-sm arcade-main-tab py-3 px-2"
-          onClick={(e) => {
-            e.preventDefault();
-            playSoundEffect('tab');
-          }}
+          onClick={() => handleTabClick('italia')}
         >
-          <span className="hidden sm:inline">LISTA ITALIA</span>
-          <span className="inline sm:hidden">ITALIA</span>
+          <span className="hidden sm:inline">ITALIA</span>
+          <span className="inline sm:hidden">ITA</span>
         </TabsTrigger>
       </TabsList>
       
@@ -66,6 +80,31 @@ const MainTabs = ({
             onSelectPlayground={onSelectPlayground} 
           />
         </div>
+        
+        {selectedPlayground && (
+          <div className="mt-2 md:mt-4" data-playground-details>
+            <PlaygroundDetail 
+              playground={selectedPlayground} 
+              onCheckIn={onCheckIn}
+              onCheckOut={onCheckOut}
+              hasUserCheckedIn={hasUserCheckedIn}
+              checkInRecords={checkInRecords}
+              onRatingUpdate={onRatingUpdate}
+            />
+          </div>
+        )}
+      </TabsContent>
+
+      <TabsContent value="list" className="arcade-fade-in mt-2">
+        <PlaygroundFiltersComponent
+          filters={filters}
+          onFiltersChange={setFilters}
+        />
+        <PlaygroundList
+          playgrounds={playgrounds}
+          filters={filters}
+          onSelectPlayground={onSelectPlayground}
+        />
         
         {selectedPlayground && (
           <div className="mt-2 md:mt-4" data-playground-details>

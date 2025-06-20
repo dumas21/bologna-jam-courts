@@ -4,162 +4,290 @@ import { Playground } from "@/types/playground";
 export const playgroundData: Playground[] = [
   {
     id: "gm",
-    name: "Giardini Margherita",
-    address: "Via Castiglione, 40136 Bologna BO",
+    name: "Giardini Margherita (Cristofori)",
+    address: "Viale Gozzadini, 40136 Bologna BO",
     openHours: "06:00 - 23:00",
     hasShade: true,
     hasFountain: false,
-    hasAmenities: true, // Bar, chioschi e servizi igienici
+    hasAmenities: true, // Ristoro interno
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 4,
     rating: 4.7,
     ratingCount: 42,
-    comments: []
+    comments: [],
+    district: "murri",
+    refreshmentType: "interno"
   },
   {
     id: "pm",
-    name: "Parco della Montagnola",
-    address: "Via Irnerio, 8, 40126 Bologna BO",
+    name: "Campetto Parco della Montagnola",
+    address: "Via Irnerio, 40126 Bologna BO",
     openHours: "08:00 - 22:00",
-    hasShade: true, // Circondato da alberi che offrono buona ombra naturale
+    hasShade: true,
     hasFountain: false,
-    hasAmenities: false, // No bar diretti, ma nelle vicinanze
+    hasAmenities: false, // Ristoro esterno
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 2,
     rating: 3.8,
     ratingCount: 24,
-    comments: []
+    comments: [],
+    district: "centro",
+    refreshmentType: "esterno"
   },
   {
     id: "gn",
-    name: "Giardini Nanetti (PalaDozza)",
-    address: "Via dello Sport, 40127 Bologna BO",
+    name: "Campetto Nanetti – Paladozza (Federico Dordei)",
+    address: "Via della Beverara, 40127 Bologna BO",
     openHours: "07:00 - 21:00",
-    hasShade: false, // Parzialmente, vicino ad alberi e strutture
+    hasShade: true,
     hasFountain: false,
-    hasAmenities: false, // No ristori diretti, ma bar nelle vicinanze del PalaDozza
+    hasAmenities: false, // Ristoro esterno
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 2,
     rating: 4.2,
     ratingCount: 18,
-    comments: []
+    comments: [],
+    district: "navile",
+    refreshmentType: "esterno"
   },
   {
     id: "pdp",
-    name: "Parco Davide Penazzi",
-    address: "Via Libia, 40137 Bologna BO",
+    name: "Giardino Davide Penazzi",
+    address: "Via Mondo, 40137 Bologna BO",
     openHours: "08:00 - 20:00",
-    hasShade: true, // Inserito in un'area verde con alberi che offrono ombra
+    hasShade: false, // Parziale
     hasFountain: false,
-    hasAmenities: false, // No ristori diretti, ma panchine e aree di sosta
+    hasAmenities: false,
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
-    basketCount: 1,
+    basketCount: 2,
     rating: 3.5,
     ratingCount: 11,
-    comments: []
+    comments: [],
+    district: "san_donato",
+    refreshmentType: "no"
   },
   {
     id: "fava",
-    name: "Giardini Graziella Fava",
-    address: "Via della Beverara, 40131 Bologna BO",
+    name: "Campo da basket Giardini Fava",
+    address: "Via Riva Reno, 40131 Bologna BO",
     openHours: "07:00 - 22:00",
-    hasShade: true, // Circondato da alberi e verde pubblico
+    hasShade: true,
     hasFountain: false,
-    hasAmenities: false, // No bar diretti, ma parco attrezzato con panchine
+    hasAmenities: false, // Ristoro esterno
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 2,
     rating: 4.2,
     ratingCount: 6,
-    comments: []
+    comments: [],
+    district: "centro",
+    refreshmentType: "esterno"
   },
   {
-    id: "talon",
-    name: "Parco Talon",
-    address: "Via Talon, 40133 Bologna BO",
+    id: "unita",
+    name: "Campo da basket Piazza dell'Unità",
+    address: "Piazza dell'Unità, 40133 Bologna BO",
     openHours: "08:00 - 20:00",
-    hasShade: false, // Parzialmente, alcune zone con alberi ma abbastanza esposto
+    hasShade: false, // Limitata
     hasFountain: false,
-    hasAmenities: false, // No ristori diretti, area verde con panchine
+    hasAmenities: false, // Ristoro esterno
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
-    basketCount: 1,
+    basketCount: 2,
     rating: 3.2,
     ratingCount: 5,
-    comments: []
+    comments: [],
+    district: "bolognina",
+    refreshmentType: "esterno"
   },
   {
-    id: "set11",
-    name: "Parco 11 Settembre",
-    address: "Via Emilia Levante, 40131 Bologna BO",
+    id: "savena",
+    name: "Campetto Savena (Via Libia)",
+    address: "Via Libia, 40131 Bologna BO",
     openHours: "08:00 - 21:00",
-    hasShade: false, // Parzialmente, alcune zone con alberi ma campo abbastanza esposto
+    hasShade: true,
     hasFountain: false,
-    hasAmenities: false, // No ristori diretti, ma parco attrezzato
+    hasAmenities: false, // Ristoro esterno
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 2,
     rating: 3.6,
     ratingCount: 8,
-    comments: []
+    comments: [],
+    district: "savena",
+    refreshmentType: "esterno"
   },
   {
-    id: "pnord",
-    name: "Parco Nord (Corticella)",
-    address: "Via Marco Emilio Lepido, 40132 Bologna BO",
+    id: "bergonzoni",
+    name: "Giardino Luciano Bergonzoni",
+    address: "Via Provaglia, 4, 40132 Bologna BO",
     openHours: "08:00 - 22:00",
-    hasShade: true, // Campo inserito in area verde con alberi
+    hasShade: false, // Parziale
     hasFountain: false,
-    hasAmenities: false, // No ristori diretti, ma area verde con panchine
+    hasAmenities: false,
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 2,
     rating: 3.8,
     ratingCount: 4,
-    comments: []
+    comments: [],
+    district: "navile",
+    refreshmentType: "no"
   },
   {
-    id: "ago2",
-    name: "Parco 2 Agosto",
-    address: "Via 2 Agosto 1980, 40127 Bologna BO",
+    id: "spiraglio",
+    name: "Parco Spiraglio",
+    address: "Via del Carpentiere, 14, 40127 Bologna BO",
     openHours: "08:30 - 21:00",
-    hasShade: false, // Parzialmente, alcune zone con alberi
+    hasShade: true,
     hasFountain: false,
-    hasAmenities: false, // No ristori diretti
+    hasAmenities: false,
     hasLighting: true,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 2,
     rating: 4.0,
     ratingCount: 7,
-    comments: []
+    comments: [],
+    district: "navile",
+    refreshmentType: "no"
   },
   {
-    id: "vber",
-    name: "Parco Villa Bernaroli",
-    address: "Via della Beverara, 40131 Bologna BO",
+    id: "scandellara",
+    name: "Parco Scandellara",
+    address: "Via Scandellara, 56, 40131 Bologna BO",
     openHours: "07:30 - 21:30",
-    hasShade: true, // Circondato da verde e alberi
+    hasShade: false, // Parziale
     hasFountain: false,
-    hasAmenities: false, // No ristori diretti, ma area verde attrezzata
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.9,
+    ratingCount: 3,
+    comments: [],
+    district: "savena",
+    refreshmentType: "no"
+  },
+  {
+    id: "tanara",
+    name: "Parco Vincenzo Tanara",
+    address: "Via Weber / Carpentiere, 40127 Bologna BO",
+    openHours: "08:00 - 21:00",
+    hasShade: false, // Parziale
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.4,
+    ratingCount: 2,
+    comments: [],
+    district: "navile",
+    refreshmentType: "no"
+  },
+  {
+    id: "san_donnino",
+    name: "Parco San Donnino",
+    address: "Via San Donato / Viale Europa, 40137 Bologna BO",
+    openHours: "08:00 - 20:00",
+    hasShade: true,
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.7,
+    ratingCount: 5,
+    comments: [],
+    district: "san_donato",
+    refreshmentType: "no"
+  },
+  {
+    id: "mitilini",
+    name: "Giardino Moneta Mitilini Stefanini",
+    address: "Via Pirandello, 40133 Bologna BO",
+    openHours: "08:00 - 21:00",
+    hasShade: false, // Parziale
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.3,
+    ratingCount: 4,
+    comments: [],
+    district: "mazzini",
+    refreshmentType: "no"
+  },
+  {
+    id: "cossetto",
+    name: "Giardino Norma Cossetto",
+    address: "Via Guelfa, 40133 Bologna BO",
+    openHours: "08:00 - 20:00",
+    hasShade: false, // Parziale
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.1,
+    ratingCount: 3,
+    comments: [],
+    district: "mazzini",
+    refreshmentType: "no"
+  },
+  {
+    id: "bosco",
+    name: "Parco Don Giovanni Bosco",
+    address: "Viale A. Moro, 40133 Bologna BO",
+    openHours: "08:00 - 21:00",
+    hasShade: false, // Limitata
+    hasFountain: false,
+    hasAmenities: false,
     hasLighting: false,
     currentPlayers: 0,
     totalCheckins: 0,
     basketCount: 1,
-    rating: 3.9,
-    ratingCount: 3,
-    comments: []
+    rating: 2.9,
+    ratingCount: 2,
+    comments: [],
+    district: "mazzini",
+    refreshmentType: "no"
+  },
+  {
+    id: "spartaco",
+    name: "Area Verde di via Spartaco",
+    address: "Via Spartaco 2, 40133 Bologna BO",
+    openHours: "08:00 - 20:00",
+    hasShade: false, // Non nota
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 0,
+    basketCount: 2,
+    rating: 3.0,
+    ratingCount: 1,
+    comments: [],
+    district: "mazzini",
+    refreshmentType: "no"
   }
 ];

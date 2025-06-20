@@ -61,7 +61,16 @@ export interface Playground {
     shade: boolean;
     lighting: boolean;
   };
+  district?: string; // Nuovo campo per il quartiere
+  refreshmentType?: "interno" | "esterno" | "no"; // Nuovo campo per il tipo di ristoro
 }
 
 // Tipo pubblico per mostrare solo nickname/id (senza email)
 export type PublicUser = Pick<RegisteredUser, 'id' | 'nickname'>;
+
+// Filtri per i playground
+export interface PlaygroundFilters {
+  district: string;
+  shade: string;
+  refreshment: string;
+}
