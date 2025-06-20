@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -142,6 +143,15 @@
     text-shadow: none !important;
   }
 
+  /* ========== METEO WIDGET - TESTO SEMPRE LEGGIBILE ========== */
+  .weather-cartoon h4,
+  .weather-cartoon .weather-label,
+  .playground-name {
+    color: #FFFFFF !important;
+    text-shadow: 2px 2px 0px #000000 !important;
+    font-weight: 600 !important;
+  }
+
   /* ANIMAZIONI ARCADE - RIDOTTE */
   @keyframes neon-glow {
     0%, 100% { 
@@ -204,8 +214,8 @@
   /* PLAYGROUND NAME STYLE - STILE ORIGINALE ANNI 80 CON GLOW RIDOTTO */
   .playground-name {
     font-family: 'Press Start 2P', monospace !important;
-    color: #FF6B35 !important;
-    text-shadow: 2px 2px 0px #000 !important;
+    color: #FFFFFF !important;
+    text-shadow: 2px 2px 0px #000000 !important;
     text-transform: uppercase !important;
     letter-spacing: 2px !important;
     background: rgba(0, 0, 0, 0.9) !important;
@@ -213,7 +223,7 @@
     border-radius: 8px !important;
     border: 2px solid #FF6B35 !important;
     box-shadow: 0 0 5px rgba(255, 107, 53, 0.3) !important;
-    font-weight: 400 !important;
+    font-weight: 600 !important;
   }
 
   /* SYNTHWAVE BACKGROUND */
@@ -391,6 +401,28 @@
     border-color: var(--arcade-white);
     box-shadow: 0 0 8px #FF6B35;
     text-shadow: 2px 2px 0px #000;
+  }
+
+  /* MAPS LINK STILE PERSONALIZZATO */
+  .maps-link {
+    display: inline-block;
+    vertical-align: middle;
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .maps-link svg {
+    fill: #FFD600;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .maps-link:hover svg,
+  .maps-link:focus svg {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 5px #FFD600);
   }
 }
 
