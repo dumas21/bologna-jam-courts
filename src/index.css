@@ -148,8 +148,26 @@
     text-shadow: none !important;
   }
 
-  /* ========== METEO E PLAYGROUND - TESTO BIANCO MASSIMA PRIORITÀ ========== */
+  /* ========== SEZIONE METEO - TUTTO BIANCO MASSIMA PRIORITÀ ========== */
   
+  /* Cambia il colore di tutti i testi nella sezione meteo in bianco */
+  .weather-section,
+  .weather-section *,
+  .weather-section *:before,
+  .weather-section *:after {
+    color: #fff !important;
+    text-shadow: 1px 1px 3px #000 !important; /* migliora la leggibilità */
+  }
+
+  /* Se vuoi solo il nome accanto all'icona meteo, usa questo selettore specifico */
+  .weather-section .playground-name,
+  .weather-section .nome-playground,
+  .weather-section .playground-title {
+    color: #fff !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px #000 !important;
+  }
+
   /* TUTTI GLI ELEMENTI DEL WEATHER CARTOON - BIANCO ASSOLUTO */
   .weather-cartoon,
   .weather-cartoon *,
@@ -166,7 +184,7 @@
   .weather-cartoon .weather-label,
   .weather-cartoon .playground-name {
     color: #FFFFFF !important;
-    text-shadow: none !important;
+    text-shadow: 1px 1px 3px #000 !important;
     font-weight: 600 !important;
   }
 
@@ -183,7 +201,7 @@
   .weather-cartoon .bg-gray-100 span,
   .weather-cartoon .bg-gray-100 p {
     color: #FFFFFF !important;
-    text-shadow: none !important;
+    text-shadow: 1px 1px 3px #000 !important;
     font-weight: 600 !important;
     letter-spacing: 1px !important;
     background: #000000 !important;
@@ -196,7 +214,7 @@
   .weather-section .playground-name,
   .weather-section .playground-name * {
     color: #FFFFFF !important;
-    text-shadow: none !important;
+    text-shadow: 1px 1px 3px #000 !important;
     font-weight: 600 !important;
     letter-spacing: 1px !important;
     font-size: 1.1em !important;
@@ -220,21 +238,7 @@
   .weather-status {
     color: #FFFFFF !important;
     font-weight: bold !important;
-    text-shadow: none !important;
-    letter-spacing: 1px !important;
-    font-size: 1.1em !important;
-  }
-
-  /* WEATHER SECTION - BIANCO ASSOLUTO */
-  .weather-section,
-  .weather-section *,
-  .weather-section .playground-name,
-  .weather-section span,
-  .weather-section div,
-  .weather-section p {
-    color: #FFFFFF !important;
-    text-shadow: none !important;
-    font-weight: bold !important;
+    text-shadow: 1px 1px 3px #000 !important;
     letter-spacing: 1px !important;
     font-size: 1.1em !important;
   }
