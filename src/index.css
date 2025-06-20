@@ -77,7 +77,29 @@
     z-index: 999;
   }
 
-  /* ========== TUTTO IL TESTO BIANCO ========== */
+  /* ========== FORZA BIANCO ASSOLUTO PER TUTTI I TESTI ========== */
+  body, 
+  h1, h2, h3, h4, h5, h6, 
+  p, span, a, div, section {
+    color: white !important;
+    background-color: transparent !important;
+  }
+
+  header, footer, nav, .details, .content {
+    background-color: #000000cc !important; /* sfondo nero semi-trasparente per contrasto */
+    color: white !important;
+  }
+
+  /* Per i link */
+  a {
+    color: #ffffffcc !important;
+  }
+
+  a:hover {
+    color: #ffffff !important;
+  }
+
+  /* TUTTO IL TESTO BIANCO */
   * {
     color: #FFFFFF !important;
   }
@@ -101,6 +123,44 @@
     text-transform: uppercase !important;
     color: #FFFFFF !important;
     font-weight: 400 !important;
+  }
+
+  /* ========== SEZIONE DETTAGLI - FORZA BIANCO ASSOLUTO ========== */
+  .arcade-card .arcade-info,
+  .arcade-card .arcade-info *,
+  .arcade-card .arcade-feature,
+  .arcade-card .arcade-feature *,
+  .arcade-card .arcade-text,
+  .arcade-card .arcade-text *,
+  .arcade-card span,
+  .arcade-card span *,
+  .arcade-card div,
+  .arcade-card div * {
+    color: #FFFFFF !important;
+    text-shadow: 1px 1px 0px #000 !important;
+    background-color: transparent !important;
+  }
+
+  /* DETTAGLI PLAYGROUND - BIANCO FORZATO */
+  [data-state="active"] .arcade-info,
+  [data-state="active"] .arcade-info *,
+  [data-state="active"] .arcade-feature,
+  [data-state="active"] .arcade-feature *,
+  [data-state="active"] .arcade-text,
+  [data-state="active"] .arcade-text *,
+  [data-state="active"] span,
+  [data-state="active"] span *,
+  [data-value="details"] .arcade-info,
+  [data-value="details"] .arcade-info *,
+  [data-value="details"] .arcade-feature,
+  [data-value="details"] .arcade-feature *,
+  [data-value="details"] .arcade-text,
+  [data-value="details"] .arcade-text *,
+  [data-value="details"] span,
+  [data-value="details"] span * {
+    color: #FFFFFF !important;
+    text-shadow: 1px 1px 0px #000 !important;
+    background-color: transparent !important;
   }
 
   /* ========== ECCEZIONI PER CHAT E LOGIN - TESTO NERO SU BIANCO ========== */
