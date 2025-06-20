@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -147,29 +148,37 @@
     text-shadow: none !important;
   }
 
-  /* ========== METEO E PLAYGROUND - TUTTO BIANCO SENZA OMBRA ========== */
+  /* ========== METEO E PLAYGROUND - TESTO BIANCO MASSIMA PRIORITÀ ========== */
+  
+  /* TUTTI GLI ELEMENTI DEL WEATHER CARTOON - BIANCO ASSOLUTO */
   .weather-cartoon,
   .weather-cartoon *,
+  .weather-cartoon h1,
+  .weather-cartoon h2,
+  .weather-cartoon h3,
   .weather-cartoon h4,
-  .weather-cartoon .weather-label,
-  .weather-cartoon div,
-  .weather-cartoon span,
+  .weather-cartoon h5,
+  .weather-cartoon h6,
   .weather-cartoon p,
-  .playground-name,
-  .playground-name * {
+  .weather-cartoon span,
+  .weather-cartoon div,
+  .weather-cartoon label,
+  .weather-cartoon .weather-label,
+  .weather-cartoon .playground-name {
     color: #FFFFFF !important;
     text-shadow: none !important;
     font-weight: 600 !important;
   }
 
-  /* SFONDO WEATHER CARTOON - SCURO PER CONTRASTO */
+  /* SFONDO WEATHER CARTOON - NERO TOTALE PER CONTRASTO */
   .weather-cartoon {
-    background: rgba(0, 0, 0, 0.9) !important;
+    background: #000000 !important;
     border: 2px solid #FF6B35 !important;
   }
 
-  /* SEZIONI METEO - TUTTO BIANCO */
+  /* SEZIONI METEO CON BG-GRAY - TUTTO BIANCO SU NERO */
   .weather-cartoon .bg-gray-100,
+  .weather-cartoon .bg-gray-100 *,
   .weather-cartoon .bg-gray-100 div,
   .weather-cartoon .bg-gray-100 span,
   .weather-cartoon .bg-gray-100 p {
@@ -177,31 +186,55 @@
     text-shadow: none !important;
     font-weight: 600 !important;
     letter-spacing: 1px !important;
-    background: rgba(0, 0, 0, 0.8) !important;
+    background: #000000 !important;
+    border: 1px solid #FF6B35 !important;
   }
 
-  /* WIDGET METEO SPECIFICO - BIANCO SENZA OMBRA */
+  /* PLAYGROUND NAME - BIANCO ASSOLUTO */
+  .playground-name,
+  .playground-name *,
+  .weather-section .playground-name,
+  .weather-section .playground-name * {
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+    font-size: 1.1em !important;
+    background: rgba(0, 0, 0, 0.9) !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    border: 2px solid #FF6B35 !important;
+  }
+
+  /* WIDGET METEO - BIANCO ASSOLUTO */
   #meteo-widget,
   #meteo-widget *,
   .weather-widget,
   .weather-widget *,
   .weather-description,
+  .weather-description *,
   #weather-condition,
-  #weather-label {
-    color: #FFFFFF !important;
-    font-weight: 600 !important;
-    text-shadow: none !important;
-    letter-spacing: 1px !important;
-  }
-
-  /* SELETTORI GENERICI PER CONDIZIONI METEO - BIANCO SENZA OMBRA */
-  .weather-section .playground-name,
+  #weather-label,
   .weather-condition,
   .weather-temp,
   .weather-status {
     color: #FFFFFF !important;
     font-weight: bold !important;
     text-shadow: none !important;
+    letter-spacing: 1px !important;
+    font-size: 1.1em !important;
+  }
+
+  /* WEATHER SECTION - BIANCO ASSOLUTO */
+  .weather-section,
+  .weather-section *,
+  .weather-section .playground-name,
+  .weather-section span,
+  .weather-section div,
+  .weather-section p {
+    color: #FFFFFF !important;
+    text-shadow: none !important;
+    font-weight: bold !important;
     letter-spacing: 1px !important;
     font-size: 1.1em !important;
   }
@@ -263,21 +296,6 @@
     letter-spacing: 2px !important;
     text-shadow: 2px 2px 0px #000 !important;
     color: #FF6B35 !important;
-  }
-
-  /* PLAYGROUND NAME STYLE - BIANCO SENZA OMBRA */
-  .playground-name {
-    font-family: 'Press Start 2P', monospace !important;
-    color: #FFFFFF !important;
-    text-shadow: none !important;
-    text-transform: uppercase !important;
-    letter-spacing: 2px !important;
-    background: rgba(0, 0, 0, 0.9) !important;
-    padding: 8px 12px !important;
-    border-radius: 8px !important;
-    border: 2px solid #FF6B35 !important;
-    box-shadow: 0 0 5px rgba(255, 107, 53, 0.3) !important;
-    font-weight: 600 !important;
   }
 
   /* SYNTHWAVE BACKGROUND */
