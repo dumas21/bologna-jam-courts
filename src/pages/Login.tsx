@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -16,6 +17,7 @@ const Login = () => {
   const { login } = useUser();
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -38,6 +40,15 @@ const Login = () => {
         toast({
           title: "ERRORE",
           description: "L'email è obbligatoria",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!acceptedTerms) {
+        toast({
+          title: "ERRORE",
+          description: "Devi accettare il regolamento per continuare",
           variant: "destructive",
         });
         return;
@@ -192,7 +203,7 @@ const Login = () => {
                     </div>
                   </div>
 
-                  {/* Messaggio informativo arcade style */}
+                  {/* Checkbox per accettazione regolamento */}
                   <div className="arcade-section" style={{
                     background: 'rgba(0, 0, 0, 0.6)',
                     border: '2px solid #ff00ff',
@@ -200,6 +211,30 @@ const Login = () => {
                     padding: '15px',
                     marginTop: '15px'
                   }}>
+                    <div className="flex items-start space-x-3 mb-3">
+                      <Checkbox
+                        id="accept-terms"
+                        checked={acceptedTerms}
+                        onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                        style={{
+                          borderColor: '#00ffff',
+                          backgroundColor: acceptedTerms ? '#00ffff' : 'transparent'
+                        }}
+                      />
+                      <label 
+                        htmlFor="accept-terms" 
+                        className="text-sm cursor-pointer"
+                        style={{ 
+                          color: '#00ffff', 
+                          fontSize: '8px',
+                          fontFamily: 'Press Start 2P, monospace',
+                          lineHeight: '1.4'
+                        }}
+                      >
+                        Accetto il regolamento e le condizioni d'uso *
+                      </label>
+                    </div>
+                    
                     <div className="flex items-start space-x-3">
                       <Info size={20} className="text-blue-600 mt-0.5 flex-shrink-0" style={{ color: '#00ffff' }} />
                       <div className="text-sm">
@@ -226,29 +261,33 @@ const Login = () => {
 
                   <Button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !acceptedTerms}
                     className="w-full"
                     style={{
-                      background: '#ff00ff',
+                      background: acceptedTerms ? '#ff00ff' : '#666',
                       color: 'white',
                       padding: '12px',
                       fontSize: '12px',
                       fontFamily: 'Press Start 2P, monospace',
                       border: 'none',
                       borderRadius: '10px',
-                      boxShadow: '0 0 10px #ff00ff',
-                      cursor: 'pointer',
+                      boxShadow: acceptedTerms ? '0 0 10px #ff00ff' : '0 0 5px #666',
+                      cursor: acceptedTerms ? 'pointer' : 'not-allowed',
                       marginTop: '15px'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#00ffff';
-                      e.currentTarget.style.color = 'black';
-                      e.currentTarget.style.boxShadow = '0 0 20px #00ffff';
+                      if (acceptedTerms) {
+                        e.currentTarget.style.background = '#00ffff';
+                        e.currentTarget.style.color = 'black';
+                        e.currentTarget.style.boxShadow = '0 0 20px #00ffff';
+                      }
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = '#ff00ff';
-                      e.currentTarget.style.color = 'white';
-                      e.currentTarget.style.boxShadow = '0 0 10px #ff00ff';
+                      if (acceptedTerms) {
+                        e.currentTarget.style.background = '#ff00ff';
+                        e.currentTarget.style.color = 'white';
+                        e.currentTarget.style.boxShadow = '0 0 10px #ff00ff';
+                      }
                     }}
                   >
                     {isLoading ? "CARICAMENTO..." : "LOGIN"}
