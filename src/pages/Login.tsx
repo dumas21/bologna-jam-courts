@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
-import { User, ArrowLeft, Info } from "lucide-react";
+import { User, ArrowLeft, Info, Mail } from "lucide-react";
 import Header from "@/components/Header";
 import { validateNickname, sanitizeText } from "@/utils/security";
 
@@ -15,6 +15,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useUser();
   const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,6 +33,26 @@ const Login = () => {
         return;
       }
 
+      if (!email.trim()) {
+        toast({
+          title: "ERRORE",
+          description: "L'email è obbligatoria",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast({
+          title: "ERRORE",
+          description: "Inserisci un'email valida",
+          variant: "destructive",
+        });
+        return;
+      }
+
       const nicknameValidation = validateNickname(nickname);
       if (!nicknameValidation.isValid) {
         toast({
@@ -43,10 +64,29 @@ const Login = () => {
       }
 
       const finalNickname = sanitizeText(nickname);
+      const finalEmail = sanitizeText(email);
+
+      // Store email in localStorage for newsletter
+      localStorage.setItem("userEmail", finalEmail);
+      localStorage.setItem("chatStartTime", new Date().toISOString());
+      localStorage.setItem("dailyMessageCount", "0");
+
+      // Optional: Send data to external service (commented out for now)
+      /*
+      try {
+        await fetch("https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: finalNickname, email: finalEmail })
+        });
+      } catch (error) {
+        console.log('External service error:', error);
+      }
+      */
 
       login(finalNickname);
       toast({
-        title: "LOGIN EFFETTUATO",
+        title: "ACCESSO EFFETTUATO",
         description: "Benvenuto in Playground Jam Bologna!",
       });
       
@@ -83,17 +123,22 @@ const Login = () => {
             INDIETRO
           </Button>
 
-          <Card className="arcade-card">
+          <Card className="arcade-card" style={{
+            background: 'rgba(0, 0, 0, 0.8)',
+            border: '3px dashed #ff00ff',
+            borderRadius: '20px',
+            boxShadow: '0 0 20px #00ffff',
+          }}>
             <CardHeader>
-              <CardTitle className="arcade-title text-center">
-                LOGIN
+              <CardTitle className="arcade-title text-center" style={{ color: '#ffcc00', fontSize: '18px' }}>
+                ARCADE LOGIN
               </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2 arcade-label">
-                    NICKNAME *
+                  <label className="block text-sm font-medium mb-2 arcade-label" style={{ fontSize: '10px', color: '#00ffff' }}>
+                    NOME *
                   </label>
                   <div className="relative">
                     <User size={16} className="absolute left-3 top-3 text-gray-400" />
@@ -101,30 +146,77 @@ const Login = () => {
                       type="text"
                       value={nickname}
                       onChange={(e) => setNickname(e.target.value)}
-                      className="pl-10 arcade-input"
+                      className="pl-10"
+                      style={{
+                        background: '#222',
+                        color: '#0ff',
+                        border: 'none',
+                        borderRadius: '5px',
+                        fontFamily: 'Press Start 2P, monospace',
+                        fontSize: '10px',
+                        textAlign: 'center'
+                      }}
                       placeholder="Il tuo nickname (2-20 caratteri)"
                       maxLength={20}
                       required
                     />
                   </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    Solo lettere, numeri, spazi, trattini e underscore
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2 arcade-label" style={{ fontSize: '10px', color: '#00ffff' }}>
+                    EMAIL *
+                  </label>
+                  <div className="relative">
+                    <Mail size={16} className="absolute left-3 top-3 text-gray-400" />
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10"
+                      style={{
+                        background: '#222',
+                        color: '#0ff',
+                        border: 'none',
+                        borderRadius: '5px',
+                        fontFamily: 'Press Start 2P, monospace',
+                        fontSize: '10px',
+                        textAlign: 'center'
+                      }}
+                      placeholder="La tua email"
+                      required
+                    />
                   </div>
                 </div>
 
-                {/* Messaggio informativo */}
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mt-4">
+                {/* Messaggio informativo arcade style */}
+                <div className="arcade-section" style={{
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  border: '2px solid #ff00ff',
+                  borderRadius: '10px',
+                  padding: '15px',
+                  marginTop: '15px'
+                }}>
                   <div className="flex items-start space-x-3">
-                    <Info size={20} className="text-blue-600 mt-0.5 flex-shrink-0" />
+                    <Info size={20} className="text-blue-600 mt-0.5 flex-shrink-0" style={{ color: '#00ffff' }} />
                     <div className="text-sm">
-                      <div className="font-bold text-blue-800 mb-2" style={{textShadow: 'none', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '1px', fontSize: '11px'}}>
-                        RICORDA DI TENERE PULITO
+                      <div className="font-bold mb-2" style={{ 
+                        color: '#ffcc00', 
+                        fontSize: '10px',
+                        fontFamily: 'Press Start 2P, monospace',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        REGOLE ARCADE
                       </div>
-                      <ul className="text-blue-700 space-y-1" style={{textShadow: 'none', fontFamily: 'ITC Machine, Press Start 2P, monospace', textTransform: 'uppercase', letterSpacing: '0.5px', fontSize: '9px'}}>
-                        <li>• LE CHAT SI RESETTANO OGNI 72 ORE</li>
-                        <li>• LE STATISTICHE RIMANGONO AGGIORNATE</li>
-                        <li>• MANTIENI UN LINGUAGGIO RISPETTOSO</li>
-                      </ul>
+                      <div style={{ 
+                        color: '#00ffff', 
+                        fontSize: '8px',
+                        fontFamily: 'Press Start 2P, monospace',
+                        lineHeight: '1.4'
+                      }}>
+                        Accedendo, accetti che il tuo nome venga mostrato nella chat e che la tua email sia usata per la newsletter. Le chat si azzerano ogni 72h. Puoi inviare al massimo 2 messaggi ogni 24h per chat.
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -132,9 +224,31 @@ const Login = () => {
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full arcade-button arcade-button-primary"
+                  className="w-full"
+                  style={{
+                    background: '#ff00ff',
+                    color: 'white',
+                    padding: '12px',
+                    fontSize: '12px',
+                    fontFamily: 'Press Start 2P, monospace',
+                    border: 'none',
+                    borderRadius: '10px',
+                    boxShadow: '0 0 10px #ff00ff',
+                    cursor: 'pointer',
+                    marginTop: '15px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#00ffff';
+                    e.currentTarget.style.color = 'black';
+                    e.currentTarget.style.boxShadow = '0 0 20px #00ffff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#ff00ff';
+                    e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.boxShadow = '0 0 10px #ff00ff';
+                  }}
                 >
-                  {isLoading ? "CARICAMENTO..." : "ENTRA"}
+                  {isLoading ? "CARICAMENTO..." : "LOGIN"}
                 </Button>
               </form>
             </CardContent>
