@@ -12,12 +12,14 @@ export const playgroundData: Playground[] = [
     rating: 4.2,
     ratingCount: 24,
     openHours: "Accesso libero h24. Eventi sportivi e tornei serali in estate.",
-    basketCount: 4,
+    basketCount: 2,
     hasShade: true,
     hasAmenities: true,
     hasLighting: true,
     hasFountain: true,
     type: "Outdoor",
+    district: "centro",
+    refreshmentType: "esterno",
     comments: [],
     // EVENTO TORNEO IN CORSO - SEMPRE ATTIVO
     currentEvent: {
@@ -45,6 +47,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "centro",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -64,6 +68,8 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     hasFountain: true,
     type: "Outdoor",
+    district: "navile",
+    refreshmentType: "interno",
     comments: []
   },
   {
@@ -83,6 +89,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "san_donato",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -102,6 +110,8 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     hasFountain: true,
     type: "Indoor",
+    district: "navile",
+    refreshmentType: "interno",
     comments: []
   },
   {
@@ -121,6 +131,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "savena",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -140,6 +152,8 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     hasFountain: false,
     type: "Outdoor",
+    district: "bolognina",
+    refreshmentType: "esterno",
     comments: []
   },
   {
@@ -159,6 +173,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "bolognina",
+    refreshmentType: "no", 
     comments: []
   },
   {
@@ -178,6 +194,8 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     hasFountain: true,
     type: "Indoor",
+    district: "savena",
+    refreshmentType: "interno",
     comments: []
   },
   {
@@ -197,6 +215,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: true,
     type: "Outdoor",
+    district: "murri",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -216,6 +236,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "centro",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -235,6 +257,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "navile",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -254,6 +278,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "navile",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -273,6 +299,8 @@ export const playgroundData: Playground[] = [
     hasLighting: true,
     hasFountain: false,
     type: "Outdoor",
+    district: "bolognina",
+    refreshmentType: "esterno",
     comments: []
   },
   {
@@ -292,6 +320,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "navile",
+    refreshmentType: "no",
     comments: []
   },
   {
@@ -311,6 +341,8 @@ export const playgroundData: Playground[] = [
     hasLighting: false,
     hasFountain: false,
     type: "Outdoor",
+    district: "navile",
+    refreshmentType: "no",
     comments: []
   }
 ];
