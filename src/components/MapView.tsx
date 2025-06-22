@@ -85,19 +85,51 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               >
                 {/* Header compatto e mobile-friendly */}
                 <div className="p-3 md:p-4 space-y-3">
-                  {/* Evento in corso - SEMPRE VISIBILE per Giardini Margherita */}
-                  {(playground.currentEvent && playground.currentEvent.isActive) || playground.id === "1" ? (
-                    <EventAlert
-                      eventName={playground.currentEvent?.name || "TORNEO STREETBALL 3VS3"}
-                      eventLink={playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball"}
-                      onClick={() => {
+                  {/* Banner EVENTO IN CORSO lampeggiante - SEMPRE VISIBILE per Giardini Margherita */}
+                  {playground.id === "1" && (
+                    <div 
+                      className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-4 rounded-xl border-4 border-yellow-400 cursor-pointer transform hover:scale-105 transition-transform text-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
                         const link = playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball";
                         openEventLink(link);
                       }}
-                    />
-                  ) : null}
+                      style={{
+                        animation: 'pulse 1.5s ease-in-out infinite',
+                        boxShadow: '0 0 30px #FF00FF, 0 0 60px #FF0000'
+                      }}
+                    >
+                      <div className="flex items-center justify-center gap-3 mb-2">
+                        <span className="text-3xl animate-bounce">🏆</span>
+                        <span 
+                          className="text-yellow-300 font-bold text-lg animate-pulse"
+                          style={{
+                            fontFamily: "'Press Start 2P', monospace",
+                            textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
+                            letterSpacing: "3px"
+                          }}
+                        >
+                          EVENTO IN CORSO
+                        </span>
+                        <span className="text-3xl animate-bounce">🏆</span>
+                      </div>
+                      <div 
+                        className="text-white font-bold text-sm hover:text-yellow-300 transition-colors"
+                        style={{ 
+                          fontFamily: "'Press Start 2P', monospace",
+                          textShadow: "2px 2px 0px #000, 0 0 10px #FFFF00",
+                          letterSpacing: "2px"
+                        }}
+                      >
+                        TORNEO STREETBALL 3VS3
+                      </div>
+                      <div className="mt-2 text-yellow-300 text-xs font-bold bg-black bg-opacity-60 px-3 py-1 rounded-full inline-block border-2 border-yellow-400 animate-pulse">
+                        CLICCA PER INFO
+                      </div>
+                    </div>
+                  )}
 
-                  {/* Nome con stile retro anni 80 RIPRISTINATO */}
+                  {/* Nome con stile retro anni 80 */}
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                     <div className="playground-name text-sm md:text-base font-bold flex-1 text-center sm:text-left retro-neon-text animate-neon-glow" 
                          style={{
@@ -128,16 +160,16 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                         </div>
                       )}
                       
-                      {/* Pulsante Maps con cartello stradale più grande */}
+                      {/* Pulsante Maps con cartello stradale INGRANDITO */}
                       <button 
-                        className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-500 hover:from-blue-500 hover:via-cyan-400 hover:to-blue-400 rounded-full border-3 border-white shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation retro-neon-glow"
+                        className="flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-500 hover:from-blue-500 hover:via-cyan-400 hover:to-blue-400 rounded-full border-4 border-white shadow-xl hover:shadow-2xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation retro-neon-glow"
                         onClick={(e) => openGoogleMaps(playground.address, e)}
                         title="Apri in Google Maps"
                         style={{
-                          boxShadow: '0 0 20px #00ffff, inset 0 0 20px rgba(255,255,255,0.1)'
+                          boxShadow: '0 0 25px #00ffff, inset 0 0 25px rgba(255,255,255,0.2)'
                         }}
                       >
-                        <Signpost size={32} className="drop-shadow-lg text-white" />
+                        <Signpost size={40} className="drop-shadow-xl text-white" />
                       </button>
                     </div>
                   </div>
