@@ -1,12 +1,10 @@
-
-
 import { Playground } from "@/types/playground";
 
 export const playgroundData: Playground[] = [
   {
     id: "1",
     name: "Playground Gianni Cristofori - Giardini Margherita",
-    address: "Viale Dante Drusiani, Bologna",
+    address: "Viale Dante Drusiani, Bologna", 
     latitude: 44.4845,
     longitude: 11.3603,
     currentPlayers: 5,
@@ -21,10 +19,10 @@ export const playgroundData: Playground[] = [
     hasFountain: true,
     type: "Outdoor",
     comments: [],
-    // Event in corso - Torneo
+    // EVENTO TORNEO IN CORSO - SEMPRE ATTIVO
     currentEvent: {
-      id: "event_1",
-      name: "TORNEO STREETBALL 3VS3",
+      id: "event_giardini_margherita_torneo",
+      name: "🏀 TORNEO STREETBALL 3VS3 IN CORSO! 🏀",
       playgroundId: "1",
       isActive: true,
       link: "https://www.comune.bologna.it/eventi/torneo-streetball"
@@ -316,4 +314,3 @@ export const playgroundData: Playground[] = [
     comments: []
   }
 ];
-

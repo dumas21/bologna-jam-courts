@@ -1,3 +1,4 @@
+
 import { Users, Lightbulb, Clock, Star, Calendar, ExternalLink, Signpost } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
@@ -84,14 +85,17 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               >
                 {/* Header compatto e mobile-friendly */}
                 <div className="p-3 md:p-4 space-y-3">
-                  {/* Evento in corso - con il nuovo componente EventAlert */}
-                  {playground.currentEvent && playground.currentEvent.isActive && (
+                  {/* Evento in corso - SEMPRE VISIBILE per Giardini Margherita */}
+                  {(playground.currentEvent && playground.currentEvent.isActive) || playground.id === "1" ? (
                     <EventAlert
-                      eventName={playground.currentEvent.name}
-                      eventLink={playground.currentEvent.link}
-                      onClick={() => playground.currentEvent?.link && openEventLink(playground.currentEvent.link)}
+                      eventName={playground.currentEvent?.name || "TORNEO STREETBALL 3VS3"}
+                      eventLink={playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball"}
+                      onClick={() => {
+                        const link = playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball";
+                        openEventLink(link);
+                      }}
                     />
-                  )}
+                  ) : null}
 
                   {/* Nome con stile retro anni 80 RIPRISTINATO */}
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
