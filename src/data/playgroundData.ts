@@ -1,3 +1,4 @@
+
 import { Playground } from "@/types/playground";
 
 export const playgroundData: Playground[] = [
@@ -11,13 +12,15 @@ export const playgroundData: Playground[] = [
     hasAmenities: true, // Ristoro interno
     hasLighting: true,
     currentPlayers: 0,
-    totalCheckins: 0,
+    totalCheckins: 7, // Updated from new data
     basketCount: 4,
-    rating: 4.7,
+    rating: 3, // Updated from new data
     ratingCount: 42,
     comments: [],
     district: "murri",
     refreshmentType: "interno",
+    latitude: 44.4890,
+    longitude: 11.3449,
     currentEvent: {
       id: "torneo-2025",
       name: "43° TORNEO DEI GIARDINI MARGHERITA",
@@ -36,13 +39,15 @@ export const playgroundData: Playground[] = [
     hasAmenities: false, // Ristoro esterno
     hasLighting: true,
     currentPlayers: 0,
-    totalCheckins: 0,
+    totalCheckins: 1, // Updated from new data
     basketCount: 2,
-    rating: 3.8,
+    rating: 0, // Updated from new data
     ratingCount: 24,
     comments: [],
     district: "centro",
-    refreshmentType: "esterno"
+    refreshmentType: "esterno",
+    latitude: 44.5045,
+    longitude: 11.3434
   },
   {
     id: "gn",
@@ -90,13 +95,15 @@ export const playgroundData: Playground[] = [
     hasAmenities: false, // Ristoro esterno
     hasLighting: false,
     currentPlayers: 0,
-    totalCheckins: 0,
+    totalCheckins: 2, // Updated from new data
     basketCount: 2,
-    rating: 4.2,
+    rating: 5, // Updated from new data
     ratingCount: 6,
     comments: [],
     district: "centro",
-    refreshmentType: "esterno"
+    refreshmentType: "esterno",
+    latitude: 44.4934,
+    longitude: 11.3429
   },
   {
     id: "unita",
@@ -295,5 +302,86 @@ export const playgroundData: Playground[] = [
     comments: [],
     district: "mazzini",
     refreshmentType: "no"
+  },
+  // New playgrounds from the JSON data
+  {
+    id: "piazza_azzarita",
+    name: "Piazza Azzarita",
+    address: "Piazza Azzarita, Bologna BO",
+    openHours: "08:00 - 20:00",
+    hasShade: false,
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 1,
+    basketCount: 2,
+    rating: 0,
+    ratingCount: 0,
+    comments: [],
+    district: "centro",
+    refreshmentType: "no",
+    latitude: 44.5062,
+    longitude: 11.3440
+  },
+  {
+    id: "ponte_libia",
+    name: "Parco del Ponte di Via Libia",
+    address: "Via Libia, Bologna BO",
+    openHours: "08:00 - 21:00",
+    hasShade: true,
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: false,
+    currentPlayers: 0,
+    totalCheckins: 1,
+    basketCount: 2,
+    rating: 0,
+    ratingCount: 0,
+    comments: [],
+    district: "savena",
+    refreshmentType: "no",
+    latitude: 44.5068,
+    longitude: 11.3540
+  },
+  {
+    id: "santantonio_savena",
+    name: "Sant'Antonio Savena",
+    address: "Via Sant'Antonio, Bologna BO",
+    openHours: "07:00 - 21:00",
+    hasShade: true,
+    hasFountain: false,
+    hasAmenities: false,
+    hasLighting: true,
+    currentPlayers: 0,
+    totalCheckins: 1,
+    basketCount: 2,
+    rating: 0,
+    ratingCount: 0,
+    comments: [],
+    district: "savena",
+    refreshmentType: "no",
+    latitude: 44.5180,
+    longitude: 11.3600
+  },
+  {
+    id: "centro_ferrari",
+    name: "Centro Sportivo Ferrari",
+    address: "Via Ferrari, Bologna BO",
+    openHours: "07:00 - 22:00",
+    hasShade: true,
+    hasFountain: true,
+    hasAmenities: true,
+    hasLighting: true,
+    currentPlayers: 0,
+    totalCheckins: 1,
+    basketCount: 4,
+    rating: 0,
+    ratingCount: 0,
+    comments: [],
+    district: "murri",
+    refreshmentType: "interno",
+    latitude: 44.4850,
+    longitude: 11.3560
   }
 ];
