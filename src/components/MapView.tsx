@@ -4,6 +4,7 @@ import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BasketballWithFlames from "./BasketballWithFlames";
+import EventAlert from "./EventAlert";
 
 interface MapViewProps {
   playgrounds: Playground[];
@@ -81,24 +82,13 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
               >
                 {/* Header compatto e mobile-friendly */}
                 <div className="p-3 md:p-4 space-y-3">
-                  {/* Evento in corso - mostrato in evidenza */}
+                  {/* Evento in corso - con il nuovo componente EventAlert */}
                   {playground.currentEvent && playground.currentEvent.isActive && (
-                    <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-lg border-2 border-yellow-400 animate-pulse">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Calendar size={16} className="text-yellow-300" />
-                          <span className="text-xs font-bold text-yellow-300">EVENTO IN CORSO</span>
-                        </div>
-                        <ExternalLink size={12} className="text-yellow-300" />
-                      </div>
-                      <button
-                        onClick={(e) => playground.currentEvent?.link && openEventLink(playground.currentEvent.link, e)}
-                        className="text-white font-bold text-sm mt-1 hover:text-yellow-300 transition-colors text-left w-full"
-                        style={{ fontFamily: "'Press Start 2P', monospace" }}
-                      >
-                        {playground.currentEvent.name}
-                      </button>
-                    </div>
+                    <EventAlert
+                      eventName={playground.currentEvent.name}
+                      eventLink={playground.currentEvent.link}
+                      onClick={(e) => playground.currentEvent?.link && openEventLink(playground.currentEvent.link, e as any)}
+                    />
                   )}
 
                   {/* Nome con stile retro anni 80 RIPRISTINATO */}

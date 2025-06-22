@@ -107,6 +107,14 @@ const Index = () => {
           <p className="font-press-start text-xs">
             PLAYGROUND JAM BOLOGNA &copy; 2025 - MATTEO BERGAMI
           </p>
+          <div className="mt-2" style={{
+            color: '#00ffff',
+            fontSize: '8px',
+            fontFamily: 'Press Start 2P, monospace',
+            textShadow: '1px 1px 0px #000'
+          }}>
+            CONTATTI: playgroundjam21@gmail.com
+          </div>
         </div>
       </footer>
     </div>
