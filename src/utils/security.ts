@@ -1,4 +1,3 @@
-
 import DOMPurify from 'dompurify';
 
 // Enhanced content sanitization
@@ -8,7 +7,6 @@ export const sanitizeHTML = (content: string): string => {
     ALLOWED_ATTR: [],
     KEEP_CONTENT: true,
     SANITIZE_DOM: true,
-    FORBID_SCRIPT: true,
     FORBID_TAGS: ['script', 'object', 'embed', 'link', 'style', 'img', 'video', 'audio'],
     FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onchange', 'onsubmit']
   });
@@ -125,6 +123,19 @@ class EnhancedRateLimiter {
     const userAttempts = this.attempts.get(identifier) || { count: 0, timestamps: [] };
     const recentAttempts = userAttempts.timestamps.filter(timestamp => now - timestamp < this.windowMs);
     return Math.max(0, this.maxAttempts - recentAttempts.length);
+  }
+
+  getRemainingTime(identifier: string): number {
+    const now = Date.now();
+    const userAttempts = this.attempts.get(identifier) || { count: 0, timestamps: [] };
+    const recentTimestamps = userAttempts.timestamps.filter(timestamp => now - timestamp < this.windowMs);
+    
+    if (recentTimestamps.length >= this.maxAttempts) {
+      const oldestAttempt = Math.min(...recentTimestamps);
+      return Math.max(0, this.blockDurationMs - (now - oldestAttempt));
+    }
+    
+    return 0;
   }
 
   reset(identifier: string): void {
