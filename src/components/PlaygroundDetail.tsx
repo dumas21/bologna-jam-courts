@@ -1,14 +1,15 @@
+
 import React, { useState } from 'react';
 import { Playground } from '@/types/playground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Clock, Users, Droplets, TreePine, Lightbulb, CheckCircle, XCircle, SignpostBig } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import PlaygroundRating from './PlaygroundRating';
 import PlaygroundChat from './PlaygroundChat';
 import UserList from './UserList';
 import WeatherInfo from './WeatherInfo';
+import EventBanner from './EventBanner';
+import PlaygroundInfo from './PlaygroundInfo';
+import PlaygroundActions from './PlaygroundActions';
 import { useUser } from '@/contexts/UserContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -94,41 +95,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {/* Cartello Evento in Corso per Giardini Margherita */}
-        {playground.id === "1" && (
-          <div className="mb-6 p-4 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 rounded-lg border-3 border-white shadow-xl transform hover:scale-105 transition-transform">
-            <div className="text-center">
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <span className="text-3xl animate-pulse">🏆</span>
-                <span 
-                  className="text-white font-bold text-lg md:text-xl animate-pulse"
-                  style={{
-                    fontFamily: "'Press Start 2P', monospace",
-                    textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
-                    letterSpacing: "2px"
-                  }}
-                >
-                  EVENTO IN CORSO
-                </span>
-                <span className="text-3xl animate-pulse">🏆</span>
-              </div>
-              <div 
-                className="text-yellow-300 font-bold text-sm md:text-base"
-                style={{
-                  fontFamily: "'Press Start 2P', monospace",
-                  textShadow: "2px 2px 0px #000",
-                  letterSpacing: "1px"
-                }}
-              >
-                TORNEO STREETBALL 3VS3
-              </div>
-              <div className="mt-2 text-white text-xs font-bold bg-black bg-opacity-50 px-3 py-1 rounded-full inline-block">
-                CLICCA PER MAGGIORI INFO
-              </div>
-            </div>
-          </div>
-        )}
-
+        <EventBanner playgroundId={playground.id} />
         <WeatherInfo playgroundName={playground.name} location={playground.address} />
         
         <Tabs defaultValue="details" className="w-full arcade-tabs">
@@ -137,93 +104,17 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
             <TabsTrigger value="community" className="text-sm arcade-tab">COMMUNITY</TabsTrigger>
           </TabsList>
           <TabsContent value="details">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 arcade-info">
-                <SignpostBig size={16} className="text-orange-600 arcade-icon" />
-                <a 
-                  href={`https://www.google.com/maps/search/?api=1&query=${playground.address}`}
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:text-blue-600 transition-colors arcade-link"
-                >
-                  {playground.address}
-                </a>
-              </div>
-              <div className="flex items-center gap-2 arcade-info">
-                <Clock size={16} className="text-blue-600 arcade-icon" />
-                <span className="arcade-text">ORARIO: {playground.openHours || 'NON DISPONIBILE'}</span>
-              </div>
-              <div className="flex items-center gap-2 arcade-info">
-                <Users size={16} className="text-green-500 arcade-icon" />
-                <span className="arcade-text">
-                  {checkInCount} GIOCATORI CONNESSI
-                </span>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center gap-2 arcade-feature">
-                  {playground.hasFountain && <Droplets size={16} className="text-blue-400 arcade-icon" />}
-                  {playground.hasFountain && <span className="arcade-text">ACQUA POTABILE</span>}
-                </div>
-                <div className="flex items-center gap-2 arcade-feature">
-                  {playground.hasShade && <TreePine size={16} className="text-green-600 arcade-icon" />}
-                  {playground.hasShade && <span className="arcade-text">OMBRA DISPONIBILE</span>}
-                </div>
-                <div className="flex items-center gap-2 arcade-feature">
-                  {playground.hasLighting && <Lightbulb size={16} className="text-yellow-500 arcade-icon" />}
-                  {playground.hasLighting && <span className="arcade-text">ILLUMINAZIONE NOTTURNA</span>}
-                </div>
-              </div>
-              <div className="flex justify-between items-center">
-                {isLoggedIn ? (
-                  isUserCheckedIn ? (
-                    <Button 
-                      variant="destructive" 
-                      onClick={handleCheckOutClick} 
-                      disabled={isCheckingOut}
-                      className="arcade-button arcade-button-danger"
-                    >
-                      {isCheckingOut ? (
-                        <>
-                          <Clock className="mr-2 h-4 w-4 animate-spin" />
-                          CHECK-OUT...
-                        </>
-                      ) : (
-                        <>
-                          <XCircle className="mr-2 h-4 w-4" />
-                          CHECK-OUT
-                        </>
-                      )}
-                    </Button>
-                  ) : (
-                    <Button 
-                      onClick={handleCheckInClick} 
-                      disabled={isCheckingIn}
-                      className="arcade-button arcade-button-primary"
-                    >
-                      {isCheckingIn ? (
-                        <>
-                          <Clock className="mr-2 h-4 w-4 animate-spin" />
-                          CHECK-IN...
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle className="mr-2 h-4 w-4" />
-                          CHECK-IN
-                        </>
-                      )}
-                    </Button>
-                  )
-                ) : (
-                  <Button disabled className="arcade-button arcade-button-disabled">
-                    LOGIN PER CHECK-IN
-                  </Button>
-                )}
-                <PlaygroundRating 
-                  playground={playground} 
-                  onRatingUpdate={onRatingUpdate}
-                />
-              </div>
-            </div>
+            <PlaygroundInfo playground={playground} checkInCount={checkInCount} />
+            <PlaygroundActions
+              playground={playground}
+              isLoggedIn={isLoggedIn}
+              isUserCheckedIn={isUserCheckedIn}
+              isCheckingIn={isCheckingIn}
+              isCheckingOut={isCheckingOut}
+              onCheckInClick={handleCheckInClick}
+              onCheckOutClick={handleCheckOutClick}
+              onRatingUpdate={onRatingUpdate}
+            />
           </TabsContent>
           <TabsContent value="community" className="community">
             <div className="space-y-4">
