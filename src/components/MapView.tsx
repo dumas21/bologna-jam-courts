@@ -4,6 +4,7 @@ import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import BasketballWithFlames from "./BasketballWithFlames";
 import EventAlert from "./EventAlert";
+import { openSecureExternalLink } from "@/config/security";
 
 interface MapViewProps {
   playgrounds: Playground[];
@@ -23,7 +24,9 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
     e.stopPropagation();
     const encodedAddress = encodeURIComponent(address);
     const url = `https://maps.google.com/maps?q=${encodedAddress}`;
-    window.open(url, '_blank');
+    
+    // Use secure external link handler
+    openSecureExternalLink(url);
     
     // Play basketball sound
     const audio = new Audio('/sounds/click.mp3');
@@ -31,7 +34,8 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
   };
 
   const openEventLink = (link: string) => {
-    window.open(link, '_blank');
+    // Use secure external link handler
+    openSecureExternalLink(link);
     
     const audio = new Audio('/sounds/click.mp3');
     audio.play().catch(err => console.log('Event link sound error:', err));
