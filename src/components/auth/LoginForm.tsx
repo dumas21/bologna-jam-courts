@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
 import { Mail, User } from "lucide-react";
 import TermsAcceptance from "./TermsAcceptance";
+import { validateEmailSecurity } from "@/config/security";
+import { validateInput, secureStorage } from "@/utils/security";
+import { secureAPI } from "@/config/security";
 
 interface LoginFormProps {
   onSuccess: () => void;
@@ -22,7 +26,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
 
   const saveUserToStorage = (email: string, nickname: string) => {
     try {
-      const existingUsers = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const existingUsers = secureStorage.getItem("registeredUsers") || [];
       
       // Check if user already exists
       const existingUserIndex = existingUsers.findIndex((u: any) => u.email === email.toLowerCase());
@@ -30,26 +34,27 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
       if (existingUserIndex >= 0) {
         // Update last login
         existingUsers[existingUserIndex].lastLogin = new Date().toISOString();
-        existingUsers[existingUserIndex].nickname = nickname; // Update nickname if changed
+        existingUsers[existingUserIndex].nickname = nickname;
       } else {
-        // Add new user
+        // Add new user with enhanced security
         const newUser = {
-          id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          id: `user_${Date.now()}_${crypto.getRandomValues(new Uint8Array(4)).join('')}`,
           email: email.toLowerCase(),
           nickname: nickname,
           registrationDate: new Date().toISOString(),
-          lastLogin: new Date().toISOString()
+          lastLogin: new Date().toISOString(),
+          loginCount: 1
         };
         existingUsers.push(newUser);
       }
       
-      localStorage.setItem("registeredUsers", JSON.stringify(existingUsers));
+      secureStorage.setItem("registeredUsers", existingUsers);
       
       // Also maintain the simple email list for backward compatibility
-      const existingEmails = JSON.parse(localStorage.getItem("registeredEmails") || "[]");
+      const existingEmails = secureStorage.getItem("registeredEmails") || [];
       if (!existingEmails.includes(email.toLowerCase())) {
         existingEmails.push(email.toLowerCase());
-        localStorage.setItem("registeredEmails", JSON.stringify(existingEmails));
+        secureStorage.setItem("registeredEmails", existingEmails);
       }
       
     } catch (error) {
@@ -62,19 +67,22 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
     setIsLoading(true);
 
     try {
-      if (!email.trim()) {
+      // Enhanced input validation
+      const emailValidation = validateInput(email.trim(), 'email');
+      if (!emailValidation.isValid) {
         toast({
-          title: "ERRORE",
-          description: "L'email è obbligatoria",
+          title: "ERRORE EMAIL",
+          description: emailValidation.error,
           variant: "destructive",
         });
         return;
       }
 
-      if (!username.trim()) {
+      const usernameValidation = validateInput(username.trim(), 'string', 20);
+      if (!usernameValidation.isValid) {
         toast({
-          title: "ERRORE",
-          description: "Il nome utente è obbligatorio",
+          title: "ERRORE USERNAME",
+          description: usernameValidation.error,
           variant: "destructive",
         });
         return;
@@ -89,48 +97,61 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
         return;
       }
 
-      // Basic email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
+      // Additional email security validation
+      const emailSecurityCheck = validateEmailSecurity(emailValidation.sanitized);
+      if (!emailSecurityCheck.isValid) {
         toast({
-          title: "ERRORE",
-          description: "Inserisci un'email valida",
+          title: "ERRORE SICUREZZA",
+          description: emailSecurityCheck.error,
           variant: "destructive",
         });
         return;
       }
 
-      // Send data to Google Sheets
+      // Send data to Google Sheets with enhanced security
       try {
-        await fetch("https://script.google.com/macros/s/AKfycbyuvH-l_JVhdDSojVgTxLpe_Eexb1JtwWoOM0MQDIErNIEPWznTqmpaUBrxG9eU4e9P/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ 
-            name: username, 
-            email: email 
-          })
+        await secureAPI.securePost('registration', {
+          name: usernameValidation.sanitized,
+          email: emailValidation.sanitized,
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent,
+          source: 'playground_app'
         });
       } catch (error) {
-        console.log('Google Sheets error:', error);
+        console.warn('Google Sheets API error (non-critical):', error);
+        // Continue with login even if external API fails
       }
 
       // Save user data to localStorage
-      saveUserToStorage(email, username);
+      saveUserToStorage(emailValidation.sanitized, usernameValidation.sanitized);
 
-      // Store email in localStorage
-      localStorage.setItem("userEmail", email);
-      localStorage.setItem("chatStartTime", new Date().toISOString());
-      localStorage.setItem("dailyMessageCount", "0");
+      // Store additional secure data
+      secureStorage.setItem("userEmail", emailValidation.sanitized);
+      secureStorage.setItem("chatStartTime", new Date().toISOString());
+      secureStorage.setItem("dailyMessageCount", 0);
 
-      // Use username for login
-      login(username);
+      // Attempt secure login
+      const loginResult = login(usernameValidation.sanitized);
+      
+      if (!loginResult.success) {
+        toast({
+          title: "ERRORE LOGIN",
+          description: loginResult.error || "Login fallito",
+          variant: "destructive",
+        });
+        return;
+      }
       
       // Show success message
       onSuccess();
       
       // Play success sound
-      const audio = new Audio('/sounds/coin-insert.mp3');
-      audio.play().catch(err => console.log('Audio playback error:', err));
+      try {
+        const audio = new Audio('/sounds/coin-insert.mp3');
+        audio.play();
+      } catch (err) {
+        console.log('Audio playback error:', err);
+      }
       
       // Redirect after 2 seconds
       setTimeout(() => {
@@ -138,9 +159,10 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
       }, 2000);
       
     } catch (error) {
+      console.error('Login error:', error);
       toast({
         title: "ERRORE",
-        description: "Si è verificato un errore imprevisto",
+        description: "Si è verificato un errore di sicurezza. Riprova.",
         variant: "destructive",
       });
     } finally {
@@ -163,7 +185,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
           <Input
             type="text"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.substring(0, 20))}
             className="pl-10"
             style={{
               background: '#222',
@@ -176,6 +198,8 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
             }}
             placeholder="Il tuo nome utente"
             required
+            maxLength={20}
+            autoComplete="username"
           />
         </div>
       </div>
@@ -193,7 +217,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
           <Input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value.substring(0, 254))}
             className="pl-10"
             style={{
               background: '#222',
@@ -206,6 +230,8 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
             }}
             placeholder="La tua email"
             required
+            maxLength={254}
+            autoComplete="email"
           />
         </div>
       </div>
@@ -217,37 +243,39 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
 
       <Button
         type="submit"
-        disabled={isLoading || !acceptedTerms}
+        disabled={isLoading || !acceptedTerms || !email.trim() || !username.trim()}
         className="w-full"
         style={{
-          background: acceptedTerms ? '#ff00ff' : '#666',
+          background: (acceptedTerms && email.trim() && username.trim()) ? '#ff00ff' : '#666',
           color: 'white',
           padding: '12px',
           fontSize: '12px',
           fontFamily: 'Press Start 2P, monospace',
           border: 'none',
           borderRadius: '10px',
-          boxShadow: acceptedTerms ? '0 0 10px #ff00ff' : '0 0 5px #666',
-          cursor: acceptedTerms ? 'pointer' : 'not-allowed',
+          boxShadow: (acceptedTerms && email.trim() && username.trim()) ? 
+            '0 0 10px #ff00ff' : '0 0 5px #666',
+          cursor: (acceptedTerms && email.trim() && username.trim()) ? 
+            'pointer' : 'not-allowed',
           marginTop: '15px',
           textShadow: '1px 1px 0px #000'
         }}
         onMouseEnter={(e) => {
-          if (acceptedTerms) {
+          if (acceptedTerms && email.trim() && username.trim()) {
             e.currentTarget.style.background = '#00ffff';
             e.currentTarget.style.color = 'black';
             e.currentTarget.style.boxShadow = '0 0 20px #00ffff';
           }
         }}
         onMouseLeave={(e) => {
-          if (acceptedTerms) {
+          if (acceptedTerms && email.trim() && username.trim()) {
             e.currentTarget.style.background = '#ff00ff';
             e.currentTarget.style.color = 'white';
             e.currentTarget.style.boxShadow = '0 0 10px #ff00ff';
           }
         }}
       >
-        {isLoading ? "CARICAMENTO..." : "LOGIN"}
+        {isLoading ? "CARICAMENTO..." : "LOGIN SICURO"}
       </Button>
     </form>
   );
