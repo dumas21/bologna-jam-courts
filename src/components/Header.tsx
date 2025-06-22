@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, Shield } from "lucide-react";
 import { useUser } from "@/contexts/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -10,7 +10,7 @@ import { useToast } from "@/components/ui/use-toast";
 const Header = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, nickname, logout } = useUser();
+  const { isLoggedIn, nickname, isAdmin, logout } = useUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = () => {
@@ -82,12 +82,27 @@ const Header = () => {
                 >
                   <User size={16} className="mr-2" />
                   {nickname}
+                  {isAdmin && <Shield size={14} className="ml-2 text-yellow-400" />}
                 </Button>
                 
                 {showUserMenu && (
                   <Card className="absolute right-0 top-full mt-2 w-48 z-50 arcade-card">
                     <CardContent className="p-2">
                       <div className="space-y-2">
+                        {isAdmin && (
+                          <Button
+                            onClick={() => {
+                              playSoundEffect('click');
+                              navigate('/admin/users');
+                              setShowUserMenu(false);
+                            }}
+                            className="w-full justify-start arcade-button arcade-button-secondary arcade-text"
+                          >
+                            <Shield size={16} className="mr-2" />
+                            GESTIONE UTENTI
+                          </Button>
+                        )}
+                        
                         <Button 
                           onClick={handleLogout}
                           className="w-full justify-start arcade-button arcade-button-danger arcade-text"

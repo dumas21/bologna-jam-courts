@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +19,43 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
   const [username, setUsername] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const saveUserToStorage = (email: string, nickname: string) => {
+    try {
+      const existingUsers = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      
+      // Check if user already exists
+      const existingUserIndex = existingUsers.findIndex((u: any) => u.email === email.toLowerCase());
+      
+      if (existingUserIndex >= 0) {
+        // Update last login
+        existingUsers[existingUserIndex].lastLogin = new Date().toISOString();
+        existingUsers[existingUserIndex].nickname = nickname; // Update nickname if changed
+      } else {
+        // Add new user
+        const newUser = {
+          id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          email: email.toLowerCase(),
+          nickname: nickname,
+          registrationDate: new Date().toISOString(),
+          lastLogin: new Date().toISOString()
+        };
+        existingUsers.push(newUser);
+      }
+      
+      localStorage.setItem("registeredUsers", JSON.stringify(existingUsers));
+      
+      // Also maintain the simple email list for backward compatibility
+      const existingEmails = JSON.parse(localStorage.getItem("registeredEmails") || "[]");
+      if (!existingEmails.includes(email.toLowerCase())) {
+        existingEmails.push(email.toLowerCase());
+        localStorage.setItem("registeredEmails", JSON.stringify(existingEmails));
+      }
+      
+    } catch (error) {
+      console.error("Error saving user to storage:", error);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,17 +100,6 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
         return;
       }
 
-      // Check if email already exists
-      const existingEmails = JSON.parse(localStorage.getItem("registeredEmails") || "[]");
-      if (existingEmails.includes(email.toLowerCase())) {
-        toast({
-          title: "ERRORE",
-          description: "Questa email è già registrata",
-          variant: "destructive",
-        });
-        return;
-      }
-
       // Send data to Google Sheets
       try {
         await fetch("https://script.google.com/macros/s/AKfycbyuvH-l_JVhdDSojVgTxLpe_Eexb1JtwWoOM0MQDIErNIEPWznTqmpaUBrxG9eU4e9P/exec", {
@@ -85,13 +110,12 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
             email: email 
           })
         });
-
-        // Store email in registered emails list
-        existingEmails.push(email.toLowerCase());
-        localStorage.setItem("registeredEmails", JSON.stringify(existingEmails));
       } catch (error) {
         console.log('Google Sheets error:', error);
       }
+
+      // Save user data to localStorage
+      saveUserToStorage(email, username);
 
       // Store email in localStorage
       localStorage.setItem("userEmail", email);

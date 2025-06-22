@@ -11,6 +11,7 @@ import AddPlayground from "./pages/AddPlayground";
 import Login from "./pages/Login";
 import Stats from "./pages/Stats";
 import Events from "./pages/Events";
+import AdminUsers from "./pages/AdminUsers";
 import CookieBanner from "./components/CookieBanner";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/stats" element={<Stats />} />
                 <Route path="/events" element={<Events />} />
+                <Route path="/admin/users" element={<AdminUsers />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
