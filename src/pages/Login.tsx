@@ -7,15 +7,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
-import { User, ArrowLeft, Info, Mail } from "lucide-react";
+import { ArrowLeft, Info, Mail, Signpost } from "lucide-react";
 import Header from "@/components/Header";
-import { validateNickname, sanitizeText } from "@/utils/security";
 
 const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { login } = useUser();
-  const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,16 +24,6 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Enhanced validation
-      if (!nickname.trim()) {
-        toast({
-          title: "ERRORE",
-          description: "Il nickname è obbligatorio",
-          variant: "destructive",
-        });
-        return;
-      }
-
       if (!email.trim()) {
         toast({
           title: "ERRORE",
@@ -65,36 +53,25 @@ const Login = () => {
         return;
       }
 
-      const nicknameValidation = validateNickname(nickname);
-      if (!nicknameValidation.isValid) {
-        toast({
-          title: "ERRORE",
-          description: nicknameValidation.error,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const finalNickname = sanitizeText(nickname);
-      const finalEmail = sanitizeText(email);
-
       // Send data to Google Sheets
       try {
         await fetch("https://script.google.com/macros/s/AKfycbyuvH-l_JVhdDSojVgTxLpe_Eexb1JtwWoOM0MQDIErNIEPWznTqmpaUBrxG9eU4e9P/exec", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: finalNickname, email: finalEmail })
+          body: JSON.stringify({ email })
         });
       } catch (error) {
         console.log('Google Sheets error:', error);
       }
 
-      // Store email in localStorage for newsletter
-      localStorage.setItem("userEmail", finalEmail);
+      // Store email in localStorage
+      localStorage.setItem("userEmail", email);
       localStorage.setItem("chatStartTime", new Date().toISOString());
       localStorage.setItem("dailyMessageCount", "0");
 
-      login(finalNickname);
+      // Extract name from email for login (before @)
+      const emailName = email.split("@")[0];
+      login(emailName);
       
       // Show success message
       setShowSuccess(true);
@@ -119,6 +96,12 @@ const Login = () => {
     }
   };
 
+  const openGoogleMaps = () => {
+    window.open('https://maps.google.com', '_blank');
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Maps sound error:', err));
+  };
+
   return (
     <div className="min-h-screen flex flex-col arcade-container">
       <div className="crt-overlay"></div>
@@ -137,13 +120,17 @@ const Login = () => {
           </Button>
 
           <Card className="arcade-card" style={{
-            background: 'rgba(0, 0, 0, 0.8)',
+            background: 'rgba(0, 0, 0, 0.9)',
             border: '3px dashed #ff00ff',
             borderRadius: '20px',
             boxShadow: '0 0 20px #00ffff',
           }}>
             <CardHeader>
-              <CardTitle className="arcade-title text-center" style={{ color: '#ffcc00', fontSize: '18px' }}>
+              <CardTitle className="arcade-title text-center" style={{ 
+                color: '#ffcc00', 
+                fontSize: '18px',
+                textShadow: '2px 2px 0px #000'
+              }}>
                 ARCADE LOGIN
               </CardTitle>
             </CardHeader>
@@ -151,38 +138,15 @@ const Login = () => {
               {!showSuccess ? (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2 arcade-label" style={{ fontSize: '10px', color: '#00ffff' }}>
-                      NOME *
-                    </label>
-                    <div className="relative">
-                      <User size={16} className="absolute left-3 top-3 text-gray-400" />
-                      <Input
-                        type="text"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
-                        className="pl-10"
-                        style={{
-                          background: '#222',
-                          color: '#0ff',
-                          border: 'none',
-                          borderRadius: '5px',
-                          fontFamily: 'Press Start 2P, monospace',
-                          fontSize: '10px',
-                          textAlign: 'center'
-                        }}
-                        placeholder="Il tuo nickname (2-20 caratteri)"
-                        maxLength={20}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2 arcade-label" style={{ fontSize: '10px', color: '#00ffff' }}>
+                    <label className="block text-sm font-medium mb-2 arcade-label" style={{ 
+                      fontSize: '10px', 
+                      color: '#00ffff',
+                      textShadow: '1px 1px 0px #000'
+                    }}>
                       EMAIL *
                     </label>
                     <div className="relative">
-                      <Mail size={16} className="absolute left-3 top-3 text-gray-400" />
+                      <Mail size={16} className="absolute left-3 top-3 text-cyan-400" />
                       <Input
                         type="email"
                         value={email}
@@ -190,7 +154,7 @@ const Login = () => {
                         className="pl-10"
                         style={{
                           background: '#222',
-                          color: '#0ff',
+                          color: '#00ffff',
                           border: 'none',
                           borderRadius: '5px',
                           fontFamily: 'Press Start 2P, monospace',
@@ -205,7 +169,7 @@ const Login = () => {
 
                   {/* Checkbox per accettazione regolamento */}
                   <div className="arcade-section" style={{
-                    background: 'rgba(0, 0, 0, 0.6)',
+                    background: 'rgba(0, 0, 0, 0.8)',
                     border: '2px solid #ff00ff',
                     borderRadius: '10px',
                     padding: '15px',
@@ -228,7 +192,8 @@ const Login = () => {
                           color: '#00ffff', 
                           fontSize: '8px',
                           fontFamily: 'Press Start 2P, monospace',
-                          lineHeight: '1.4'
+                          lineHeight: '1.4',
+                          textShadow: '1px 1px 0px #000'
                         }}
                       >
                         Accetto il regolamento e le condizioni d'uso *
@@ -236,14 +201,15 @@ const Login = () => {
                     </div>
                     
                     <div className="flex items-start space-x-3">
-                      <Info size={20} className="text-blue-600 mt-0.5 flex-shrink-0" style={{ color: '#00ffff' }} />
+                      <Info size={20} className="text-cyan-400 mt-0.5 flex-shrink-0" />
                       <div className="text-sm">
                         <div className="font-bold mb-2" style={{ 
                           color: '#ffcc00', 
                           fontSize: '10px',
                           fontFamily: 'Press Start 2P, monospace',
                           textTransform: 'uppercase',
-                          letterSpacing: '1px'
+                          letterSpacing: '1px',
+                          textShadow: '1px 1px 0px #000'
                         }}>
                           REGOLE ARCADE
                         </div>
@@ -251,9 +217,10 @@ const Login = () => {
                           color: '#00ffff', 
                           fontSize: '8px',
                           fontFamily: 'Press Start 2P, monospace',
-                          lineHeight: '1.4'
+                          lineHeight: '1.4',
+                          textShadow: '1px 1px 0px #000'
                         }}>
-                          Accedendo, accetti che il tuo nome venga mostrato nella chat e che la tua email sia usata per la newsletter. Le chat si azzerano ogni 72h. Puoi inviare al massimo 2 messaggi ogni 24h per chat.
+                          Accedendo, accetti che la tua email sia usata per la newsletter. Le chat si azzerano ogni 72h. Puoi inviare al massimo 2 messaggi ogni 24h per chat.
                         </div>
                       </div>
                     </div>
@@ -273,7 +240,8 @@ const Login = () => {
                       borderRadius: '10px',
                       boxShadow: acceptedTerms ? '0 0 10px #ff00ff' : '0 0 5px #666',
                       cursor: acceptedTerms ? 'pointer' : 'not-allowed',
-                      marginTop: '15px'
+                      marginTop: '15px',
+                      textShadow: '1px 1px 0px #000'
                     }}
                     onMouseEnter={(e) => {
                       if (acceptedTerms) {
@@ -298,11 +266,26 @@ const Login = () => {
                   fontSize: '10px',
                   color: '#00ff99',
                   fontFamily: 'Press Start 2P, monospace',
-                  padding: '20px'
+                  padding: '20px',
+                  textShadow: '1px 1px 0px #000'
                 }}>
                   LOGIN EFFETTUATO! REINDIRIZZAMENTO IN CORSO...
                 </div>
               )}
+              
+              {/* Pulsante Maps con icona cartello stradale */}
+              <div className="text-center mt-4">
+                <button 
+                  onClick={openGoogleMaps}
+                  className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-500 hover:from-blue-500 hover:via-cyan-400 hover:to-blue-400 rounded-full border-3 border-white shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation"
+                  title="Apri Google Maps"
+                  style={{
+                    boxShadow: '0 0 20px #00ffff, inset 0 0 20px rgba(255,255,255,0.1)'
+                  }}
+                >
+                  <Signpost size={24} className="drop-shadow-lg text-white" />
+                </button>
+              </div>
             </CardContent>
           </Card>
         </div>

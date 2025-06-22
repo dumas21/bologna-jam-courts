@@ -1,5 +1,4 @@
-
-import { Users, Lightbulb, Clock, Star, Calendar, ExternalLink } from "lucide-react";
+import { Users, Lightbulb, Clock, Star, Calendar, ExternalLink, Signpost } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -132,16 +131,16 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                         </div>
                       )}
                       
-                      {/* Pulsante Basketball Maps con fiamme */}
+                      {/* Pulsante Maps con cartello stradale */}
                       <button 
-                        className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 hover:from-purple-500 hover:via-pink-400 hover:to-red-400 rounded-full border-3 border-cyan-400 shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation retro-neon-glow"
+                        className="flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-500 hover:from-blue-500 hover:via-cyan-400 hover:to-blue-400 rounded-full border-3 border-white shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation retro-neon-glow"
                         onClick={(e) => openGoogleMaps(playground.address, e)}
                         title="Apri in Google Maps"
                         style={{
-                          boxShadow: '0 0 20px #ff00ff, inset 0 0 20px rgba(255,255,255,0.1)'
+                          boxShadow: '0 0 20px #00ffff, inset 0 0 20px rgba(255,255,255,0.1)'
                         }}
                       >
-                        <BasketballWithFlames size={24} className="drop-shadow-lg" />
+                        <Signpost size={24} className="drop-shadow-lg text-white" />
                       </button>
                     </div>
                   </div>
@@ -149,7 +148,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                   {/* Info principali in card compatte */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm">
                     <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
-                      <BasketballWithFlames size={12} className="text-orange-400 mr-2 flex-shrink-0" />
+                      <Signpost size={12} className="text-cyan-400 mr-2 flex-shrink-0" />
                       <span className="text-white/90 nike-text truncate">{playground.address}</span>
                     </div>
                     
