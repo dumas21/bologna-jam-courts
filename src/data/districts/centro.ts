@@ -1,0 +1,76 @@
+
+import { Playground } from "@/types/playground";
+
+export const centroPlaygrounds: Playground[] = [
+  {
+    id: "1",
+    name: "Playground Gianni Cristofori - Giardini Margherita",
+    address: "Viale Dante Drusiani, Bologna", 
+    latitude: 44.4845,
+    longitude: 11.3603,
+    currentPlayers: 5,
+    totalCheckins: 85,
+    rating: 4.2,
+    ratingCount: 24,
+    openHours: "Accesso libero h24. Eventi sportivi e tornei serali in estate.",
+    basketCount: 2,
+    hasShade: true,
+    hasAmenities: true,
+    hasLighting: true,
+    hasFountain: true,
+    type: "Outdoor",
+    district: "centro",
+    refreshmentType: "esterno",
+    comments: [],
+    // EVENTO TORNEO IN CORSO - SEMPRE ATTIVO
+    currentEvent: {
+      id: "event_giardini_margherita_torneo",
+      name: "🏀 TORNEO STREETBALL 3VS3 IN CORSO! 🏀",
+      playgroundId: "1",
+      isActive: true,
+      link: "https://www.comune.bologna.it/eventi/torneo-streetball"
+    }
+  },
+  {
+    id: "2",
+    name: "Playground Parco della Montagnola",
+    address: "Via Irnerio, Bologna",
+    latitude: 44.4998,
+    longitude: 11.3444,
+    currentPlayers: 2,
+    totalCheckins: 45,
+    rating: 3.8,
+    ratingCount: 15,
+    openHours: "Accesso libero h24",
+    basketCount: 2,
+    hasShade: false,
+    hasAmenities: false,
+    hasLighting: false,
+    hasFountain: false,
+    type: "Outdoor",
+    district: "centro",
+    refreshmentType: "no",
+    comments: []
+  },
+  {
+    id: "11",
+    name: "Campo Bernardi",
+    address: "Via degli Orti, Bologna",
+    latitude: 44.4831,
+    longitude: 11.3507,
+    currentPlayers: 0,
+    totalCheckins: 12,
+    rating: 3.7,
+    ratingCount: 5,
+    openHours: "Accesso libero h24",
+    basketCount: 2,
+    hasShade: false,
+    hasAmenities: false,
+    hasLighting: false,
+    hasFountain: false,
+    type: "Outdoor",
+    district: "centro",
+    refreshmentType: "no",
+    comments: []
+  }
+];

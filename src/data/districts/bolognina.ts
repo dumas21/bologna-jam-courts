@@ -1,0 +1,68 @@
+
+import { Playground } from "@/types/playground";
+
+export const bologninaPlaygrounds: Playground[] = [
+  {
+    id: "7",
+    name: "Parco Don Bosco",
+    address: "Via Emilia Ponente, 40133 Bologna BO",
+    latitude: 44.4834,
+    longitude: 11.2756,
+    currentPlayers: 6,
+    totalCheckins: 78,
+    rating: 4.1,
+    ratingCount: 22,
+    openHours: "06:00 - 22:00",
+    basketCount: 4,
+    hasShade: true,
+    hasAmenities: true,
+    hasLighting: true,
+    hasFountain: false,
+    type: "Outdoor",
+    district: "bolognina",
+    refreshmentType: "esterno",
+    comments: []
+  },
+  {
+    id: "8",
+    name: "Giardini di Casaralta",
+    address: "Via di Casaralta, 40129 Bologna BO",
+    latitude: 44.5123,
+    longitude: 11.3234,
+    currentPlayers: 1,
+    totalCheckins: 23,
+    rating: 3.2,
+    ratingCount: 8,
+    openHours: "07:30 - 20:30",
+    basketCount: 1,
+    hasShade: false,
+    hasAmenities: false,
+    hasLighting: false,
+    hasFountain: false,
+    type: "Outdoor",
+    district: "bolognina",
+    refreshmentType: "no", 
+    comments: []
+  },
+  {
+    id: "14",
+    name: "Polisportiva Lame",
+    address: "Via Vasco da Gama, 20, Bologna",
+    latitude: 44.5250,
+    longitude: 11.3124,
+    currentPlayers: 0,
+    totalCheckins: 28,
+    rating: 4.0,
+    ratingCount: 7,
+    openHours: "Accesso libero h24",
+    basketCount: 3,
+    hasShade: true,
+    hasAmenities: true,
+    hasLighting: true,
+    hasFountain: false,
+    type: "Outdoor",
+    district: "bolognina",
+    refreshmentType: "esterno",
+    comments: []
+  }
+];
