@@ -40,7 +40,7 @@ const EventBanner: React.FC<EventBannerProps> = ({ playgroundId }) => {
             letterSpacing: "6px"
           }}
         >
-          TORNEO STREETBALL 3VS3
+          TORNEO STREETBALL 5VS5
         </div>
         <div className="mt-8 text-white text-2xl font-bold bg-black bg-opacity-90 px-12 py-6 rounded-full inline-block border-6 border-yellow-400" 
              style={{

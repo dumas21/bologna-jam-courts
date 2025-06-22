@@ -1,3 +1,4 @@
+
 import { Playground } from "@/types/playground";
 
 export const centroPlaygrounds: Playground[] = [
@@ -24,7 +25,7 @@ export const centroPlaygrounds: Playground[] = [
     // EVENTO TORNEO IN CORSO - SEMPRE ATTIVO
     currentEvent: {
       id: "event_giardini_margherita_torneo",
-      name: "🏀 TORNEO STREETBALL 3VS3 IN CORSO! 🏀",
+      name: "🏀 TORNEO STREETBALL 5VS5 IN CORSO! 🏀",
       playgroundId: "1",
       isActive: true,
       link: "https://www.comune.bologna.it/eventi/torneo-streetball"

@@ -92,10 +92,10 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
           />
         </div>
 
-        {/* Banner EVENTO IN CORSO per Giardini Margherita */}
+        {/* Banner EVENTO IN CORSO per Giardini Margherita - PIÙ GRANDE */}
         {playground.id === "1" && (
           <div 
-            className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-3 rounded-lg border-3 border-yellow-400 cursor-pointer transform hover:scale-105 transition-transform text-center relative z-10"
+            className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-6 rounded-xl border-4 border-yellow-400 cursor-pointer transform hover:scale-105 transition-transform text-center relative z-20 my-4"
             onClick={(e) => {
               e.stopPropagation();
               const link = playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball";
@@ -103,34 +103,34 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
             }}
             style={{
               animation: 'pulse 1.5s ease-in-out infinite',
-              boxShadow: '0 0 20px #FF00FF, 0 0 40px #FF0000'
+              boxShadow: '0 0 30px #FF00FF, 0 0 60px #FF0000'
             }}
           >
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <span className="text-2xl animate-bounce">🏆</span>
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <span className="text-4xl animate-bounce">🏆</span>
               <span 
-                className="text-yellow-300 font-bold text-sm animate-pulse"
+                className="text-yellow-300 font-bold text-lg animate-pulse"
                 style={{
                   fontFamily: "'Press Start 2P', monospace",
-                  textShadow: "2px 2px 0px #000, 0 0 10px #FFD700",
-                  letterSpacing: "2px"
+                  textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
+                  letterSpacing: "3px"
                 }}
               >
                 EVENTO IN CORSO
               </span>
-              <span className="text-2xl animate-bounce">🏆</span>
+              <span className="text-4xl animate-bounce">🏆</span>
             </div>
             <div 
-              className="text-white font-bold text-xs hover:text-yellow-300 transition-colors"
+              className="text-white font-bold text-base hover:text-yellow-300 transition-colors mb-3"
               style={{ 
                 fontFamily: "'Press Start 2P', monospace",
-                textShadow: "1px 1px 0px #000, 0 0 8px #FFFF00",
-                letterSpacing: "1px"
+                textShadow: "2px 2px 0px #000, 0 0 12px #FFFF00",
+                letterSpacing: "2px"
               }}
             >
-              TORNEO STREETBALL 3VS3
+              TORNEO STREETBALL 5VS5
             </div>
-            <div className="mt-1 text-yellow-300 text-xs font-bold bg-black bg-opacity-60 px-2 py-1 rounded-full inline-block border border-yellow-400 animate-pulse">
+            <div className="text-yellow-300 text-sm font-bold bg-black bg-opacity-70 px-4 py-2 rounded-full inline-block border-2 border-yellow-400 animate-pulse">
               CLICCA PER INFO
             </div>
           </div>

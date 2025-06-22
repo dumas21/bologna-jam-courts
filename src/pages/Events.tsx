@@ -63,7 +63,7 @@ const Events = () => {
                             <ExternalLink size={16} className="text-yellow-300" />
                           </div>
                           <h3 className="text-white font-bold text-lg mb-2" style={{ fontFamily: "'Press Start 2P', monospace" }}>
-                            {playground.currentEvent?.name}
+                            TORNEO STREETBALL 5VS5
                           </h3>
                           {playground.currentEvent?.link && (
                             <Button
