@@ -1,4 +1,3 @@
-
 import { Users, Lightbulb, Clock, Star, Calendar, ExternalLink, Signpost } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
@@ -31,8 +30,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
     audio.play().catch(err => console.log('Basketball sound error:', err));
   };
 
-  const openEventLink = (link: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const openEventLink = (link: string) => {
     window.open(link, '_blank');
     
     const audio = new Audio('/sounds/click.mp3');
@@ -87,7 +85,7 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                     <EventAlert
                       eventName={playground.currentEvent.name}
                       eventLink={playground.currentEvent.link}
-                      onClick={(e) => playground.currentEvent?.link && openEventLink(playground.currentEvent.link, e as any)}
+                      onClick={() => playground.currentEvent?.link && openEventLink(playground.currentEvent.link)}
                     />
                   )}
 
