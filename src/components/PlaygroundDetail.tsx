@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Playground } from '@/types/playground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -87,7 +86,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
   }));
 
   return (
-    <Card className="mt-4 arcade-card">
+    <Card className="mt-4 arcade-card" data-playground-details>
       <CardHeader>
         <CardTitle className="flex items-center justify-between arcade-title">
           {playground.name}
@@ -95,6 +94,41 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent>
+        {/* Cartello Evento in Corso per Giardini Margherita */}
+        {playground.id === "1" && (
+          <div className="mb-6 p-4 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 rounded-lg border-3 border-white shadow-xl transform hover:scale-105 transition-transform">
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <span className="text-3xl animate-pulse">🏆</span>
+                <span 
+                  className="text-white font-bold text-lg md:text-xl animate-pulse"
+                  style={{
+                    fontFamily: "'Press Start 2P', monospace",
+                    textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
+                    letterSpacing: "2px"
+                  }}
+                >
+                  EVENTO IN CORSO
+                </span>
+                <span className="text-3xl animate-pulse">🏆</span>
+              </div>
+              <div 
+                className="text-yellow-300 font-bold text-sm md:text-base"
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  textShadow: "2px 2px 0px #000",
+                  letterSpacing: "1px"
+                }}
+              >
+                TORNEO STREETBALL 3VS3
+              </div>
+              <div className="mt-2 text-white text-xs font-bold bg-black bg-opacity-50 px-3 py-1 rounded-full inline-block">
+                CLICCA PER MAGGIORI INFO
+              </div>
+            </div>
+          </div>
+        )}
+
         <WeatherInfo playgroundName={playground.name} location={playground.address} />
         
         <Tabs defaultValue="details" className="w-full arcade-tabs">
