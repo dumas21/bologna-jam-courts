@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
-import { ArrowLeft, Info, Mail, Signpost } from "lucide-react";
+import { ArrowLeft, Info, Mail, Signpost, Check } from "lucide-react";
 import Header from "@/components/Header";
 
 const Login = () => {
@@ -53,13 +52,31 @@ const Login = () => {
         return;
       }
 
+      // Check if email already exists
+      const existingEmails = JSON.parse(localStorage.getItem("registeredEmails") || "[]");
+      if (existingEmails.includes(email.toLowerCase())) {
+        toast({
+          title: "ERRORE",
+          description: "Questa email è già registrata",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Send data to Google Sheets
       try {
         await fetch("https://script.google.com/macros/s/AKfycbyuvH-l_JVhdDSojVgTxLpe_Eexb1JtwWoOM0MQDIErNIEPWznTqmpaUBrxG9eU4e9P/exec", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email })
+          body: JSON.stringify({ 
+            name: email.split("@")[0], 
+            email: email 
+          })
         });
+
+        // Store email in registered emails list
+        existingEmails.push(email.toLowerCase());
+        localStorage.setItem("registeredEmails", JSON.stringify(existingEmails));
       } catch (error) {
         console.log('Google Sheets error:', error);
       }
@@ -167,7 +184,7 @@ const Login = () => {
                     </div>
                   </div>
 
-                  {/* Checkbox per accettazione regolamento */}
+                  {/* Checkbox per accettazione regolamento con conferma visiva */}
                   <div className="arcade-section" style={{
                     background: 'rgba(0, 0, 0, 0.8)',
                     border: '2px solid #ff00ff',
@@ -176,18 +193,28 @@ const Login = () => {
                     marginTop: '15px'
                   }}>
                     <div className="flex items-start space-x-3 mb-3">
-                      <Checkbox
-                        id="accept-terms"
-                        checked={acceptedTerms}
-                        onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
-                        style={{
-                          borderColor: '#00ffff',
-                          backgroundColor: acceptedTerms ? '#00ffff' : 'transparent'
-                        }}
-                      />
+                      <div className="relative">
+                        <Checkbox
+                          id="accept-terms"
+                          checked={acceptedTerms}
+                          onCheckedChange={(checked) => setAcceptedTerms(checked as boolean)}
+                          className="w-6 h-6"
+                          style={{
+                            borderColor: '#00ffff',
+                            backgroundColor: acceptedTerms ? '#00ffff' : 'transparent',
+                            borderWidth: '2px'
+                          }}
+                        />
+                        {acceptedTerms && (
+                          <Check 
+                            size={16} 
+                            className="absolute top-1 left-1 text-black font-bold animate-pulse" 
+                          />
+                        )}
+                      </div>
                       <label 
                         htmlFor="accept-terms" 
-                        className="text-sm cursor-pointer"
+                        className="text-sm cursor-pointer flex-1"
                         style={{ 
                           color: '#00ffff', 
                           fontSize: '8px',
@@ -220,7 +247,7 @@ const Login = () => {
                           lineHeight: '1.4',
                           textShadow: '1px 1px 0px #000'
                         }}>
-                          Accedendo, accetti che la tua email sia usata per la newsletter. Le chat si azzerano ogni 72h. Puoi inviare al massimo 2 messaggi ogni 24h per chat.
+                          Accedendo, accetti che la tua email sia usata per la newsletter. Le chat si azzerano ogni 72h. Puoi inviare al massimo 2 messaggi ogni 24h per playground.
                         </div>
                       </div>
                     </div>
@@ -273,17 +300,17 @@ const Login = () => {
                 </div>
               )}
               
-              {/* Pulsante Maps con icona cartello stradale */}
+              {/* Pulsante Maps con cartello stradale più grande */}
               <div className="text-center mt-4">
                 <button 
                   onClick={openGoogleMaps}
-                  className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-500 hover:from-blue-500 hover:via-cyan-400 hover:to-blue-400 rounded-full border-3 border-white shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation"
+                  className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 via-cyan-500 to-blue-500 hover:from-blue-500 hover:via-cyan-400 hover:to-blue-400 rounded-full border-3 border-white shadow-lg hover:shadow-xl transform hover:scale-110 active:scale-95 transition-all duration-200 touch-manipulation"
                   title="Apri Google Maps"
                   style={{
                     boxShadow: '0 0 20px #00ffff, inset 0 0 20px rgba(255,255,255,0.1)'
                   }}
                 >
-                  <Signpost size={24} className="drop-shadow-lg text-white" />
+                  <Signpost size={32} className="drop-shadow-lg text-white" />
                 </button>
               </div>
             </CardContent>
