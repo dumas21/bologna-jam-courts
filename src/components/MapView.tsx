@@ -26,16 +26,13 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
     const encodedAddress = encodeURIComponent(address);
     const url = `https://maps.google.com/maps?q=${encodedAddress}`;
     
-    // Use secure external link handler
     openSecureExternalLink(url);
     
-    // Play basketball sound
     const audio = new Audio('/sounds/click.mp3');
     audio.play().catch(err => console.log('Basketball sound error:', err));
   };
 
   const openEventLink = (link: string) => {
-    // Use secure external link handler
     openSecureExternalLink(link);
     
     const audio = new Audio('/sounds/click.mp3');
@@ -43,7 +40,6 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
   };
   
   const scrollToPlaygroundDetails = () => {
-    // Scroll to playground details section
     setTimeout(() => {
       const detailsSection = document.querySelector('[data-playground-details]');
       if (detailsSection) {
@@ -83,52 +79,9 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                   playBasketballSound();
                 }}
               >
-                {/* Header compatto e mobile-friendly */}
                 <div className="p-3 md:p-4 space-y-3">
-                  {/* Banner EVENTO IN CORSO lampeggiante - SEMPRE VISIBILE per Giardini Margherita */}
-                  {playground.id === "1" && (
-                    <div 
-                      className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-4 rounded-xl border-4 border-yellow-400 cursor-pointer transform hover:scale-105 transition-transform text-center"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const link = playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball";
-                        openEventLink(link);
-                      }}
-                      style={{
-                        animation: 'pulse 1.5s ease-in-out infinite',
-                        boxShadow: '0 0 30px #FF00FF, 0 0 60px #FF0000'
-                      }}
-                    >
-                      <div className="flex items-center justify-center gap-3 mb-2">
-                        <span className="text-3xl animate-bounce">🏆</span>
-                        <span 
-                          className="text-yellow-300 font-bold text-lg animate-pulse"
-                          style={{
-                            fontFamily: "'Press Start 2P', monospace",
-                            textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
-                            letterSpacing: "3px"
-                          }}
-                        >
-                          EVENTO IN CORSO
-                        </span>
-                        <span className="text-3xl animate-bounce">🏆</span>
-                      </div>
-                      <div 
-                        className="text-white font-bold text-sm hover:text-yellow-300 transition-colors"
-                        style={{ 
-                          fontFamily: "'Press Start 2P', monospace",
-                          textShadow: "2px 2px 0px #000, 0 0 10px #FFFF00",
-                          letterSpacing: "2px"
-                        }}
-                      >
-                        TORNEO STREETBALL 3VS3
-                      </div>
-                      <div className="mt-2 text-yellow-300 text-xs font-bold bg-black bg-opacity-60 px-3 py-1 rounded-full inline-block border-2 border-yellow-400 animate-pulse">
-                        CLICCA PER INFO
-                      </div>
-                    </div>
-                  )}
-
+                  {/* Banner EVENTO IN CORSO per Giardini Margherita - POSIZIONATO DOPO IL NOME */}
+                  
                   {/* Nome con stile retro anni 80 */}
                   <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
                     <div className="playground-name text-sm md:text-base font-bold flex-1 text-center sm:text-left retro-neon-text animate-neon-glow" 
@@ -173,6 +126,50 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                       </button>
                     </div>
                   </div>
+
+                  {/* Banner EVENTO IN CORSO per Giardini Margherita - POSIZIONATO QUI */}
+                  {playground.id === "1" && (
+                    <div 
+                      className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-3 rounded-lg border-3 border-yellow-400 cursor-pointer transform hover:scale-105 transition-transform text-center relative z-10"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const link = playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball";
+                        openEventLink(link);
+                      }}
+                      style={{
+                        animation: 'pulse 1.5s ease-in-out infinite',
+                        boxShadow: '0 0 20px #FF00FF, 0 0 40px #FF0000'
+                      }}
+                    >
+                      <div className="flex items-center justify-center gap-2 mb-1">
+                        <span className="text-2xl animate-bounce">🏆</span>
+                        <span 
+                          className="text-yellow-300 font-bold text-sm animate-pulse"
+                          style={{
+                            fontFamily: "'Press Start 2P', monospace",
+                            textShadow: "2px 2px 0px #000, 0 0 10px #FFD700",
+                            letterSpacing: "2px"
+                          }}
+                        >
+                          EVENTO IN CORSO
+                        </span>
+                        <span className="text-2xl animate-bounce">🏆</span>
+                      </div>
+                      <div 
+                        className="text-white font-bold text-xs hover:text-yellow-300 transition-colors"
+                        style={{ 
+                          fontFamily: "'Press Start 2P', monospace",
+                          textShadow: "1px 1px 0px #000, 0 0 8px #FFFF00",
+                          letterSpacing: "1px"
+                        }}
+                      >
+                        TORNEO STREETBALL 3VS3
+                      </div>
+                      <div className="mt-1 text-yellow-300 text-xs font-bold bg-black bg-opacity-60 px-2 py-1 rounded-full inline-block border border-yellow-400 animate-pulse">
+                        CLICCA PER INFO
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Info principali in card compatte */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm">
@@ -197,18 +194,20 @@ const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapVie
                     </div>
                   </div>
                   
-                  {/* Badges delle amenità */}
-                  <div className="flex flex-wrap gap-1 justify-center sm:justify-start">
-                    {playground.hasShade && (
-                      <span className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold">OMBRA</span>
-                    )}
-                    {playground.hasAmenities && (
-                      <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold">SERVIZI</span>
-                    )}
-                    {playground.hasLighting && (
-                      <span className="bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-bold">ILLUMINATO</span>
-                    )}
-                  </div>
+                  {/* Badges delle amenità - NASCOSTI per Giardini Margherita quando c'è l'evento */}
+                  {!(playground.id === "1") && (
+                    <div className="flex flex-wrap gap-1 justify-center sm:justify-start">
+                      {playground.hasShade && (
+                        <span className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold">OMBRA</span>
+                      )}
+                      {playground.hasAmenities && (
+                        <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold">SERVIZI</span>
+                      )}
+                      {playground.hasLighting && (
+                        <span className="bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-bold">ILLUMINATO</span>
+                      )}
+                    </div>
+                  )}
                   
                   {/* Check-in info se l'utente è loggato */}
                   {isLoggedIn && playground.currentPlayers > 0 && (
