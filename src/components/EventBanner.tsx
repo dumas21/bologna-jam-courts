@@ -12,33 +12,33 @@ const EventBanner: React.FC<EventBannerProps> = ({ playgroundId }) => {
   }
 
   return (
-    <div className="mb-6 p-4 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 rounded-lg border-3 border-white shadow-xl transform hover:scale-105 transition-transform">
+    <div className="mb-8 p-8 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 rounded-xl border-4 border-white shadow-2xl transform hover:scale-105 transition-transform">
       <div className="text-center">
-        <div className="flex items-center justify-center gap-3 mb-2">
-          <span className="text-3xl animate-pulse">🏆</span>
+        <div className="flex items-center justify-center gap-4 mb-4">
+          <span className="text-5xl animate-pulse">🏆</span>
           <span 
-            className="text-white font-bold text-lg md:text-xl animate-pulse"
+            className="text-white font-bold text-2xl md:text-4xl animate-pulse"
             style={{
               fontFamily: "'Press Start 2P', monospace",
-              textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
-              letterSpacing: "2px"
+              textShadow: "4px 4px 0px #000, 0 0 20px #FFD700",
+              letterSpacing: "4px"
             }}
           >
             EVENTO IN CORSO
           </span>
-          <span className="text-3xl animate-pulse">🏆</span>
+          <span className="text-5xl animate-pulse">🏆</span>
         </div>
         <div 
-          className="text-yellow-300 font-bold text-sm md:text-base"
+          className="text-yellow-300 font-bold text-lg md:text-2xl mb-4"
           style={{
             fontFamily: "'Press Start 2P', monospace",
-            textShadow: "2px 2px 0px #000",
-            letterSpacing: "1px"
+            textShadow: "3px 3px 0px #000",
+            letterSpacing: "2px"
           }}
         >
           TORNEO STREETBALL 3VS3
         </div>
-        <div className="mt-2 text-white text-xs font-bold bg-black bg-opacity-50 px-3 py-1 rounded-full inline-block">
+        <div className="mt-4 text-white text-base font-bold bg-black bg-opacity-60 px-6 py-3 rounded-full inline-block border-2 border-yellow-400">
           CLICCA PER MAGGIORI INFO
         </div>
       </div>
