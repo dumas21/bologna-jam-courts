@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
-import { ArrowLeft, Info, Mail, Signpost, Check } from "lucide-react";
+import { ArrowLeft, Info, Mail, Signpost, Check, User } from "lucide-react";
 import Header from "@/components/Header";
 
 const Login = () => {
@@ -14,6 +15,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useUser();
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -27,6 +29,15 @@ const Login = () => {
         toast({
           title: "ERRORE",
           description: "L'email è obbligatoria",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!username.trim()) {
+        toast({
+          title: "ERRORE",
+          description: "Il nome utente è obbligatorio",
           variant: "destructive",
         });
         return;
@@ -69,7 +80,7 @@ const Login = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
-            name: email.split("@")[0], 
+            name: username, 
             email: email 
           })
         });
@@ -86,9 +97,8 @@ const Login = () => {
       localStorage.setItem("chatStartTime", new Date().toISOString());
       localStorage.setItem("dailyMessageCount", "0");
 
-      // Extract name from email for login (before @)
-      const emailName = email.split("@")[0];
-      login(emailName);
+      // Use username for login
+      login(username);
       
       // Show success message
       setShowSuccess(true);
@@ -154,6 +164,36 @@ const Login = () => {
             <CardContent>
               {!showSuccess ? (
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 arcade-label" style={{ 
+                      fontSize: '10px', 
+                      color: '#00ffff',
+                      textShadow: '1px 1px 0px #000'
+                    }}>
+                      NOME UTENTE *
+                    </label>
+                    <div className="relative">
+                      <User size={16} className="absolute left-3 top-3 text-cyan-400" />
+                      <Input
+                        type="text"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="pl-10"
+                        style={{
+                          background: '#222',
+                          color: '#00ffff',
+                          border: 'none',
+                          borderRadius: '5px',
+                          fontFamily: 'Press Start 2P, monospace',
+                          fontSize: '10px',
+                          textAlign: 'center'
+                        }}
+                        placeholder="Il tuo nome utente"
+                        required
+                      />
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium mb-2 arcade-label" style={{ 
                       fontSize: '10px', 
@@ -315,6 +355,22 @@ const Login = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Email di contatto */}
+          <div className="text-center mt-6">
+            <div style={{
+              color: '#00ffff',
+              fontSize: '8px',
+              fontFamily: 'Press Start 2P, monospace',
+              textShadow: '1px 1px 0px #000',
+              background: 'rgba(0, 0, 0, 0.8)',
+              padding: '10px',
+              borderRadius: '10px',
+              border: '1px solid #00ffff'
+            }}>
+              CONTATTI: playgroundjam21@gmail.com
+            </div>
+          </div>
         </div>
       </main>
     </div>
