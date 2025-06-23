@@ -1,7 +1,27 @@
-
 import { Playground } from "@/types/playground";
 
 export const bologninaPlaygrounds: Playground[] = [
+  {
+    id: "3",
+    name: "Playground Paladozza",
+    address: "Piazza Azzarita, Bologna",
+    latitude: 44.4910,
+    longitude: 11.3560,
+    currentPlayers: 8,
+    totalCheckins: 156,
+    rating: 4.6,
+    ratingCount: 42,
+    openHours: "06:00 - 22:00",
+    basketCount: 4,
+    hasShade: true,
+    hasAmenities: true,
+    hasLighting: true,
+    hasFountain: true,
+    type: "Outdoor",
+    district: "bolognina",
+    refreshmentType: "interno",
+    comments: []
+  },
   {
     id: "7",
     name: "Parco Don Bosco",

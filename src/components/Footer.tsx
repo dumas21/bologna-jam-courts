@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <p className="font-press-start text-xs text-white/60 mb-4 md:mb-0">
-            PLAYGROUND JAM BOLOGNA &copy; 2025 - Matteo Bergami
+            PLAYGROUND JAM BOLOGNA &copy; 2025
           </p>
           
           <div className="flex flex-wrap justify-center gap-4 text-xs text-white/60">

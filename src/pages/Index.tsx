@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import DateDisplay from "@/components/DateDisplay";
 import NavigationButtons from "@/components/NavigationButtons";
 import MainTabs from "@/components/MainTabs";
+import EventsButton from "@/components/EventsButton";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
 import { usePlaygrounds } from "@/hooks/usePlaygrounds";
@@ -87,6 +88,8 @@ const Index = () => {
           <DateDisplay />
           <NavigationButtons onScrollToTop={scrollToTop} playSoundEffect={playSoundEffect} />
         </div>
+
+        <EventsButton />
         
         <MainTabs
           playgrounds={playgrounds}
@@ -105,7 +108,7 @@ const Index = () => {
       <footer className="arcade-footer mt-2 md:mt-4">
         <div className="container mx-auto px-2 md:px-4 text-center py-2 md:py-4">
           <p className="font-press-start text-xs">
-            PLAYGROUND JAM BOLOGNA &copy; 2025 - MATTEO BERGAMI
+            PLAYGROUND JAM BOLOGNA &copy; 2025
           </p>
           <div className="mt-2" style={{
             color: '#00ffff',
