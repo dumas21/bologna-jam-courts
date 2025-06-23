@@ -63,7 +63,7 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
 
   return (
     <div className="arcade-section p-4">
-      <h2 className="text-xl font-bold mb-6 arcade-heading">PLAYGROUND A BOLOGNA</h2>
+      <h2 className="text-xl font-bold mb-6 arcade-heading">BOLOGNA</h2>
       <div className="space-y-6">
         {Object.entries(playgroundsByDistrict).map(([district, playgroundsInDistrict]) => (
           <div key={district} className="space-y-4">
