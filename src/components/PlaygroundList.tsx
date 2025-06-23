@@ -88,6 +88,17 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
           <span className="ml-1">HOME</span>
         </Button>
       </div>
+
+      {/* Messaggio nuove città */}
+      <div className="mb-6 p-4 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl border-2 border-yellow-400">
+        <h3 className="text-lg font-bold text-yellow-300 mb-2">🚀 NUOVE CITTÀ IN ARRIVO!</h3>
+        <p className="text-sm text-white mb-3">
+          A breve saranno disponibili nuove città nel network Playground Jam!
+        </p>
+        <div className="text-xs text-yellow-200">
+          📧 playgroundjam21@gmail.com per info
+        </div>
+      </div>
       
       {filteredPlaygrounds.length === 0 ? (
         <div className="text-center py-8">
