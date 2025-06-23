@@ -1,3 +1,4 @@
+
 import { Users, Lightbulb, Clock, Star, Signpost } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { useUser } from "@/contexts/UserContext";
@@ -50,12 +51,6 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
     
     const audio = new Audio('/sounds/select.mp3');
     audio.play().catch(err => console.log('Basketball sound error:', err));
-  };
-
-  // Forza sempre 2 canestri per Giardini Margherita (ID "1")
-  const getBasketCount = (playground: Playground) => {
-    if (playground.id === "1") return 2;
-    return playground.basketCount || 2;
   };
 
   return (

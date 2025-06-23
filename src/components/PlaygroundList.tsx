@@ -70,12 +70,6 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
     return refreshmentNames[type || 'no'] || 'NO';
   };
 
-  const getBasketCount = (playground: Playground) => {
-    // Forza sempre 2 canestri per Giardini Margherita (ID "1")
-    if (playground.id === "1") return 2;
-    return playground.basketCount || 2;
-  };
-
   return (
     <div className="arcade-section p-4">
       <div className="flex justify-between items-center mb-6">
@@ -171,7 +165,7 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
                       <div className="flex flex-wrap gap-4 text-xs">
                         <div className="flex items-center gap-1">
                           <span className="font-semibold">CANESTRI:</span>
-                          <span className="font-bold text-yellow-400">{getBasketCount(playground)}</span>
+                          <span className="font-bold text-yellow-400">{playground.basketCount || 2}</span>
                         </div>
                         
                         <div className="flex items-center gap-1">
