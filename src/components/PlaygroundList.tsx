@@ -1,7 +1,9 @@
 
 import React from 'react';
 import { Playground, PlaygroundFilters } from "@/types/playground";
-import { MapPin, TreePine, Coffee, Lightbulb } from 'lucide-react';
+import { MapPin, TreePine, Coffee, Lightbulb, Home } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface PlaygroundListProps {
   playgrounds: Playground[];
@@ -10,6 +12,8 @@ interface PlaygroundListProps {
 }
 
 const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, onSelectPlayground }) => {
+  const navigate = useNavigate();
+
   // Filtra i playground in base ai filtri selezionati
   const filteredPlaygrounds = playgrounds.filter(playground => {
     const districtMatch = !filters.district || playground.district === filters.district;
@@ -17,7 +21,7 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
     const shadeMatch = !filters.shade || 
       (filters.shade === "si" && playground.hasShade) ||
       (filters.shade === "no" && !playground.hasShade) ||
-      (filters.shade === "parziale" && !playground.hasShade); // Assumiamo che "parziale" sia rappresentato come false
+      (filters.shade === "parziale" && !playground.hasShade);
     
     const refreshmentMatch = !filters.refreshment || playground.refreshmentType === filters.refreshment;
     
@@ -63,7 +67,16 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
 
   return (
     <div className="arcade-section p-4">
-      <h2 className="text-xl font-bold mb-6 arcade-heading">BOLOGNA</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold arcade-heading">BOLOGNA</h2>
+        <Button 
+          onClick={() => navigate("/")}
+          className="arcade-button arcade-button-home text-xs px-2 py-2 md:px-4 md:py-3"
+        >
+          <Home size={14} />
+          <span className="ml-1">HOME</span>
+        </Button>
+      </div>
       <div className="space-y-6">
         {Object.entries(playgroundsByDistrict).map(([district, playgroundsInDistrict]) => (
           <div key={district} className="space-y-4">

@@ -22,7 +22,6 @@ export const centroPlaygrounds: Playground[] = [
     district: "centro",
     refreshmentType: "esterno",
     comments: [],
-    // EVENTO TORNEO IN CORSO - SEMPRE ATTIVO
     currentEvent: {
       id: "event_giardini_margherita_torneo",
       name: "🏀 TORNEO STREETBALL 5VS5 IN CORSO! 🏀",
