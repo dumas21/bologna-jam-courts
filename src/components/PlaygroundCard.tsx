@@ -1,7 +1,10 @@
 
-import React from 'react';
+import { Users, Lightbulb, Clock, Star, Signpost } from "lucide-react";
 import { Playground } from "@/types/playground";
-import { MapPin, TreePine, Coffee, Lightbulb, Star } from "lucide-react";
+import { useUser } from "@/contexts/UserContext";
+import { openSecureExternalLink } from "@/config/security";
+import PlaygroundStats from "./PlaygroundStats";
+import PlaygroundControls from "./PlaygroundControls";
 
 interface PlaygroundCardProps {
   playground: Playground;
@@ -9,75 +12,183 @@ interface PlaygroundCardProps {
   onSelectPlayground: (playground: Playground) => void;
 }
 
-const PlaygroundCard: React.FC<PlaygroundCardProps> = ({ 
-  playground, 
-  selectedPlayground, 
-  onSelectPlayground 
-}) => {
-  // 🔧 FORZA SEMPRE 2 CANESTRI PER GIARDINI MARGHERITA (ID "1")
-  const basketCount = playground.id === "1" ? 2 : (playground.basketCount || 2);
+const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: PlaygroundCardProps) => {
+  const { isLoggedIn, nickname } = useUser();
   
-  console.log(`PlaygroundCard - DEBUG: ${playground.name} (ID: ${playground.id}) - Canestri: ${basketCount}`);
+  const playBasketballSound = () => {
+    const audio = new Audio('/sounds/select.mp3');
+    audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
+  
+  const openGoogleMaps = (address: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const encodedAddress = encodeURIComponent(address);
+    const url = `https://maps.google.com/maps?q=${encodedAddress}`;
+    
+    openSecureExternalLink(url);
+    
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
 
-  const isSelected = selectedPlayground?.id === playground.id;
+  const openEventLink = (link: string) => {
+    openSecureExternalLink(link);
+    
+    const audio = new Audio('/sounds/click.mp3');
+    audio.play().catch(err => console.log('Event link sound error:', err));
+  };
+  
+  const scrollToPlaygroundDetails = () => {
+    setTimeout(() => {
+      const detailsSection = document.querySelector('[data-playground-details]');
+      if (detailsSection) {
+        detailsSection.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    }, 100);
+    
+    const audio = new Audio('/sounds/select.mp3');
+    audio.play().catch(err => console.log('Basketball sound error:', err));
+  };
 
   return (
     <div 
-      className={`arcade-card p-4 cursor-pointer hover:bg-opacity-80 transition-all ${
-        isSelected ? 'border-2 border-yellow-400' : ''
-      }`}
-      onClick={() => onSelectPlayground(playground)}
+      key={playground.id}
+      className={`group cursor-pointer transition-all duration-300 transform ${
+        selectedPlayground?.id === playground.id 
+          ? 'bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 scale-[1.02] shadow-xl shadow-orange-500/50' 
+          : 'bg-black bg-opacity-80 hover:bg-opacity-95 hover:scale-[1.01] hover:shadow-lg hover:shadow-orange-500/20'
+      } backdrop-blur-sm border-2 border-orange-500 rounded-xl overflow-hidden active:scale-[0.98] touch-manipulation`}
+      onClick={() => {
+        console.log("Selezionato playground:", playground);
+        onSelectPlayground(playground);
+        playBasketballSound();
+      }}
     >
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-        <div className="flex-1">
-          <h4 className="font-bold text-white mb-1">{playground.name}</h4>
-          <div className="flex items-center gap-1 text-xs text-gray-300 mb-2">
-            <MapPin size={12} />
-            <span>{playground.address}</span>
+      <div className="p-3 md:p-4 space-y-3">
+        {/* Nome con stile retro anni 80 */}
+        <div className="flex flex-col sm:flex-row justify-between items-start gap-2">
+          <div className="playground-name text-sm md:text-base font-bold flex-1 text-center sm:text-left retro-neon-text animate-neon-glow" 
+               style={{
+                 fontFamily: "'Press Start 2P', monospace",
+                 color: "#FF6B35",
+                 textShadow: "2px 2px 0px #000, 0 0 10px #FF6B35, 0 0 20px #FFD700",
+                 textTransform: "uppercase",
+                 letterSpacing: "2px",
+                 background: "rgba(0, 0, 0, 0.9)",
+                 padding: "8px 12px",
+                 borderRadius: "8px",
+                 border: "2px solid #FF6B35",
+                 boxShadow: "0 0 15px rgba(255, 107, 53, 0.6)"
+               }}>
+            {playground.name.toUpperCase()}
           </div>
+          
+          <PlaygroundControls 
+            playground={playground}
+            onMapsClick={openGoogleMaps}
+          />
         </div>
 
-        <div className="flex flex-wrap gap-4 text-xs">
-          <div className="flex items-center gap-1">
-            <span className="font-semibold">CANESTRI:</span>
-            <span className="font-bold text-yellow-400">{basketCount}</span>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <TreePine size={12} />
-            <span className="font-semibold">OMBRA:</span>
-            <span>{playground.hasShade ? "SÌ" : "PARZIALE/NO"}</span>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <Coffee size={12} />
-            <span className="font-semibold">RISTORO:</span>
-            <span>
-              {playground.refreshmentType === "interno" ? "INTERNO" :
-              playground.refreshmentType === "esterno" ? "ESTERNO" : "NO"}
-            </span>
-          </div>
-
-          {playground.hasLighting && (
-            <div className="flex items-center gap-1">
-              <Lightbulb size={12} />
-              <span className="text-yellow-400">ILLUMINATO</span>
+        {/* Banner EVENTO IN CORSO per Giardini Margherita - PIÙ GRANDE */}
+        {playground.id === "1" && (
+          <div 
+            className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-6 rounded-xl border-4 border-yellow-400 cursor-pointer transform hover:scale-105 transition-transform text-center relative z-20 my-4"
+            onClick={(e) => {
+              e.stopPropagation();
+              const link = playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball";
+              openEventLink(link);
+            }}
+            style={{
+              animation: 'pulse 1.5s ease-in-out infinite',
+              boxShadow: '0 0 30px #FF00FF, 0 0 60px #FF0000'
+            }}
+          >
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <span className="text-4xl animate-bounce">🏆</span>
+              <span 
+                className="text-yellow-300 font-bold text-lg animate-pulse"
+                style={{
+                  fontFamily: "'Press Start 2P', monospace",
+                  textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
+                  letterSpacing: "3px"
+                }}
+              >
+                EVENTO IN CORSO
+              </span>
+              <span className="text-4xl animate-bounce">🏆</span>
             </div>
-          )}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-between mt-2 text-xs">
-        <div className="flex items-center gap-2">
-          <Star size={12} className="text-yellow-400" />
-          <span className="text-green-400 font-bold">
-            {playground.rating?.toFixed(1) || "0.0"}
-          </span>
-          <span className="text-gray-400">({playground.ratingCount || 0} voti)</span>
-        </div>
-        <div className="text-blue-400">
-          {playground.currentPlayers} online
-        </div>
+            <div 
+              className="text-white font-bold text-base hover:text-yellow-300 transition-colors mb-3"
+              style={{ 
+                fontFamily: "'Press Start 2P', monospace",
+                textShadow: "2px 2px 0px #000, 0 0 12px #FFFF00",
+                letterSpacing: "2px"
+              }}
+            >
+              TORNEO STREETBALL 5VS5
+            </div>
+            <div className="text-yellow-300 text-sm font-bold bg-black bg-opacity-70 px-4 py-2 rounded-full inline-block border-2 border-yellow-400 animate-pulse">
+              CLICCA PER INFO
+            </div>
+          </div>
+        )}
+        
+        <PlaygroundStats playground={playground} />
+        
+        {/* Badges delle amenità - NASCOSTI per Giardini Margherita quando c'è l'evento */}
+        {!(playground.id === "1") && (
+          <div className="flex flex-wrap gap-1 justify-center sm:justify-start">
+            {playground.hasShade && (
+              <span className="bg-green-600 text-white px-2 py-1 rounded-full text-xs font-bold">OMBRA</span>
+            )}
+            {playground.hasAmenities && (
+              <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-bold">SERVIZI</span>
+            )}
+            {playground.hasLighting && (
+              <span className="bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-bold">ILLUMINATO</span>
+            )}
+          </div>
+        )}
+        
+        {/* Check-in info se l'utente è loggato */}
+        {isLoggedIn && playground.currentPlayers > 0 && (
+          <div className="mt-3 pt-3 border-t border-white/20">
+            <div className="text-xs text-white nike-text mb-2 bg-black bg-opacity-70 px-2 py-1 rounded inline-block">
+              CHECK-IN OGGI:
+            </div>
+            <div className="text-xs text-white/80 nike-text space-y-1">
+              {nickname && 
+                <div className="flex items-center">
+                  <Users size={10} className="text-blue-400 mr-2 flex-shrink-0" />
+                  <span className="nike-text text-blue-400 font-bold">{nickname.toUpperCase()}</span>
+                </div>
+              }
+              {playground.currentPlayers > (nickname ? 1 : 0) && 
+                <div className="text-xs text-white/60 nike-text ml-4">
+                  + ALTRI {playground.currentPlayers - (nickname ? 1 : 0)} GIOCATORI
+                </div>
+              }
+            </div>
+          </div>
+        )}
+        
+        {/* Indicatore di selezione con pulsante per andare ai dettagli */}
+        {selectedPlayground?.id === playground.id && (
+          <div className="text-center">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                scrollToPlaygroundDetails();
+              }}
+              className="inline-block bg-white text-black px-4 py-2 rounded-full text-xs font-bold animate-pulse hover:bg-gray-200 transition-colors cursor-pointer"
+            >
+              ✓ VAI A METEO E CHAT
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

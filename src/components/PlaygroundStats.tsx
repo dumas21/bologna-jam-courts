@@ -7,10 +7,8 @@ interface PlaygroundStatsProps {
 }
 
 const PlaygroundStats = ({ playground }: PlaygroundStatsProps) => {
-  // 🔧 FORZA SEMPRE 2 CANESTRI PER GIARDINI MARGHERITA (ID "1")
+  // Forza sempre 2 canestri per Giardini Margherita (ID "1")
   const basketCount = playground.id === "1" ? 2 : (playground.basketCount || 2);
-  
-  console.log(`PlaygroundStats - DEBUG: ${playground.name} (ID: ${playground.id}) - Canestri forzati a: ${basketCount}`);
   
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm">
