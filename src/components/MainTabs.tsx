@@ -121,19 +121,47 @@ const MainTabs = ({
       </TabsContent>
       
       <TabsContent value="italia" className="arcade-fade-in mt-2">
-        <div className="arcade-section h-48 md:h-64 flex flex-col items-center justify-center p-4">
-          <div className="text-center space-y-2 md:space-y-4">
-            <h2 className="text-base md:text-xl arcade-heading">LISTA ITALIA</h2>
-            <p className="text-xs md:text-base max-w-md arcade-text">
-              A BREVE ALTRI PLAYGROUND IN ALTRE CITTÀ ITALIANE
+        <div className="arcade-section h-auto flex flex-col items-center justify-center p-4">
+          <div className="text-center space-y-4 max-w-2xl">
+            <h2 className="text-xl md:text-2xl arcade-heading text-orange-500">🏀 PLAYGROUND JAM ITALIA 🏀</h2>
+            <p className="text-sm md:text-base arcade-text text-white">
+              STIAMO ESPANDENDO IN TUTTA ITALIA! PRESTO DISPONIBILI NUOVE CITTÀ
             </p>
-            <div className="arcade-mini-leaderboard">
-              <h3 className="text-sm md:text-lg mb-2">TOP CITIES COMING SOON:</h3>
-              <div className="space-y-1 text-xs md:text-sm">
-                <div>1. MILANO - COMING SOON</div>
-                <div>2. ROMA - COMING SOON</div>
-                <div>3. NAPOLI - COMING SOON</div>
+            
+            <div className="arcade-mini-leaderboard bg-black bg-opacity-80 p-6 rounded-xl border-2 border-orange-500">
+              <h3 className="text-lg md:text-xl mb-4 text-yellow-400 font-bold">🚀 PROSSIME CITTÀ:</h3>
+              <div className="space-y-3 text-sm md:text-base">
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-red-600 to-orange-500 rounded-lg">
+                  <span className="font-bold">🏛️ ROMA</span>
+                  <span className="text-yellow-300">COMING SOON</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-lg">
+                  <span className="font-bold">🏙️ MILANO</span>
+                  <span className="text-yellow-300">COMING SOON</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-600 to-blue-500 rounded-lg">
+                  <span className="font-bold">🌋 NAPOLI</span>
+                  <span className="text-yellow-300">COMING SOON</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-600 to-pink-500 rounded-lg">
+                  <span className="font-bold">🌊 GENOVA</span>
+                  <span className="text-yellow-300">COMING SOON</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-600 to-red-500 rounded-lg">
+                  <span className="font-bold">🎭 FIRENZE</span>
+                  <span className="text-yellow-300">COMING SOON</span>
+                </div>
               </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl border-2 border-yellow-400">
+              <h4 className="text-lg font-bold text-yellow-300 mb-2">🎯 VUOI LA TUA CITTÀ?</h4>
+              <p className="text-sm text-white mb-3">
+                Contattaci per aggiungere la tua città al network!
+              </p>
+              <p className="text-xs text-yellow-200">
+                📧 playgroundjam21@gmail.com
+              </p>
             </div>
           </div>
         </div>

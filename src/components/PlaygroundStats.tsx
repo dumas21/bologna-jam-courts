@@ -7,6 +7,9 @@ interface PlaygroundStatsProps {
 }
 
 const PlaygroundStats = ({ playground }: PlaygroundStatsProps) => {
+  // Forza sempre la visualizzazione di 2 canestri per Giardini Margherita
+  const basketCount = playground.id === "1" ? 2 : (playground.basketCount || 2);
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs md:text-sm">
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
@@ -21,7 +24,7 @@ const PlaygroundStats = ({ playground }: PlaygroundStatsProps) => {
       
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
         <span className="text-yellow-400 mr-2">🏀</span>
-        <span className="text-white/90 nike-text">CANESTRI: {playground.basketCount}</span>
+        <span className="text-white/90 nike-text font-bold">CANESTRI: {basketCount}</span>
       </div>
       
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
