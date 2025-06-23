@@ -11,8 +11,8 @@ export interface RegisteredUser {
   checkedIn: boolean;   // flag per indicare se l'utente ha fatto check-in
 }
 
-// Tipo commento visibile nella piattaforma
-export interface Comment {
+// Tipo commento visibile nella piattaforma (rinominato per evitare conflitti con DOM Comment)
+export interface PlaygroundComment {
   id: string;
   text: string;        // contenuto del commento (rinominato per compatibilità)
   user: string;        // nickname dell'autore
@@ -64,7 +64,7 @@ export interface Playground {
   basketCount?: number;
   rating?: number;
   ratingCount?: number;
-  comments: Comment[];
+  comments: PlaygroundComment[];
   features?: {
     water: boolean;
     shade: boolean;
