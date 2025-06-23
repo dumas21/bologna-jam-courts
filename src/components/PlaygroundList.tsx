@@ -79,10 +79,22 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
   return (
     <div className="arcade-section p-4">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-bold arcade-heading">BOLOGNA</h2>
+        <h2 className="text-xl font-bold arcade-heading text-orange-500" style={{
+          fontFamily: "'Press Start 2P', monospace",
+          textShadow: "2px 2px 0px #000, 0 0 10px #FF6B35",
+          letterSpacing: "2px"
+        }}>
+          PLAYGROUND BOLOGNA
+        </h2>
         <Button 
           onClick={() => navigate("/")}
-          className="arcade-button arcade-button-home text-xs px-2 py-2 md:px-4 md:py-3"
+          className="text-xs px-3 py-2 md:px-4 md:py-3 font-bold text-white border-2 border-orange-500 rounded-lg transition-all hover:scale-105 hover:shadow-lg"
+          style={{
+            fontFamily: "'Press Start 2P', monospace",
+            background: "linear-gradient(45deg, #FF6B35, #FFD700)",
+            textShadow: "1px 1px 0px #000",
+            boxShadow: "0 0 15px rgba(255, 107, 53, 0.6)"
+          }}
         >
           <Home size={14} />
           <span className="ml-1">HOME</span>
@@ -90,38 +102,66 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
       </div>
 
       {/* Messaggio nuove città */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl border-2 border-yellow-400">
-        <h3 className="text-lg font-bold text-yellow-300 mb-2">🚀 NUOVE CITTÀ IN ARRIVO!</h3>
-        <p className="text-sm text-white mb-3">
+      <div className="mb-6 p-6 rounded-xl border-4 border-yellow-400 text-center" style={{
+        background: "linear-gradient(45deg, #8B00FF, #FF1493, #FF0000)",
+        animation: 'pulse 2s ease-in-out infinite',
+        boxShadow: '0 0 30px #FF00FF, 0 0 60px #FF0000'
+      }}>
+        <h3 className="text-xl font-bold text-yellow-300 mb-3" style={{
+          fontFamily: "'Press Start 2P', monospace",
+          textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
+          letterSpacing: "3px"
+        }}>
+          🚀 NUOVE CITTÀ IN ARRIVO! 🚀
+        </h3>
+        <p className="text-sm text-white mb-3 font-bold">
           A breve saranno disponibili nuove città nel network Playground Jam come Roma, Milano, Napoli e altre!
         </p>
-        <div className="text-xs text-yellow-200">
+        <div className="text-xs text-yellow-200 font-bold bg-black bg-opacity-70 px-4 py-2 rounded-full inline-block border-2 border-yellow-400">
           📧 playgroundjam21@gmail.com per info
         </div>
       </div>
       
       {filteredPlaygrounds.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-gray-400">NESSUN PLAYGROUND CORRISPONDE AI FILTRI SELEZIONATI</p>
+          <p className="text-gray-400 font-bold" style={{
+            fontFamily: "'Press Start 2P', monospace",
+            textShadow: "1px 1px 0px #000"
+          }}>
+            NESSUN PLAYGROUND TROVATO
+          </p>
           <p className="text-gray-500 text-sm mt-2">Prova a rimuovere alcuni filtri per vedere più risultati</p>
         </div>
       ) : (
         <div className="space-y-6">
           {Object.entries(playgroundsByDistrict).map(([district, playgroundsInDistrict]) => (
             <div key={district} className="space-y-4">
-              <h3 className="text-lg font-semibold arcade-heading text-orange-500">
+              <h3 className="text-lg font-semibold text-orange-500" style={{
+                fontFamily: "'Press Start 2P', monospace",
+                textShadow: "2px 2px 0px #000, 0 0 10px #FF6B35",
+                letterSpacing: "2px"
+              }}>
                 {getDistrictName(district)} ({playgroundsInDistrict.length})
               </h3>
               <div className="grid gap-3">
                 {playgroundsInDistrict.map((playground) => (
                   <div 
                     key={playground.id}
-                    className="arcade-card p-4 cursor-pointer hover:bg-opacity-80 transition-all"
+                    className="p-4 cursor-pointer transition-all border-2 border-orange-500 rounded-lg hover:scale-[1.02] hover:shadow-lg"
+                    style={{
+                      background: "rgba(0, 0, 0, 0.8)",
+                      backdropFilter: "blur(10px)"
+                    }}
                     onClick={() => onSelectPlayground(playground)}
                   >
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
                       <div className="flex-1">
-                        <h4 className="font-bold text-white mb-1">{playground.name}</h4>
+                        <h4 className="font-bold text-white mb-1" style={{
+                          fontFamily: "'Press Start 2P', monospace",
+                          textShadow: "1px 1px 0px #000"
+                        }}>
+                          {playground.name}
+                        </h4>
                         <div className="flex items-center gap-1 text-xs text-gray-300 mb-2">
                           <MapPin size={12} />
                           <span>{playground.address}</span>
