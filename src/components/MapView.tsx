@@ -10,6 +10,9 @@ interface MapViewProps {
 }
 
 const MapView = ({ playgrounds, selectedPlayground, onSelectPlayground }: MapViewProps) => {
+  console.log("MapView - DEBUG: Totale playground ricevuti:", playgrounds.length);
+  console.log("MapView - DEBUG: Playground Giardini Margherita:", playgrounds.find(p => p.id === "1"));
+  
   return (
     <div className="relative w-full bg-black bg-opacity-90 backdrop-blur-sm border-2 md:border-3 border-orange-500 p-3 md:p-4 overflow-hidden rounded-lg synthwave-bg">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 md:mb-6 gap-2 md:gap-4">

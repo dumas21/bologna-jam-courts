@@ -14,8 +14,9 @@ interface PlaygroundListProps {
 const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, onSelectPlayground }) => {
   const navigate = useNavigate();
 
-  console.log("PlaygroundList - Totale playground ricevuti:", playgrounds.length);
-  console.log("PlaygroundList - Filtri applicati:", filters);
+  console.log("PlaygroundList - DEBUG: Totale playground ricevuti:", playgrounds.length);
+  console.log("PlaygroundList - DEBUG: Lista completa playground:", playgrounds.map(p => ({ id: p.id, name: p.name, basketCount: p.basketCount })));
+  console.log("PlaygroundList - DEBUG: Filtri applicati:", filters);
 
   // Filtra i playground in base ai filtri selezionati
   const filteredPlaygrounds = playgrounds.filter(playground => {
@@ -31,7 +32,7 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
     return districtMatch && shadeMatch && refreshmentMatch;
   });
 
-  console.log("PlaygroundList - Playground dopo filtri:", filteredPlaygrounds.length);
+  console.log("PlaygroundList - DEBUG: Playground dopo filtri:", filteredPlaygrounds.length);
 
   // Raggruppa i playground per quartiere
   const playgroundsByDistrict = filteredPlaygrounds.reduce((acc, playground) => {
@@ -71,8 +72,11 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
   };
 
   const getBasketCount = (playground: Playground) => {
-    // Forza sempre 2 canestri per Giardini Margherita (ID "1")
-    if (playground.id === "1") return 2;
+    // 🔧 FORZA SEMPRE 2 CANESTRI PER GIARDINI MARGHERITA (ID "1")
+    if (playground.id === "1") {
+      console.log(`PlaygroundList - DEBUG: Forzato 2 canestri per ${playground.name}`);
+      return 2;
+    }
     return playground.basketCount || 2;
   };
 
@@ -104,6 +108,9 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
         <div className="text-center py-8">
           <p className="text-gray-400">NESSUN PLAYGROUND CORRISPONDE AI FILTRI SELEZIONATI</p>
           <p className="text-gray-500 text-sm mt-2">Prova a rimuovere alcuni filtri per vedere più risultati</p>
+          <div className="mt-4 text-xs text-gray-600">
+            DEBUG: Playground totali: {playgrounds.length}, Filtri: {JSON.stringify(filters)}
+          </div>
         </div>
       ) : (
         <div className="space-y-6">
