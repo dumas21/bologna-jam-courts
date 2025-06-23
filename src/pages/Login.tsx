@@ -9,10 +9,20 @@ import LoginForm from "@/components/auth/LoginForm";
 import SuccessMessage from "@/components/auth/SuccessMessage";
 import MapsButton from "@/components/auth/MapsButton";
 import ContactInfo from "@/components/auth/ContactInfo";
+import WelcomeMessage from "@/components/WelcomeMessage";
 
 const Login = () => {
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  const handleLoginSuccess = () => {
+    setShowSuccess(true);
+    // Mostra il messaggio di benvenuto dopo il successo del login
+    setTimeout(() => {
+      setShowWelcome(true);
+    }, 1000);
+  };
 
   return (
     <div className="min-h-screen flex flex-col arcade-container">
@@ -48,7 +58,7 @@ const Login = () => {
             </CardHeader>
             <CardContent>
               {!showSuccess ? (
-                <LoginForm onSuccess={() => setShowSuccess(true)} />
+                <LoginForm onSuccess={handleLoginSuccess} />
               ) : (
                 <SuccessMessage />
               )}
@@ -60,6 +70,11 @@ const Login = () => {
           <ContactInfo />
         </div>
       </main>
+      
+      <WelcomeMessage 
+        isVisible={showWelcome}
+        onClose={() => setShowWelcome(false)}
+      />
     </div>
   );
 };
