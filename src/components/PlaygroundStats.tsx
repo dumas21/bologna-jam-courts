@@ -7,7 +7,7 @@ interface PlaygroundStatsProps {
 }
 
 const PlaygroundStats = ({ playground }: PlaygroundStatsProps) => {
-  // Forza sempre la visualizzazione di 2 canestri per Giardini Margherita
+  // Forza sempre 2 canestri per Giardini Margherita (ID "1")
   const basketCount = playground.id === "1" ? 2 : (playground.basketCount || 2);
   
   return (

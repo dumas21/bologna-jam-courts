@@ -71,7 +71,7 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
   };
 
   const getBasketCount = (playground: Playground) => {
-    // Forza sempre 2 canestri per Giardini Margherita
+    // Forza sempre 2 canestri per Giardini Margherita (ID "1")
     if (playground.id === "1") return 2;
     return playground.basketCount || 2;
   };
@@ -93,7 +93,7 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
       <div className="mb-6 p-4 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 rounded-xl border-2 border-yellow-400">
         <h3 className="text-lg font-bold text-yellow-300 mb-2">🚀 NUOVE CITTÀ IN ARRIVO!</h3>
         <p className="text-sm text-white mb-3">
-          A breve saranno disponibili nuove città nel network Playground Jam!
+          A breve saranno disponibili nuove città nel network Playground Jam come Roma, Milano, Napoli e altre!
         </p>
         <div className="text-xs text-yellow-200">
           📧 playgroundjam21@gmail.com per info
