@@ -98,7 +98,7 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
             className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 p-6 rounded-xl border-4 border-yellow-400 cursor-pointer transform hover:scale-105 transition-transform text-center relative z-20 my-4"
             onClick={(e) => {
               e.stopPropagation();
-              const link = playground.currentEvent?.link || "https://www.comune.bologna.it/eventi/torneo-streetball";
+              const link = playground.currentEvent?.link || "https://www.instagram.com/torneogiardinimargherita/";
               openEventLink(link);
             }}
             style={{

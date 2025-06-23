@@ -68,10 +68,10 @@ const Events = () => {
                           {playground.currentEvent?.link && (
                             <Button
                               onClick={() => openEventLink(playground.currentEvent!.link!)}
-                              className="arcade-button arcade-button-primary w-full"
+                              className="arcade-button arcade-button-primary w-full text-xs"
                             >
-                              <ExternalLink size={16} />
-                              <span className="ml-2">VAI AL PROFILO INSTAGRAM</span>
+                              <ExternalLink size={12} />
+                              <span className="ml-1">VAI AL PROFILO INSTAGRAM</span>
                             </Button>
                           )}
                         </div>

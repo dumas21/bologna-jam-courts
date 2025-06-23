@@ -95,7 +95,7 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
         </Button>
       </div>
 
-      {/* Messaggio nuove città */}
+      {/* Messaggio nuove città rinominato */}
       <div className="mb-6 p-6 rounded-xl border-4 border-yellow-400 text-center" style={{
         background: "linear-gradient(45deg, #8B00FF, #FF1493, #FF0000)",
         animation: 'pulse 2s ease-in-out infinite',
@@ -106,10 +106,10 @@ const PlaygroundList: React.FC<PlaygroundListProps> = ({ playgrounds, filters, o
           textShadow: "3px 3px 0px #000, 0 0 15px #FFD700",
           letterSpacing: "3px"
         }}>
-          🚀 NUOVE CITTÀ IN ARRIVO! 🚀
+          🚀 NUOVI PLAYGROUND IN ARRIVO! 🚀
         </h3>
         <p className="text-sm text-white mb-3 font-bold">
-          A breve saranno disponibili nuove città nel network Playground Jam come Roma, Milano, Napoli e altre!
+          A breve saranno disponibili nuovi playground nel network Playground Jam come Roma, Milano, Napoli e altre città!
         </p>
         <div className="text-xs text-yellow-200 font-bold bg-black bg-opacity-70 px-4 py-2 rounded-full inline-block border-2 border-yellow-400">
           📧 playgroundjam21@gmail.com per info

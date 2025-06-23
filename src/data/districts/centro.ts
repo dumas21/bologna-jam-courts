@@ -27,7 +27,7 @@ export const centroPlaygrounds: Playground[] = [
       name: "🏀 TORNEO STREETBALL 5VS5 IN CORSO! 🏀",
       playgroundId: "1",
       isActive: true,
-      link: "https://www.comune.bologna.it/eventi/torneo-streetball"
+      link: "https://www.instagram.com/torneogiardinimargherita/"
     }
   },
   {

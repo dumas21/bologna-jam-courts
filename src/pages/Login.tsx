@@ -18,10 +18,10 @@ const Login = () => {
 
   const handleLoginSuccess = () => {
     setShowSuccess(true);
-    // Mostra il messaggio di benvenuto dopo il successo del login
+    // Mostra il messaggio di benvenuto dopo il successo del login - esteso a 2 secondi
     setTimeout(() => {
       setShowWelcome(true);
-    }, 1000);
+    }, 2000);
   };
 
   return (
