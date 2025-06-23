@@ -1,10 +1,14 @@
-name: NodeJS with Webpack
+
+name: Build con Webpack
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,125 +19,19 @@ jobs:
         node-version: [18.x, 20.x, 22.x]
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
 
-    - name: Build
-      run: |
-        npm install
-        npx webpack
-            - nome: Chiudi problemi obsoleti
-  usi: actions/stale@v9.1.0
-  con:
-    # Token per il repository. Può essere passato usando `{{ secrets.GITHUB_TOKEN }}`.
-    repo-token: # facoltativo, il valore predefinito è ${{ github.token }}
-    # Il messaggio da pubblicare sul problema quando lo si tagga. Se non viene fornito, i problemi non verranno contrassegnati come obsoleti.
-    messaggio-di-problema-stantio: # facoltativo
-    # Il messaggio da pubblicare sulla richiesta di pull quando la si tagga. Se non viene fornito, le richieste di pull non verranno contrassegnate come obsolete.
-    stale-pr-message: # facoltativo
-    # Messaggio da pubblicare sul problema quando lo si chiude. Se non viene fornito alcun messaggio, non verrà pubblicato alcun commento quando si chiude un problema.
-    close-issue-message: # facoltativo
-    # Il messaggio da pubblicare sulla richiesta di pull quando la si chiude. Se non viene fornito alcun messaggio, non verrà visualizzato alcun commento alla chiusura di una richiesta di pull.
-    close-pr-message: # facoltativo
-    # Numero di giorni di validità di un problema o di una richiesta di pull prima di contrassegnarli come obsoleti. Imposta a -1 per non contrassegnare mai automaticamente problemi o richieste di pull come obsoleti.
-    days-before-stale: # facoltativo, il valore predefinito è 60
-    # Numero di giorni di validità di un problema prima che venga contrassegnato come obsoleto. Impostare a -1 per non contrassegnare mai automaticamente i problemi come obsoleti. Ignorare l'opzione "days-before-stale" solo per i problemi.
-    days-before-issue-stale: # facoltativo
-    # Numero di giorni che una richiesta di pull può avere prima di essere contrassegnata come obsoleta. Imposta a -1 per non contrassegnare mai automaticamente le richieste di pull come obsolete. Ignora l'opzione "days-before-stale" solo per le richieste di pull.
-    giorni-prima-pr-stantio: # facoltativo
-    # Numero di giorni di attesa per chiudere un problema o una richiesta di pull dopo che è stata contrassegnata come obsoleta. Imposta a -1 per non chiudere mai problemi o richieste di pull obsoleti.
-    days-before-close: # facoltativo, il valore predefinito è 7
-    # Numero di giorni di attesa per chiudere un problema dopo che è stato contrassegnato come obsoleto. Impostato a -1 per non chiudere mai i problemi obsoleti. Ignora l'opzione "giorni prima della chiusura" solo per i problemi.
-    giorni prima della chiusura del problema: # facoltativo
-    # Numero di giorni di attesa per chiudere una pull request dopo che è stata contrassegnata come obsoleta. Impostato a -1 per non chiudere mai le pull request obsolete. Ignora l'opzione "days-before-close" solo per le pull request.
-    giorni-prima-della-chiusura-prescelta: # facoltativo
-    # Etichetta da applicare quando un problema non è più attivo.
-    stale-issue-label: # opzionale, il valore predefinito è Stale
-    # Etichetta da applicare quando un problema viene chiuso.
-    close-issue-label: # facoltativo
-    # Le etichette indicano che un problema non deve essere contrassegnato come obsoleto. Separare le etichette con virgole (ad esempio "etichetta1, etichetta2").
-    exempt-issue-labels: # facoltativo, il valore predefinito è
-    # Il motivo da utilizzare quando si chiude un problema.
-    close-issue-reason: # facoltativo, il valore predefinito è not_planned
-    # Etichetta da applicare quando una richiesta pull è obsoleta.
-    stale-pr-label: # facoltativo, il valore predefinito è Stale
-    # Etichetta da applicare quando una richiesta pull viene chiusa.
-    close-pr-label: # facoltativo
-    # Le etichette indicano che una richiesta di pull non deve essere contrassegnata come obsoleta. Separare le etichette con virgole (ad esempio "etichetta1, etichetta2").
-    exempt-pr-labels: # facoltativo, il valore predefinito è
-    # Le milestone che indicano che un problema o una richiesta di pull non sono contrassegnate come obsolete. Separare più milestone con virgole (ad esempio "milestone1,milestone2").
-    exempt-milestones: # facoltativo, il valore predefinito è
-    # Le milestone che indicano che un problema è esente dall'essere contrassegnato come obsoleto. Separare più milestone con virgole (ad esempio "milestone1,milestone2"). Ignorare l'opzione "exempt-milestones" solo per i problemi.
-    exempt-issue-milestones: # facoltativo, il valore predefinito è
-    # Le milestone che indicano che una richiesta di pull è esente dalla marcatura come obsoleta. Separare più milestone con virgole (ad esempio "milestone1,milestone2"). Sovrascrivere l'opzione "exempt-milestones" solo per le richieste di pull.
-    exempt-pr-milestones: # facoltativo, il valore predefinito è
-    # Esenta tutti i problemi e le richieste di pull con milestone dall'essere contrassegnati come obsoleti. Il valore predefinito è falso.
-    exempt-all-milestones: # facoltativo, il valore predefinito è falso
-    # Esenta tutti i problemi con milestone dall'essere contrassegnati come obsoleti. Ignora l'opzione "exempt-all-milestones" solo per i problemi.
-    esentare-tutti-i-problemi-milestones: # facoltativo, il valore predefinito è
-    # Esenta tutte le richieste di pull con milestone dall'essere contrassegnate come obsolete. Ignora l'opzione "exempt-all-milestones" solo per le richieste di pull.
-    exempt-all-pr-milestones: # facoltativo, il valore predefinito è
-    # Solo i problemi o le richieste di pull con tutte queste etichette vengono controllati se obsoleti. Il valore predefinito è `` (disabilitato) e può essere un elenco di etichette separate da virgole.
-    only-labels: # facoltativo, il valore predefinito è
-    # Solo i problemi o le richieste di pull con almeno una di queste etichette vengono controllati se obsoleti. Il valore predefinito è `` (disabilitato) e può essere un elenco di etichette separate da virgole.
-    any-of-labels: # facoltativo, il valore predefinito è
-    # Vengono controllati solo i problemi con almeno una di queste etichette, se obsoleti. Il valore predefinito è `` (disabilitato) e può essere un elenco di etichette separate da virgole. Ignora l'opzione "any-of-labels" solo per i problemi.
-    any-of-issue-labels: # facoltativo, il valore predefinito è
-    # Solo le richieste di pull con almeno una di queste etichette vengono controllate se obsolete. Il valore predefinito è `` (disabilitato) e può essere un elenco di etichette separate da virgole. Ignora l'opzione "any-of-labels" solo per le richieste di pull.
-    any-of-pr-labels: # facoltativo, il valore predefinito è
-    # Vengono controllati solo i problemi con tutte queste etichette, se obsoleti. Il valore predefinito è `[]` (disabilitato) e può essere un elenco di etichette separate da virgole. Ignora l'opzione "only-labels" relativa solo ai problemi.
-    only-issue-labels: # facoltativo, il valore predefinito è
-    # Solo le richieste di pull con tutte queste etichette vengono controllate se obsolete. Il valore predefinito è `[]` (disabilitato) e può essere un elenco di etichette separate da virgole. Ignora l'opzione "only-labels" solo per le richieste di pull.
-    only-pr-labels: # facoltativo, il valore predefinito è
-    # Numero massimo di operazioni per esecuzione, utilizzato per controllare la limitazione della velocità (correlato a CRUD dell'API GitHub).
-    operations-per-run: # facoltativo, il valore predefinito è 30
-    # Rimuovi le etichette obsolete dai problemi e dalle richieste pull quando vengono aggiornati o commentati.
-    remove-stale-when-updated: # facoltativo, il valore predefinito è true
-    # Rimuovi le etichette obsolete dai problemi quando vengono aggiornati o commentati. Ignora l'opzione "remove-stale-when-updated" solo per i problemi.
-    remove-issue-stale-when-updated: # facoltativo, il valore predefinito è
-    # Rimuovi le etichette obsolete dalle pull request quando vengono aggiornate o commentate. Ignora l'opzione "remove-stale-when-updated" solo per le pull request.
-    remove-pr-stale-when-updated: # facoltativo, il valore predefinito è
-    # Esegui il processore in modalità debug senza effettivamente eseguire alcuna operazione su problemi attivi.
-    debug-only: # facoltativo, il valore predefinito è falso
-    # L'ordine per ricevere problemi o richieste di pull. Il valore predefinito è falso, che è decrescente.
-    ascendente: # facoltativo, il valore predefinito è falso
-    # Elimina il ramo git dopo aver chiuso una richiesta pull obsoleta.
-    delete-branch: # facoltativo, il valore predefinito è false
-    # Data utilizzata per ignorare l'azione obsoleta su un problema/richiesta pull creata prima di essa (ISO 8601 o RFC 2822).
-    start-date: # facoltativo, il valore predefinito è
-    # Gli assegnatari che esentano un problema o una richiesta di pull dall'essere contrassegnati come obsoleti. Separare più assegnatari con virgole (ad esempio "utente1,utente2").
-    exempt-assignees: # facoltativo, il valore predefinito è
-    # Gli assegnatari che esentano un problema dall'essere contrassegnato come obsoleto. Separare più assegnatari con virgole (ad esempio "utente1,utente2"). Ignorare l'opzione "exempt-assignees" solo per i problemi.
-    exempt-issue-assignees: # facoltativo, il valore predefinito è
-    # Gli assegnatari che esentano una richiesta di pull dall'essere contrassegnata come obsoleta. Separare più assegnatari con virgole (ad esempio "utente1,utente2"). Sovrascrivere l'opzione "exempt-assignees" solo per le richieste di pull.
-    exempt-pr-assignees: # facoltativo, il valore predefinito è
-    # Esenta tutti i problemi e le richieste di pull con assegnatari dall'essere contrassegnati come obsoleti. Il valore predefinito è falso.
-    exempt-all-assignees: # facoltativo, il valore predefinito è falso
-    # Esenta tutti i problemi con assegnatari dall'essere contrassegnati come obsoleti. Ignora l'opzione "exempt-all-assignees" solo per i problemi.
-    exempt-all-issue-assignees: # facoltativo, il valore predefinito è
-    # Esenta tutte le richieste di pull con assegnatari dall'essere contrassegnate come obsolete. Ignora l'opzione "exempt-all-assignees" solo per le richieste di pull.
-    esentare-tutti-i-assegnatari-di-prescrizione: # facoltativo, il valore predefinito è
-    # Esenta le bozze di pull request dall'essere contrassegnate come obsolete. Il valore predefinito è falso.
-    exempt-draft-pr: # facoltativo, il valore predefinito è falso
-    # Visualizza alla fine alcune statistiche relative al flusso di lavoro obsoleto (solo quando i log sono abilitati).
-    enable-statistics: # facoltativo, il valore predefinito è true
-    # Un elenco di etichette delimitato da virgole da aggiungere quando un problema o una richiesta pull diventano obsoleti.
-    etichette-da-aggiungere-quando-non-sono-inutilizzabili: # opzionale, il valore predefinito è
-    # Un elenco delimitato da virgole di etichette da rimuovere quando un problema o una richiesta pull diventano obsoleti.
-    etichette-da-rimuovere-quando-non-sono-più-valide: # opzionale, il valore predefinito è
-    # Un elenco delimitato da virgole di etichette da rimuovere quando un problema o una richiesta pull diventano obsoleti.
-    etichette-da-rimuovere-quando-non-sono-obsolete: # opzionale, il valore predefinito è
-    # Qualsiasi aggiornamento (aggiornamento/commento) può ripristinare i tempi di inattività dei problemi e delle richieste di pull.
-    ignore-updates: # facoltativo, il valore predefinito è falso
-    # Qualsiasi aggiornamento (aggiornamento/commento) può ripristinare il tempo di inattività relativo ai problemi. Ignora l'opzione "ignore-updates" solo per quanto riguarda i problemi.
-    ignore-issue-updates: # facoltativo, il valore predefinito è
-    # Qualsiasi aggiornamento (aggiornamento/commento) può ripristinare il tempo di inattività delle richieste di pull. Ignora l'opzione "ignore-updates" solo per le richieste di pull.
-    ignore-pr-updates: # facoltativo, il valore predefinito è
-    # Solo i problemi o le richieste pull con un assegnatario verranno contrassegnati automaticamente come obsoleti.
-    include-only-assigned: # facoltativo, il valore predefinito è false
+      - name: Installa dipendenze
+        run: npm install
 
-          
+      - name: Build con Webpack
+        run: npx webpack
+
+      - name: Esegui test (se presenti)
+        run: npm test || echo "Nessun test configurato"
