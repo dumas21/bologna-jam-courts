@@ -69,7 +69,7 @@ export const centroPlaygrounds: Playground[] = [
     hasFountain: false,
     type: "Outdoor",
     district: "centro",
-    refreshmentType: "no",
+    refreshmentType: "no", 
     comments: []
   },
   {

@@ -25,7 +25,7 @@ export const bologninaPlaygrounds: Playground[] = [
   },
   {
     id: "7",
-    name: "Boccio",
+    name: "Boccio", 
     address: "Via Francesco Zanardi, 230, 40131 Bologna BO",
     latitude: 44.4834,
     longitude: 11.2756,
@@ -62,7 +62,7 @@ export const bologninaPlaygrounds: Playground[] = [
     hasFountain: false,
     type: "Outdoor",
     district: "bolognina",
-    refreshmentType: "no", 
+    refreshmentType: "no",
     comments: []
   },
   {
