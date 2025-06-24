@@ -41,7 +41,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Confirmation URL: ${confirmationUrl}`);
 
     const emailResponse = await resend.emails.send({
-      from: "Playground Jam <onboarding@resend.dev>",
+      from: "Playground Jam Bologna <noreply@playgroundjam.21.com>",
       to: [email],
       subject: "Conferma il tuo account - Playground Jam",
       html: `
