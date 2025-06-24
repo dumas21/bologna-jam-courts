@@ -2,11 +2,12 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { useNavigate } from "react-router-dom";
 import { useSupabaseUser } from "@/contexts/SupabaseUserContext";
-import { Mail, User, Lock, Eye, EyeOff } from "lucide-react";
-import TermsAcceptance from "./TermsAcceptance";
+import { useOTPSecurity } from "@/hooks/useOTPSecurity";
+import OTPSecurityMessage from "./OTPSecurityMessage";
+import { AUTH_CONFIG } from "@/config/authConfig";
 
 interface SupabaseLoginFormProps {
   onSuccess: () => void;
@@ -14,315 +15,250 @@ interface SupabaseLoginFormProps {
 
 const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
   const { toast } = useToast();
-  const navigate = useNavigate();
-  const { signUp, signIn, isLoading } = useSupabaseUser();
-  const [isSignUpMode, setIsSignUpMode] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const { signIn, signUp, isLoading } = useSupabaseUser();
+  const { otpState, checkRateLimit, recordOTPRequest, validateOTP, resetOTPState } = useOTPSecurity();
+  
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    nickname: "",
+    confirmPassword: ""
+  });
 
-  const validateForm = () => {
-    if (!email.trim() || !password.trim()) {
-      toast({
-        title: "ERRORE",
-        description: "Email e password sono obbligatori",
-        variant: "destructive",
-      });
-      return false;
+  const validatePassword = (password: string): { isValid: boolean; message?: string } => {
+    if (password.length < AUTH_CONFIG.VALIDATION.MIN_PASSWORD_LENGTH) {
+      return { 
+        isValid: false, 
+        message: `Password deve essere di almeno ${AUTH_CONFIG.VALIDATION.MIN_PASSWORD_LENGTH} caratteri` 
+      };
     }
 
-    if (isSignUpMode) {
-      if (!nickname.trim()) {
-        toast({
-          title: "ERRORE",
-          description: "Il nome utente è obbligatorio",
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      if (password !== confirmPassword) {
-        toast({
-          title: "ERRORE",
-          description: "Le password non corrispondono",
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      if (password.length < 6) {
-        toast({
-          title: "ERRORE",
-          description: "La password deve essere di almeno 6 caratteri",
-          variant: "destructive",
-        });
-        return false;
-      }
-
-      if (!acceptedTerms) {
-        toast({
-          title: "ERRORE",
-          description: "Devi accettare il regolamento per continuare",
-          variant: "destructive",
-        });
-        return false;
+    if (AUTH_CONFIG.VALIDATION.REQUIRE_SPECIAL_CHARS) {
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      if (!hasSpecialChar) {
+        return { 
+          isValid: false, 
+          message: "Password deve contenere almeno un carattere speciale" 
+        };
       }
     }
 
-    return true;
+    return { isValid: true };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    if (!checkRateLimit()) {
+      return;
+    }
+
+    // Password validation for signup
+    if (isSignUp) {
+      const passwordValidation = validatePassword(formData.password);
+      if (!passwordValidation.isValid) {
+        toast({
+          title: "PASSWORD NON VALIDA",
+          description: passwordValidation.message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        toast({
+          title: "ERRORE",
+          description: "Le password non coincidono",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!formData.nickname.trim()) {
+        toast({
+          title: "ERRORE",
+          description: "Il nickname è obbligatorio",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
 
     try {
-      let result;
-      
-      if (isSignUpMode) {
-        result = await signUp(email.trim(), password, nickname.trim());
-      } else {
-        result = await signIn(email.trim(), password);
-      }
-
-      if (result.success) {
-        onSuccess();
+      if (isSignUp) {
+        recordOTPRequest();
+        const result = await signUp(formData.email, formData.password, formData.nickname);
         
-        // Play success sound
-        try {
-          const audio = new Audio('/sounds/coin-insert.mp3');
-          audio.play();
-        } catch (err) {
-          console.log('Audio playback error:', err);
+        if (result.success) {
+          toast({
+            title: "REGISTRAZIONE COMPLETATA",
+            description: `Controlla la tua email per confermare l'account. L'OTP scade in ${AUTH_CONFIG.OTP_EXPIRY_MINUTES} minuti.`,
+          });
+        } else {
+          resetOTPState();
+          toast({
+            title: "ERRORE REGISTRAZIONE",
+            description: result.error || "Errore durante la registrazione",
+            variant: "destructive"
+          });
         }
-        
-        // Redirect after success
-        setTimeout(() => {
-          navigate("/");
-        }, 2000);
       } else {
-        toast({
-          title: isSignUpMode ? "ERRORE REGISTRAZIONE" : "ERRORE LOGIN",
-          description: result.error || "Si è verificato un errore",
-          variant: "destructive",
-        });
+        const result = await signIn(formData.email, formData.password);
+        
+        if (result.success) {
+          toast({
+            title: "LOGIN COMPLETATO",
+            description: "Benvenuto nel Playground Jam!",
+          });
+          onSuccess();
+        } else {
+          toast({
+            title: "ERRORE LOGIN",
+            description: result.error || "Credenziali non valide",
+            variant: "destructive"
+          });
+        }
       }
     } catch (error) {
-      console.error('Authentication error:', error);
+      resetOTPState();
+      console.error('Auth error:', error);
       toast({
         title: "ERRORE",
-        description: "Si è verificato un errore di connessione",
-        variant: "destructive",
+        description: "Si è verificato un errore. Riprova.",
+        variant: "destructive"
       });
     }
   };
 
-  const toggleMode = () => {
-    setIsSignUpMode(!isSignUpMode);
-    setPassword("");
-    setConfirmPassword("");
-    setNickname("");
-    setAcceptedTerms(false);
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
     <div className="space-y-4">
-      <div className="text-center mb-4">
-        <Button
-          type="button"
-          onClick={toggleMode}
-          className="arcade-button arcade-button-secondary text-xs"
-        >
-          {isSignUpMode ? "HAI GIÀ UN ACCOUNT? ACCEDI" : "NON HAI UN ACCOUNT? REGISTRATI"}
-        </Button>
-      </div>
-
       <form onSubmit={handleSubmit} className="space-y-4">
-        {isSignUpMode && (
-          <div>
-            <label className="block text-sm font-medium mb-2 arcade-label" style={{ 
-              fontSize: '10px', 
-              color: '#00ffff',
-              textShadow: '1px 1px 0px #000'
-            }}>
-              NOME UTENTE *
-            </label>
-            <div className="relative">
-              <User size={16} className="absolute left-3 top-3 text-cyan-400" />
-              <Input
-                type="text"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value.substring(0, 20))}
-                className="pl-10"
-                style={{
-                  background: '#222',
-                  color: '#00ffff',
-                  border: 'none',
-                  borderRadius: '5px',
-                  fontFamily: 'Press Start 2P, monospace',
-                  fontSize: '10px',
-                  textAlign: 'center'
-                }}
-                placeholder="Il tuo nome utente"
-                required={isSignUpMode}
-                maxLength={20}
-                autoComplete="username"
-              />
-            </div>
-          </div>
-        )}
-
         <div>
-          <label className="block text-sm font-medium mb-2 arcade-label" style={{ 
-            fontSize: '10px', 
-            color: '#00ffff',
-            textShadow: '1px 1px 0px #000'
-          }}>
-            EMAIL *
-          </label>
-          <div className="relative">
-            <Mail size={16} className="absolute left-3 top-3 text-cyan-400" />
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value.substring(0, 254))}
-              className="pl-10"
-              style={{
-                background: '#222',
-                color: '#00ffff',
-                border: 'none',
-                borderRadius: '5px',
-                fontFamily: 'Press Start 2P, monospace',
-                fontSize: '10px',
-                textAlign: 'center'
-              }}
-              placeholder="La tua email"
-              required
-              maxLength={254}
-              autoComplete="email"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2 arcade-label" style={{ 
-            fontSize: '10px', 
-            color: '#00ffff',
-            textShadow: '1px 1px 0px #000'
-          }}>
-            PASSWORD *
-          </label>
-          <div className="relative">
-            <Lock size={16} className="absolute left-3 top-3 text-cyan-400" />
-            <Input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pl-10 pr-10"
-              style={{
-                background: '#222',
-                color: '#00ffff',
-                border: 'none',
-                borderRadius: '5px',
-                fontFamily: 'Press Start 2P, monospace',
-                fontSize: '10px',
-                textAlign: 'center'
-              }}
-              placeholder="La tua password"
-              required
-              autoComplete={isSignUpMode ? "new-password" : "current-password"}
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-3 text-cyan-400"
-            >
-              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-            </button>
-          </div>
-        </div>
-
-        {isSignUpMode && (
-          <div>
-            <label className="block text-sm font-medium mb-2 arcade-label" style={{ 
-              fontSize: '10px', 
-              color: '#00ffff',
-              textShadow: '1px 1px 0px #000'
-            }}>
-              CONFERMA PASSWORD *
-            </label>
-            <div className="relative">
-              <Lock size={16} className="absolute left-3 top-3 text-cyan-400" />
-              <Input
-                type={showPassword ? "text" : "password"}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="pl-10"
-                style={{
-                  background: '#222',
-                  color: '#00ffff',
-                  border: 'none',
-                  borderRadius: '5px',
-                  fontFamily: 'Press Start 2P, monospace',
-                  fontSize: '10px',
-                  textAlign: 'center'
-                }}
-                placeholder="Conferma password"
-                required={isSignUpMode}
-                autoComplete="new-password"
-              />
-            </div>
-          </div>
-        )}
-
-        {isSignUpMode && (
-          <TermsAcceptance 
-            acceptedTerms={acceptedTerms}
-            onAcceptedTermsChange={setAcceptedTerms}
+          <Label htmlFor="email" className="arcade-text" style={{ color: '#ffcc00' }}>
+            EMAIL
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => handleInputChange('email', e.target.value)}
+            required
+            className="arcade-input"
+            style={{
+              background: 'rgba(0, 0, 0, 0.8)',
+              border: '2px solid #00ffff',
+              color: '#ffffff'
+            }}
           />
+        </div>
+
+        <div>
+          <Label htmlFor="password" className="arcade-text" style={{ color: '#ffcc00' }}>
+            PASSWORD
+          </Label>
+          <Input
+            id="password"
+            type="password"
+            value={formData.password}
+            onChange={(e) => handleInputChange('password', e.target.value)}
+            required
+            className="arcade-input"
+            style={{
+              background: 'rgba(0, 0, 0, 0.8)',
+              border: '2px solid #00ffff',
+              color: '#ffffff'
+            }}
+          />
+          {isSignUp && (
+            <div className="text-xs mt-1" style={{ color: '#00ffff' }}>
+              Minimo {AUTH_CONFIG.VALIDATION.MIN_PASSWORD_LENGTH} caratteri, incluso un carattere speciale
+            </div>
+          )}
+        </div>
+
+        {isSignUp && (
+          <>
+            <div>
+              <Label htmlFor="confirmPassword" className="arcade-text" style={{ color: '#ffcc00' }}>
+                CONFERMA PASSWORD
+              </Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={formData.confirmPassword}
+                onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                required
+                className="arcade-input"
+                style={{
+                  background: 'rgba(0, 0, 0, 0.8)',
+                  border: '2px solid #00ffff',
+                  color: '#ffffff'
+                }}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="nickname" className="arcade-text" style={{ color: '#ffcc00' }}>
+                NICKNAME
+              </Label>
+              <Input
+                id="nickname"
+                type="text"
+                value={formData.nickname}
+                onChange={(e) => handleInputChange('nickname', e.target.value)}
+                required
+                className="arcade-input"
+                style={{
+                  background: 'rgba(0, 0, 0, 0.8)',
+                  border: '2px solid #00ffff',
+                  color: '#ffffff'
+                }}
+              />
+            </div>
+          </>
         )}
 
         <Button
           type="submit"
-          disabled={isLoading || !email.trim() || !password.trim() || (isSignUpMode && (!acceptedTerms || !nickname.trim()))}
-          className="w-full"
-          style={{
-            background: (!isLoading && email.trim() && password.trim() && (!isSignUpMode || (acceptedTerms && nickname.trim()))) ? '#ff00ff' : '#666',
-            color: 'white',
-            padding: '12px',
-            fontSize: '12px',
-            fontFamily: 'Press Start 2P, monospace',
-            border: 'none',
-            borderRadius: '10px',
-            boxShadow: (!isLoading && email.trim() && password.trim() && (!isSignUpMode || (acceptedTerms && nickname.trim()))) ? 
-              '0 0 10px #ff00ff' : '0 0 5px #666',
-            cursor: (!isLoading && email.trim() && password.trim() && (!isSignUpMode || (acceptedTerms && nickname.trim()))) ? 
-              'pointer' : 'not-allowed',
-            marginTop: '15px',
-            textShadow: '1px 1px 0px #000'
-          }}
-          onMouseEnter={(e) => {
-            if (!isLoading && email.trim() && password.trim() && (!isSignUpMode || (acceptedTerms && nickname.trim()))) {
-              e.currentTarget.style.background = '#00ffff';
-              e.currentTarget.style.color = 'black';
-              e.currentTarget.style.boxShadow = '0 0 20px #00ffff';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (!isLoading && email.trim() && password.trim() && (!isSignUpMode || (acceptedTerms && nickname.trim()))) {
-              e.currentTarget.style.background = '#ff00ff';
-              e.currentTarget.style.color = 'white';
-              e.currentTarget.style.boxShadow = '0 0 10px #ff00ff';
-            }
-          }}
+          disabled={isLoading || (isSignUp && otpState.otpSentAt && otpState.isOTPValid)}
+          className="w-full arcade-button arcade-button-primary"
         >
-          {isLoading ? "CARICAMENTO..." : (isSignUpMode ? "REGISTRATI" : "ACCEDI")}
+          {isLoading ? "CARICAMENTO..." : isSignUp ? "REGISTRATI" : "ACCEDI"}
         </Button>
       </form>
+
+      <OTPSecurityMessage
+        timeRemaining={otpState.timeRemaining}
+        isVisible={isSignUp && !!otpState.otpSentAt && otpState.isOTPValid}
+      />
+
+      <div className="text-center">
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => {
+            setIsSignUp(!isSignUp);
+            resetOTPState();
+            setFormData({ email: "", password: "", nickname: "", confirmPassword: "" });
+          }}
+          className="arcade-text"
+          style={{ color: '#00ffff' }}
+        >
+          {isSignUp ? "Hai già un account? ACCEDI" : "Non hai un account? REGISTRATI"}
+        </Button>
+      </div>
+
+      <div className="text-center text-xs" style={{ color: '#888' }}>
+        <div>Sicurezza migliorata:</div>
+        <div>• OTP scade in {AUTH_CONFIG.OTP_EXPIRY_MINUTES} minuti</div>
+        <div>• Max {AUTH_CONFIG.OTP_RATE_LIMIT.MAX_REQUESTS_PER_HOUR} richieste OTP/ora</div>
+        <div>• Password sicura obbligatoria</div>
+      </div>
     </div>
   );
 };
