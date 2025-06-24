@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -251,13 +250,6 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
         >
           {isSignUp ? "Hai già un account? ACCEDI" : "Non hai un account? REGISTRATI"}
         </Button>
-      </div>
-
-      <div className="text-center text-xs" style={{ color: '#888' }}>
-        <div>Sicurezza migliorata:</div>
-        <div>• OTP scade in {AUTH_CONFIG.OTP_EXPIRY_MINUTES} minuti</div>
-        <div>• Max {AUTH_CONFIG.OTP_RATE_LIMIT.MAX_REQUESTS_PER_HOUR} richieste OTP/ora</div>
-        <div>• Password sicura obbligatoria</div>
       </div>
     </div>
   );
