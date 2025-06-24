@@ -2,8 +2,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -23,9 +21,24 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Check if API key is available
+    const apiKey = Deno.env.get("RESEND_API_KEY");
+    if (!apiKey) {
+      console.error("RESEND_API_KEY not found in environment variables");
+      return new Response(
+        JSON.stringify({ error: "Email service not configured" }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    const resend = new Resend(apiKey);
     const { email, confirmationUrl, token }: ConfirmationEmailRequest = await req.json();
 
-    console.log(`Sending confirmation email to: ${email}`);
+    console.log(`Attempting to send confirmation email to: ${email}`);
+    console.log(`Confirmation URL: ${confirmationUrl}`);
 
     const emailResponse = await resend.emails.send({
       from: "Playground Jam <onboarding@resend.dev>",
@@ -79,6 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
               font-family: monospace; 
               margin: 15px 0;
               font-size: 16px;
+              word-break: break-all;
             }
             .footer { 
               color: #888; 
@@ -94,8 +108,8 @@ const handler = async (req: Request): Promise<Response> => {
             
             <a href="${confirmationUrl}" class="button">CONFERMA ACCOUNT</a>
             
-            <p>Oppure copia e incolla questo codice di conferma:</p>
-            <div class="code">${token}</div>
+            <p>Oppure copia e incolla questo link di conferma:</p>
+            <div class="code">${confirmationUrl}</div>
             
             <p>Se non ti sei registrato, puoi ignorare questa email.</p>
             
@@ -111,7 +125,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Email sent successfully:", emailResponse);
 
-    return new Response(JSON.stringify({ success: true, messageId: emailResponse.data?.id }), {
+    return new Response(JSON.stringify({ 
+      success: true, 
+      messageId: emailResponse.data?.id,
+      message: "Email sent successfully"
+    }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -120,8 +138,17 @@ const handler = async (req: Request): Promise<Response> => {
     });
   } catch (error: any) {
     console.error("Error in send-confirmation-email function:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
+    
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        details: "Check function logs for more information"
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },

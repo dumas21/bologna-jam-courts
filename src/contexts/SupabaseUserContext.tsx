@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -129,27 +128,31 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Send confirmation email using our custom function
-  const sendConfirmationEmail = async (email: string, token: string) => {
+  const sendConfirmationEmail = async (email: string, userId: string) => {
     try {
-      const confirmationUrl = `${window.location.origin}/auth/confirm?token=${token}&email=${encodeURIComponent(email)}`;
+      // Create a proper confirmation URL that Supabase can handle
+      const confirmationUrl = `${window.location.origin}/auth/confirm?token_hash=${userId}&type=signup&redirect_to=${encodeURIComponent(window.location.origin)}`;
+      
+      console.log('Sending confirmation email to:', email);
+      console.log('Confirmation URL:', confirmationUrl);
       
       const { data, error } = await supabase.functions.invoke('send-confirmation-email', {
         body: {
           email,
           confirmationUrl,
-          token
+          token: userId
         }
       });
 
       if (error) {
-        console.error('Error sending confirmation email:', error);
+        console.error('Error invoking send-confirmation-email function:', error);
         return false;
       }
       
-      console.log('Confirmation email sent successfully:', data);
+      console.log('Confirmation email function response:', data);
       return true;
     } catch (error) {
-      console.error('Error invoking send-confirmation-email function:', error);
+      console.error('Error in sendConfirmationEmail:', error);
       return false;
     }
   };
@@ -158,16 +161,7 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
     try {
       setIsLoading(true);
       
-      // Prima verifica se l'utente già esiste
-      const { data: existingUser } = await supabase.auth.signInWithPassword({
-        email,
-        password: 'dummy-password' // Password dummy per verificare se l'utente esiste
-      });
-
-      // Se non c'è errore, significa che l'utente già esiste
-      if (existingUser?.user) {
-        return { success: false, error: 'User already registered' };
-      }
+      console.log('Starting sign up process for:', email);
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -181,6 +175,7 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
+        console.error('Supabase signUp error:', error);
         // Gestisci errori specifici di registrazione
         if (error.message.includes('already registered') || error.message.includes('User already registered')) {
           return { success: false, error: 'User already registered' };
@@ -188,12 +183,19 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, error: error.message };
       }
 
+      console.log('SignUp response:', data);
+
       if (data.user && !data.session) {
+        console.log('User created successfully, sending confirmation email...');
+        
         // Invia email di conferma personalizzata
         const emailSent = await sendConfirmationEmail(email, data.user.id);
         
         if (!emailSent) {
           console.warn('Failed to send confirmation email, but user was created');
+          // Non bloccare la registrazione se l'email fallisce
+        } else {
+          console.log('Confirmation email sent successfully');
         }
         
         return { success: true };
@@ -201,46 +203,8 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
 
       return { success: true };
     } catch (error: any) {
-      // Ignora errori di verifica utente esistente
-      if (!error.message.includes('Invalid login credentials')) {
-        return { success: false, error: error.message };
-      }
-      
-      // Procedi con la registrazione normale
-      try {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-            data: {
-              nickname: nickname
-            }
-          }
-        });
-
-        if (error) {
-          if (error.message.includes('already registered') || error.message.includes('User already registered')) {
-            return { success: false, error: 'User already registered' };
-          }
-          return { success: false, error: error.message };
-        }
-
-        if (data.user && !data.session) {
-          // Invia email di conferma personalizzata
-          const emailSent = await sendConfirmationEmail(email, data.user.id);
-          
-          if (!emailSent) {
-            console.warn('Failed to send confirmation email, but user was created');
-          }
-          
-          return { success: true };
-        }
-
-        return { success: true };
-      } catch (signUpError: any) {
-        return { success: false, error: signUpError.message };
-      }
+      console.error('Unexpected error in signUp:', error);
+      return { success: false, error: error.message };
     } finally {
       setIsLoading(false);
     }
