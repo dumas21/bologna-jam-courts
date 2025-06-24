@@ -71,17 +71,28 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
         const result = await signUp(formData.email, formData.password, formData.nickname);
         
         if (result.success) {
+          // Solo per nuove registrazioni mostra il messaggio OTP
           toast({
             title: "REGISTRAZIONE COMPLETATA",
             description: `Controlla la tua email per confermare l'account. L'OTP scade in 10 minuti.`,
           });
         } else {
           resetOTPState();
-          toast({
-            title: "ERRORE REGISTRAZIONE",
-            description: result.error || "Errore durante la registrazione",
-            variant: "destructive"
-          });
+          // Gestisci il caso di utente già esistente
+          if (result.error?.includes('already registered') || result.error?.includes('User already registered')) {
+            toast({
+              title: "UTENTE GIÀ REGISTRATO",
+              description: "Questo email è già registrato. Prova ad effettuare il login.",
+              variant: "destructive"
+            });
+            setIsSignUp(false); // Cambia automaticamente a modalità login
+          } else {
+            toast({
+              title: "ERRORE REGISTRAZIONE",
+              description: result.error || "Errore durante la registrazione",
+              variant: "destructive"
+            });
+          }
         }
       } else {
         const result = await signIn(formData.email, formData.password);
@@ -95,11 +106,26 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
             window.location.href = '/create-username';
           }, 1000);
         } else {
-          toast({
-            title: "ERRORE LOGIN",
-            description: result.error || "Credenziali non valide",
-            variant: "destructive"
-          });
+          // Gestisci errori di login specifici
+          if (result.error?.includes('Invalid login credentials')) {
+            toast({
+              title: "CREDENZIALI NON VALIDE",
+              description: "Email o password non corretti",
+              variant: "destructive"
+            });
+          } else if (result.error?.includes('Email not confirmed')) {
+            toast({
+              title: "EMAIL NON CONFERMATA",
+              description: "Devi confermare la tua email prima di accedere. Controlla la tua casella di posta.",
+              variant: "destructive"
+            });
+          } else {
+            toast({
+              title: "ERRORE LOGIN",
+              description: result.error || "Errore durante il login",
+              variant: "destructive"
+            });
+          }
         }
       }
     } catch (error) {

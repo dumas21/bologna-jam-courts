@@ -144,15 +144,16 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
+        // Gestisci errori specifici di registrazione
+        if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+          return { success: false, error: 'User already registered' };
+        }
         return { success: false, error: error.message };
       }
 
       if (data.user && !data.session) {
-        // Email confirmation required
-        toast({
-          title: "CONFERMA EMAIL",
-          description: "Controlla la tua email per confermare l'account",
-        });
+        // Email confirmation richiesta per nuovi utenti
+        return { success: true };
       }
 
       return { success: true };
@@ -173,6 +174,12 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
+        // Gestisci errori specifici di login
+        if (error.message.includes('Invalid login credentials')) {
+          return { success: false, error: 'Invalid login credentials' };
+        } else if (error.message.includes('Email not confirmed')) {
+          return { success: false, error: 'Email not confirmed' };
+        }
         return { success: false, error: error.message };
       }
 
