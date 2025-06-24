@@ -21,7 +21,7 @@ const PlaygroundStats = ({ playground }: PlaygroundStatsProps) => {
       
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
         <span className="text-yellow-400 mr-2">🏀</span>
-        <span className="text-white/90 nike-text font-bold">CANESTRI: {playground.basketCount || 2}</span>
+        <span className="text-white/90 nike-text font-bold">CANESTRI: 2</span>
       </div>
       
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
