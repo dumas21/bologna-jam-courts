@@ -3,23 +3,19 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { LogOut, User, Shield } from "lucide-react";
-import { useUser } from "@/contexts/UserContext";
+import { useSupabaseUser } from "@/contexts/SupabaseUserContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 
 const Header = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { isLoggedIn, nickname, isAdmin, logout } = useUser();
+  const { isLoggedIn, nickname, isAdmin, signOut } = useSupabaseUser();
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     setShowUserMenu(false);
-    toast({
-      title: "LOGOUT EFFETTUATO",
-      description: "Sei stato disconnesso con successo",
-    });
     
     const audio = new Audio('/sounds/logout.mp3');
     audio.play().catch(err => console.log('Audio playback error:', err));
@@ -32,9 +28,7 @@ const Header = () => {
 
   const handleHomeClick = () => {
     playSoundEffect('click');
-    // Scroll to top instead of navigate to avoid page reload
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    // If we're not on the home page, navigate
     if (window.location.pathname !== '/') {
       navigate('/');
     }
@@ -43,7 +37,6 @@ const Header = () => {
   return (
     <header className="bg-black bg-opacity-80 border-b-4 border-white p-4 relative z-20">
       <div className="container mx-auto flex flex-col items-center gap-4">
-        {/* Logo Section - MOLTO PIÙ GRANDE */}
         <div 
           className="cursor-pointer select-none"
           onClick={handleHomeClick}
@@ -55,7 +48,6 @@ const Header = () => {
           />
         </div>
         
-        {/* Navigation Section */}
         <div className="w-full flex justify-between items-center">
           <div className="flex-1"></div>
           

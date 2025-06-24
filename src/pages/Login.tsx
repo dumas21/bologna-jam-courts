@@ -5,12 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Header from "@/components/Header";
-import LoginForm from "@/components/auth/LoginForm";
+import SupabaseLoginForm from "@/components/auth/SupabaseLoginForm";
 import SuccessMessage from "@/components/auth/SuccessMessage";
 import ContactInfo from "@/components/auth/ContactInfo";
 import WelcomeMessage from "@/components/WelcomeMessage";
 
-// Questo componente gestisce la visualizzazione della pagina di login
 const Login = () => {
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
@@ -18,7 +17,6 @@ const Login = () => {
 
   const handleLoginSuccess = () => {
     setShowSuccess(true);
-    // Mostra il messaggio di benvenuto dopo il successo del login - esteso a 2 secondi
     setTimeout(() => {
       setShowWelcome(true);
     }, 2000);
@@ -58,12 +56,11 @@ const Login = () => {
             </CardHeader>
             <CardContent>
               {!showSuccess ? (
-                <LoginForm onSuccess={handleLoginSuccess} />
+                <SupabaseLoginForm onSuccess={handleLoginSuccess} />
               ) : (
                 <SuccessMessage />
               )}
               
-              {/* Sostituisci con la nuova immagine */}
               <div className="mt-4">
                 <img src="/lovable-uploads/08dab4be-24fd-4800-b7b1-7f55a6d6de3d.png" alt="Basket City Jam" className="w-full h-auto" />
               </div>

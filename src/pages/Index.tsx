@@ -7,19 +7,16 @@ import NavigationButtons from "@/components/NavigationButtons";
 import MainTabs from "@/components/MainTabs";
 import EventsButton from "@/components/EventsButton";
 import { Playground } from "@/types/playground";
-import { useUser } from "@/contexts/UserContext";
+import { useSupabaseUser } from "@/contexts/SupabaseUserContext";
 import { usePlaygrounds } from "@/hooks/usePlaygrounds";
-import { useSessionManagement } from "@/hooks/useSessionManagement";
 import { useAudioEffects } from "@/hooks/useAudioEffects";
 
 const Index = () => {
   const { toast } = useToast();
-  const { isLoggedIn, nickname } = useUser();
+  const { isLoggedIn, nickname } = useSupabaseUser();
   const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords, updatePlayground } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
-  // Custom hooks for session management and audio effects
-  useSessionManagement();
   const { scrollToTop, playSoundEffect } = useAudioEffects();
 
   useEffect(() => {
@@ -69,7 +66,6 @@ const Index = () => {
       };
       updatePlayground(updated);
       
-      // Update selected playground if it's the same one
       if (selectedPlayground?.id === playgroundId) {
         setSelectedPlayground(updated);
       }
@@ -78,7 +74,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col arcade-container">
-      {/* Neptune Background */}
       <div className="neptune-background"></div>
       
       <Header />

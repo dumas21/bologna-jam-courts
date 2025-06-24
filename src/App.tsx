@@ -1,10 +1,9 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { UserProvider } from "./contexts/UserContext";
+import { SupabaseUserProvider } from "./contexts/SupabaseUserContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AddPlayground from "./pages/AddPlayground";
@@ -20,7 +19,7 @@ function App() {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <UserProvider>
+        <SupabaseUserProvider>
           <TooltipProvider>
             <Toaster />
             <Sonner />
@@ -37,7 +36,7 @@ function App() {
               </Routes>
             </BrowserRouter>
           </TooltipProvider>
-        </UserProvider>
+        </SupabaseUserProvider>
       </QueryClientProvider>
       <CookieBanner />
     </>
