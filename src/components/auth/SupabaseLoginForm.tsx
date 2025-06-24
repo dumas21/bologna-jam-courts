@@ -108,9 +108,12 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
         if (result.success) {
           toast({
             title: "LOGIN COMPLETATO",
-            description: "Benvenuto nel Playground Jam!",
+            description: "Reindirizzamento alla creazione username...",
           });
-          onSuccess();
+          // Reindirizza alla creazione username invece che chiamare onSuccess
+          setTimeout(() => {
+            window.location.href = '/create-username';
+          }, 1000);
         } else {
           toast({
             title: "ERRORE LOGIN",
