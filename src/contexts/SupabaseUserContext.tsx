@@ -128,10 +128,47 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Send confirmation email using our custom function
+  const sendConfirmationEmail = async (email: string, token: string) => {
+    try {
+      const confirmationUrl = `${window.location.origin}/auth/confirm?token=${token}&email=${encodeURIComponent(email)}`;
+      
+      const { data, error } = await supabase.functions.invoke('send-confirmation-email', {
+        body: {
+          email,
+          confirmationUrl,
+          token
+        }
+      });
+
+      if (error) {
+        console.error('Error sending confirmation email:', error);
+        return false;
+      }
+      
+      console.log('Confirmation email sent successfully:', data);
+      return true;
+    } catch (error) {
+      console.error('Error invoking send-confirmation-email function:', error);
+      return false;
+    }
+  };
+
   const signUp = async (email: string, password: string, nickname: string): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
       
+      // Prima verifica se l'utente già esiste
+      const { data: existingUser } = await supabase.auth.signInWithPassword({
+        email,
+        password: 'dummy-password' // Password dummy per verificare se l'utente esiste
+      });
+
+      // Se non c'è errore, significa che l'utente già esiste
+      if (existingUser?.user) {
+        return { success: false, error: 'User already registered' };
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -152,13 +189,58 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
       }
 
       if (data.user && !data.session) {
-        // Email confirmation richiesta per nuovi utenti
+        // Invia email di conferma personalizzata
+        const emailSent = await sendConfirmationEmail(email, data.user.id);
+        
+        if (!emailSent) {
+          console.warn('Failed to send confirmation email, but user was created');
+        }
+        
         return { success: true };
       }
 
       return { success: true };
     } catch (error: any) {
-      return { success: false, error: error.message };
+      // Ignora errori di verifica utente esistente
+      if (!error.message.includes('Invalid login credentials')) {
+        return { success: false, error: error.message };
+      }
+      
+      // Procedi con la registrazione normale
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              nickname: nickname
+            }
+          }
+        });
+
+        if (error) {
+          if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+            return { success: false, error: 'User already registered' };
+          }
+          return { success: false, error: error.message };
+        }
+
+        if (data.user && !data.session) {
+          // Invia email di conferma personalizzata
+          const emailSent = await sendConfirmationEmail(email, data.user.id);
+          
+          if (!emailSent) {
+            console.warn('Failed to send confirmation email, but user was created');
+          }
+          
+          return { success: true };
+        }
+
+        return { success: true };
+      } catch (signUpError: any) {
+        return { success: false, error: signUpError.message };
+      }
     } finally {
       setIsLoading(false);
     }
