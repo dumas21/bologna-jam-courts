@@ -1,3 +1,4 @@
+
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -176,7 +177,6 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) {
         console.error('Supabase signUp error:', error);
-        // Gestisci errori specifici di registrazione
         if (error.message.includes('already registered') || error.message.includes('User already registered')) {
           return { success: false, error: 'User already registered' };
         }
@@ -193,7 +193,6 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
         
         if (!emailSent) {
           console.warn('Failed to send confirmation email, but user was created');
-          // Non bloccare la registrazione se l'email fallisce
         } else {
           console.log('Confirmation email sent successfully');
         }
@@ -220,7 +219,6 @@ export const SupabaseUserProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (error) {
-        // Gestisci errori specifici di login
         if (error.message.includes('Invalid login credentials')) {
           return { success: false, error: 'Invalid login credentials' };
         } else if (error.message.includes('Email not confirmed')) {

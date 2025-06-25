@@ -51,7 +51,7 @@ const Login = () => {
                 fontSize: '18px',
                 textShadow: '2px 2px 0px #000'
               }}>
-                ARCADE LOGIN
+                🎮 ARCADE LOGIN 🎮
               </CardTitle>
             </CardHeader>
             <CardContent>

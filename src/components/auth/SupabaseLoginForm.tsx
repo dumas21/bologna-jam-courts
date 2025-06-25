@@ -2,8 +2,6 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useSupabaseUser } from "@/contexts/SupabaseUserContext";
-import { useOTPSecurity } from "@/hooks/useOTPSecurity";
-import OTPSecurityMessage from "./OTPSecurityMessage";
 import LoginFormFields from "./LoginFormFields";
 import SignUpFormFields from "./SignUpFormFields";
 import FormSubmitButton from "./FormSubmitButton";
@@ -17,7 +15,6 @@ interface SupabaseLoginFormProps {
 const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
   const { toast } = useToast();
   const { signIn, signUp, isLoading } = useSupabaseUser();
-  const { otpState, checkRateLimit, recordOTPRequest, validateOTP, resetOTPState } = useOTPSecurity();
   
   const [isSignUp, setIsSignUp] = useState(false);
   const [formData, setFormData] = useState({
@@ -29,10 +26,6 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!checkRateLimit()) {
-      return;
-    }
 
     // Password validation for signup
     if (isSignUp) {
@@ -67,25 +60,21 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
 
     try {
       if (isSignUp) {
-        recordOTPRequest();
         const result = await signUp(formData.email, formData.password, formData.nickname);
         
         if (result.success) {
-          // Solo per nuove registrazioni mostra il messaggio OTP
           toast({
             title: "REGISTRAZIONE COMPLETATA",
-            description: `Controlla la tua email per confermare l'account. L'OTP scade in 10 minuti.`,
+            description: "Controlla la tua email per confermare l'account.",
           });
         } else {
-          resetOTPState();
-          // Gestisci il caso di utente già esistente
           if (result.error?.includes('already registered') || result.error?.includes('User already registered')) {
             toast({
               title: "UTENTE GIÀ REGISTRATO",
               description: "Questo email è già registrato. Prova ad effettuare il login.",
               variant: "destructive"
             });
-            setIsSignUp(false); // Cambia automaticamente a modalità login
+            setIsSignUp(false);
           } else {
             toast({
               title: "ERRORE REGISTRAZIONE",
@@ -106,7 +95,6 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
             window.location.href = '/create-username';
           }, 1000);
         } else {
-          // Gestisci errori di login specifici
           if (result.error?.includes('Invalid login credentials')) {
             toast({
               title: "CREDENZIALI NON VALIDE",
@@ -129,7 +117,6 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
         }
       }
     } catch (error) {
-      resetOTPState();
       console.error('Auth error:', error);
       toast({
         title: "ERRORE",
@@ -145,7 +132,6 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
 
   const handleToggle = () => {
     setIsSignUp(!isSignUp);
-    resetOTPState();
     setFormData({ email: "", password: "", nickname: "", confirmPassword: "" });
   };
 
@@ -172,14 +158,9 @@ const SupabaseLoginForm = ({ onSuccess }: SupabaseLoginFormProps) => {
         <FormSubmitButton
           isLoading={isLoading}
           isSignUp={isSignUp}
-          isDisabled={isLoading || (isSignUp && otpState.otpSentAt && otpState.isOTPValid)}
+          isDisabled={isLoading}
         />
       </form>
-
-      <OTPSecurityMessage
-        timeRemaining={otpState.timeRemaining}
-        isVisible={isSignUp && !!otpState.otpSentAt && otpState.isOTPValid}
-      />
 
       <AuthToggleButton isSignUp={isSignUp} onToggle={handleToggle} />
     </div>

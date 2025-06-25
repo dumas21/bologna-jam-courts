@@ -40,6 +40,9 @@ const handler = async (req: Request): Promise<Response> => {
     console.log(`Attempting to send confirmation email to: ${email}`);
     console.log(`Confirmation URL: ${confirmationUrl}`);
 
+    // Create unsubscribe URL
+    const unsubscribeUrl = `https://playgroundjam.21.com/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
+
     const emailResponse = await resend.emails.send({
       from: "Playground Jam Bologna <noreply@playgroundjam.21.com>",
       to: [email],
@@ -98,24 +101,48 @@ const handler = async (req: Request): Promise<Response> => {
               color: #888; 
               font-size: 10px; 
               margin-top: 30px;
+              border-top: 1px solid #333;
+              padding-top: 20px;
+            }
+            .unsubscribe { 
+              color: #666; 
+              font-size: 8px; 
+              margin-top: 15px;
+            }
+            .unsubscribe a { 
+              color: #888; 
+              text-decoration: underline;
             }
           </style>
         </head>
         <body>
           <div class="container">
             <h1 class="title">🎮 PLAYGROUND JAM BOLOGNA 🎮</h1>
-            <p>Benvenuto! Conferma il tuo account per accedere alla piattaforma.</p>
+            <p>Benvenuto nella community! Conferma il tuo account per accedere alla piattaforma.</p>
             
             <a href="${confirmationUrl}" class="button">CONFERMA ACCOUNT</a>
             
             <p>Oppure copia e incolla questo link di conferma:</p>
             <div class="code">${confirmationUrl}</div>
             
-            <p>Se non ti sei registrato, puoi ignorare questa email.</p>
+            <p>Una volta confermato potrai:</p>
+            <ul style="text-align: left; color: #00ffff; margin: 20px 0;">
+              <li>🏀 Trovare campi da basket a Bologna</li>
+              <li>💬 Chattare con altri giocatori</li>
+              <li>📊 Vedere statistiche dei playground</li>
+              <li>🎯 Partecipare agli eventi</li>
+            </ul>
+            
+            <p style="font-size: 10px; color: #888;">Se non ti sei registrato, puoi ignorare questa email.</p>
             
             <div class="footer">
               <p>PLAYGROUND JAM BOLOGNA © 2025</p>
               <p>Contatti: playgroundjam21@gmail.com</p>
+              
+              <div class="unsubscribe">
+                <p>Non vuoi più ricevere queste email?</p>
+                <a href="${unsubscribeUrl}">Cancellati dalla mailing list</a>
+              </div>
             </div>
           </div>
         </body>
