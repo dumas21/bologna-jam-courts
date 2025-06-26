@@ -1,7 +1,6 @@
 
 import { Users, Lightbulb, Clock, Star, Signpost } from "lucide-react";
 import { Playground } from "@/types/playground";
-import { useUser } from "@/contexts/UserContext";
 import { openSecureExternalLink } from "@/config/security";
 import PlaygroundStats from "./PlaygroundStats";
 import PlaygroundControls from "./PlaygroundControls";
@@ -13,7 +12,9 @@ interface PlaygroundCardProps {
 }
 
 const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: PlaygroundCardProps) => {
-  const { isLoggedIn, nickname } = useUser();
+  // Remove login dependency - site is now accessible without login
+  const isLoggedIn = false;
+  const nickname = '';
   
   const playBasketballSound = () => {
     const audio = new Audio('/sounds/select.mp3');
@@ -153,24 +154,17 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
           </div>
         )}
         
-        {/* Check-in info se l'utente è loggato */}
-        {isLoggedIn && playground.currentPlayers > 0 && (
+        {/* Check-in info - now shows generic info since no login */}
+        {playground.currentPlayers > 0 && (
           <div className="mt-3 pt-3 border-t border-white/20">
             <div className="text-xs text-white nike-text mb-2 bg-black bg-opacity-70 px-2 py-1 rounded inline-block">
               CHECK-IN OGGI:
             </div>
             <div className="text-xs text-white/80 nike-text space-y-1">
-              {nickname && 
-                <div className="flex items-center">
-                  <Users size={10} className="text-blue-400 mr-2 flex-shrink-0" />
-                  <span className="nike-text text-blue-400 font-bold">{nickname.toUpperCase()}</span>
-                </div>
-              }
-              {playground.currentPlayers > (nickname ? 1 : 0) && 
-                <div className="text-xs text-white/60 nike-text ml-4">
-                  + ALTRI {playground.currentPlayers - (nickname ? 1 : 0)} GIOCATORI
-                </div>
-              }
+              <div className="flex items-center">
+                <Users size={10} className="text-blue-400 mr-2 flex-shrink-0" />
+                <span className="nike-text text-blue-400 font-bold">{playground.currentPlayers} GIOCATORI</span>
+              </div>
             </div>
           </div>
         )}

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -14,7 +13,6 @@ import { useForm } from "react-hook-form";
 import { Check, ArrowLeft } from "lucide-react";
 import { Playground } from "@/types/playground";
 import { usePlaygrounds } from "@/hooks/usePlaygrounds";
-import { useUser } from "@/contexts/UserContext";
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Il nome deve avere almeno 3 caratteri" }),
@@ -34,7 +32,7 @@ const AddPlayground = () => {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { updatePlayground, addPlayground } = usePlaygrounds();
-  const { isLoggedIn } = useUser();
+  const isLoggedIn = true; // Always allow playground creation
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   
@@ -86,16 +84,6 @@ const AddPlayground = () => {
 
   const onSubmit = (data: FormValues) => {
     setIsSubmitting(true);
-    
-    if (!isLoggedIn) {
-      toast({
-        title: "Login richiesto",
-        description: "Devi essere loggato per aggiungere o modificare playground",
-        variant: "destructive",
-      });
-      setIsSubmitting(false);
-      return;
-    }
     
     // Get existing playgrounds from localStorage for checking duplicates
     const savedPlaygrounds = localStorage.getItem("playgroundData");
@@ -346,17 +334,11 @@ const AddPlayground = () => {
               <Button 
                 type="submit" 
                 className="pixel-button w-full" 
-                disabled={isSubmitting || !isLoggedIn}
+                disabled={isSubmitting}
                 onClick={() => !isSubmitting && playSoundEffect('click')}
               >
                 {isSubmitting ? 'INVIO...' : isEditing ? 'AGGIORNA PLAYGROUND' : 'AGGIUNGI PLAYGROUND'}
               </Button>
-              
-              {!isLoggedIn && (
-                <p className="text-red-600 text-xs text-center">
-                  Effettua il login per aggiungere o modificare playground
-                </p>
-              )}
             </form>
           </Form>
         </div>

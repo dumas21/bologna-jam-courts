@@ -6,7 +6,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Playground } from "@/types/playgroundTypes";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
-import { useUser } from "@/contexts/UserContext";
 import { useToast } from "@/components/ui/use-toast";
 import { secureChatManager, PlaygroundChatMessage } from "@/utils/chatSecurity";
 import { validateContentLength } from "@/utils/security";
@@ -18,7 +17,9 @@ interface PlaygroundChatProps {
 
 const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessage }) => {
   const { toast } = useToast();
-  const { isLoggedIn, nickname } = useUser();
+  // Remove login dependency - site is now accessible without login
+  const isLoggedIn = false;
+  const nickname = 'Anonymous';
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<PlaygroundChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -52,15 +53,6 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       toast({
         title: "MESSAGGIO VUOTO",
         description: "Inserisci un messaggio prima di inviare",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    if (!isLoggedIn || !nickname) {
-      toast({
-        title: "LOGIN RICHIESTO",
-        description: "Devi effettuare il login e inserire un nickname per inviare messaggi",
         variant: "destructive"
       });
       return;
@@ -145,7 +137,6 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
 
   // Get user's remaining messages for this playground
   const getRemainingMessages = () => {
-    if (!isLoggedIn || !nickname) return 0;
     const limitCheck = secureChatManager.canUserSendMessage(nickname, playground.id);
     return limitCheck.remainingMessages || 0;
   };
@@ -189,48 +180,38 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         )}
       </div>
       
-      {!isLoggedIn ? (
-        <div className="bg-red-100 border-2 border-red-400 rounded-lg p-4 text-center">
-          <p className="font-bold text-sm mb-2 text-black">
-            DEVI EFFETTUARE IL LOGIN PER SCRIVERE IN CHAT
-          </p>
+      {/* Chat is now always available since no login required */}
+      <>
+        <div className="bg-blue-100 border-2 border-blue-400 rounded-lg p-2 mb-4 text-center">
           <p className="text-xs font-bold text-black">
-            Vai alla pagina di login e inserisci il tuo nickname
+            MESSAGGI RIMASTI PER QUESTO PLAYGROUND: {getRemainingMessages()}/2 (nelle prossime 24h)
           </p>
         </div>
-      ) : (
-        <>
-          <div className="bg-blue-100 border-2 border-blue-400 rounded-lg p-2 mb-4 text-center">
-            <p className="text-xs font-bold text-black">
-              MESSAGGI RIMASTI PER QUESTO PLAYGROUND: {getRemainingMessages()}/2 (nelle prossime 24h)
-            </p>
-          </div>
-          
-          <div className="flex gap-4 items-end">
-            <div className="flex-1">
-              <Textarea 
-                placeholder={`Scrivi nella chat di ${playground.name}... (max 500 caratteri)`}
-                className="bg-white border-2 border-gray-300 min-h-[80px] text-base resize-none font-bold text-black"
-                value={message}
-                onChange={handleMessageChange}
-                onKeyDown={handleKeyPress}
-                maxLength={500}
-                disabled={isLoading}
-              />
-              <div className="text-xs mt-1 font-bold text-black">
-                {message.length}/500 caratteri
-              </div>
+        
+        <div className="flex gap-4 items-end">
+          <div className="flex-1">
+            <Textarea 
+              placeholder={`Scrivi nella chat di ${playground.name}... (max 500 caratteri)`}
+              className="bg-white border-2 border-gray-300 min-h-[80px] text-base resize-none font-bold text-black"
+              value={message}
+              onChange={handleMessageChange}
+              onKeyDown={handleKeyPress}
+              maxLength={500}
+              disabled={isLoading}
+            />
+            <div className="text-xs mt-1 font-bold text-black">
+              {message.length}/500 caratteri
             </div>
-            <Button 
-              onClick={handleSendMessage}
-              className="bg-blue-600 hover:bg-blue-700 text-white h-[80px] px-6 flex items-center justify-center rounded-lg font-bold"
-              disabled={!message.trim() || message.length > 500 || isLoading || getRemainingMessages() === 0}
-            >
-              {isLoading ? "..." : <Send size={20} />}
-            </Button>
           </div>
-        </>
-      )}
+          <Button 
+            onClick={handleSendMessage}
+            className="bg-blue-600 hover:bg-blue-700 text-white h-[80px] px-6 flex items-center justify-center rounded-lg font-bold"
+            disabled={!message.trim() || message.length > 500 || isLoading || getRemainingMessages() === 0}
+          >
+            {isLoading ? "..." : <Send size={20} />}
+          </Button>
+        </div>
+      </>
     </div>
   );
 };

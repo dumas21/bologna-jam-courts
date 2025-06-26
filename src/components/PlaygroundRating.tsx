@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Star } from 'lucide-react';
 import { Playground } from '@/types/playground';
-import { useUser } from '@/contexts/UserContext';
 import { useToast } from '@/components/ui/use-toast';
 
 interface PlaygroundRatingProps {
@@ -12,7 +11,9 @@ interface PlaygroundRatingProps {
 
 const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps) => {
   const { toast } = useToast();
-  const { isLoggedIn, nickname } = useUser();
+  // Remove login dependency - site is now accessible without login
+  const isLoggedIn = false;
+  const nickname = 'Anonymous';
   const [hoveredRating, setHoveredRating] = useState(0);
   const [hasVoted, setHasVoted] = useState(() => {
     // Check if user has already voted for this playground
@@ -24,15 +25,6 @@ const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps)
   const rating = playground.rating || 0;
   
   const handleRatingClick = (stars: number) => {
-    if (!isLoggedIn) {
-      toast({
-        title: "Login richiesto",
-        description: "Devi accedere per votare questo playground",
-        variant: "destructive"
-      });
-      return;
-    }
-    
     if (hasVoted) {
       toast({
         title: "Hai già votato",
@@ -93,9 +85,9 @@ const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps)
                 transition-all duration-200 transform
                 ${filled ? 'text-yellow-400 fill-current' : 'text-gray-400'} 
                 ${isHovered ? 'text-yellow-300 scale-110' : ''}
-                ${!hasVoted && isLoggedIn ? 'cursor-pointer hover:scale-110' : 'cursor-default'}
+                ${!hasVoted ? 'cursor-pointer hover:scale-110' : 'cursor-default'}
               `}
-              onMouseEnter={() => !hasVoted && isLoggedIn && setHoveredRating(starValue)}
+              onMouseEnter={() => !hasVoted && setHoveredRating(starValue)}
               onMouseLeave={() => setHoveredRating(0)}
               onClick={() => handleRatingClick(starValue)}
             />

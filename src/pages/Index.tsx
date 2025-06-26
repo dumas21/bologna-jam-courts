@@ -7,13 +7,14 @@ import NavigationButtons from "@/components/NavigationButtons";
 import MainTabs from "@/components/MainTabs";
 import EventsButton from "@/components/EventsButton";
 import { Playground } from "@/types/playground";
-import { useSupabaseUser } from "@/contexts/SupabaseUserContext";
 import { usePlaygrounds } from "@/hooks/usePlaygrounds";
 import { useAudioEffects } from "@/hooks/useAudioEffects";
 
 const Index = () => {
   const { toast } = useToast();
-  const { isLoggedIn, nickname } = useSupabaseUser();
+  // Remove login dependency - site is now accessible without login
+  const isLoggedIn = false;
+  const nickname = 'Anonymous';
   const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords, updatePlayground } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
@@ -31,28 +32,12 @@ const Index = () => {
   };
 
   const handleCheckIn = (playgroundId: string, userNickname: string) => {
-    if (!isLoggedIn) {
-      toast({
-        title: "LOGIN RICHIESTO",
-        description: "Devi effettuare il login per fare check-in",
-        variant: "destructive"
-      });
-      return false;
-    }
-    
+    // No login required - always allow check-in
     return checkIn(playgroundId, userNickname, userNickname);
   };
 
   const handleCheckOut = (playgroundId: string, userNickname: string) => {
-    if (!isLoggedIn) {
-      toast({
-        title: "LOGIN RICHIESTO",
-        description: "Devi effettuare il login per fare check-out",
-        variant: "destructive"
-      });
-      return false;
-    }
-    
+    // No login required - always allow check-out
     return checkOut(playgroundId, userNickname);
   };
 
