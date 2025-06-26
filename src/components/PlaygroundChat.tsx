@@ -7,8 +7,17 @@ import { Playground } from "@/types/playgroundTypes";
 import { format } from "date-fns";
 import { it } from "date-fns/locale";
 import { useToast } from "@/components/ui/use-toast";
-import { secureChatManager, PlaygroundChatMessage } from "@/utils/chatSecurity";
-import { validateContentLength } from "@/utils/security";
+import { supabase } from "@/integrations/supabase/client";
+import { validateContentLength, sanitizeText } from "@/utils/security";
+
+interface PlaygroundChatMessage {
+  id: string;
+  playground_id: string;
+  user_id: string | null;
+  nickname: string;
+  message: string;
+  created_at: string;
+}
 
 interface PlaygroundChatProps {
   playground: Playground;
@@ -17,29 +26,78 @@ interface PlaygroundChatProps {
 
 const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessage }) => {
   const { toast } = useToast();
-  // Remove login dependency - site is now accessible without login
-  const isLoggedIn = false;
   const nickname = 'Anonymous';
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<PlaygroundChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [remainingMessages, setRemainingMessages] = useState(2);
 
-  // Load messages for this specific playground
+  // Load messages for this specific playground from database
   useEffect(() => {
-    const loadMessages = () => {
-      const playgroundMessages = secureChatManager.getPlaygroundMessages(playground.id);
-      setMessages(playgroundMessages);
-      
-      // Clean old messages periodically
-      secureChatManager.cleanOldMessages(playground.id, 72);
+    const loadMessages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('playground_messages')
+          .select('*')
+          .eq('playground_id', playground.id)
+          .order('created_at', { ascending: true });
+
+        if (error) {
+          console.error('Error loading messages:', error);
+          return;
+        }
+
+        setMessages(data || []);
+      } catch (error) {
+        console.error('Error loading messages:', error);
+      }
     };
     
     loadMessages();
     
+    // Check remaining messages for this user
+    checkRemainingMessages();
+    
     // Reload messages every 30 seconds to show new messages from other users
-    const interval = setInterval(loadMessages, 30000);
+    const interval = setInterval(() => {
+      loadMessages();
+      checkRemainingMessages();
+    }, 30000);
+    
     return () => clearInterval(interval);
   }, [playground.id]);
+
+  const checkRemainingMessages = async () => {
+    try {
+      const { data, error } = await supabase.rpc('check_message_rate_limit', {
+        p_playground_id: playground.id,
+        p_nickname: nickname
+      });
+
+      if (error) {
+        console.error('Error checking rate limit:', error);
+        return;
+      }
+
+      // If rate limit check returns false, user has reached limit
+      if (data === false) {
+        setRemainingMessages(0);
+      } else {
+        // Count recent messages to show remaining
+        const { data: recentMessages } = await supabase
+          .from('playground_messages')
+          .select('id')
+          .eq('playground_id', playground.id)
+          .eq('nickname', nickname)
+          .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+
+        const recentCount = recentMessages?.length || 0;
+        setRemainingMessages(Math.max(0, 2 - recentCount));
+      }
+    } catch (error) {
+      console.error('Error checking remaining messages:', error);
+    }
+  };
 
   const playSoundEffect = (action: string) => {
     const audio = new Audio(`/sounds/${action}.mp3`);
@@ -68,57 +126,79 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       return;
     }
     
-    setIsLoading(true);
-    
-    // Check if user can send message to this specific playground
-    const limitCheck = secureChatManager.canUserSendMessage(nickname, playground.id);
-    
-    if (!limitCheck.canSend) {
-      setIsLoading(false);
+    if (remainingMessages <= 0) {
       toast({
         title: "LIMITE MESSAGGI RAGGIUNTO",
-        description: `Hai raggiunto il limite di 2 messaggi ogni 24h per questo playground. Riprova tra ${limitCheck.timeUntilReset} ore.`,
+        description: "Hai raggiunto il limite di 2 messaggi ogni 24h per questo playground.",
         variant: "destructive"
       });
       return;
     }
     
-    // Add message using secure chat manager
-    const success = secureChatManager.addMessage(playground.id, nickname, nickname, trimmedMessage);
+    setIsLoading(true);
     
-    if (success) {
+    try {
+      // Sanitize inputs before sending to database
+      const sanitizedMessage = sanitizeText(trimmedMessage);
+      const sanitizedNickname = sanitizeText(nickname);
+      
+      const { error } = await supabase
+        .from('playground_messages')
+        .insert({
+          playground_id: playground.id,
+          nickname: sanitizedNickname,
+          message: sanitizedMessage,
+          user_id: null // Anonymous user
+        });
+
+      if (error) {
+        console.error('Database error:', error);
+        toast({
+          title: "ERRORE",
+          description: "Impossibile inviare il messaggio. Riprova.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       playSoundEffect('message');
       
-      // Reload messages to show the new one
-      const updatedMessages = secureChatManager.getPlaygroundMessages(playground.id);
-      setMessages(updatedMessages);
+      // Reload messages and check remaining count
+      const { data } = await supabase
+        .from('playground_messages')
+        .select('*')
+        .eq('playground_id', playground.id)
+        .order('created_at', { ascending: true });
+
+      setMessages(data || []);
+      await checkRemainingMessages();
       
       setMessage("");
       
-      const remainingMessages = limitCheck.remainingMessages || 0;
       toast({
         title: "MESSAGGIO INVIATO",
-        description: `Messaggio pubblicato! Ti rimangono ${remainingMessages} messaggi per le prossime 24h in questo playground.`,
+        description: `Messaggio pubblicato! Ti rimangono ${remainingMessages - 1} messaggi per le prossime 24h in questo playground.`,
       });
       
       if (onSendMessage) {
         onSendMessage({ 
           id: `temp_${Date.now()}`,
-          text: trimmedMessage,
-          user: nickname,
+          text: sanitizedMessage,
+          user: sanitizedNickname,
           timestamp: Date.now(),
           playgroundId: playground.id
         });
       }
-    } else {
+    } catch (error) {
+      console.error('Error sending message:', error);
       toast({
         title: "ERRORE",
         description: "Impossibile inviare il messaggio. Riprova.",
         variant: "destructive"
       });
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
   
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -134,12 +214,6 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       setMessage(value);
     }
   };
-
-  // Get user's remaining messages for this playground
-  const getRemainingMessages = () => {
-    const limitCheck = secureChatManager.canUserSendMessage(nickname, playground.id);
-    return limitCheck.remainingMessages || 0;
-  };
   
   return (
     <div className="bg-white p-6 rounded-lg border-4 border-orange-500 shadow-lg">
@@ -150,7 +224,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       
       <div className="bg-gray-50 p-4 rounded-md mb-6 h-64 overflow-y-auto shadow-inner border-2 border-gray-200">
         <div className="text-sm text-center mb-4 font-bold text-black">
-          CHAT INDIPENDENTE PER {playground.name.toUpperCase()} - MESSAGGI ELIMINATI DOPO 72H
+          CHAT SICURA PER {playground.name.toUpperCase()} - MESSAGGI ELIMINATI DOPO 72H
         </div>
         
         {messages && messages.length > 0 ? (
@@ -165,7 +239,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
                     {msg.nickname}
                   </span>
                   <span className="font-bold text-black">
-                    {format(new Date(msg.timestamp), 'dd/MM/yyyy HH:mm', { locale: it })}
+                    {format(new Date(msg.created_at), 'dd/MM/yyyy HH:mm', { locale: it })}
                   </span>
                 </div>
               </div>
@@ -180,38 +254,35 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
         )}
       </div>
       
-      {/* Chat is now always available since no login required */}
-      <>
-        <div className="bg-blue-100 border-2 border-blue-400 rounded-lg p-2 mb-4 text-center">
-          <p className="text-xs font-bold text-black">
-            MESSAGGI RIMASTI PER QUESTO PLAYGROUND: {getRemainingMessages()}/2 (nelle prossime 24h)
-          </p>
-        </div>
-        
-        <div className="flex gap-4 items-end">
-          <div className="flex-1">
-            <Textarea 
-              placeholder={`Scrivi nella chat di ${playground.name}... (max 500 caratteri)`}
-              className="bg-white border-2 border-gray-300 min-h-[80px] text-base resize-none font-bold text-black"
-              value={message}
-              onChange={handleMessageChange}
-              onKeyDown={handleKeyPress}
-              maxLength={500}
-              disabled={isLoading}
-            />
-            <div className="text-xs mt-1 font-bold text-black">
-              {message.length}/500 caratteri
-            </div>
+      <div className="bg-blue-100 border-2 border-blue-400 rounded-lg p-2 mb-4 text-center">
+        <p className="text-xs font-bold text-black">
+          MESSAGGI RIMASTI PER QUESTO PLAYGROUND: {remainingMessages}/2 (nelle prossime 24h)
+        </p>
+      </div>
+      
+      <div className="flex gap-4 items-end">
+        <div className="flex-1">
+          <Textarea 
+            placeholder={`Scrivi nella chat di ${playground.name}... (max 500 caratteri)`}
+            className="bg-white border-2 border-gray-300 min-h-[80px] text-base resize-none font-bold text-black"
+            value={message}
+            onChange={handleMessageChange}
+            onKeyDown={handleKeyPress}
+            maxLength={500}
+            disabled={isLoading}
+          />
+          <div className="text-xs mt-1 font-bold text-black">
+            {message.length}/500 caratteri
           </div>
-          <Button 
-            onClick={handleSendMessage}
-            className="bg-blue-600 hover:bg-blue-700 text-white h-[80px] px-6 flex items-center justify-center rounded-lg font-bold"
-            disabled={!message.trim() || message.length > 500 || isLoading || getRemainingMessages() === 0}
-          >
-            {isLoading ? "..." : <Send size={20} />}
-          </Button>
         </div>
-      </>
+        <Button 
+          onClick={handleSendMessage}
+          className="bg-blue-600 hover:bg-blue-700 text-white h-[80px] px-6 flex items-center justify-center rounded-lg font-bold"
+          disabled={!message.trim() || message.length > 500 || isLoading || remainingMessages <= 0}
+        >
+          {isLoading ? "..." : <Send size={20} />}
+        </Button>
+      </div>
     </div>
   );
 };

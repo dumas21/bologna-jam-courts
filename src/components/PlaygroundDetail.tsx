@@ -11,6 +11,8 @@ import EventBanner from './EventBanner';
 import PlaygroundInfo from './PlaygroundInfo';
 import PlaygroundActions from './PlaygroundActions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ClientRateLimiter } from '@/utils/rateLimiting';
+import { SecureStorage } from '@/utils/secureStorage';
 
 interface PlaygroundDetailProps {
   playground: Playground;
@@ -33,10 +35,23 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   
-  // Use anonymous user for check-ins
-  const anonymousUser = 'Anonymous';
+  // Use session-based anonymous user for check-ins
+  const sessionId = SecureStorage.getSessionId();
+  const anonymousUser = `Anonymous_${sessionId.slice(-8)}`;
 
   const handleCheckInClick = async () => {
+    // Check rate limiting for check-ins
+    const limitCheck = ClientRateLimiter.checkLimit('CHECK_IN');
+    if (!limitCheck.allowed) {
+      const timeInMinutes = Math.ceil((limitCheck.remainingTime || 0) / (1000 * 60));
+      toast({
+        title: "Troppi tentativi",
+        description: `Riprova tra ${timeInMinutes} minuti.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsCheckingIn(true);
     const success = await onCheckIn(playground.id, anonymousUser);
     setIsCheckingIn(false);

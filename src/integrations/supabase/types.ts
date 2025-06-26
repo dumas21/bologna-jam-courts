@@ -131,6 +131,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_message_rate_limit: {
+        Args: { p_playground_id: string; p_nickname: string }
+        Returns: boolean
+      }
+      cleanup_old_messages: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       is_admin: {
         Args: { user_id: string }
         Returns: boolean

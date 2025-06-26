@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { Star } from 'lucide-react';
 import { Playground } from '@/types/playground';
 import { useToast } from '@/components/ui/use-toast';
+import { ClientRateLimiter } from '@/utils/rateLimiting';
+import { SecureStorage } from '@/utils/secureStorage';
 
 interface PlaygroundRatingProps {
   playground: Playground;
@@ -11,14 +13,12 @@ interface PlaygroundRatingProps {
 
 const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps) => {
   const { toast } = useToast();
-  // Remove login dependency - site is now accessible without login
-  const isLoggedIn = false;
-  const nickname = 'Anonymous';
+  const sessionId = SecureStorage.getSessionId();
   const [hoveredRating, setHoveredRating] = useState(0);
   const [hasVoted, setHasVoted] = useState(() => {
-    // Check if user has already voted for this playground
-    const voted = localStorage.getItem(`voted_${playground.id}_${nickname}`);
-    return voted === 'true';
+    // Check if user has already voted for this playground using session ID
+    const voted = SecureStorage.getUserPreference(`voted_${playground.id}_${sessionId}`);
+    return voted === true;
   });
   
   // Calculate the average rating (rounding to nearest 0.1)
@@ -34,14 +34,26 @@ const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps)
       return;
     }
     
+    // Check rate limiting
+    const limitCheck = ClientRateLimiter.checkLimit('RATING');
+    if (!limitCheck.allowed) {
+      const timeInMinutes = Math.ceil((limitCheck.remainingTime || 0) / (1000 * 60));
+      toast({
+        title: "Limite raggiunto",
+        description: `Troppi voti recenti. Riprova tra ${timeInMinutes} minuti.`,
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Calculate new rating
     const currentCount = playground.ratingCount || 0;
     const currentTotal = (playground.rating || 0) * currentCount;
     const newCount = currentCount + 1;
     const newRating = (currentTotal + stars) / newCount;
     
-    // Update local storage to mark as voted
-    localStorage.setItem(`voted_${playground.id}_${nickname}`, 'true');
+    // Update local storage to mark as voted using session ID
+    SecureStorage.setUserPreference(`voted_${playground.id}_${sessionId}`, true);
     setHasVoted(true);
     
     // Call the update function if provided
@@ -53,9 +65,10 @@ const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps)
     const audio = new Audio('/sounds/rating.mp3');
     audio.play().catch(err => console.log('Audio playback error:', err));
     
+    const remaining = ClientRateLimiter.getRemainingAttempts('RATING');
     toast({
       title: "Grazie per il tuo voto!",
-      description: `Hai dato ${stars} stelle a ${playground.name}`,
+      description: `Hai dato ${stars} stelle a ${playground.name}. Ti rimangono ${remaining} voti oggi.`,
     });
   };
 
@@ -98,6 +111,10 @@ const PlaygroundRating = ({ playground, onRatingUpdate }: PlaygroundRatingProps)
       {hasVoted && (
         <span className="text-xs text-green-400 mt-2 nike-text">GRAZIE PER IL VOTO!</span>
       )}
+      
+      <div className="text-xs text-white/40 mt-1">
+        Voti rimasti oggi: {ClientRateLimiter.getRemainingAttempts('RATING')}/3
+      </div>
     </div>
   );
 };
