@@ -10,12 +10,20 @@ import AddPlayground from "./pages/AddPlayground";
 import Stats from "./pages/Stats";
 import Events from "./pages/Events";
 import CookieBanner from "./components/CookieBanner";
+import ErrorBoundary from "./components/ErrorBoundary";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function App() {
   return (
-    <>
+    <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />
@@ -33,7 +41,7 @@ function App() {
         </TooltipProvider>
       </QueryClientProvider>
       <CookieBanner />
-    </>
+    </ErrorBoundary>
   );
 }
 

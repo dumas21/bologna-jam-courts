@@ -1,25 +1,43 @@
 
-import { useEffect } from "react";
+import { useCallback } from 'react';
 
 export const useAudioEffects = () => {
-  // Play coin sound on load
-  useEffect(() => {
-    const audio = new Audio('/sounds/coin-insert.mp3');
-    audio.volume = 0.3;
-    audio.play().catch(err => console.log('Audio playback error:', err));
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // Scroll to top function
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    const audio = new Audio('/sounds/click.mp3');
-    audio.play().catch(err => console.log('Audio playback error:', err));
-  };
+  const playSoundEffect = useCallback((action: string) => {
+    try {
+      // Check if audio is supported
+      if (typeof Audio === 'undefined') {
+        console.log('Audio not supported in this environment');
+        return;
+      }
 
-  const playSoundEffect = (action: string) => {
-    const audio = new Audio(`/sounds/${action}.mp3`);
-    audio.play().catch(err => console.log('Audio playbook error:', err));
-  };
+      const audio = new Audio(`/sounds/${action}.mp3`);
+      
+      // Set volume to a reasonable level
+      audio.volume = 0.3;
+      
+      // Add error handling for audio playback
+      audio.addEventListener('error', (e) => {
+        console.log(`Audio file not found or cannot be played: /sounds/${action}.mp3`);
+      });
+      
+      // Play with promise handling
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(err => {
+          console.log('Audio playback prevented by browser policy or file not found:', err.message);
+        });
+      }
+    } catch (error) {
+      console.log('Error initializing audio:', error);
+    }
+  }, []);
 
-  return { scrollToTop, playSoundEffect };
+  return {
+    scrollToTop,
+    playSoundEffect
+  };
 };
