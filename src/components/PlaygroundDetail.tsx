@@ -10,7 +10,6 @@ import WeatherInfo from './WeatherInfo';
 import EventBanner from './EventBanner';
 import PlaygroundInfo from './PlaygroundInfo';
 import PlaygroundActions from './PlaygroundActions';
-import { useUser } from '@/contexts/UserContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface PlaygroundDetailProps {
@@ -31,47 +30,37 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
   onRatingUpdate 
 }) => {
   const { toast } = useToast();
-  const { isLoggedIn, nickname } = useUser();
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  
+  // Use anonymous user for check-ins
+  const anonymousUser = 'Anonymous';
 
   const handleCheckInClick = async () => {
     setIsCheckingIn(true);
-    const success = await onCheckIn(playground.id, nickname || 'unknown');
+    const success = await onCheckIn(playground.id, anonymousUser);
     setIsCheckingIn(false);
     if (success) {
       toast({
         title: "Check-in effettuato",
         description: `Ti sei registrato al ${playground.name}!`,
       });
-    } else if (success === false) {
-      toast({
-        title: "Errore",
-        description: "Devi effettuare il login per fare check-in",
-        variant: "destructive"
-      });
     }
   };
 
   const handleCheckOutClick = async () => {
     setIsCheckingOut(true);
-    const success = await onCheckOut(playground.id, nickname || 'unknown');
+    const success = await onCheckOut(playground.id, anonymousUser);
     setIsCheckingOut(false);
     if (success) {
       toast({
         title: "Check-out effettuato",
         description: `Hai effettuato il check-out dal ${playground.name}.`,
       });
-    } else if (success === false) {
-      toast({
-        title: "Errore",
-        description: "Devi effettuare il login per fare check-out",
-        variant: "destructive"
-      });
     }
   };
 
-  const isUserCheckedIn = isLoggedIn && hasUserCheckedIn(playground.id, nickname || 'unknown');
+  const isUserCheckedIn = hasUserCheckedIn(playground.id, anonymousUser);
   const checkInCount = checkInRecords[playground.id]?.length || 0;
 
   // Convert checked-in users to a simple format compatible with UserList
@@ -107,7 +96,6 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
             <PlaygroundInfo playground={playground} checkInCount={checkInCount} />
             <PlaygroundActions
               playground={playground}
-              isLoggedIn={isLoggedIn}
               isUserCheckedIn={isUserCheckedIn}
               isCheckingIn={isCheckingIn}
               isCheckingOut={isCheckingOut}

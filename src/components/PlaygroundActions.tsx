@@ -7,7 +7,6 @@ import PlaygroundRating from './PlaygroundRating';
 
 interface PlaygroundActionsProps {
   playground: Playground;
-  isLoggedIn: boolean;
   isUserCheckedIn: boolean;
   isCheckingIn: boolean;
   isCheckingOut: boolean;
@@ -18,7 +17,6 @@ interface PlaygroundActionsProps {
 
 const PlaygroundActions: React.FC<PlaygroundActionsProps> = ({
   playground,
-  isLoggedIn,
   isUserCheckedIn,
   isCheckingIn,
   isCheckingOut,
@@ -28,48 +26,42 @@ const PlaygroundActions: React.FC<PlaygroundActionsProps> = ({
 }) => {
   return (
     <div className="flex justify-between items-center">
-      {isLoggedIn ? (
-        isUserCheckedIn ? (
-          <Button 
-            variant="destructive" 
-            onClick={onCheckOutClick} 
-            disabled={isCheckingOut}
-            className="arcade-button arcade-button-danger"
-          >
-            {isCheckingOut ? (
-              <>
-                <Clock className="mr-2 h-4 w-4 animate-spin" />
-                CHECK-OUT...
-              </>
-            ) : (
-              <>
-                <XCircle className="mr-2 h-4 w-4" />
-                CHECK-OUT
-              </>
-            )}
-          </Button>
-        ) : (
-          <Button 
-            onClick={onCheckInClick} 
-            disabled={isCheckingIn}
-            className="arcade-button arcade-button-primary"
-          >
-            {isCheckingIn ? (
-              <>
-                <Clock className="mr-2 h-4 w-4 animate-spin" />
-                CHECK-IN...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="mr-2 h-4 w-4" />
-                CHECK-IN
-              </>
-            )}
-          </Button>
-        )
+      {isUserCheckedIn ? (
+        <Button 
+          variant="destructive" 
+          onClick={onCheckOutClick} 
+          disabled={isCheckingOut}
+          className="arcade-button arcade-button-danger"
+        >
+          {isCheckingOut ? (
+            <>
+              <Clock className="mr-2 h-4 w-4 animate-spin" />
+              CHECK-OUT...
+            </>
+          ) : (
+            <>
+              <XCircle className="mr-2 h-4 w-4" />
+              CHECK-OUT
+            </>
+          )}
+        </Button>
       ) : (
-        <Button disabled className="arcade-button arcade-button-disabled">
-          LOGIN PER CHECK-IN
+        <Button 
+          onClick={onCheckInClick} 
+          disabled={isCheckingIn}
+          className="arcade-button arcade-button-primary"
+        >
+          {isCheckingIn ? (
+            <>
+              <Clock className="mr-2 h-4 w-4 animate-spin" />
+              CHECK-IN...
+            </>
+          ) : (
+            <>
+              <CheckCircle className="mr-2 h-4 w-4" />
+              CHECK-IN
+            </>
+          )}
         </Button>
       )}
       <PlaygroundRating 
