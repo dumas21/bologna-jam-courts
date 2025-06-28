@@ -3,9 +3,9 @@ import { Playground } from "@/types/playground";
 
 export const savenaPlaygrounds: Playground[] = [
   {
-    id: "6",
-    name: "Parco dei Cedri",
-    address: "Via dei Cedri, 40132 Bologna BO",
+    id: "18",
+    name: "Via Libia (Savena)",
+    address: "Giardini sotto ponte Via Libia, 40132 Bologna BO",
     latitude: 44.4978,
     longitude: 11.2845,
     currentPlayers: 4,
@@ -13,8 +13,8 @@ export const savenaPlaygrounds: Playground[] = [
     rating: 3.5,
     ratingCount: 12,
     openHours: "07:00 - 21:00",
-    basketCount: 2,
-    hasShade: false,
+    basketCount: 1,
+    hasShade: true,
     hasAmenities: false,
     hasLighting: false,
     hasFountain: false,
@@ -24,9 +24,9 @@ export const savenaPlaygrounds: Playground[] = [
     comments: []
   },
   {
-    id: "9",
-    name: "Centro Sportivo Pilastro",
-    address: "Via Pier Paolo Pasolini, 40132 Bologna BO",
+    id: "19",
+    name: "Centro Sportivo Savena - Via Libia",
+    address: "Sotto ponte di Via Libia, 40132 Bologna BO",
     latitude: 44.5456,
     longitude: 11.4123,
     currentPlayers: 9,
@@ -34,14 +34,14 @@ export const savenaPlaygrounds: Playground[] = [
     rating: 4.6,
     ratingCount: 45,
     openHours: "08:00 - 23:00",
-    basketCount: 10,
+    basketCount: 2,
     hasShade: true,
     hasAmenities: true,
     hasLighting: true,
     hasFountain: true,
-    type: "Indoor",
+    type: "Outdoor",
     district: "savena",
-    refreshmentType: "interno",
+    refreshmentType: "esterno",
     comments: []
   }
 ];
