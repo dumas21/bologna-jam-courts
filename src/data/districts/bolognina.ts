@@ -46,7 +46,7 @@ export const bologninaPlaygrounds: Playground[] = [
   },
   {
     id: "16",
-    name: "Playground Meloncello",
+    name: "Meloncello",
     address: "Collina di San Luca, vicino Stadio Dall'Ara, 40135 Bologna BO",
     latitude: 44.4820,
     longitude: 11.2890,

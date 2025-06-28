@@ -32,7 +32,7 @@ export const centroPlaygrounds: Playground[] = [
   },
   {
     id: "11",
-    name: "Giardino Fava (Porto)",
+    name: "Giardini Fava (Porto)",
     address: "Via Luigi Fava, 40121 Bologna BO",
     latitude: 44.4831,
     longitude: 11.3507,
