@@ -37,7 +37,7 @@ export const useAuth = () => {
               setProfile({
                 id: profileData.id,
                 email: profileData.email,
-                username: profileData.username || profileData.nickname,
+                username: (profileData as any).username || profileData.nickname,
                 nickname: profileData.nickname
               });
             }
@@ -79,15 +79,19 @@ export const useAuth = () => {
 
       if (data.user) {
         // Aggiorna il profilo esistente con l'username (il trigger ha già creato il record)
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({
-            username: username
-          })
-          .eq('id', data.user.id);
+        try {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              nickname: username // Usa nickname per ora, fino a quando username non è disponibile
+            })
+            .eq('id', data.user.id);
 
-        if (profileError) {
-          console.error('Error updating profile:', profileError);
+          if (profileError) {
+            console.error('Error updating profile:', profileError);
+          }
+        } catch (profileErr) {
+          console.error('Profile update error:', profileErr);
         }
 
         // Salva il consenso newsletter se dato - usando query raw per evitare problemi di tipo
@@ -122,23 +126,20 @@ export const useAuth = () => {
   // Login con username e password
   const signInWithUsername = async (username: string, password: string) => {
     try {
-      // Prima trova l'email dall'username usando la funzione creata
-      const { data: userData, error: userError } = await supabase.rpc('get_user_by_username', {
-        username_input: username
-      });
+      // Per ora usa nickname per trovare l'utente (fino a quando username non è disponibile)
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('nickname', username)
+        .single();
 
-      if (userError || !userData || userData.length === 0) {
+      if (profileError || !profileData) {
         return { error: { message: 'Username non trovato' } };
-      }
-
-      const userEmail = userData[0]?.email;
-      if (!userEmail) {
-        return { error: { message: 'Email non trovata per questo username' } };
       }
 
       // Poi usa l'email per il login
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: userEmail,
+        email: profileData.email,
         password: password
       });
 
