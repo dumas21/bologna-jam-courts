@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Calendar, Home } from "lucide-react";
+import { Calendar, Home, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface NavigationButtonsProps {
@@ -30,6 +30,17 @@ const NavigationButtons = ({ onScrollToTop, playSoundEffect }: NavigationButtons
       >
         <Calendar size={14} />
         <span className="hidden sm:inline ml-1">EVENTI</span>
+      </Button>
+
+      <Button 
+        onClick={() => {
+          playSoundEffect('click');
+          navigate('/login');
+        }}
+        className="arcade-button arcade-button-stats text-xs px-2 py-2 md:px-4 md:py-3"
+      >
+        <LogIn size={14} />
+        <span className="hidden sm:inline ml-1">LOGIN</span>
       </Button>
     </div>
   );

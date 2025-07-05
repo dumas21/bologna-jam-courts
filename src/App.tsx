@@ -9,6 +9,8 @@ import NotFound from "./pages/NotFound";
 import AddPlayground from "./pages/AddPlayground";
 import Stats from "./pages/Stats";
 import Events from "./pages/Events";
+import Export from "./pages/Export";
+import Login from "./pages/Login";
 import CookieBanner from "./components/CookieBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -34,6 +36,8 @@ function App() {
               <Route path="/add-playground" element={<AddPlayground />} />
               <Route path="/stats" element={<Stats />} />
               <Route path="/events" element={<Events />} />
+              <Route path="/export" element={<Export />} />
+              <Route path="/login" element={<Login />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
