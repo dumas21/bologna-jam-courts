@@ -16,7 +16,6 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Imposta il listener per i cambiamenti di stato dell'autenticazione
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session);
@@ -24,29 +23,25 @@ export const useAuth = () => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Carica il profilo utente quando l'utente è autenticato
-          setTimeout(async () => {
-            try {
-              const { data: profileData, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', session.user.id)
-                .single();
-              
-              if (error) {
-                console.error('Error fetching profile:', error);
-              } else {
-                // Mappiamo nickname a username per compatibilità con l'interfaccia
-                setProfile({
-                  id: profileData.id,
-                  email: profileData.email,
-                  username: profileData.nickname
-                });
-              }
-            } catch (error) {
-              console.error('Error in profile fetch:', error);
+          try {
+            const { data: profileData, error } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', session.user.id)
+              .single();
+            
+            if (error) {
+              console.error('Error fetching profile:', error);
+            } else {
+              setProfile({
+                id: profileData.id,
+                email: profileData.email,
+                username: profileData.username || profileData.nickname
+              });
             }
-          }, 0);
+          } catch (error) {
+            console.error('Error in profile fetch:', error);
+          }
         } else {
           setProfile(null);
         }
@@ -55,7 +50,6 @@ export const useAuth = () => {
       }
     );
 
-    // Controlla se c'è già una sessione attiva
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -65,6 +59,97 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Registrazione con email e password
+  const signUp = async (email: string, password: string, username: string, newsletter: boolean = false, privacyVersion: string = '1.0') => {
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            username: username
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        // Salva il profilo utente
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            email: email,
+            username: username
+          });
+
+        if (profileError) {
+          console.error('Error creating profile:', profileError);
+        }
+
+        // Salva il consenso newsletter se dato
+        if (newsletter) {
+          const { error: newsletterError } = await supabase
+            .from('newsletter_subscribers')
+            .insert({
+              user_id: data.user.id,
+              email: email,
+              consented: true,
+              consented_at: new Date().toISOString(),
+              privacy_version: privacyVersion
+            });
+
+          if (newsletterError) {
+            console.error('Error saving newsletter consent:', newsletterError);
+          }
+        }
+      }
+
+      return { data, error: null };
+    } catch (error: any) {
+      return { data: null, error };
+    }
+  };
+
+  // Login con username e password
+  const signInWithUsername = async (username: string, password: string) => {
+    try {
+      // Prima trova l'email dall'username
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('email')
+        .eq('username', username)
+        .single();
+
+      if (profileError || !profileData) {
+        return { error: { message: 'Username non trovato' } };
+      }
+
+      // Poi usa l'email per il login
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: profileData.email,
+        password: password
+      });
+
+      return { data, error };
+    } catch (error: any) {
+      return { data: null, error };
+    }
+  };
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (!error) {
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+    }
+    return { error };
+  };
+
+  // Funzioni legacy per compatibilità
   const signInWithMagicLink = async (email: string, username: string) => {
     const redirectUrl = `${window.location.origin}/`;
     
@@ -81,19 +166,7 @@ export const useAuth = () => {
     return { error };
   };
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (!error) {
-      setUser(null);
-      setSession(null);
-      setProfile(null);
-    }
-    return { error };
-  };
-
-  // Funzione per compatibilità con il codice esistente
   const login = (email: string, username: string) => {
-    // Questa funzione viene mantenuta per compatibilità ma ora usa Supabase
     return signInWithMagicLink(email, username);
   };
 
@@ -106,10 +179,12 @@ export const useAuth = () => {
     session,
     profile,
     isLoading,
+    signUp,
+    signInWithUsername,
     signInWithMagicLink,
     signOut,
-    login, // per compatibilità
-    logout, // per compatibilità
+    login,
+    logout,
     isAuthenticated: !!user
   };
 };

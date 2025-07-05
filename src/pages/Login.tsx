@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,15 +9,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
   const navigate = useNavigate();
-  const { signInWithMagicLink, isAuthenticated } = useAuth();
+  const { signInWithUsername, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  // Reindirizza se già autenticato
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
@@ -29,34 +27,33 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Valida gli input
-      if (!email.trim() || !username.trim()) {
+      if (!username.trim() || !password.trim()) {
         toast({
           title: "CAMPI OBBLIGATORI",
-          description: "Inserisci sia email che nome utente",
+          description: "Inserisci sia username che password",
           variant: "destructive"
         });
         return;
       }
 
-      // Invia il Magic Link
-      const { error } = await signInWithMagicLink(email.trim(), username.trim());
+      const { data, error } = await signInWithUsername(username.trim(), password);
       
       if (error) {
-        console.error('Error sending magic link:', error);
+        console.error('Error during login:', error);
         toast({
-          title: "ERRORE",
-          description: error.message || "Si è verificato un errore durante l'invio dell'email",
+          title: "ERRORE LOGIN",
+          description: "Username o password non corretti",
           variant: "destructive"
         });
         return;
       }
 
-      setEmailSent(true);
       toast({
-        title: "EMAIL INVIATA!",
-        description: `Controlla la tua casella email (${email}) e clicca sul link per accedere.`,
+        title: "LOGIN EFFETTUATO!",
+        description: "Benvenuto/a nel Playground Jam!",
       });
+      
+      navigate('/');
     } catch (error) {
       console.error('Unexpected error:', error);
       toast({
@@ -68,45 +65,6 @@ const Login = () => {
       setIsLoading(false);
     }
   };
-
-  if (emailSent) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
-        <div className="max-w-md mx-auto">
-          <button
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 mb-6 text-white hover:text-purple-300 transition-colors"
-          >
-            <ArrowLeft size={20} />
-            Torna indietro
-          </button>
-          
-          <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 border border-purple-500 text-center">
-            <h1 className="text-2xl font-bold text-white mb-6 nike-text">
-              EMAIL INVIATA!
-            </h1>
-            <p className="text-white mb-4">
-              Abbiamo inviato un link di accesso al tuo indirizzo email:
-            </p>
-            <p className="text-purple-300 font-bold mb-6">{email}</p>
-            <p className="text-gray-300 text-sm mb-6">
-              Clicca sul link nell'email per accedere. Il link è valido per 1 ora.
-            </p>
-            <Button 
-              onClick={() => {
-                setEmailSent(false);
-                setEmail('');
-                setUsername('');
-              }}
-              className="arcade-button arcade-button-secondary"
-            >
-              INVIA NUOVAMENTE
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
@@ -121,20 +79,20 @@ const Login = () => {
         
         <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 border border-purple-500">
           <h1 className="text-2xl font-bold text-white mb-8 text-center nike-text">
-            ACCEDI O REGISTRATI
+            ACCEDI
           </h1>
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="email" className="block text-white text-sm font-bold mb-2 nike-text">
-                EMAIL
+              <Label htmlFor="username" className="block text-white text-sm font-bold mb-2 nike-text">
+                USERNAME
               </Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="inserisci la tua email"
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="inserisci il tuo username"
                 className="w-full bg-gray-800 border-purple-500 text-white placeholder-gray-400"
                 required
                 disabled={isLoading}
@@ -142,15 +100,15 @@ const Login = () => {
             </div>
             
             <div>
-              <Label htmlFor="username" className="block text-white text-sm font-bold mb-2 nike-text">
-                NOME UTENTE
+              <Label htmlFor="password" className="block text-white text-sm font-bold mb-2 nike-text">
+                PASSWORD
               </Label>
               <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="scegli il tuo nome utente"
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="inserisci la tua password"
                 className="w-full bg-gray-800 border-purple-500 text-white placeholder-gray-400"
                 required
                 disabled={isLoading}
@@ -162,13 +120,16 @@ const Login = () => {
               className="arcade-button arcade-button-primary w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'INVIO EMAIL...' : 'CONTINUA'}
+              {isLoading ? 'ACCESSO...' : 'ACCEDI'}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-300 text-sm">
-              Ti invieremo un link magico per accedere senza password
+              Non hai ancora un account?{' '}
+              <Link to="/register" className="text-purple-300 hover:text-purple-200 underline">
+                Registrati qui
+              </Link>
             </p>
           </div>
         </div>

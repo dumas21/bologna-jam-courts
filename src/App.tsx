@@ -11,6 +11,7 @@ import Stats from "./pages/Stats";
 import Events from "./pages/Events";
 import Export from "./pages/Export";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import CookieBanner from "./components/CookieBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
 
@@ -38,6 +39,7 @@ function App() {
               <Route path="/events" element={<Events />} />
               <Route path="/export" element={<Export />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
