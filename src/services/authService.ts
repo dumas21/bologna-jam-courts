@@ -90,7 +90,7 @@ export class AuthService {
       }
     });
 
-    return { error };
+    return { data: null, error };
   }
 
   static async signOut(): Promise<AuthResponse> {
@@ -103,7 +103,7 @@ export class AuthService {
       console.error('Errore durante logout:', error);
     }
     
-    return { error };
+    return { data: null, error };
   }
 
   private static async updateUserProfile(userId: string, username: string): Promise<void> {
