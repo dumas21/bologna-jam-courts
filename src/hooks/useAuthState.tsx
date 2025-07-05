@@ -11,6 +11,7 @@ export const useAuthState = (): AuthState => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session);
@@ -19,8 +20,11 @@ export const useAuthState = (): AuthState => {
           setSession(session);
           setUser(session?.user ?? null);
           
-          if (session?.user) {
-            await loadUserProfile(session.user.id);
+          if (session?.user && event === 'SIGNED_IN') {
+            // Use setTimeout to avoid blocking the auth state change
+            setTimeout(() => {
+              loadUserProfile(session.user.id);
+            }, 100);
           } else {
             setProfile(null);
           }
@@ -33,14 +37,26 @@ export const useAuthState = (): AuthState => {
       }
     );
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Sessione iniziale:', session);
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (!session) {
+    // Get initial session
+    const getInitialSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        console.log('Sessione iniziale:', session);
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          await loadUserProfile(session.user.id);
+        }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error getting initial session:', error);
         setIsLoading(false);
       }
-    });
+    };
+
+    getInitialSession();
 
     return () => subscription.unsubscribe();
   }, []);
@@ -51,19 +67,22 @@ export const useAuthState = (): AuthState => {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       
       if (error) {
         console.error('Error fetching profile:', error);
         setProfile(null);
-      } else {
+      } else if (profileData) {
         console.log('Profilo caricato:', profileData);
         setProfile({
           id: profileData.id,
           email: profileData.email,
-          username: (profileData as any).username || profileData.nickname,
+          username: profileData.nickname || profileData.username,
           nickname: profileData.nickname
         });
+      } else {
+        console.log('Nessun profilo trovato per l\'utente:', userId);
+        setProfile(null);
       }
     } catch (error) {
       console.error('Error loading user profile:', error);

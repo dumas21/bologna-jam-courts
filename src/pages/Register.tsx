@@ -101,11 +101,6 @@ const Register = () => {
     }
   };
 
-  const handleNewsletterChange = (checked: boolean) => {
-    console.log('Newsletter checkbox changed:', checked);
-    setNewsletter(checked);
-  };
-
   if (registrationComplete) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
@@ -228,10 +223,14 @@ const Register = () => {
               <Checkbox
                 id="newsletter"
                 checked={newsletter}
-                onCheckedChange={handleNewsletterChange}
+                onCheckedChange={(checked) => {
+                  console.log('Newsletter checkbox clicked:', checked);
+                  setNewsletter(checked === true);
+                }}
                 disabled={isLoading}
+                className="border-purple-500 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
               />
-              <Label htmlFor="newsletter" className="text-white text-sm">
+              <Label htmlFor="newsletter" className="text-white text-sm cursor-pointer">
                 Voglio ricevere la newsletter (opzionale)
               </Label>
             </div>
