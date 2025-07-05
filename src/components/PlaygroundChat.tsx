@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { validateContentLength, sanitizeText } from "@/utils/security";
 import { usePlaygroundMessages } from "@/hooks/usePlaygroundMessages";
 import { useChatSounds } from "@/hooks/useChatSounds";
+import { useAuth } from "@/hooks/useAuth";
 import ChatHeader from "./chat/ChatHeader";
 import ChatMessages from "./chat/ChatMessages";
 import MessageInput from "./chat/MessageInput";
@@ -17,8 +18,9 @@ interface PlaygroundChatProps {
 
 const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessage }) => {
   const { toast } = useToast();
-  // Get username from localStorage, fallback to 'Utente'
-  const nickname = localStorage.getItem('username') || 'Utente';
+  const { profile, isAuthenticated } = useAuth();
+  // Usa il nome utente dal profilo Supabase o fallback al localStorage per compatibilità
+  const nickname = profile?.username || localStorage.getItem('username') || 'Utente';
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { playSoundEffect } = useChatSounds();
@@ -74,7 +76,7 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
           playground_id: playground.id,
           nickname: sanitizedNickname,
           message: sanitizedMessage,
-          user_id: null
+          user_id: isAuthenticated ? profile?.id || null : null
         });
 
       if (error) {

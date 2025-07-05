@@ -12,11 +12,12 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useAuth();
+  const { signInWithMagicLink, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
-  // Redirect if already authenticated
+  // Reindirizza se già autenticato
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
@@ -28,7 +29,7 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Validate inputs
+      // Valida gli input
       if (!email.trim() || !username.trim()) {
         toast({
           title: "CAMPI OBBLIGATORI",
@@ -38,26 +39,74 @@ const Login = () => {
         return;
       }
 
-      // Simulate login process
-      login(email.trim(), username.trim());
+      // Invia il Magic Link
+      const { error } = await signInWithMagicLink(email.trim(), username.trim());
       
-      toast({
-        title: "ACCESSO EFFETTUATO",
-        description: `Benvenuto ${username}!`,
-      });
+      if (error) {
+        console.error('Error sending magic link:', error);
+        toast({
+          title: "ERRORE",
+          description: error.message || "Si è verificato un errore durante l'invio dell'email",
+          variant: "destructive"
+        });
+        return;
+      }
 
-      // Redirect to home page
-      navigate('/');
+      setEmailSent(true);
+      toast({
+        title: "EMAIL INVIATA!",
+        description: `Controlla la tua casella email (${email}) e clicca sul link per accedere.`,
+      });
     } catch (error) {
+      console.error('Unexpected error:', error);
       toast({
         title: "ERRORE",
-        description: "Si è verificato un errore durante l'accesso",
+        description: "Si è verificato un errore imprevisto",
         variant: "destructive"
       });
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (emailSent) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
+        <div className="max-w-md mx-auto">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 mb-6 text-white hover:text-purple-300 transition-colors"
+          >
+            <ArrowLeft size={20} />
+            Torna indietro
+          </button>
+          
+          <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 border border-purple-500 text-center">
+            <h1 className="text-2xl font-bold text-white mb-6 nike-text">
+              EMAIL INVIATA!
+            </h1>
+            <p className="text-white mb-4">
+              Abbiamo inviato un link di accesso al tuo indirizzo email:
+            </p>
+            <p className="text-purple-300 font-bold mb-6">{email}</p>
+            <p className="text-gray-300 text-sm mb-6">
+              Clicca sul link nell'email per accedere. Il link è valido per 1 ora.
+            </p>
+            <Button 
+              onClick={() => {
+                setEmailSent(false);
+                setEmail('');
+                setUsername('');
+              }}
+              className="arcade-button arcade-button-secondary"
+            >
+              INVIA NUOVAMENTE
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
@@ -113,9 +162,15 @@ const Login = () => {
               className="arcade-button arcade-button-primary w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'ACCESSO IN CORSO...' : 'CONTINUA'}
+              {isLoading ? 'INVIO EMAIL...' : 'CONTINUA'}
             </Button>
           </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-gray-300 text-sm">
+              Ti invieremo un link magico per accedere senza password
+            </p>
+          </div>
         </div>
       </div>
     </div>
