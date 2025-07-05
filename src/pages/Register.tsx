@@ -69,6 +69,8 @@ const Register = () => {
         return;
       }
 
+      console.log('Avvio registrazione con:', { email: email.trim(), username: username.trim(), newsletter });
+
       const { data, error } = await signUp(email.trim(), password, username.trim(), newsletter, '1.0');
       
       if (error) {
@@ -81,6 +83,7 @@ const Register = () => {
         return;
       }
 
+      console.log('Registrazione completata:', data);
       setRegistrationComplete(true);
       toast({
         title: "REGISTRAZIONE COMPLETATA!",
@@ -98,8 +101,9 @@ const Register = () => {
     }
   };
 
-  const handleNewsletterChange = (checked: boolean | 'indeterminate') => {
-    setNewsletter(checked === true);
+  const handleNewsletterChange = (checked: boolean) => {
+    console.log('Newsletter checkbox changed:', checked);
+    setNewsletter(checked);
   };
 
   if (registrationComplete) {

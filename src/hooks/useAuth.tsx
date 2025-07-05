@@ -17,14 +17,17 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Inizializza lo stato dell'auth
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth state changed:', event, session);
-        setSession(session);
-        setUser(session?.user ?? null);
         
-        if (session?.user) {
-          try {
+        try {
+          setSession(session);
+          setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            // Carica il profilo utente
             const { data: profileData, error } = await supabase
               .from('profiles')
               .select('*')
@@ -33,7 +36,9 @@ export const useAuth = () => {
             
             if (error) {
               console.error('Error fetching profile:', error);
+              setProfile(null);
             } else {
+              console.log('Profilo caricato:', profileData);
               setProfile({
                 id: profileData.id,
                 email: profileData.email,
@@ -41,21 +46,26 @@ export const useAuth = () => {
                 nickname: profileData.nickname
               });
             }
-          } catch (error) {
-            console.error('Error in profile fetch:', error);
+          } else {
+            setProfile(null);
           }
-        } else {
-          setProfile(null);
+          
+          setIsLoading(false);
+        } catch (error) {
+          console.error('Error in auth state change handler:', error);
+          setIsLoading(false);
         }
-        
-        setIsLoading(false);
       }
     );
 
+    // Carica la sessione iniziale
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Sessione iniziale:', session);
       setSession(session);
       setUser(session?.user ?? null);
-      setIsLoading(false);
+      if (!session) {
+        setIsLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -64,6 +74,8 @@ export const useAuth = () => {
   // Registrazione con email e password
   const signUp = async (email: string, password: string, username: string, newsletter: boolean = false, privacyVersion: string = '1.0') => {
     try {
+      console.log('Avvio signUp con:', { email, username, newsletter });
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -75,11 +87,18 @@ export const useAuth = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Errore durante signUp:', error);
+        throw error;
+      }
+
+      console.log('SignUp completato:', data);
 
       if (data.user) {
         // Aggiorna il profilo esistente con l'username (il trigger ha già creato il record)
         try {
+          console.log('Aggiornamento profilo per user:', data.user.id);
+          
           const { error: profileError } = await supabase
             .from('profiles')
             .update({
@@ -89,14 +108,18 @@ export const useAuth = () => {
 
           if (profileError) {
             console.error('Error updating profile:', profileError);
+          } else {
+            console.log('Profilo aggiornato con successo');
           }
         } catch (profileErr) {
           console.error('Profile update error:', profileErr);
         }
 
-        // Salva il consenso newsletter se dato - usando query raw per evitare problemi di tipo
+        // Salva il consenso newsletter se dato
         if (newsletter) {
           try {
+            console.log('Salvataggio consenso newsletter');
+            
             const { error: newsletterError } = await supabase.rpc('log_security_event', {
               p_user_id: data.user.id,
               p_event_type: 'newsletter_consent',
@@ -110,6 +133,8 @@ export const useAuth = () => {
 
             if (newsletterError) {
               console.error('Error saving newsletter consent:', newsletterError);
+            } else {
+              console.log('Consenso newsletter salvato');
             }
           } catch (e) {
             console.error('Newsletter consent error:', e);
@@ -119,6 +144,7 @@ export const useAuth = () => {
 
       return { data, error: null };
     } catch (error: any) {
+      console.error('Errore completo in signUp:', error);
       return { data: null, error };
     }
   };
@@ -126,6 +152,8 @@ export const useAuth = () => {
   // Login con username e password
   const signInWithUsername = async (username: string, password: string) => {
     try {
+      console.log('Tentativo di login con username:', username);
+      
       // Per ora usa nickname per trovare l'utente (fino a quando username non è disponibile)
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
@@ -134,8 +162,11 @@ export const useAuth = () => {
         .single();
 
       if (profileError || !profileData) {
-        return { error: { message: 'Username non trovato' } };
+        console.error('Username non trovato:', profileError);
+        return { data: null, error: { message: 'Username non trovato' } };
       }
+
+      console.log('Email trovata per username:', profileData.email);
 
       // Poi usa l'email per il login
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -143,18 +174,29 @@ export const useAuth = () => {
         password: password
       });
 
+      if (error) {
+        console.error('Errore durante login:', error);
+      } else {
+        console.log('Login completato:', data);
+      }
+
       return { data, error };
     } catch (error: any) {
+      console.error('Errore completo in signInWithUsername:', error);
       return { data: null, error };
     }
   };
 
   const signOut = async () => {
+    console.log('Avvio logout');
     const { error } = await supabase.auth.signOut();
     if (!error) {
       setUser(null);
       setSession(null);
       setProfile(null);
+      console.log('Logout completato');
+    } else {
+      console.error('Errore durante logout:', error);
     }
     return { error };
   };
