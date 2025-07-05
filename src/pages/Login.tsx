@@ -1,18 +1,62 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { ArrowLeft } from 'lucide-react';
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/components/ui/use-toast";
 
 const Login = () => {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logica di login da implementare
-    console.log('Email:', email);
+    setIsLoading(true);
+
+    try {
+      // Validate inputs
+      if (!email.trim() || !username.trim()) {
+        toast({
+          title: "CAMPI OBBLIGATORI",
+          description: "Inserisci sia email che nome utente",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Simulate login process
+      login(email.trim(), username.trim());
+      
+      toast({
+        title: "ACCESSO EFFETTUATO",
+        description: `Benvenuto ${username}!`,
+      });
+
+      // Redirect to home page
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "ERRORE",
+        description: "Si è verificato un errore durante l'accesso",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -33,9 +77,9 @@ const Login = () => {
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-white text-sm font-bold mb-2 nike-text">
+              <Label htmlFor="email" className="block text-white text-sm font-bold mb-2 nike-text">
                 EMAIL
-              </label>
+              </Label>
               <Input
                 id="email"
                 type="email"
@@ -44,14 +88,32 @@ const Login = () => {
                 placeholder="inserisci la tua email"
                 className="w-full bg-gray-800 border-purple-500 text-white placeholder-gray-400"
                 required
+                disabled={isLoading}
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="username" className="block text-white text-sm font-bold mb-2 nike-text">
+                NOME UTENTE
+              </Label>
+              <Input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="scegli il tuo nome utente"
+                className="w-full bg-gray-800 border-purple-500 text-white placeholder-gray-400"
+                required
+                disabled={isLoading}
               />
             </div>
             
             <Button 
               type="submit"
               className="arcade-button arcade-button-primary w-full"
+              disabled={isLoading}
             >
-              CONTINUA
+              {isLoading ? 'ACCESSO IN CORSO...' : 'CONTINUA'}
             </Button>
           </form>
         </div>

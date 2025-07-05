@@ -17,7 +17,8 @@ interface PlaygroundChatProps {
 
 const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessage }) => {
   const { toast } = useToast();
-  const nickname = 'Anonymous';
+  // Get username from localStorage, fallback to 'Utente'
+  const nickname = localStorage.getItem('username') || 'Utente';
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { playSoundEffect } = useChatSounds();
