@@ -6,7 +6,8 @@ import { supabase } from '@/integrations/supabase/client';
 interface UserProfile {
   id: string;
   email: string;
-  username: string;
+  username?: string;
+  nickname?: string;
 }
 
 export const useAuth = () => {
@@ -36,7 +37,8 @@ export const useAuth = () => {
               setProfile({
                 id: profileData.id,
                 email: profileData.email,
-                username: profileData.username || profileData.nickname
+                username: profileData.username || profileData.nickname,
+                nickname: profileData.nickname
               });
             }
           } catch (error) {
@@ -76,33 +78,37 @@ export const useAuth = () => {
       if (error) throw error;
 
       if (data.user) {
-        // Salva il profilo utente
+        // Aggiorna il profilo esistente con l'username (il trigger ha già creato il record)
         const { error: profileError } = await supabase
           .from('profiles')
-          .insert({
-            id: data.user.id,
-            email: email,
+          .update({
             username: username
-          });
+          })
+          .eq('id', data.user.id);
 
         if (profileError) {
-          console.error('Error creating profile:', profileError);
+          console.error('Error updating profile:', profileError);
         }
 
-        // Salva il consenso newsletter se dato
+        // Salva il consenso newsletter se dato - usando query raw per evitare problemi di tipo
         if (newsletter) {
-          const { error: newsletterError } = await supabase
-            .from('newsletter_subscribers')
-            .insert({
-              user_id: data.user.id,
-              email: email,
-              consented: true,
-              consented_at: new Date().toISOString(),
-              privacy_version: privacyVersion
+          try {
+            const { error: newsletterError } = await supabase.rpc('log_security_event', {
+              p_user_id: data.user.id,
+              p_event_type: 'newsletter_consent',
+              p_event_data: {
+                email: email,
+                consented: true,
+                consented_at: new Date().toISOString(),
+                privacy_version: privacyVersion
+              }
             });
 
-          if (newsletterError) {
-            console.error('Error saving newsletter consent:', newsletterError);
+            if (newsletterError) {
+              console.error('Error saving newsletter consent:', newsletterError);
+            }
+          } catch (e) {
+            console.error('Newsletter consent error:', e);
           }
         }
       }
@@ -116,20 +122,23 @@ export const useAuth = () => {
   // Login con username e password
   const signInWithUsername = async (username: string, password: string) => {
     try {
-      // Prima trova l'email dall'username
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('username', username)
-        .single();
+      // Prima trova l'email dall'username usando la funzione creata
+      const { data: userData, error: userError } = await supabase.rpc('get_user_by_username', {
+        username_input: username
+      });
 
-      if (profileError || !profileData) {
+      if (userError || !userData || userData.length === 0) {
         return { error: { message: 'Username non trovato' } };
+      }
+
+      const userEmail = userData[0]?.email;
+      if (!userEmail) {
+        return { error: { message: 'Email non trovata per questo username' } };
       }
 
       // Poi usa l'email per il login
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: profileData.email,
+        email: userEmail,
         password: password
       });
 
