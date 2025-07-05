@@ -36,7 +36,12 @@ export const useAuth = () => {
               if (error) {
                 console.error('Error fetching profile:', error);
               } else {
-                setProfile(profileData);
+                // Mappiamo nickname a username per compatibilità con l'interfaccia
+                setProfile({
+                  id: profileData.id,
+                  email: profileData.email,
+                  username: profileData.nickname
+                });
               }
             } catch (error) {
               console.error('Error in profile fetch:', error);
