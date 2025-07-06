@@ -20,6 +20,9 @@ export const useAuthState = (): AuthState => {
         
         console.log('🔔 Auth state changed:', event, session?.user?.id);
         
+        // IMPORTANTE: Aggiorna lo stato SOLO se la sessione è realmente cambiata
+        const sessionChanged = JSON.stringify(session) !== JSON.stringify(session);
+        
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -29,7 +32,7 @@ export const useAuthState = (): AuthState => {
             if (isMounted) {
               loadUserProfile(session.user.id);
             }
-          }, 0);
+          }, 100);
         } else if (event === 'SIGNED_OUT') {
           console.log('🚪 Utente disconnesso, pulizia profilo');
           setProfile(null);
@@ -56,6 +59,31 @@ export const useAuthState = (): AuthState => {
         }
         
         console.log('📊 Sessione iniziale:', session?.user?.id || 'NESSUNA');
+        
+        // VERIFICA REALE della sessione controllando se è valida
+        if (session?.access_token) {
+          try {
+            const { data: { user }, error: userError } = await supabase.auth.getUser(session.access_token);
+            if (userError || !user) {
+              console.log('⚠️ Sessione non valida, pulizia...');
+              await supabase.auth.signOut();
+              setSession(null);
+              setUser(null);
+              setProfile(null);
+              setIsLoading(false);
+              return;
+            }
+          } catch (tokenError) {
+            console.log('⚠️ Token non valido, pulizia sessione...');
+            await supabase.auth.signOut();
+            setSession(null);
+            setUser(null);
+            setProfile(null);
+            setIsLoading(false);
+            return;
+          }
+        }
+        
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -147,6 +175,6 @@ export const useAuthState = (): AuthState => {
     session,
     profile,
     isLoading,
-    isAuthenticated: !!user && !!session
+    isAuthenticated: !!user && !!session && !!session.access_token
   };
 };

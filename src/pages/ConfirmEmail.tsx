@@ -18,27 +18,18 @@ const ConfirmEmail = () => {
         console.log('🔍 Search params:', window.location.search);
         console.log('🔍 Hash:', window.location.hash);
         
-        // Controlla se l'utente è già autenticato
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-        console.log('🔍 Sessione corrente:', currentSession ? 'PRESENTE' : 'ASSENTE');
+        // PRIMA: Pulisci eventuali sessioni fantasma
+        console.log('🧹 Pulizia sessione esistente...');
+        await supabase.auth.signOut();
         
-        if (currentSession) {
-          console.log('✅ Utente già autenticato, redirect alla home');
-          setStatus("verified");
-          setMessage("Account già verificato! Reindirizzamento in corso...");
-          
-          toast({
-            title: "ACCOUNT GIÀ VERIFICATO!",
-            description: "Sei già connesso. Benvenuto nel PlaygroundJam!",
-          });
-          
-          setTimeout(() => {
-            navigate('/', { replace: true });
-          }, 1000);
-          return;
-        }
-
-        // Prova diversi modi per ottenere i parametri
+        // ATTENDI un momento per la pulizia
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Verifica che non ci sia più sessione
+        const { data: { session: cleanedSession } } = await supabase.auth.getSession();
+        console.log('🔍 Sessione dopo pulizia:', cleanedSession ? 'ANCORA PRESENTE' : 'PULITA');
+        
+        // Estrai parametri token
         let token_hash = null;
         let type = null;
 
@@ -53,7 +44,7 @@ const ConfirmEmail = () => {
           type = hashParams.get('type');
         }
 
-        // Metodo 3: parsing manuale dell'URL per casi edge
+        // Metodo 3: parsing manuale dell'URL
         if (!token_hash) {
           const url = window.location.href;
           const tokenMatch = url.match(/[?&#]token_hash=([^&]+)/);
@@ -65,13 +56,11 @@ const ConfirmEmail = () => {
 
         console.log('🔍 Parametri trovati:', { 
           token_hash: token_hash ? 'PRESENTE' : 'ASSENTE', 
-          type: type || 'signup',
-          searchParams: Object.fromEntries(searchParams.entries()),
-          fullUrl: window.location.href
+          type: type || 'signup'
         });
 
         if (!token_hash) {
-          console.error('❌ Token hash mancante in tutti i metodi di parsing');
+          console.error('❌ Token hash mancante');
           setStatus("error");
           setMessage("Token mancante nell'URL. Il link potrebbe essere malformato o scaduto.");
           return;
@@ -94,7 +83,11 @@ const ConfirmEmail = () => {
           return;
         }
 
-        // Forza il refresh della sessione
+        // ATTENDI per permettere alla sessione di stabilizzarsi
+        console.log('⏳ Attendo stabilizzazione sessione...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Controlla la sessione DOPO verifyOtp
         console.log('🔄 Controllo sessione dopo verifyOtp...');
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
@@ -117,31 +110,20 @@ const ConfirmEmail = () => {
           // Attendi un secondo e reindirizza alla home
           setTimeout(() => {
             navigate('/', { replace: true });
-          }, 1000);
+          }, 1500);
         } else {
-          console.log('⚠️ Verifica completata ma sessione non disponibile, provo a recuperarla...');
+          console.log('⚠️ Verifica completata ma sessione non disponibile');
+          setStatus("verified");
+          setMessage("Verifica completata! Ora puoi effettuare il login.");
           
-          // Attendi un po' e riprova
-          setTimeout(async () => {
-            const { data: { session: retrySession } } = await supabase.auth.getSession();
-            if (retrySession) {
-              console.log('✅ Sessione recuperata al secondo tentativo');
-              navigate('/', { replace: true });
-            } else {
-              console.log('ℹ️ Sessione ancora non disponibile, reindirizzo al login');
-              setStatus("verified");
-              setMessage("Verifica completata! Ora puoi effettuare il login.");
-              
-              toast({
-                title: "EMAIL VERIFICATA!",
-                description: "La tua email è stata confermata. Ora puoi effettuare il login.",
-              });
-              
-              setTimeout(() => {
-                navigate('/login', { replace: true });
-              }, 2000);
-            }
-          }, 1000);
+          toast({
+            title: "EMAIL VERIFICATA!",
+            description: "La tua email è stata confermata. Ora puoi effettuare il login.",
+          });
+          
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+          }, 2000);
         }
         
       } catch (error) {
