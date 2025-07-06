@@ -9,12 +9,12 @@ import EventsButton from "@/components/EventsButton";
 import { Playground } from "@/types/playground";
 import { usePlaygrounds } from "@/hooks/usePlaygrounds";
 import { useAudioEffects } from "@/hooks/useAudioEffects";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const { toast } = useToast();
-  // Remove login dependency - site is now accessible without login
-  const isLoggedIn = false;
-  const nickname = 'Anonymous';
+  const { isAuthenticated, profile, isLoading } = useAuth();
+  const nickname = profile?.username || profile?.nickname || 'Anonymous';
   const { playgrounds, checkIn, checkOut, hasUserCheckedIn, checkInRecords, updatePlayground } = usePlaygrounds();
   const [selectedPlayground, setSelectedPlayground] = useState<Playground | null>(null);
   
@@ -23,7 +23,8 @@ const Index = () => {
   useEffect(() => {
     console.log("PLAYGROUND DEBUG - Numero di playgrounds caricati:", playgrounds.length);
     console.log("PLAYGROUND DEBUG - Lista completa playgrounds:", playgrounds.map(p => ({ id: p.id, name: p.name })));
-  }, [playgrounds]);
+    console.log("AUTH DEBUG - Utente autenticato:", isAuthenticated, "Nickname:", nickname);
+  }, [playgrounds, isAuthenticated, nickname]);
   
   const handleSelectPlayground = (playground: Playground) => {
     setSelectedPlayground(playground);
@@ -32,13 +33,15 @@ const Index = () => {
   };
 
   const handleCheckIn = (playgroundId: string, userNickname: string) => {
-    // No login required - always allow check-in
-    return checkIn(playgroundId, userNickname, userNickname);
+    // Usa il nickname del profilo se l'utente è autenticato
+    const finalNickname = isAuthenticated ? nickname : userNickname;
+    return checkIn(playgroundId, finalNickname, finalNickname);
   };
 
   const handleCheckOut = (playgroundId: string, userNickname: string) => {
-    // No login required - always allow check-out
-    return checkOut(playgroundId, userNickname);
+    // Usa il nickname del profilo se l'utente è autenticato
+    const finalNickname = isAuthenticated ? nickname : userNickname;
+    return checkOut(playgroundId, finalNickname);
   };
 
   const handleRatingUpdate = (playgroundId: string, newRating: number, newRatingCount: number) => {
@@ -57,6 +60,15 @@ const Index = () => {
     }
   };
 
+  // Mostra un loader durante il caricamento dell'autenticazione
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col arcade-container">
       <div className="neptune-background"></div>
@@ -70,6 +82,15 @@ const Index = () => {
         </div>
 
         <EventsButton />
+        
+        {/* Mostra un messaggio di benvenuto se l'utente è autenticato */}
+        {isAuthenticated && profile && (
+          <div className="mb-4 p-3 bg-green-500 bg-opacity-20 border border-green-500 rounded-lg">
+            <p className="text-green-200 text-sm nike-text">
+              BENVENUTO/A {nickname.toUpperCase()}! Ora puoi scrivere nei playground come utente registrato.
+            </p>
+          </div>
+        )}
         
         <MainTabs
           playgrounds={playgrounds}

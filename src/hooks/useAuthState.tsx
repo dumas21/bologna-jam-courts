@@ -14,14 +14,14 @@ export const useAuthState = (): AuthState => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log('Auth state changed:', event, session);
+        console.log('Auth state changed:', event, session?.user?.id);
         
         // Only synchronous state updates here
         setSession(session);
         setUser(session?.user ?? null);
         
         // Defer Supabase calls with setTimeout to prevent deadlock
-        if (session?.user && event === 'SIGNED_IN') {
+        if (session?.user) {
           setTimeout(() => {
             loadUserProfile(session.user.id);
           }, 0);
@@ -37,7 +37,7 @@ export const useAuthState = (): AuthState => {
     const getInitialSession = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        console.log('Sessione iniziale:', session);
+        console.log('Sessione iniziale:', session?.user?.id);
         setSession(session);
         setUser(session?.user ?? null);
         
@@ -62,6 +62,8 @@ export const useAuthState = (): AuthState => {
 
   const loadUserProfile = async (userId: string) => {
     try {
+      console.log('Caricamento profilo per utente:', userId);
+      
       const { data: profileData, error } = await supabase
         .from('profiles')
         .select('*')
@@ -81,6 +83,28 @@ export const useAuthState = (): AuthState => {
         });
       } else {
         console.log('Nessun profilo trovato per l\'utente:', userId);
+        
+        // Se non c'è profilo ma c'è un utente, proviamo a crearlo
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          console.log('Tentativo di creare profilo mancante per:', user.email);
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              email: user.email || '',
+              nickname: user.user_metadata?.username || user.email?.split('@')[0] || 'User'
+            });
+          
+          if (!insertError) {
+            console.log('Profilo creato con successo');
+            // Ricarica il profilo
+            setTimeout(() => loadUserProfile(userId), 500);
+          } else {
+            console.error('Errore nella creazione del profilo:', insertError);
+          }
+        }
+        
         setProfile(null);
       }
     } catch (error) {
