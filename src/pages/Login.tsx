@@ -1,239 +1,342 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ArrowLeft } from 'lucide-react';
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/components/ui/use-toast";
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useToast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [loginType, setLoginType] = useState<'username' | 'email'>('username');
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { signInWithUsername, signInWithPassword, isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { signInWithPassword, signInWithUsername, signInWithMagicLink, isAuthenticated } = useAuth();
   const { toast } = useToast();
+  
+  const [emailLogin, setEmailLogin] = useState({ email: '', password: '' });
+  const [usernameLogin, setUsernameLogin] = useState({ username: '', password: '' });
+  const [magicLink, setMagicLink] = useState({ email: '', username: '' });
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  // Redirect if already authenticated
   useEffect(() => {
-    // Se l'utente è già autenticato, reindirizza alla home
-    if (isAuthenticated && !authLoading && user) {
-      console.log('✅ Utente già autenticato, reindirizzo alla home');
-      toast({
-        title: "GIÀ AUTENTICATO",
-        description: `Benvenuto/a ${user.email}! Sei già loggato.`,
-      });
+    if (isAuthenticated) {
+      console.log('✅ Utente già autenticato, redirect alla home');
       navigate('/', { replace: true });
     }
-  }, [isAuthenticated, authLoading, user, navigate, toast]);
+  }, [isAuthenticated, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
+    setLoading(true);
+    
     try {
-      if (!username.trim() || !password.trim()) {
-        toast({
-          title: "CAMPI OBBLIGATORI",
-          description: "Inserisci sia username/email che password",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      console.log('🔑 Tentativo di login per:', username.trim(), 'tipo:', loginType);
-
-      let result;
-      if (loginType === 'email') {
-        result = await signInWithPassword(username.trim(), password);
-      } else {
-        result = await signInWithUsername(username.trim(), password);
-      }
-      
-      const { data, error } = result;
+      console.log('🔑 Tentativo login con email:', emailLogin.email);
+      const { data, error } = await signInWithPassword(emailLogin.email, emailLogin.password);
       
       if (error) {
-        console.error('❌ Errore durante login:', error);
+        console.error('❌ Errore login email:', error);
         
-        let errorMessage = "Errore durante il login";
-        if (error.message?.includes('Invalid login credentials')) {
-          errorMessage = "Username/email o password non corretti. Assicurati che il tuo account sia stato confermato via email.";
-        } else if (error.message?.includes('not found')) {
-          errorMessage = "Username non trovato. Verifica di aver inserito l'username corretto.";
-        } else if (error.message?.includes('Email not confirmed')) {
-          errorMessage = "Account non ancora confermato. Controlla la tua email e clicca sul link di conferma.";
-        } else if (error.message) {
-          errorMessage = error.message;
+        if (error.message?.includes('Email not confirmed')) {
+          toast({
+            title: "EMAIL NON CONFERMATA",
+            description: "Controlla la tua email e clicca sul link di conferma prima di effettuare il login.",
+            variant: "destructive"
+          });
+        } else if (error.message?.includes('Invalid login credentials')) {
+          toast({
+            title: "CREDENZIALI NON VALIDE",
+            description: "Email o password non corretti. Riprova.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "ERRORE LOGIN",
+            description: error.message || "Errore durante il login. Riprova.",
+            variant: "destructive"
+          });
         }
-        
-        toast({
-          title: "ERRORE LOGIN",
-          description: errorMessage,
-          variant: "destructive"
-        });
         return;
       }
-
-      if (data?.user) {
-        console.log('✅ Login effettuato per utente:', data.user.id);
-        toast({
-          title: "LOGIN EFFETTUATO!",
-          description: "Benvenuto/a nel Playground Jam!",
-        });
-        
-        // Il reindirizzamento verrà gestito dall'useEffect quando isAuthenticated diventa true
-      }
       
-    } catch (error) {
-      console.error('💥 Errore imprevisto:', error);
+      if (data?.user) {
+        console.log('✅ Login completato con successo:', data.user.id);
+        toast({
+          title: "LOGIN EFFETTUATO",
+          description: "Benvenuto nel PlaygroundJam!",
+        });
+        navigate('/', { replace: true });
+      }
+    } catch (error: any) {
+      console.error('💥 Errore imprevisto durante login:', error);
       toast({
         title: "ERRORE",
-        description: "Si è verificato un errore imprevisto",
+        description: "Si è verificato un errore imprevisto. Riprova.",
         variant: "destructive"
       });
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  // Mostra un loader se stiamo controllando l'autenticazione
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
+  const handleUsernameLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      console.log('🔑 Tentativo login con username:', usernameLogin.username);
+      const { data, error } = await signInWithUsername(usernameLogin.username, usernameLogin.password);
+      
+      if (error) {
+        console.error('❌ Errore login username:', error);
+        toast({
+          title: "ERRORE LOGIN",
+          description: error.message || "Username o password non corretti.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      if (data?.user) {
+        console.log('✅ Login completato con successo:', data.user.id);
+        toast({
+          title: "LOGIN EFFETTUATO",
+          description: "Benvenuto nel PlaygroundJam!",
+        });
+        navigate('/', { replace: true });
+      }
+    } catch (error: any) {
+      console.error('💥 Errore imprevisto durante login username:', error);
+      toast({
+        title: "ERRORE",
+        description: "Si è verificato un errore imprevisto. Riprova.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Se l'utente è già autenticato, mostra un messaggio
-  if (isAuthenticated && user) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
-        <div className="max-w-md mx-auto">
-          <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 border border-purple-500 text-center">
-            <h1 className="text-2xl font-bold text-white mb-6 nike-text">
-              GIÀ AUTENTICATO
-            </h1>
-            <p className="text-white mb-4">
-              Sei già loggato come:
-            </p>
-            <p className="text-purple-300 font-bold mb-6">{user.email}</p>
-            <Button 
-              onClick={() => navigate('/')}
-              className="arcade-button arcade-button-primary w-full mb-4"
-            >
-              VAI ALLA HOME
-            </Button>
-            <Button 
-              onClick={() => navigate('/logout')}
-              className="arcade-button arcade-button-secondary w-full"
-            >
-              LOGOUT
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const handleMagicLink = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    try {
+      console.log('✨ Invio magic link a:', magicLink.email);
+      const { error } = await signInWithMagicLink(magicLink.email, magicLink.username);
+      
+      if (error) {
+        console.error('❌ Errore magic link:', error);
+        toast({
+          title: "ERRORE MAGIC LINK",
+          description: error.message || "Errore nell'invio del magic link.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      toast({
+        title: "MAGIC LINK INVIATO!",
+        description: "Controlla la tua email e clicca sul link per accedere.",
+      });
+    } catch (error: any) {
+      console.error('💥 Errore imprevisto durante magic link:', error);
+      toast({
+        title: "ERRORE",
+        description: "Si è verificato un errore imprevisto. Riprova.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
-      <div className="max-w-md mx-auto">
-        <button
-          onClick={() => navigate('/')}
-          className="flex items-center gap-2 mb-6 text-white hover:text-purple-300 transition-colors"
-        >
-          <ArrowLeft size={20} />
-          Torna indietro
-        </button>
-        
-        <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 border border-purple-500">
-          <h1 className="text-2xl font-bold text-white mb-8 text-center nike-text">
-            ACCEDI
-          </h1>
-          
-          <div className="mb-6">
-            <div className="flex gap-2 mb-4">
-              <button
-                onClick={() => setLoginType('username')}
-                className={`flex-1 py-2 px-4 rounded ${
-                  loginType === 'username' 
-                    ? 'bg-purple-600 text-white' 
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-              >
-                Username
-              </button>
-              <button
-                onClick={() => setLoginType('email')}
-                className={`flex-1 py-2 px-4 rounded ${
-                  loginType === 'email' 
-                    ? 'bg-purple-600 text-white' 
-                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                }`}
-              >
-                Email
-              </button>
-            </div>
-          </div>
-          
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="username" className="block text-white text-sm font-bold mb-2 nike-text">
-                {loginType === 'email' ? 'Email' : 'Username'}
-              </Label>
-              <Input
-                id="username"
-                type={loginType === 'email' ? 'email' : 'text'}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder={loginType === 'email' ? 'inserisci la tua email' : 'inserisci il tuo username'}
-                className="w-full bg-gray-800 border-purple-500 text-white placeholder-gray-400"
-                required
-                disabled={isLoading}
-              />
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-black bg-opacity-50 backdrop-blur-sm border border-purple-500">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold text-white nike-text">
+            PLAYGROUND JAM
+          </CardTitle>
+          <CardDescription className="text-gray-300">
+            Accedi al tuo account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="email" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 bg-gray-800 border border-orange-500">
+              <TabsTrigger value="email" className="text-white">EMAIL</TabsTrigger>
+              <TabsTrigger value="username" className="text-white">USERNAME</TabsTrigger>
+              <TabsTrigger value="magic" className="text-white">MAGIC</TabsTrigger>
+            </TabsList>
             
-            <div>
-              <Label htmlFor="password" className="block text-white text-sm font-bold mb-2 nike-text">
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="inserisci la tua password"
-                className="w-full bg-gray-800 border-purple-500 text-white placeholder-gray-400"
-                required
-                disabled={isLoading}
-              />
-            </div>
+            <TabsContent value="email">
+              <form onSubmit={handleEmailLogin} className="space-y-4">
+                <div>
+                  <Label htmlFor="email" className="text-white flex items-center gap-2">
+                    <Mail size={16} />
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={emailLogin.email}
+                    onChange={(e) => setEmailLogin({...emailLogin, email: e.target.value})}
+                    className="bg-gray-800 border-orange-500 text-white"
+                    placeholder="la-tua-email@esempio.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="password" className="text-white flex items-center gap-2">
+                    <Lock size={16} />
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      value={emailLogin.password}
+                      onChange={(e) => setEmailLogin({...emailLogin, password: e.target.value})}
+                      className="bg-gray-800 border-orange-500 text-white pr-10"
+                      placeholder="••••••••"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full arcade-button arcade-button-primary"
+                >
+                  {loading ? 'ACCESSO...' : 'ACCEDI'}
+                </Button>
+              </form>
+            </TabsContent>
             
-            <Button 
-              type="submit"
-              className="arcade-button arcade-button-primary w-full"
-              disabled={isLoading}
+            <TabsContent value="username">
+              <form onSubmit={handleUsernameLogin} className="space-y-4">
+                <div>
+                  <Label htmlFor="loginUsername" className="text-white flex items-center gap-2">
+                    <User size={16} />
+                    Username
+                  </Label>
+                  <Input
+                    id="loginUsername"
+                    type="text"
+                    value={usernameLogin.username}
+                    onChange={(e) => setUsernameLogin({...usernameLogin, username: e.target.value})}
+                    className="bg-gray-800 border-orange-500 text-white"
+                    placeholder="il-tuo-username"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="usernamePassword" className="text-white flex items-center gap-2">
+                    <Lock size={16} />
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="usernamePassword"
+                      type={showPassword ? "text" : "password"}
+                      value={usernameLogin.password}
+                      onChange={(e) => setUsernameLogin({...usernameLogin, password: e.target.value})}
+                      className="bg-gray-800 border-orange-500 text-white pr-10"
+                      placeholder="••••••••"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
+                </div>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full arcade-button arcade-button-primary"
+                >
+                  {loading ? 'ACCESSO...' : 'ACCEDI'}
+                </Button>
+              </form>
+            </TabsContent>
+            
+            <TabsContent value="magic">
+              <form onSubmit={handleMagicLink} className="space-y-4">
+                <div>
+                  <Label htmlFor="magicEmail" className="text-white flex items-center gap-2">
+                    <Mail size={16} />
+                    Email
+                  </Label>
+                  <Input
+                    id="magicEmail"
+                    type="email"
+                    value={magicLink.email}
+                    onChange={(e) => setMagicLink({...magicLink, email: e.target.value})}
+                    className="bg-gray-800 border-orange-500 text-white"
+                    placeholder="la-tua-email@esempio.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="magicUsername" className="text-white flex items-center gap-2">
+                    <User size={16} />
+                    Username
+                  </Label>
+                  <Input
+                    id="magicUsername"
+                    type="text"
+                    value={magicLink.username}
+                    onChange={(e) => setMagicLink({...magicLink, username: e.target.value})}
+                    className="bg-gray-800 border-orange-500 text-white"
+                    placeholder="il-tuo-username"
+                    required
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full arcade-button arcade-button-primary"
+                >
+                  {loading ? 'INVIO...' : 'INVIA MAGIC LINK'}
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+          
+          <div className="mt-6 text-center space-y-2">
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/register')}
+              className="text-purple-300 hover:text-white"
             >
-              {isLoading ? 'Accesso...' : 'Accedi'}
+              Non hai un account? Registrati
             </Button>
-          </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-gray-300 text-sm mb-2">
-              Non hai ancora un account?{' '}
-              <Link to="/register" className="text-purple-300 hover:text-purple-200 underline">
-                Registrati qui
-              </Link>
-            </p>
-            <p className="text-yellow-300 text-xs">
-              Ricorda: devi confermare l'account via email prima di poter effettuare il login
-            </p>
+            <Button
+              variant="ghost"
+              onClick={() => navigate('/')}
+              className="text-gray-400 hover:text-white flex items-center gap-2 mx-auto"
+            >
+              <ArrowLeft size={16} />
+              Torna alla home
+            </Button>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
