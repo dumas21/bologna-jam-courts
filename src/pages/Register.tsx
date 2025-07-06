@@ -13,7 +13,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [newsletter, setNewsletter] = useState(false);
+  const [newsletter, setNewsletter] = useState(true); // Default a true dato che ora è obbligatorio
   const [isLoading, setIsLoading] = useState(false);
   const [registrationComplete, setRegistrationComplete] = useState(false);
   const navigate = useNavigate();
@@ -123,6 +123,9 @@ const Register = () => {
             <p className="text-gray-300 text-sm mb-6">
               Clicca sul link nell'email per attivare il tuo account. Dopo la conferma potrai accedere con il tuo username e password.
             </p>
+            <p className="text-yellow-300 text-xs mb-6">
+              Se il link di conferma non funziona, prova a copiare l'URL completo dalla email e incollarlo nel browser.
+            </p>
             <Link to="/login">
               <Button className="arcade-button arcade-button-primary">
                 VAI AL LOGIN
@@ -218,23 +221,28 @@ const Register = () => {
               />
             </div>
 
-            <div>
-              <label className="newsletter-label">
-                <input 
-                  id="newsletter" 
-                  name="newsletter" 
-                  type="checkbox" 
-                  className="sr-only peer"
-                  checked={newsletter}
-                  onChange={(e) => {
-                    console.log('Newsletter checkbox clicked:', e.target.checked);
-                    setNewsletter(e.target.checked);
-                  }}
-                  disabled={isLoading}
-                />
-                <span className="checkmark"></span>
-                Voglio ricevere la newsletter (opzionale)
-              </label>
+            <div className="bg-purple-900 bg-opacity-50 rounded-lg p-4 border border-purple-400">
+              <div className="flex items-start space-x-3">
+                <label className="newsletter-label">
+                  <input 
+                    id="newsletter" 
+                    name="newsletter" 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={newsletter}
+                    onChange={(e) => {
+                      console.log('Newsletter checkbox clicked:', e.target.checked);
+                      setNewsletter(e.target.checked);
+                    }}
+                    disabled={isLoading}
+                  />
+                  <span className="checkmark"></span>
+                  Newsletter PlaygroundJam
+                </label>
+              </div>
+              <p className="text-gray-300 text-xs mt-2 ml-8">
+                Iscrivendoti a PlaygroundJam accetti di ricevere la newsletter con aggiornamenti sui playground e eventi della community.
+              </p>
             </div>
             
             <Button 

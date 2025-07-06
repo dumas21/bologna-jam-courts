@@ -22,51 +22,72 @@ const AuthCallback = () => {
         const refreshToken = urlParams.get('refresh_token');
         const tokenType = urlParams.get('token_type');
         const type = urlParams.get('type');
+        const error = urlParams.get('error');
+        const errorDescription = urlParams.get('error_description');
         
         console.log('🎫 Parametri trovati:', { 
           access_token: accessToken ? 'PRESENTE' : 'ASSENTE',
           refresh_token: refreshToken ? 'PRESENTE' : 'ASSENTE',
           token_type: tokenType,
-          type: type
+          type: type,
+          error: error,
+          error_description: errorDescription
         });
+
+        // Controlla se c'è un errore nell'URL
+        if (error) {
+          console.error('❌ Errore nell\'URL:', error, errorDescription);
+          toast({
+            title: "ERRORE NELLA CONFERMA",
+            description: errorDescription || "Si è verificato un errore durante la conferma dell'account",
+            variant: "destructive"
+          });
+          navigate('/register', { replace: true });
+          return;
+        }
 
         // Caso 1: Link di conferma email standard (con token nell'URL)
         if (accessToken && refreshToken) {
           console.log('✅ Trovati token nell\'URL - Caso conferma email');
           
-          // Setta la sessione manualmente con i token
-          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-          });
-          
-          if (sessionError) {
-            console.error('❌ Errore durante setSession:', sessionError);
-            throw sessionError;
-          }
-          
-          if (sessionData?.session?.user) {
-            console.log('✅ Sessione impostata con successo:', sessionData.session.user.id);
-            
-            // Pulisci l'URL dai parametri di auth
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            toast({
-              title: "ACCOUNT CONFERMATO!",
-              description: "Il tuo account è stato confermato con successo. Benvenuto!",
+          try {
+            // Setta la sessione manualmente con i token
+            const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
             });
             
-            navigate('/', { replace: true });
-            return;
+            if (sessionError) {
+              console.error('❌ Errore durante setSession:', sessionError);
+              throw sessionError;
+            }
+            
+            if (sessionData?.session?.user) {
+              console.log('✅ Sessione impostata con successo:', sessionData.session.user.id);
+              
+              // Pulisci l'URL dai parametri di auth
+              window.history.replaceState({}, document.title, window.location.pathname);
+              
+              toast({
+                title: "ACCOUNT CONFERMATO!",
+                description: "Il tuo account è stato confermato con successo. Benvenuto nel PlaygroundJam!",
+              });
+              
+              navigate('/', { replace: true });
+              return;
+            }
+          } catch (tokenError) {
+            console.error('❌ Errore nel processamento dei token:', tokenError);
+            // Continua con i casi successivi invece di fallire completamente
           }
         }
         
         // Caso 2: Link magic link o altri tipi di conferma
-        if (type === 'signup' || type === 'email') {
+        if (type === 'signup' || type === 'email' || type === 'magiclink') {
           console.log('🔄 Tipo di conferma:', type);
           
           // Aspetta un momento per permettere a Supabase di processare
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
           // Controlla se ora c'è una sessione attiva
           const { data: currentSession, error: sessionError } = await supabase.auth.getSession();
@@ -81,7 +102,7 @@ const AuthCallback = () => {
             
             toast({
               title: "ACCOUNT CONFERMATO!",
-              description: "Il tuo account è stato confermato con successo!",
+              description: "Il tuo account è stato confermato con successo! Benvenuto nel PlaygroundJam!",
             });
             
             navigate('/', { replace: true });
@@ -90,22 +111,26 @@ const AuthCallback = () => {
         }
         
         // Caso 3: Nessun token o sessione trovata
-        console.log('❌ Nessun token valido trovato nell\'URL');
+        console.log('⚠️ Nessun token valido trovato nell\'URL, verifica sessione esistente');
         
         // Prova comunque a verificare se c'è una sessione attiva
         const { data: fallbackSession } = await supabase.auth.getSession();
         
         if (fallbackSession?.session?.user) {
           console.log('✅ Sessione esistente trovata come fallback');
+          toast({
+            title: "GIÀ AUTENTICATO",
+            description: "Sei già autenticato. Benvenuto!",
+          });
           navigate('/', { replace: true });
           return;
         }
         
         // Se arriviamo qui, il link non è valido o è scaduto
-        console.error('❌ Link di conferma non valido o scaduto');
+        console.error('❌ Link di conferma non valido, scaduto o già utilizzato');
         toast({
           title: "LINK NON VALIDO",
-          description: "Il link di conferma non è valido o è scaduto. Prova a fare nuovamente la registrazione.",
+          description: "Il link di conferma non è valido, è scaduto o è già stato utilizzato. Prova a fare nuovamente la registrazione.",
           variant: "destructive"
         });
         
@@ -114,8 +139,8 @@ const AuthCallback = () => {
       } catch (error) {
         console.error('💥 Errore imprevisto nel callback:', error);
         toast({
-          title: "ERRORE",
-          description: "Si è verificato un errore durante la conferma dell'account",
+          title: "ERRORE DI SISTEMA",
+          description: "Si è verificato un errore durante la conferma dell'account. Riprova più tardi o contatta il supporto.",
           variant: "destructive"
         });
         navigate('/register', { replace: true });
@@ -144,6 +169,9 @@ const AuthCallback = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto"></div>
           <p className="text-gray-300 text-sm mt-4">
             Stiamo confermando il tuo account...
+          </p>
+          <p className="text-yellow-300 text-xs mt-2">
+            Se il caricamento dura troppo, prova a copiare l'intero URL dalla email e incollarlo nel browser
           </p>
         </div>
       </div>
