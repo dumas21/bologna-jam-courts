@@ -14,13 +14,14 @@ const AuthCallback = () => {
       try {
         console.log('AuthCallback: Processamento token di conferma avviato');
         
-        // ① PRIMA estrai e salva i token dall'URL
-        const { data, error } = await supabase.auth.getSessionFromUrl({ 
-          storeSession: true 
-        });
+        // ① Aspetta che Supabase processi automaticamente i token dall'URL
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        if (error) {
-          console.error('Errore durante l\'estrazione della sessione dall\'URL:', error);
+        // ② Controlla se ora c'è una sessione attiva
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('Errore durante il recupero della sessione:', sessionError);
           toast({
             title: "ERRORE AUTENTICAZIONE",
             description: "Link di conferma non valido o scaduto",
@@ -30,9 +31,9 @@ const AuthCallback = () => {
           return;
         }
 
-        // ② Se c'è una sessione valida dal link
-        if (data?.session?.user) {
-          console.log('Sessione confermata per utente:', data.session.user.id);
+        // ③ Se c'è una sessione valida
+        if (sessionData?.session?.user) {
+          console.log('Sessione confermata per utente:', sessionData.session.user.id);
           
           // Pulisci l'URL dai parametri di auth
           window.history.replaceState({}, document.title, window.location.pathname);
@@ -45,21 +46,13 @@ const AuthCallback = () => {
           // Reindirizza alla home
           navigate('/', { replace: true });
         } else {
-          // ③ Fallback: controlla se c'è già una sessione attiva
-          const { data: currentSession } = await supabase.auth.getSession();
-          
-          if (currentSession?.session?.user) {
-            console.log('Sessione già attiva trovata');
-            navigate('/', { replace: true });
-          } else {
-            console.log('Nessuna sessione valida trovata');
-            toast({
-              title: "LINK NON VALIDO",
-              description: "Il link di conferma non è valido o è scaduto.",
-              variant: "destructive"
-            });
-            navigate('/login', { replace: true });
-          }
+          console.log('Nessuna sessione valida trovata dopo il callback');
+          toast({
+            title: "LINK NON VALIDO",
+            description: "Il link di conferma non è valido o è scaduto.",
+            variant: "destructive"
+          });
+          navigate('/login', { replace: true });
         }
       } catch (error) {
         console.error('Errore imprevisto nel callback:', error);
