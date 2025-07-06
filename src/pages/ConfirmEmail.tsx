@@ -13,11 +13,16 @@ const ConfirmEmail = () => {
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
-        const url = new URL(window.location.href);
-        const token_hash = url.searchParams.get("token_hash");
-        const type = (url.searchParams.get("type") || "signup") as "signup" | "recovery";
+        // Ottieni parametri dall'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const token_hash = urlParams.get("token_hash");
+        const type = (urlParams.get("type") || "signup") as "signup" | "recovery";
 
-        console.log('🔍 Parametri URL per conferma:', { token_hash: token_hash ? 'PRESENTE' : 'ASSENTE', type });
+        console.log('🔍 Parametri URL per conferma:', { 
+          token_hash: token_hash ? 'PRESENTE' : 'ASSENTE', 
+          type,
+          fullUrl: window.location.href 
+        });
 
         if (!token_hash) {
           console.error('❌ Token hash mancante nell\'URL');
