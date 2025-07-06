@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { SignUpData, AuthResponse } from '@/types/auth';
 
@@ -13,7 +12,7 @@ export class AuthService {
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/auth/confirm`,
           data: {
             username: username
           }
@@ -86,7 +85,7 @@ export class AuthService {
   }
 
   static async signInWithMagicLink(email: string, username: string): Promise<AuthResponse> {
-    const redirectUrl = `${window.location.origin}/auth/callback`;
+    const redirectUrl = `${window.location.origin}/auth/confirm`;
     
     const { error } = await supabase.auth.signInWithOtp({
       email,
