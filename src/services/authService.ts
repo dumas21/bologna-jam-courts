@@ -120,11 +120,21 @@ export class AuthService {
     try {
       console.log('📝 Aggiornamento profilo per user:', userId);
       
+      // Get user email from auth
+      const { data: { user } } = await supabase.auth.getUser();
+      const userEmail = user?.email;
+      
+      if (!userEmail) {
+        console.error('❌ Email utente non trovata');
+        return;
+      }
+      
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({
           id: userId,
-          nickname: username
+          nickname: username,
+          email: userEmail
         }, {
           onConflict: 'id'
         });
