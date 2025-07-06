@@ -68,6 +68,9 @@ const AuthCallback = () => {
               // Pulisci l'URL dai parametri di auth
               window.history.replaceState({}, document.title, window.location.pathname);
               
+              // Aspetta un momento per permettere agli hook di aggiornarsi
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              
               toast({
                 title: "ACCOUNT CONFERMATO!",
                 description: "Il tuo account è stato confermato con successo. Benvenuto nel PlaygroundJam!",
@@ -100,6 +103,9 @@ const AuthCallback = () => {
           if (currentSession?.session?.user) {
             console.log('✅ Sessione trovata dopo refresh:', currentSession.session.user.id);
             
+            // Pulisci l'URL
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
             toast({
               title: "ACCOUNT CONFERMATO!",
               description: "Il tuo account è stato confermato con successo! Benvenuto nel PlaygroundJam!",
@@ -110,17 +116,24 @@ const AuthCallback = () => {
           }
         }
         
-        // Caso 3: Nessun token o sessione trovata
-        console.log('⚠️ Nessun token valido trovato nell\'URL, verifica sessione esistente');
+        // Caso 3: Nessun token o sessione trovata - aspetta di più
+        console.log('⚠️ Nessun token valido trovato nell\'URL, tentativo di recupero sessione');
+        
+        // Aspetta di più per la sincronizzazione
+        await new Promise(resolve => setTimeout(resolve, 3000));
         
         // Prova comunque a verificare se c'è una sessione attiva
         const { data: fallbackSession } = await supabase.auth.getSession();
         
         if (fallbackSession?.session?.user) {
           console.log('✅ Sessione esistente trovata come fallback');
+          
+          // Pulisci l'URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+          
           toast({
-            title: "GIÀ AUTENTICATO",
-            description: "Sei già autenticato. Benvenuto!",
+            title: "AUTENTICAZIONE COMPLETATA",
+            description: "Benvenuto! Sei ora autenticato.",
           });
           navigate('/', { replace: true });
           return;
@@ -171,7 +184,7 @@ const AuthCallback = () => {
             Stiamo confermando il tuo account...
           </p>
           <p className="text-yellow-300 text-xs mt-2">
-            Se il caricamento dura troppo, prova a copiare l'intero URL dalla email e incollarlo nel browser
+            Attendere qualche secondo per il completamento dell'autenticazione
           </p>
         </div>
       </div>

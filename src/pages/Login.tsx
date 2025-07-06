@@ -13,16 +13,20 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { signInWithUsername, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { signInWithUsername, isAuthenticated, isLoading: authLoading, user } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
     // Se l'utente è già autenticato, reindirizza alla home
-    if (isAuthenticated && !authLoading) {
+    if (isAuthenticated && !authLoading && user) {
       console.log('✅ Utente già autenticato, reindirizzo alla home');
+      toast({
+        title: "GIÀ AUTENTICATO",
+        description: `Benvenuto/a ${user.email}! Sei già loggato.`,
+      });
       navigate('/', { replace: true });
     }
-  }, [isAuthenticated, authLoading, navigate]);
+  }, [isAuthenticated, authLoading, user, navigate, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,9 +51,11 @@ const Login = () => {
         
         let errorMessage = "Errore durante il login";
         if (error.message?.includes('Invalid login credentials')) {
-          errorMessage = "Username o password non corretti";
+          errorMessage = "Username o password non corretti. Assicurati che il tuo account sia stato confermato via email.";
         } else if (error.message?.includes('not found')) {
-          errorMessage = "Username non trovato";
+          errorMessage = "Username non trovato. Verifica di aver inserito l'username corretto.";
+        } else if (error.message?.includes('Email not confirmed')) {
+          errorMessage = "Account non ancora confermato. Controlla la tua email e clicca sul link di conferma.";
         } else if (error.message) {
           errorMessage = error.message;
         }
@@ -89,6 +95,37 @@ const Login = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
+  // Se l'utente è già autenticato, mostra un messaggio
+  if (isAuthenticated && user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">
+        <div className="max-w-md mx-auto">
+          <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 border border-purple-500 text-center">
+            <h1 className="text-2xl font-bold text-white mb-6 nike-text">
+              GIÀ AUTENTICATO
+            </h1>
+            <p className="text-white mb-4">
+              Sei già loggato come:
+            </p>
+            <p className="text-purple-300 font-bold mb-6">{user.email}</p>
+            <Button 
+              onClick={() => navigate('/')}
+              className="arcade-button arcade-button-primary w-full mb-4"
+            >
+              VAI ALLA HOME
+            </Button>
+            <Button 
+              onClick={() => navigate('/logout')}
+              className="arcade-button arcade-button-secondary w-full"
+            >
+              LOGOUT
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -152,11 +189,14 @@ const Login = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-300 text-sm">
+            <p className="text-gray-300 text-sm mb-2">
               Non hai ancora un account?{' '}
               <Link to="/register" className="text-purple-300 hover:text-purple-200 underline">
                 Registrati qui
               </Link>
+            </p>
+            <p className="text-yellow-300 text-xs">
+              Ricorda: devi confermare l'account via email prima di poter effettuare il login
             </p>
           </div>
         </div>

@@ -11,22 +11,33 @@ export const useAuthState = (): AuthState => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!isMounted) return;
+        
         console.log('🔔 Auth state changed:', event, session?.user?.id);
         
         setSession(session);
         setUser(session?.user ?? null);
         
-        if (session?.user && event === 'SIGNED_IN') {
+        if (session?.user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
           console.log('🔄 Caricamento profilo per utente autenticato:', session.user.id);
-          await loadUserProfile(session.user.id);
-        } else {
+          setTimeout(() => {
+            if (isMounted) {
+              loadUserProfile(session.user.id);
+            }
+          }, 0);
+        } else if (event === 'SIGNED_OUT') {
+          console.log('🚪 Utente disconnesso, pulizia profilo');
           setProfile(null);
         }
         
-        setIsLoading(false);
+        if (event !== 'INITIAL_SESSION') {
+          setIsLoading(false);
+        }
       }
     );
 
@@ -35,6 +46,8 @@ export const useAuthState = (): AuthState => {
       try {
         console.log('🔍 Controllo sessione iniziale...');
         const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (!isMounted) return;
         
         if (error) {
           console.error('❌ Errore nel recupero sessione:', error);
@@ -53,13 +66,18 @@ export const useAuthState = (): AuthState => {
         setIsLoading(false);
       } catch (error) {
         console.error('💥 Errore imprevisto nel recupero sessione:', error);
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     getInitialSession();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const loadUserProfile = async (userId: string) => {
@@ -80,7 +98,7 @@ export const useAuthState = (): AuthState => {
         const { data: { user } } = await supabase.auth.getUser();
         
         if (user) {
-          const { error: insertError } = await supabase
+          const { data: newProfile, error: insertError } = await supabase
             .from('profiles')
             .insert({
               id: user.id,
@@ -93,10 +111,14 @@ export const useAuthState = (): AuthState => {
           if (insertError) {
             console.error('❌ Errore nella creazione del profilo:', insertError);
             setProfile(null);
-          } else {
-            console.log('✅ Profilo creato con successo');
-            // Ricarica il profilo
-            setTimeout(() => loadUserProfile(userId), 500);
+          } else if (newProfile) {
+            console.log('✅ Profilo creato con successo:', newProfile.nickname);
+            setProfile({
+              id: newProfile.id,
+              email: newProfile.email,
+              username: newProfile.nickname,
+              nickname: newProfile.nickname
+            });
           }
         }
         return;

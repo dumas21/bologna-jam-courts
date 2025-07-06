@@ -12,6 +12,7 @@ import Export from "./pages/Export";
 import AddPlayground from "./pages/AddPlayground";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Logout from "./pages/Logout";
 import AuthCallback from "./pages/AuthCallback";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/add" element={<AddPlayground />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
