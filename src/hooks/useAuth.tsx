@@ -11,6 +11,10 @@ export const useAuth = () => {
     return AuthService.signUp(signUpData);
   };
 
+  const signInWithPassword = async (email: string, password: string) => {
+    return AuthService.signInWithPassword(email, password);
+  };
+
   const signInWithUsername = async (username: string, password: string) => {
     return AuthService.signInWithUsername(username, password);
   };
@@ -36,6 +40,7 @@ export const useAuth = () => {
   return {
     ...authState,
     signUp,
+    signInWithPassword,
     signInWithUsername,
     signInWithMagicLink,
     signOut,

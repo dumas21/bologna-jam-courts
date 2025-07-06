@@ -11,9 +11,10 @@ import { useToast } from "@/components/ui/use-toast";
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginType, setLoginType] = useState<'username' | 'email'>('username');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { signInWithUsername, isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { signInWithUsername, signInWithPassword, isAuthenticated, isLoading: authLoading, user } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,22 +37,29 @@ const Login = () => {
       if (!username.trim() || !password.trim()) {
         toast({
           title: "CAMPI OBBLIGATORI",
-          description: "Inserisci sia username che password",
+          description: "Inserisci sia username/email che password",
           variant: "destructive"
         });
         return;
       }
 
-      console.log('🔑 Tentativo di login per:', username.trim());
+      console.log('🔑 Tentativo di login per:', username.trim(), 'tipo:', loginType);
 
-      const { data, error } = await signInWithUsername(username.trim(), password);
+      let result;
+      if (loginType === 'email') {
+        result = await signInWithPassword(username.trim(), password);
+      } else {
+        result = await signInWithUsername(username.trim(), password);
+      }
+      
+      const { data, error } = result;
       
       if (error) {
         console.error('❌ Errore durante login:', error);
         
         let errorMessage = "Errore durante il login";
         if (error.message?.includes('Invalid login credentials')) {
-          errorMessage = "Username o password non corretti. Assicurati che il tuo account sia stato confermato via email.";
+          errorMessage = "Username/email o password non corretti. Assicurati che il tuo account sia stato confermato via email.";
         } else if (error.message?.includes('not found')) {
           errorMessage = "Username non trovato. Verifica di aver inserito l'username corretto.";
         } else if (error.message?.includes('Email not confirmed')) {
@@ -146,17 +154,42 @@ const Login = () => {
             ACCEDI
           </h1>
           
+          <div className="mb-6">
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={() => setLoginType('username')}
+                className={`flex-1 py-2 px-4 rounded ${
+                  loginType === 'username' 
+                    ? 'bg-purple-600 text-white' 
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                Username
+              </button>
+              <button
+                onClick={() => setLoginType('email')}
+                className={`flex-1 py-2 px-4 rounded ${
+                  loginType === 'email' 
+                    ? 'bg-purple-600 text-white' 
+                    : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                }`}
+              >
+                Email
+              </button>
+            </div>
+          </div>
+          
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <Label htmlFor="username" className="block text-white text-sm font-bold mb-2 nike-text">
-                Username
+                {loginType === 'email' ? 'Email' : 'Username'}
               </Label>
               <Input
                 id="username"
-                type="text"
+                type={loginType === 'email' ? 'email' : 'text'}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="inserisci il tuo username"
+                placeholder={loginType === 'email' ? 'inserisci la tua email' : 'inserisci il tuo username'}
                 className="w-full bg-gray-800 border-purple-500 text-white placeholder-gray-400"
                 required
                 disabled={isLoading}

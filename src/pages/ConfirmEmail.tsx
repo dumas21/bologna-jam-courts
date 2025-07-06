@@ -13,21 +13,26 @@ const ConfirmEmail = () => {
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
-        // Ottieni parametri dall'URL
+        console.log('🔍 URL completo:', window.location.href);
+        
+        // Ottieni parametri dall'URL - usa sia URLSearchParams che URL per sicurezza
         const urlParams = new URLSearchParams(window.location.search);
-        const token_hash = urlParams.get("token_hash");
-        const type = (urlParams.get("type") || "signup") as "signup" | "recovery";
+        const urlHash = new URLSearchParams(window.location.hash.substring(1));
+        
+        let token_hash = urlParams.get("token_hash") || urlHash.get("token_hash");
+        let type = (urlParams.get("type") || urlHash.get("type") || "signup") as "signup" | "recovery";
 
-        console.log('🔍 Parametri URL per conferma:', { 
+        console.log('🔍 Parametri trovati:', { 
           token_hash: token_hash ? 'PRESENTE' : 'ASSENTE', 
           type,
-          fullUrl: window.location.href 
+          search: window.location.search,
+          hash: window.location.hash
         });
 
         if (!token_hash) {
           console.error('❌ Token hash mancante nell\'URL');
           setStatus("error");
-          setMessage("Token mancante o link non valido.");
+          setMessage("Token mancante o link non valido. Controlla il link ricevuto via email.");
           return;
         }
 
@@ -39,10 +44,12 @@ const ConfirmEmail = () => {
           type 
         });
 
+        console.log('📋 Risultato verifyOtp:', { data, error });
+
         if (error) {
           console.error('❌ Errore durante verifyOtp:', error);
           setStatus("error");
-          setMessage(error.message);
+          setMessage(`Errore durante la verifica: ${error.message}`);
           return;
         }
 

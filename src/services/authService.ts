@@ -42,6 +42,29 @@ export class AuthService {
     }
   }
 
+  static async signInWithPassword(email: string, password: string): Promise<AuthResponse> {
+    try {
+      console.log('🔑 Tentativo di login con email:', email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password
+      });
+
+      if (error) {
+        console.error('❌ Errore durante signInWithPassword:', error);
+        return { data, error };
+      }
+
+      console.log('✅ Login completato:', data.user?.id);
+      return { data, error };
+      
+    } catch (error: any) {
+      console.error('💥 Errore completo in signInWithPassword:', error);
+      return { data: null, error };
+    }
+  }
+
   static async signInWithUsername(username: string, password: string): Promise<AuthResponse> {
     try {
       console.log('🔑 Tentativo di login con username:', username);
@@ -66,18 +89,7 @@ export class AuthService {
       console.log('📧 Email trovata per username:', profileData.email);
 
       // Effettua il login con email e password
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: profileData.email,
-        password: password
-      });
-
-      if (error) {
-        console.error('❌ Errore durante login:', error);
-        return { data, error };
-      }
-
-      console.log('✅ Login completato:', data.user?.id);
-      return { data, error };
+      return this.signInWithPassword(profileData.email, password);
       
     } catch (error: any) {
       console.error('💥 Errore completo in signInWithUsername:', error);
