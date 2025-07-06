@@ -21,98 +21,96 @@ const AuthCallback = () => {
         const accessToken = urlParams.get('access_token');
         const refreshToken = urlParams.get('refresh_token');
         const tokenType = urlParams.get('token_type');
+        const type = urlParams.get('type');
         
-        console.log('🎫 Token trovati:', { 
+        console.log('🎫 Parametri trovati:', { 
           access_token: accessToken ? 'PRESENTE' : 'ASSENTE',
           refresh_token: refreshToken ? 'PRESENTE' : 'ASSENTE',
-          token_type: tokenType 
+          token_type: tokenType,
+          type: type
         });
 
-        if (!accessToken) {
-          console.error('❌ Nessun access_token trovato nell\'URL');
-          toast({
-            title: "LINK NON VALIDO",
-            description: "Il link di conferma non contiene i token necessari",
-            variant: "destructive"
+        // Caso 1: Link di conferma email standard (con token nell'URL)
+        if (accessToken && refreshToken) {
+          console.log('✅ Trovati token nell\'URL - Caso conferma email');
+          
+          // Setta la sessione manualmente con i token
+          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
           });
-          navigate('/login', { replace: true });
-          return;
+          
+          if (sessionError) {
+            console.error('❌ Errore durante setSession:', sessionError);
+            throw sessionError;
+          }
+          
+          if (sessionData?.session?.user) {
+            console.log('✅ Sessione impostata con successo:', sessionData.session.user.id);
+            
+            // Pulisci l'URL dai parametri di auth
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            toast({
+              title: "ACCOUNT CONFERMATO!",
+              description: "Il tuo account è stato confermato con successo. Benvenuto!",
+            });
+            
+            navigate('/', { replace: true });
+            return;
+          }
         }
-
-        // Aspetta più tempo per permettere a Supabase di processare i token
-        console.log('⏳ Attendo che Supabase processi i token...');
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Aumentato a 2 secondi
         
-        // Controlla se ora c'è una sessione attiva
-        console.log('🔄 Verifico la sessione...');
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        
-        console.log('📊 Risultato getSession:', {
-          session: sessionData?.session ? 'PRESENTE' : 'ASSENTE',
-          user: sessionData?.session?.user?.id || 'NESSUN UTENTE',
-          error: sessionError?.message || 'NESSUN ERRORE'
-        });
-
-        if (sessionError) {
-          console.error('❌ Errore durante il recupero della sessione:', sessionError);
-          toast({
-            title: "ERRORE AUTENTICAZIONE",
-            description: "Errore durante la verifica della sessione",
-            variant: "destructive"
-          });
-          navigate('/login');
-          return;
-        }
-
-        // Verifica localStorage
-        const localStorageKeys = Object.keys(localStorage).filter(key => key.includes('supabase'));
-        console.log('💾 Chiavi localStorage Supabase:', localStorageKeys);
-        
-        if (sessionData?.session?.user) {
-          console.log('✅ Sessione confermata per utente:', sessionData.session.user.id);
-          console.log('🎯 Email confermata:', sessionData.session.user.email_confirmed_at ? 'SÌ' : 'NO');
+        // Caso 2: Link magic link o altri tipi di conferma
+        if (type === 'signup' || type === 'email') {
+          console.log('🔄 Tipo di conferma:', type);
           
-          // Pulisci l'URL dai parametri di auth
-          window.history.replaceState({}, document.title, window.location.pathname);
+          // Aspetta un momento per permettere a Supabase di processare
+          await new Promise(resolve => setTimeout(resolve, 1000));
           
-          toast({
-            title: "ACCOUNT CONFERMATO!",
-            description: "Il tuo account è stato confermato con successo. Benvenuto!",
-          });
+          // Controlla se ora c'è una sessione attiva
+          const { data: currentSession, error: sessionError } = await supabase.auth.getSession();
           
-          // Forza un refresh della sessione nel context
-          window.dispatchEvent(new Event('supabase:session-updated'));
+          if (sessionError) {
+            console.error('❌ Errore durante getSession:', sessionError);
+            throw sessionError;
+          }
           
-          // Reindirizza alla home
-          navigate('/', { replace: true });
-        } else {
-          console.log('❌ Nessuna sessione valida trovata dopo il callback');
-          
-          // Prova un approccio alternativo: verifica direttamente con refreshSession
-          console.log('🔄 Tentativo refresh sessione...');
-          const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession();
-          
-          console.log('📊 Risultato refreshSession:', {
-            session: refreshData?.session ? 'PRESENTE' : 'ASSENTE',
-            error: refreshError?.message || 'NESSUN ERRORE'
-          });
-          
-          if (refreshData?.session?.user) {
-            console.log('✅ Sessione recuperata con refresh!');
+          if (currentSession?.session?.user) {
+            console.log('✅ Sessione trovata dopo refresh:', currentSession.session.user.id);
+            
             toast({
               title: "ACCOUNT CONFERMATO!",
               description: "Il tuo account è stato confermato con successo!",
             });
+            
             navigate('/', { replace: true });
-          } else {
-            toast({
-              title: "LINK NON VALIDO",
-              description: "Il link di conferma non è valido o è scaduto.",
-              variant: "destructive"
-            });
-            navigate('/login', { replace: true });
+            return;
           }
         }
+        
+        // Caso 3: Nessun token o sessione trovata
+        console.log('❌ Nessun token valido trovato nell\'URL');
+        
+        // Prova comunque a verificare se c'è una sessione attiva
+        const { data: fallbackSession } = await supabase.auth.getSession();
+        
+        if (fallbackSession?.session?.user) {
+          console.log('✅ Sessione esistente trovata come fallback');
+          navigate('/', { replace: true });
+          return;
+        }
+        
+        // Se arriviamo qui, il link non è valido o è scaduto
+        console.error('❌ Link di conferma non valido o scaduto');
+        toast({
+          title: "LINK NON VALIDO",
+          description: "Il link di conferma non è valido o è scaduto. Prova a fare nuovamente la registrazione.",
+          variant: "destructive"
+        });
+        
+        navigate('/register', { replace: true });
+        
       } catch (error) {
         console.error('💥 Errore imprevisto nel callback:', error);
         toast({
@@ -120,7 +118,7 @@ const AuthCallback = () => {
           description: "Si è verificato un errore durante la conferma dell'account",
           variant: "destructive"
         });
-        navigate('/login', { replace: true });
+        navigate('/register', { replace: true });
       } finally {
         setIsLoading(false);
       }
