@@ -13,18 +13,15 @@ export const useAuthState = (): AuthState => {
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.id);
+      async (event, session) => {
+        console.log('🔔 Auth state changed:', event, session?.user?.id);
         
-        // Only synchronous state updates here
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Defer Supabase calls with setTimeout to prevent deadlock
-        if (session?.user) {
-          setTimeout(() => {
-            loadUserProfile(session.user.id);
-          }, 0);
+        if (session?.user && event === 'SIGNED_IN') {
+          console.log('🔄 Caricamento profilo per utente autenticato:', session.user.id);
+          await loadUserProfile(session.user.id);
         } else {
           setProfile(null);
         }
@@ -36,21 +33,26 @@ export const useAuthState = (): AuthState => {
     // THEN check for existing session
     const getInitialSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log('Sessione iniziale:', session?.user?.id);
+        console.log('🔍 Controllo sessione iniziale...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('❌ Errore nel recupero sessione:', error);
+          setIsLoading(false);
+          return;
+        }
+        
+        console.log('📊 Sessione iniziale:', session?.user?.id || 'NESSUNA');
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Also defer this to prevent blocking
-          setTimeout(() => {
-            loadUserProfile(session.user.id);
-          }, 0);
+          await loadUserProfile(session.user.id);
         }
         
         setIsLoading(false);
       } catch (error) {
-        console.error('Error getting initial session:', error);
+        console.error('💥 Errore imprevisto nel recupero sessione:', error);
         setIsLoading(false);
       }
     };
@@ -62,7 +64,7 @@ export const useAuthState = (): AuthState => {
 
   const loadUserProfile = async (userId: string) => {
     try {
-      console.log('Caricamento profilo per utente:', userId);
+      console.log('📋 Caricamento profilo per utente:', userId);
       
       const { data: profileData, error } = await supabase
         .from('profiles')
@@ -71,10 +73,37 @@ export const useAuthState = (): AuthState => {
         .maybeSingle();
       
       if (error) {
-        console.error('Error fetching profile:', error);
-        setProfile(null);
-      } else if (profileData) {
-        console.log('Profilo caricato:', profileData);
+        console.error('❌ Errore nel caricamento profilo:', error);
+        
+        // Se il profilo non esiste, prova a crearlo
+        console.log('🔧 Tentativo di creare profilo mancante...');
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (user) {
+          const { error: insertError } = await supabase
+            .from('profiles')
+            .insert({
+              id: user.id,
+              email: user.email || '',
+              nickname: user.user_metadata?.username || user.email?.split('@')[0] || 'User'
+            })
+            .select()
+            .single();
+          
+          if (insertError) {
+            console.error('❌ Errore nella creazione del profilo:', insertError);
+            setProfile(null);
+          } else {
+            console.log('✅ Profilo creato con successo');
+            // Ricarica il profilo
+            setTimeout(() => loadUserProfile(userId), 500);
+          }
+        }
+        return;
+      }
+      
+      if (profileData) {
+        console.log('✅ Profilo caricato:', profileData.nickname);
         setProfile({
           id: profileData.id,
           email: profileData.email,
@@ -82,33 +111,11 @@ export const useAuthState = (): AuthState => {
           nickname: profileData.nickname
         });
       } else {
-        console.log('Nessun profilo trovato per l\'utente:', userId);
-        
-        // Se non c'è profilo ma c'è un utente, proviamo a crearlo
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          console.log('Tentativo di creare profilo mancante per:', user.email);
-          const { error: insertError } = await supabase
-            .from('profiles')
-            .insert({
-              id: user.id,
-              email: user.email || '',
-              nickname: user.user_metadata?.username || user.email?.split('@')[0] || 'User'
-            });
-          
-          if (!insertError) {
-            console.log('Profilo creato con successo');
-            // Ricarica il profilo
-            setTimeout(() => loadUserProfile(userId), 500);
-          } else {
-            console.error('Errore nella creazione del profilo:', insertError);
-          }
-        }
-        
+        console.log('⚠️ Nessun profilo trovato per utente:', userId);
         setProfile(null);
       }
     } catch (error) {
-      console.error('Error loading user profile:', error);
+      console.error('💥 Errore imprevisto nel caricamento profilo:', error);
       setProfile(null);
     }
   };
@@ -118,6 +125,6 @@ export const useAuthState = (): AuthState => {
     session,
     profile,
     isLoading,
-    isAuthenticated: !!user
+    isAuthenticated: !!user && !!session
   };
 };

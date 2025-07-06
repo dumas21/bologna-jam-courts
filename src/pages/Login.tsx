@@ -13,14 +13,16 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { signInWithUsername, isAuthenticated } = useAuth();
+  const { signInWithUsername, isAuthenticated, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/');
+    // Se l'utente è già autenticato, reindirizza alla home
+    if (isAuthenticated && !authLoading) {
+      console.log('✅ Utente già autenticato, reindirizzo alla home');
+      navigate('/', { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,26 +38,42 @@ const Login = () => {
         return;
       }
 
+      console.log('🔑 Tentativo di login per:', username.trim());
+
       const { data, error } = await signInWithUsername(username.trim(), password);
       
       if (error) {
-        console.error('Error during login:', error);
+        console.error('❌ Errore durante login:', error);
+        
+        let errorMessage = "Errore durante il login";
+        if (error.message?.includes('Invalid login credentials')) {
+          errorMessage = "Username o password non corretti";
+        } else if (error.message?.includes('not found')) {
+          errorMessage = "Username non trovato";
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
         toast({
           title: "ERRORE LOGIN",
-          description: "Username o password non corretti",
+          description: errorMessage,
           variant: "destructive"
         });
         return;
       }
 
-      toast({
-        title: "LOGIN EFFETTUATO!",
-        description: "Benvenuto/a nel Playground Jam!",
-      });
+      if (data?.user) {
+        console.log('✅ Login effettuato per utente:', data.user.id);
+        toast({
+          title: "LOGIN EFFETTUATO!",
+          description: "Benvenuto/a nel Playground Jam!",
+        });
+        
+        // Il reindirizzamento verrà gestito dall'useEffect quando isAuthenticated diventa true
+      }
       
-      navigate('/');
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('💥 Errore imprevisto:', error);
       toast({
         title: "ERRORE",
         description: "Si è verificato un errore imprevisto",
@@ -65,6 +83,15 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  // Mostra un loader se stiamo controllando l'autenticazione
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 p-4">

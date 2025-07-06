@@ -7,9 +7,8 @@ export class AuthService {
     try {
       const { email, password, username, newsletter = false, privacyVersion = '1.0' } = signUpData;
       
-      console.log('Avvio signUp con:', { email, username, newsletter });
+      console.log('🚀 Avvio signUp con:', { email, username, newsletter });
 
-      // ④ CRITICO: emailRedirectTo deve puntare alla callback
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -22,11 +21,11 @@ export class AuthService {
       });
 
       if (error) {
-        console.error('Errore durante signUp:', error);
+        console.error('❌ Errore durante signUp:', error);
         throw error;
       }
 
-      console.log('SignUp completato:', data);
+      console.log('✅ SignUp completato:', data.user?.id);
 
       if (data.user) {
         await this.updateUserProfile(data.user.id, username);
@@ -38,43 +37,50 @@ export class AuthService {
 
       return { data, error: null };
     } catch (error: any) {
-      console.error('Errore completo in signUp:', error);
+      console.error('💥 Errore completo in signUp:', error);
       return { data: null, error };
     }
   }
 
   static async signInWithUsername(username: string, password: string): Promise<AuthResponse> {
     try {
-      console.log('Tentativo di login con username:', username);
+      console.log('🔑 Tentativo di login con username:', username);
       
+      // Prima trova l'email dall'username
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('email')
         .eq('nickname', username)
         .maybeSingle();
 
-      if (profileError || !profileData) {
-        console.error('Username non trovato:', profileError);
+      if (profileError) {
+        console.error('❌ Errore nella ricerca profilo:', profileError);
+        return { data: null, error: { message: 'Errore nella ricerca utente' } };
+      }
+
+      if (!profileData) {
+        console.error('❌ Username non trovato:', username);
         return { data: null, error: { message: 'Username non trovato' } };
       }
 
-      console.log('Email trovata per username:', profileData.email);
+      console.log('📧 Email trovata per username:', profileData.email);
 
-      // Use the correct Supabase v2 API
+      // Effettua il login con email e password
       const { data, error } = await supabase.auth.signInWithPassword({
         email: profileData.email,
         password: password
       });
 
       if (error) {
-        console.error('Errore durante login:', error);
-      } else {
-        console.log('Login completato:', data);
+        console.error('❌ Errore durante login:', error);
+        return { data, error };
       }
 
+      console.log('✅ Login completato:', data.user?.id);
       return { data, error };
+      
     } catch (error: any) {
-      console.error('Errore completo in signInWithUsername:', error);
+      console.error('💥 Errore completo in signInWithUsername:', error);
       return { data: null, error };
     }
   }
@@ -96,13 +102,15 @@ export class AuthService {
   }
 
   static async signOut(): Promise<AuthResponse> {
-    console.log('Avvio logout');
+    console.log('🚪 Avvio logout');
     const { error } = await supabase.auth.signOut();
     
     if (!error) {
-      console.log('Logout completato');
+      console.log('✅ Logout completato');
+      // Pulisci anche il localStorage per sicurezza
+      localStorage.removeItem('supabase.auth.token');
     } else {
-      console.error('Errore durante logout:', error);
+      console.error('❌ Errore durante logout:', error);
     }
     
     return { data: null, error };
@@ -110,28 +118,30 @@ export class AuthService {
 
   private static async updateUserProfile(userId: string, username: string): Promise<void> {
     try {
-      console.log('Aggiornamento profilo per user:', userId);
+      console.log('📝 Aggiornamento profilo per user:', userId);
       
       const { error: profileError } = await supabase
         .from('profiles')
-        .update({
+        .upsert({
+          id: userId,
           nickname: username
-        })
-        .eq('id', userId);
+        }, {
+          onConflict: 'id'
+        });
 
       if (profileError) {
-        console.error('Error updating profile:', profileError);
+        console.error('❌ Error updating profile:', profileError);
       } else {
-        console.log('Profilo aggiornato con successo');
+        console.log('✅ Profilo aggiornato con successo');
       }
     } catch (profileErr) {
-      console.error('Profile update error:', profileErr);
+      console.error('💥 Profile update error:', profileErr);
     }
   }
 
   private static async saveNewsletterConsent(userId: string, email: string, privacyVersion: string): Promise<void> {
     try {
-      console.log('Salvataggio consenso newsletter');
+      console.log('📧 Salvataggio consenso newsletter');
       
       const { error: newsletterError } = await supabase.rpc('log_security_event', {
         p_user_id: userId,
@@ -145,12 +155,12 @@ export class AuthService {
       });
 
       if (newsletterError) {
-        console.error('Error saving newsletter consent:', newsletterError);
+        console.error('❌ Error saving newsletter consent:', newsletterError);
       } else {
-        console.log('Consenso newsletter salvato');
+        console.log('✅ Consenso newsletter salvato');
       }
     } catch (e) {
-      console.error('Newsletter consent error:', e);
+      console.error('💥 Newsletter consent error:', e);
     }
   }
 }
