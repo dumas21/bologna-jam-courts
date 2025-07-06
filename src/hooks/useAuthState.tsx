@@ -15,22 +15,20 @@ export const useAuthState = (): AuthState => {
 
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event, newSession) => {
         if (!isMounted) return;
         
-        console.log('🔔 Auth state changed:', event, session?.user?.id);
+        console.log('🔔 Auth state changed:', event, newSession?.user?.id || 'NO_USER');
         
-        // IMPORTANTE: Aggiorna lo stato SOLO se la sessione è realmente cambiata
-        const sessionChanged = JSON.stringify(session) !== JSON.stringify(session);
+        setSession(newSession);
+        setUser(newSession?.user ?? null);
         
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
-          console.log('🔄 Caricamento profilo per utente autenticato:', session.user.id);
+        if (newSession?.user && (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED')) {
+          console.log('🔄 Caricamento profilo per utente autenticato:', newSession.user.id);
+          // Usa setTimeout per evitare problemi di concorrenza
           setTimeout(() => {
             if (isMounted) {
-              loadUserProfile(session.user.id);
+              loadUserProfile(newSession.user.id);
             }
           }, 100);
         } else if (event === 'SIGNED_OUT') {
@@ -38,9 +36,7 @@ export const useAuthState = (): AuthState => {
           setProfile(null);
         }
         
-        if (event !== 'INITIAL_SESSION') {
-          setIsLoading(false);
-        }
+        setIsLoading(false);
       }
     );
 
@@ -60,10 +56,10 @@ export const useAuthState = (): AuthState => {
         
         console.log('📊 Sessione iniziale:', session?.user?.id || 'NESSUNA');
         
-        // VERIFICA REALE della sessione controllando se è valida
+        // Verifica validità sessione se presente
         if (session?.access_token) {
           try {
-            const { data: { user }, error: userError } = await supabase.auth.getUser(session.access_token);
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
             if (userError || !user) {
               console.log('⚠️ Sessione non valida, pulizia...');
               await supabase.auth.signOut();
@@ -73,6 +69,7 @@ export const useAuthState = (): AuthState => {
               setIsLoading(false);
               return;
             }
+            console.log('✅ Sessione valida per utente:', user.id);
           } catch (tokenError) {
             console.log('⚠️ Token non valido, pulizia sessione...');
             await supabase.auth.signOut();
@@ -175,6 +172,6 @@ export const useAuthState = (): AuthState => {
     session,
     profile,
     isLoading,
-    isAuthenticated: !!user && !!session && !!session.access_token
+    isAuthenticated: !!user && !!session?.access_token
   };
 };

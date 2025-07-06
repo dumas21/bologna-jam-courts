@@ -18,33 +18,29 @@ const ConfirmEmail = () => {
         console.log('🔍 Search params:', window.location.search);
         console.log('🔍 Hash:', window.location.hash);
         
-        // PRIMA: Pulisci eventuali sessioni fantasma
-        console.log('🧹 Pulizia sessione esistente...');
+        // IMPORTANTE: Pulisci completamente lo stato di autenticazione
+        console.log('🧹 Pulizia completa dello stato di autenticazione...');
         await supabase.auth.signOut();
         
-        // ATTENDI un momento per la pulizia
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Attendi che la pulizia sia completata
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Verifica che non ci sia più sessione
-        const { data: { session: cleanedSession } } = await supabase.auth.getSession();
-        console.log('🔍 Sessione dopo pulizia:', cleanedSession ? 'ANCORA PRESENTE' : 'PULITA');
-        
-        // Estrai parametri token
+        // Estrai parametri token con metodi multipli
         let token_hash = null;
         let type = null;
 
-        // Metodo 1: dalla query string
+        // Metodo 1: Query string standard
         token_hash = searchParams.get('token_hash');
         type = searchParams.get('type');
 
-        // Metodo 2: dall'hash se non trovati nella query
-        if (!token_hash) {
+        // Metodo 2: Hash fragment
+        if (!token_hash && window.location.hash) {
           const hashParams = new URLSearchParams(window.location.hash.substring(1));
           token_hash = hashParams.get('token_hash');
           type = hashParams.get('type');
         }
 
-        // Metodo 3: parsing manuale dell'URL
+        // Metodo 3: Parsing manuale dell'URL completo
         if (!token_hash) {
           const url = window.location.href;
           const tokenMatch = url.match(/[?&#]token_hash=([^&]+)/);
@@ -54,51 +50,82 @@ const ConfirmEmail = () => {
           if (typeMatch) type = decodeURIComponent(typeMatch[1]);
         }
 
-        console.log('🔍 Parametri trovati:', { 
-          token_hash: token_hash ? 'PRESENTE' : 'ASSENTE', 
-          type: type || 'signup'
+        // Metodo 4: Parsing dal hash con split
+        if (!token_hash && window.location.hash.includes('token_hash=')) {
+          const hashPart = window.location.hash.split('token_hash=')[1];
+          if (hashPart) {
+            token_hash = hashPart.split('&')[0];
+          }
+        }
+
+        console.log('🔍 Parametri estratti:', { 
+          token_hash: token_hash ? 'PRESENTE (' + token_hash.substring(0, 10) + '...)' : 'ASSENTE', 
+          type: type || 'signup (default)'
         });
 
         if (!token_hash) {
-          console.error('❌ Token hash mancante');
+          console.error('❌ Token hash completamente mancante');
           setStatus("error");
-          setMessage("Token mancante nell'URL. Il link potrebbe essere malformato o scaduto.");
+          setMessage("Token mancante nell'URL. Il link di conferma potrebbe essere malformato o scaduto.");
           return;
         }
 
-        console.log('🔄 Verifico token con verifyOtp...');
+        console.log('🔄 Verifica token con verifyOtp...');
         
-        // Usa verifyOtp per confermare il token hash
+        // Usa verifyOtp per confermare il token
         const { data, error } = await supabase.auth.verifyOtp({ 
           token_hash, 
-          type: (type as "signup" | "recovery") || "signup"
+          type: (type as any) || "signup"
         });
 
-        console.log('📋 Risultato verifyOtp:', { data, error });
+        console.log('📋 Risultato verifyOtp:', { 
+          success: !error, 
+          userId: data?.user?.id,
+          sessionPresent: !!data?.session,
+          error: error?.message 
+        });
 
         if (error) {
           console.error('❌ Errore durante verifyOtp:', error);
           setStatus("error");
-          setMessage(`Errore durante la verifica: ${error.message}`);
+          if (error.message?.includes('expired')) {
+            setMessage("Il link di conferma è scaduto. Richiedi una nuova conferma.");
+          } else if (error.message?.includes('invalid')) {
+            setMessage("Link di conferma non valido. Controlla di aver cliccato il link corretto.");
+          } else {
+            setMessage(`Errore durante la verifica: ${error.message}`);
+          }
           return;
         }
 
-        // ATTENDI per permettere alla sessione di stabilizzarsi
+        // Attendi stabilizzazione della sessione
         console.log('⏳ Attendo stabilizzazione sessione...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Controlla la sessione DOPO verifyOtp
-        console.log('🔄 Controllo sessione dopo verifyOtp...');
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        // Verifica finale della sessione
+        let attempts = 0;
+        let finalSession = null;
         
-        if (sessionError) {
-          console.error('❌ Errore nel recupero sessione:', sessionError);
+        while (attempts < 3 && !finalSession) {
+          console.log(`🔄 Tentativo ${attempts + 1} di recupero sessione...`);
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+          
+          if (sessionError) {
+            console.error('❌ Errore nel recupero sessione:', sessionError);
+          } else if (session?.user) {
+            finalSession = session;
+            console.log('✅ Sessione recuperata:', session.user.id);
+            break;
+          }
+          
+          attempts++;
+          if (attempts < 3) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
         }
 
-        console.log('📋 Sessione dopo verifyOtp:', session ? 'PRESENTE' : 'ASSENTE');
-
-        if (session && session.user) {
-          console.log('✅ Verifica completata con successo:', session.user.id);
+        if (finalSession && finalSession.user) {
+          console.log('✅ Verifica completata con successo per utente:', finalSession.user.id);
           setStatus("verified");
           setMessage("Account verificato! Reindirizzamento in corso...");
           
@@ -107,14 +134,14 @@ const ConfirmEmail = () => {
             description: "Il tuo account è stato confermato con successo. Benvenuto nel PlaygroundJam!",
           });
           
-          // Attendi un secondo e reindirizza alla home
+          // Redirect immediato alla home
           setTimeout(() => {
             navigate('/', { replace: true });
           }, 1500);
         } else {
-          console.log('⚠️ Verifica completata ma sessione non disponibile');
+          console.log('⚠️ Verifica completata ma sessione non disponibile dopo 3 tentativi');
           setStatus("verified");
-          setMessage("Verifica completata! Ora puoi effettuare il login.");
+          setMessage("Email verificata! Ora puoi effettuare il login.");
           
           toast({
             title: "EMAIL VERIFICATA!",
@@ -129,7 +156,7 @@ const ConfirmEmail = () => {
       } catch (error) {
         console.error('💥 Errore imprevisto durante conferma email:', error);
         setStatus("error");
-        setMessage("Si è verificato un errore imprevisto durante la verifica.");
+        setMessage("Si è verificato un errore imprevisto durante la verifica. Riprova più tardi.");
       }
     };
 
@@ -166,8 +193,7 @@ const ConfirmEmail = () => {
             <h1 className="text-xl font-bold text-red-400 mb-4 nike-text">
               ERRORE VERIFICA
             </h1>
-            <p className="text-red-300 mb-2">Errore durante la verifica:</p>
-            <p className="text-red-400 mb-6">{message}</p>
+            <p className="text-red-300 mb-6">{message}</p>
             <button
               className="arcade-button arcade-button-primary w-full mb-3"
               onClick={() => navigate('/register')}

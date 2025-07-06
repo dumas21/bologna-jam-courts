@@ -9,11 +9,15 @@ export class AuthService {
       
       console.log('🚀 Avvio signUp con:', { email, username, newsletter });
 
+      // URL di redirect corretto per l'ambiente corrente
+      const redirectUrl = `${window.location.origin}/auth/confirm`;
+      console.log('🔗 URL di redirect impostato:', redirectUrl);
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm`,
+          emailRedirectTo: redirectUrl,
           data: {
             username: username
           }
@@ -27,12 +31,8 @@ export class AuthService {
 
       console.log('✅ SignUp completato:', data.user?.id);
 
-      if (data.user) {
-        await this.updateUserProfile(data.user.id, username);
-        
-        if (newsletter) {
-          await this.saveNewsletterConsent(data.user.id, email, privacyVersion);
-        }
+      if (data.user && !data.user.email_confirmed_at) {
+        console.log('📧 Email di conferma inviata a:', email);
       }
 
       return { data, error: null };
