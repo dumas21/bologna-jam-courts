@@ -15,12 +15,12 @@ const ConfirmEmail = () => {
       try {
         console.log('🔍 URL completo:', window.location.href);
         
-        // Ottieni parametri dall'URL - usa sia URLSearchParams che URL per sicurezza
+        // Ottieni parametri dall'URL - controlla sia search che hash
         const urlParams = new URLSearchParams(window.location.search);
-        const urlHash = new URLSearchParams(window.location.hash.substring(1));
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
         
-        let token_hash = urlParams.get("token_hash") || urlHash.get("token_hash");
-        let type = (urlParams.get("type") || urlHash.get("type") || "signup") as "signup" | "recovery";
+        let token_hash = urlParams.get("token_hash") || hashParams.get("token_hash");
+        let type = (urlParams.get("type") || hashParams.get("type") || "signup") as "signup" | "recovery";
 
         console.log('🔍 Parametri trovati:', { 
           token_hash: token_hash ? 'PRESENTE' : 'ASSENTE', 
