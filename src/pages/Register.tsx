@@ -4,7 +4,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
@@ -219,20 +218,23 @@ const Register = () => {
               />
             </div>
 
-            <div className="flex items-center space-x-3">
-              <Checkbox
-                id="newsletter"
-                checked={newsletter}
-                onCheckedChange={(checked) => {
-                  console.log('Newsletter checkbox clicked:', checked);
-                  setNewsletter(checked === true);
-                }}
-                disabled={isLoading}
-                className="border-2 border-purple-500 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600 data-[state=checked]:text-white w-5 h-5"
-              />
-              <Label htmlFor="newsletter" className="text-white text-sm cursor-pointer">
+            <div>
+              <label className="newsletter-label">
+                <input 
+                  id="newsletter" 
+                  name="newsletter" 
+                  type="checkbox" 
+                  className="sr-only peer"
+                  checked={newsletter}
+                  onChange={(e) => {
+                    console.log('Newsletter checkbox clicked:', e.target.checked);
+                    setNewsletter(e.target.checked);
+                  }}
+                  disabled={isLoading}
+                />
+                <span className="checkmark"></span>
                 Voglio ricevere la newsletter (opzionale)
-              </Label>
+              </label>
             </div>
             
             <Button 
