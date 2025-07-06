@@ -50,7 +50,7 @@ export class AuthService {
         .from('profiles')
         .select('email')
         .eq('nickname', username)
-        .single();
+        .maybeSingle();
 
       if (profileError || !profileData) {
         console.error('Username non trovato:', profileError);
@@ -59,6 +59,7 @@ export class AuthService {
 
       console.log('Email trovata per username:', profileData.email);
 
+      // Use the correct Supabase v2 API
       const { data, error } = await supabase.auth.signInWithPassword({
         email: profileData.email,
         password: password
@@ -78,7 +79,7 @@ export class AuthService {
   }
 
   static async signInWithMagicLink(email: string, username: string): Promise<AuthResponse> {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/auth/callback`;
     
     const { error } = await supabase.auth.signInWithOtp({
       email,

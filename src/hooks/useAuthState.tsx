@@ -11,33 +11,29 @@ export const useAuthState = (): AuthState => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         console.log('Auth state changed:', event, session);
         
-        try {
-          setSession(session);
-          setUser(session?.user ?? null);
-          
-          if (session?.user && event === 'SIGNED_IN') {
-            // Use setTimeout to avoid blocking the auth state change
-            setTimeout(() => {
-              loadUserProfile(session.user.id);
-            }, 100);
-          } else {
-            setProfile(null);
-          }
-          
-          setIsLoading(false);
-        } catch (error) {
-          console.error('Error in auth state change handler:', error);
-          setIsLoading(false);
+        // Only synchronous state updates here
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Defer Supabase calls with setTimeout to prevent deadlock
+        if (session?.user && event === 'SIGNED_IN') {
+          setTimeout(() => {
+            loadUserProfile(session.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
         }
+        
+        setIsLoading(false);
       }
     );
 
-    // Get initial session
+    // THEN check for existing session
     const getInitialSession = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -46,7 +42,10 @@ export const useAuthState = (): AuthState => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          await loadUserProfile(session.user.id);
+          // Also defer this to prevent blocking
+          setTimeout(() => {
+            loadUserProfile(session.user.id);
+          }, 0);
         }
         
         setIsLoading(false);
