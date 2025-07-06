@@ -9,6 +9,7 @@ export class AuthService {
       
       console.log('Avvio signUp con:', { email, username, newsletter });
 
+      // ④ CRITICO: emailRedirectTo deve puntare alla callback
       const { data, error } = await supabase.auth.signUp({
         email,
         password,

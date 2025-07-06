@@ -12,72 +12,47 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        console.log('AuthCallback: Processamento conferma email avviato');
+        console.log('AuthCallback: Processamento token di conferma avviato');
         
-        // Gestisce automaticamente la sessione dall'URL usando l'API moderna
-        const { data: { session }, error } = await supabase.auth.getSession();
+        // ① PRIMA estrai e salva i token dall'URL
+        const { data, error } = await supabase.auth.getSessionFromUrl({ 
+          storeSession: true 
+        });
         
         if (error) {
-          console.error('Errore durante il recupero della sessione:', error.message);
+          console.error('Errore durante l\'estrazione della sessione dall\'URL:', error);
           toast({
             title: "ERRORE AUTENTICAZIONE",
-            description: "Si è verificato un errore durante la conferma dell'account: " + error.message,
+            description: "Link di conferma non valido o scaduto",
             variant: "destructive"
           });
           navigate('/login');
           return;
         }
 
-        // Se c'è una sessione attiva, l'utente è confermato e autenticato
-        if (session?.user) {
-          console.log('Sessione attiva trovata, utente autenticato:', session.user.id);
+        // ② Se c'è una sessione valida dal link
+        if (data?.session?.user) {
+          console.log('Sessione confermata per utente:', data.session.user.id);
+          
+          // Pulisci l'URL dai parametri di auth
+          window.history.replaceState({}, document.title, window.location.pathname);
           
           toast({
             title: "ACCOUNT CONFERMATO!",
             description: "Il tuo account è stato confermato con successo. Benvenuto!",
           });
           
-          // Reindirizza alla home page
+          // Reindirizza alla home
           navigate('/', { replace: true });
         } else {
-          // Se non c'è sessione, controlla se l'URL contiene parametri di conferma
-          const urlParams = new URLSearchParams(window.location.search);
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          // ③ Fallback: controlla se c'è già una sessione attiva
+          const { data: currentSession } = await supabase.auth.getSession();
           
-          const accessToken = urlParams.get('access_token') || hashParams.get('access_token');
-          const refreshToken = urlParams.get('refresh_token') || hashParams.get('refresh_token');
-          const tokenType = urlParams.get('token_type') || hashParams.get('token_type');
-          
-          if (accessToken && refreshToken && tokenType) {
-            console.log('Parametri di autenticazione trovati, impostazione sessione...');
-            
-            // Imposta manualmente la sessione con i token ricevuti
-            const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken
-            });
-            
-            if (sessionError) {
-              console.error('Errore nell\'impostazione della sessione:', sessionError);
-              toast({
-                title: "ERRORE SESSIONE",
-                description: "Impossibile stabilire la sessione: " + sessionError.message,
-                variant: "destructive"
-              });
-              navigate('/login');
-              return;
-            }
-            
-            if (sessionData.session) {
-              console.log('Sessione impostata con successo');
-              toast({
-                title: "ACCOUNT CONFERMATO!",
-                description: "Il tuo account è stato confermato con successo. Benvenuto!",
-              });
-              navigate('/', { replace: true });
-            }
+          if (currentSession?.session?.user) {
+            console.log('Sessione già attiva trovata');
+            navigate('/', { replace: true });
           } else {
-            console.log('Nessun parametro di autenticazione trovato');
+            console.log('Nessuna sessione valida trovata');
             toast({
               title: "LINK NON VALIDO",
               description: "Il link di conferma non è valido o è scaduto.",
@@ -90,7 +65,7 @@ const AuthCallback = () => {
         console.error('Errore imprevisto nel callback:', error);
         toast({
           title: "ERRORE",
-          description: "Si è verificato un errore imprevisto: " + (error as Error).message,
+          description: "Si è verificato un errore durante la conferma dell'account",
           variant: "destructive"
         });
         navigate('/login', { replace: true });
