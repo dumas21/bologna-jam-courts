@@ -9,8 +9,9 @@ export class AuthService {
       
       console.log('🚀 Avvio signUp con:', { email, username, newsletter });
 
-      // URL di redirect corretto per l'ambiente corrente
-      const redirectUrl = `${window.location.origin}/auth/confirm`;
+      // URL di redirect più specifico per catturare tutti i parametri
+      const baseUrl = window.location.origin;
+      const redirectUrl = `${baseUrl}/auth/confirm`;
       console.log('🔗 URL di redirect impostato:', redirectUrl);
 
       const { data, error } = await supabase.auth.signUp({
@@ -33,6 +34,7 @@ export class AuthService {
 
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
+        console.log('🔗 Assicurati che il redirect URL sia configurato in Supabase:', redirectUrl);
       }
 
       return { data, error: null };

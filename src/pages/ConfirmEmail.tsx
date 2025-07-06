@@ -18,61 +18,92 @@ const ConfirmEmail = () => {
         console.log('🔍 Search params:', window.location.search);
         console.log('🔍 Hash:', window.location.hash);
         
-        // IMPORTANTE: Pulisci completamente lo stato di autenticazione
-        console.log('🧹 Pulizia completa dello stato di autenticazione...');
-        await supabase.auth.signOut();
-        
-        // Attendi che la pulizia sia completata
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Estrai parametri token con metodi multipli
+        // Estrai parametri con metodi multipli per massima compatibilità
         let token_hash = null;
         let type = null;
+        let access_token = null;
+        let refresh_token = null;
 
-        // Metodo 1: Query string standard
+        // Metodo 1: URL Search params
         token_hash = searchParams.get('token_hash');
         type = searchParams.get('type');
+        access_token = searchParams.get('access_token');
+        refresh_token = searchParams.get('refresh_token');
 
-        // Metodo 2: Hash fragment
-        if (!token_hash && window.location.hash) {
+        // Metodo 2: Hash fragment (formato vecchio Supabase)
+        if (window.location.hash) {
           const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          token_hash = hashParams.get('token_hash');
-          type = hashParams.get('type');
+          token_hash = token_hash || hashParams.get('token_hash');
+          type = type || hashParams.get('type');
+          access_token = access_token || hashParams.get('access_token');
+          refresh_token = refresh_token || hashParams.get('refresh_token');
         }
 
-        // Metodo 3: Parsing manuale dell'URL completo
+        // Metodo 3: Parsing manuale per catturare qualsiasi formato
+        const fullUrl = window.location.href;
         if (!token_hash) {
-          const url = window.location.href;
-          const tokenMatch = url.match(/[?&#]token_hash=([^&]+)/);
-          const typeMatch = url.match(/[?&#]type=([^&]+)/);
-          
+          const tokenMatch = fullUrl.match(/[?&#]token_hash=([^&\s]+)/);
           if (tokenMatch) token_hash = decodeURIComponent(tokenMatch[1]);
-          if (typeMatch) type = decodeURIComponent(typeMatch[1]);
         }
-
-        // Metodo 4: Parsing dal hash con split
-        if (!token_hash && window.location.hash.includes('token_hash=')) {
-          const hashPart = window.location.hash.split('token_hash=')[1];
-          if (hashPart) {
-            token_hash = hashPart.split('&')[0];
-          }
+        if (!type) {
+          const typeMatch = fullUrl.match(/[?&#]type=([^&\s]+)/);
+          if (typeMatch) type = decodeURIComponent(typeMatch[1]);
         }
 
         console.log('🔍 Parametri estratti:', { 
           token_hash: token_hash ? 'PRESENTE (' + token_hash.substring(0, 10) + '...)' : 'ASSENTE', 
-          type: type || 'signup (default)'
+          type: type || 'ASSENTE',
+          access_token: access_token ? 'PRESENTE' : 'ASSENTE',
+          refresh_token: refresh_token ? 'PRESENTE' : 'ASSENTE'
         });
 
+        // Se abbiamo access_token e refresh_token, usiamo setSession
+        if (access_token && refresh_token) {
+          console.log('🔄 Uso setSession con token esistenti...');
+          
+          const { data, error } = await supabase.auth.setSession({
+            access_token,
+            refresh_token
+          });
+
+          if (error) {
+            console.error('❌ Errore setSession:', error);
+            throw error;
+          }
+
+          if (data?.user) {
+            console.log('✅ Sessione impostata con successo:', data.user.id);
+            setStatus("verified");
+            setMessage("Account verificato! Reindirizzamento in corso...");
+            
+            toast({
+              title: "ACCOUNT VERIFICATO!",
+              description: "Il tuo account è stato confermato con successo. Benvenuto!",
+            });
+            
+            setTimeout(() => {
+              navigate('/', { replace: true });
+            }, 1500);
+            return;
+          }
+        }
+
+        // Se non abbiamo i token diretti, proviamo con verifyOtp
         if (!token_hash) {
-          console.error('❌ Token hash completamente mancante');
+          console.error('❌ Nessun token disponibile per la verifica');
           setStatus("error");
           setMessage("Token mancante nell'URL. Il link di conferma potrebbe essere malformato o scaduto.");
           return;
         }
 
+        console.log('🧹 Pulizia sessioni esistenti...');
+        await supabase.auth.signOut();
+        
+        // Attendi che la pulizia sia completata
+        await new Promise(resolve => setTimeout(resolve, 500));
+
         console.log('🔄 Verifica token con verifyOtp...');
         
-        // Usa verifyOtp per confermare il token
         const { data, error } = await supabase.auth.verifyOtp({ 
           token_hash, 
           type: (type as any) || "signup"
@@ -88,10 +119,11 @@ const ConfirmEmail = () => {
         if (error) {
           console.error('❌ Errore durante verifyOtp:', error);
           setStatus("error");
+          
           if (error.message?.includes('expired')) {
             setMessage("Il link di conferma è scaduto. Richiedi una nuova conferma.");
-          } else if (error.message?.includes('invalid')) {
-            setMessage("Link di conferma non valido. Controlla di aver cliccato il link corretto.");
+          } else if (error.message?.includes('invalid') || error.message?.includes('not found')) {
+            setMessage("Link di conferma non valido. Controlla di aver cliccato il link corretto dalla tua email.");
           } else {
             setMessage(`Errore durante la verifica: ${error.message}`);
           }
@@ -102,12 +134,10 @@ const ConfirmEmail = () => {
         console.log('⏳ Attendo stabilizzazione sessione...');
         await new Promise(resolve => setTimeout(resolve, 2000));
         
-        // Verifica finale della sessione
-        let attempts = 0;
+        // Verifica finale della sessione con retry
         let finalSession = null;
-        
-        while (attempts < 3 && !finalSession) {
-          console.log(`🔄 Tentativo ${attempts + 1} di recupero sessione...`);
+        for (let i = 0; i < 5; i++) {
+          console.log(`🔄 Tentativo ${i + 1} di recupero sessione...`);
           const { data: { session }, error: sessionError } = await supabase.auth.getSession();
           
           if (sessionError) {
@@ -118,10 +148,7 @@ const ConfirmEmail = () => {
             break;
           }
           
-          attempts++;
-          if (attempts < 3) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
+          if (i < 4) await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
         if (finalSession && finalSession.user) {
@@ -131,15 +158,14 @@ const ConfirmEmail = () => {
           
           toast({
             title: "ACCOUNT VERIFICATO!",
-            description: "Il tuo account è stato confermato con successo. Benvenuto nel PlaygroundJam!",
+            description: "Il tuo account è stato confermato con successo. Benvenuto!",
           });
           
-          // Redirect immediato alla home
           setTimeout(() => {
             navigate('/', { replace: true });
           }, 1500);
         } else {
-          console.log('⚠️ Verifica completata ma sessione non disponibile dopo 3 tentativi');
+          console.log('⚠️ Verifica completata ma sessione non disponibile');
           setStatus("verified");
           setMessage("Email verificata! Ora puoi effettuare il login.");
           
@@ -194,6 +220,12 @@ const ConfirmEmail = () => {
               ERRORE VERIFICA
             </h1>
             <p className="text-red-300 mb-6">{message}</p>
+            <div className="text-yellow-300 text-sm mb-6">
+              <p className="mb-2">🔍 Debug Info:</p>
+              <p>URL: {window.location.href.substring(0, 100)}...</p>
+              <p>Params: {window.location.search || 'Nessuno'}</p>
+              <p>Hash: {window.location.hash || 'Nessuno'}</p>
+            </div>
             <button
               className="arcade-button arcade-button-primary w-full mb-3"
               onClick={() => navigate('/register')}
