@@ -85,7 +85,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <Label htmlFor="username" className="block text-white text-sm font-bold mb-2 nike-text">
-                USERNAME
+                Username
               </Label>
               <Input
                 id="username"
@@ -101,7 +101,7 @@ const Login = () => {
             
             <div>
               <Label htmlFor="password" className="block text-white text-sm font-bold mb-2 nike-text">
-                PASSWORD
+                Password
               </Label>
               <Input
                 id="password"
@@ -120,7 +120,7 @@ const Login = () => {
               className="arcade-button arcade-button-primary w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'ACCESSO...' : 'ACCEDI'}
+              {isLoading ? 'Accesso...' : 'Accedi'}
             </Button>
           </form>
 

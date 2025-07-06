@@ -219,7 +219,7 @@ const Register = () => {
               />
             </div>
 
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-3">
               <Checkbox
                 id="newsletter"
                 checked={newsletter}
@@ -228,7 +228,7 @@ const Register = () => {
                   setNewsletter(checked === true);
                 }}
                 disabled={isLoading}
-                className="border-purple-500 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600"
+                className="border-2 border-purple-500 data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600 data-[state=checked]:text-white w-5 h-5"
               />
               <Label htmlFor="newsletter" className="text-white text-sm cursor-pointer">
                 Voglio ricevere la newsletter (opzionale)

@@ -77,7 +77,7 @@ export const useAuthState = (): AuthState => {
         setProfile({
           id: profileData.id,
           email: profileData.email,
-          username: profileData.nickname || profileData.username,
+          username: profileData.nickname,
           nickname: profileData.nickname
         });
       } else {
