@@ -9,7 +9,7 @@ export class AuthService {
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect CORRETTO che corrisponde alla rotta nell'app
+      // URL di redirect CORRETTO
       const redirectUrl = `${window.location.origin}/confirm-email`;
       console.log('🔗 URL di redirect:', redirectUrl);
 
@@ -35,7 +35,7 @@ export class AuthService {
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
         
-        // Salva i dati essenziali per la conferma
+        // Salva i dati per la conferma
         const userData = {
           email,
           username,

@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
 
 const ConfirmEmail = () => {
   const navigate = useNavigate();
@@ -12,14 +13,25 @@ const ConfirmEmail = () => {
   const [isConfirming, setIsConfirming] = useState(true);
   const [needsResend, setNeedsResend] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const { isAuthenticated, user } = useAuth();
 
   useEffect(() => {
+    // Se l'utente è già autenticato, reindirizza alla home
+    if (isAuthenticated && user) {
+      console.log('✅ Utente già autenticato, redirect alla home');
+      toast({
+        title: "GIÀ AUTENTICATO!",
+        description: "Sei già loggato! Ti reindirizziamo alla home page.",
+      });
+      navigate('/', { replace: true });
+      return;
+    }
+
     const handleEmailConfirmation = async () => {
       try {
-        console.log('🔍 URL completa:', window.location.href);
-        console.log('🔍 Search params:', Object.fromEntries(searchParams.entries()));
+        console.log('🔍 Controllo token nella URL...');
         
-        // Cerca tutti i possibili parametri per il token
+        // Controlla sia nei search params che nell'hash dell'URL
         const token_hash = searchParams.get('token_hash') || 
                           searchParams.get('token') ||
                           new URLSearchParams(window.location.hash.substring(1)).get('access_token');
@@ -30,56 +42,36 @@ const ConfirmEmail = () => {
         console.log('🔍 Type:', type);
 
         if (!token_hash) {
-          console.error('❌ Token mancante nell\'URL');
+          console.log('❌ Nessun token trovato nell\'URL');
           setIsConfirming(false);
           setNeedsResend(true);
-          
-          toast({
-            title: "Link non valido",
-            description: "Il link di conferma non contiene i parametri necessari.",
-            variant: "destructive"
-          });
           return;
         }
 
         console.log('🔄 Verifica del token in corso...');
         
-        // Prova prima con verifyOtp
         const { data, error } = await supabase.auth.verifyOtp({
           token_hash,
           type: type as any
         });
 
         if (error) {
-          console.error('❌ Errore verifica OTP:', error);
-          
-          // Se il token è scaduto, mostra opzione per reinviare
-          if (error.message?.includes('expired') || error.message?.includes('invalid')) {
-            setIsConfirming(false);
-            setNeedsResend(true);
-            
-            toast({
-              title: "Link scaduto",
-              description: "Il link di conferma è scaduto. Puoi richiederne uno nuovo.",
-              variant: "destructive"
-            });
-            return;
-          }
-          
-          // Altri errori
+          console.error('❌ Errore verifica token:', error);
           setIsConfirming(false);
+          setNeedsResend(true);
+          
           toast({
-            title: "Errore di verifica",
-            description: error.message,
+            title: "TOKEN SCADUTO",
+            description: "Il link di conferma è scaduto. Puoi richiederne uno nuovo.",
             variant: "destructive"
           });
           return;
         }
 
         if (data.user) {
-          console.log('✅ Email confermata per utente:', data.user.id);
+          console.log('✅ Email confermata con successo!');
           
-          // Crea il profilo se non esiste
+          // Crea/aggiorna il profilo utente
           await createUserProfile(data.user);
           
           // Pulisci i dati temporanei
@@ -87,22 +79,20 @@ const ConfirmEmail = () => {
           
           toast({
             title: "EMAIL CONFERMATA!",
-            description: "Account attivato con successo. Ora puoi accedere.",
+            description: "Account attivato con successo! Ora puoi accedere.",
           });
           
-          // Redirect al login con messaggio di successo
-          navigate('/login', { 
-            replace: true,
-            state: { 
-              emailVerified: true, 
-              email: data.user.email,
-              message: 'Account confermato! Inserisci le tue credenziali per accedere.' 
-            }
-          });
-        } else {
-          console.error('❌ Nessun utente restituito dalla verifica');
-          setIsConfirming(false);
-          setNeedsResend(true);
+          // Piccolo delay per permettere al toast di apparire
+          setTimeout(() => {
+            navigate('/login', { 
+              replace: true,
+              state: { 
+                emailVerified: true, 
+                email: data.user.email,
+                message: 'Account confermato! Inserisci le tue credenziali per accedere.' 
+              }
+            });
+          }, 1000);
         }
 
       } catch (error) {
@@ -119,11 +109,10 @@ const ConfirmEmail = () => {
     };
 
     handleEmailConfirmation();
-  }, [navigate, searchParams, toast]);
+  }, [navigate, searchParams, toast, isAuthenticated, user]);
 
   const createUserProfile = async (user: any) => {
     try {
-      // Recupera i dati salvati durante la registrazione
       const pendingData = localStorage.getItem('pendingUserData');
       let username = 'User';
       
@@ -136,7 +125,7 @@ const ConfirmEmail = () => {
         username = user.email?.split('@')[0] || 'User';
       }
 
-      console.log('📝 Creazione profilo con username:', username);
+      console.log('📝 Creazione/aggiornamento profilo con username:', username);
 
       const { error: profileError } = await supabase
         .from('profiles')
@@ -149,12 +138,12 @@ const ConfirmEmail = () => {
         });
 
       if (profileError) {
-        console.error('❌ Errore creazione profilo:', profileError);
+        console.error('❌ Errore profilo:', profileError);
       } else {
-        console.log('✅ Profilo creato con successo');
+        console.log('✅ Profilo creato/aggiornato con successo');
       }
     } catch (profileErr) {
-      console.error('💥 Errore durante creazione profilo:', profileErr);
+      console.error('💥 Errore durante gestione profilo:', profileErr);
     }
   };
 
@@ -193,7 +182,7 @@ const ConfirmEmail = () => {
       } else {
         toast({
           title: "Email inviata!",
-          description: "Ti abbiamo inviato una nuova email di conferma.",
+          description: "Ti abbiamo inviato una nuova email di conferma. Controlla la tua casella.",
         });
         setNeedsResend(false);
         setIsConfirming(true);
@@ -244,6 +233,13 @@ const ConfirmEmail = () => {
               >
                 Torna alla registrazione
               </Button>
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/login')}
+                className="text-green-300 hover:text-white w-full"
+              >
+                Vai al Login (se hai già un account)
+              </Button>
             </div>
           </>
         ) : (
@@ -255,10 +251,10 @@ const ConfirmEmail = () => {
               Si è verificato un errore durante la verifica.
             </p>
             <Button
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/login')}
               className="arcade-button arcade-button-primary w-full"
             >
-              TORNA ALLA REGISTRAZIONE
+              VAI AL LOGIN
             </Button>
           </>
         )}

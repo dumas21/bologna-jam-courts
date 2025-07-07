@@ -142,13 +142,13 @@ const Register = () => {
                 1. Clicca sul link nell'email per confermare il tuo account
               </p>
               <p className="text-gray-300 text-sm mb-2">
-                2. Verrai automaticamente reindirizzato alla pagina di login
+                2. Verrai reindirizzato alla pagina di conferma
               </p>
               <p className="text-gray-300 text-sm mb-2">
-                3. Inserisci la tua email e password per accedere
+                3. Dopo la conferma, potrai fare il login normalmente
               </p>
               <p className="text-orange-300 text-xs mt-3">
-                ⚠️ Se ricevi un errore 404, il link potrebbe essere scaduto. Potrai richiederne uno nuovo.
+                ⚠️ Se il link è scaduto, potrai richiederne uno nuovo dalla pagina di conferma.
               </p>
             </div>
             <div className="space-y-3">
