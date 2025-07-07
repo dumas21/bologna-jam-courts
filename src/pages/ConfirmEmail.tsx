@@ -17,19 +17,7 @@ export default function ConfirmEmailPage() {
       try {
         console.log('🔍 Avvio processo di conferma email');
         
-        // 1️⃣ Tentativo con vecchio flow (#access_token)
-        const { data: fragData, error: fragErr } = await supabase.auth.getSessionFromUrl({
-          storeSession: true,
-        });
-        
-        if (!fragErr && fragData.session) {
-          console.log('✅ Conferma completata con vecchio flow');
-          toast({ title: "EMAIL CONFERMATA!", description: "Puoi ora accedere." });
-          navigate("/login", { replace: true, state: { emailVerified: true } });
-          return;
-        }
-
-        // 2️⃣ Tentativo con nuovo flow (?token_hash)
+        // Get URL parameters for new PKCE/OTP flow
         const url = new URL(window.location.href);
         const token_hash = url.searchParams.get("token_hash");
         const type = (url.searchParams.get("type") || "signup") as "signup" | "recovery";
