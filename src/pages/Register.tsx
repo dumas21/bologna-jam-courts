@@ -13,7 +13,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [newsletter, setNewsletter] = useState(true); // Default a true dato che ora è obbligatorio
+  const [newsletter, setNewsletter] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [registrationComplete, setRegistrationComplete] = useState(false);
   const navigate = useNavigate();
@@ -68,12 +68,12 @@ const Register = () => {
         return;
       }
 
-      console.log('Avvio registrazione con:', { email: email.trim(), username: username.trim(), newsletter });
+      console.log('🚀 Avvio registrazione con:', { email: email.trim(), username: username.trim(), newsletter });
 
       const { data, error } = await signUp(email.trim(), password, username.trim(), newsletter, '1.0');
       
       if (error) {
-        console.error('Error during registration:', error);
+        console.error('❌ Errore durante registrazione:', error);
         toast({
           title: "ERRORE REGISTRAZIONE",
           description: error.message || "Si è verificato un errore durante la registrazione",
@@ -82,14 +82,14 @@ const Register = () => {
         return;
       }
 
-      console.log('Registrazione completata:', data);
+      console.log('✅ Registrazione completata:', data);
       setRegistrationComplete(true);
       toast({
         title: "REGISTRAZIONE COMPLETATA!",
         description: "Controlla la tua email per confermare l'account.",
       });
     } catch (error) {
-      console.error('Unexpected error:', error);
+      console.error('💥 Errore imprevisto:', error);
       toast({
         title: "ERRORE",
         description: "Si è verificato un errore imprevisto",
@@ -117,14 +117,25 @@ const Register = () => {
               REGISTRAZIONE COMPLETATA!
             </h1>
             <p className="text-white mb-4">
-              Abbiamo inviato una email di conferma a:
+              Ti abbiamo inviato una email di conferma a:
             </p>
             <p className="text-purple-300 font-bold mb-6">{email}</p>
-            <p className="text-gray-300 text-sm mb-6">
-              Clicca sul link nell'email per attivare il tuo account. Dopo la conferma potrai accedere con il tuo username e password.
-            </p>
-            <p className="text-yellow-300 text-xs mb-6">
-              Se il link di conferma non funziona, prova a copiare l'URL completo dalla email e incollarlo nel browser.
+            <div className="bg-purple-900 bg-opacity-50 rounded-lg p-4 mb-6">
+              <p className="text-yellow-300 text-sm font-bold mb-2">
+                📧 IMPORTANTE: CONTROLLA LA TUA EMAIL
+              </p>
+              <p className="text-gray-300 text-sm mb-2">
+                1. Clicca sul link nell'email per confermare il tuo account
+              </p>
+              <p className="text-gray-300 text-sm mb-2">
+                2. Verrai reindirizzato alla pagina di login
+              </p>
+              <p className="text-gray-300 text-sm">
+                3. Inserisci la tua email e password per accedere
+              </p>
+            </div>
+            <p className="text-gray-400 text-xs mb-6">
+              I tuoi dati sono conservati in sicurezza per 10 anni
             </p>
             <Link to="/login">
               <Button className="arcade-button arcade-button-primary">
@@ -230,10 +241,7 @@ const Register = () => {
                     type="checkbox" 
                     className="sr-only peer"
                     checked={newsletter}
-                    onChange={(e) => {
-                      console.log('Newsletter checkbox clicked:', e.target.checked);
-                      setNewsletter(e.target.checked);
-                    }}
+                    onChange={(e) => setNewsletter(e.target.checked)}
                     disabled={isLoading}
                   />
                   <span className="checkmark"></span>
@@ -241,7 +249,7 @@ const Register = () => {
                 </label>
               </div>
               <p className="text-gray-300 text-xs mt-2 ml-8">
-                Iscrivendoti a PlaygroundJam accetti di ricevere la newsletter con aggiornamenti sui playground e eventi della community.
+                Ricevi aggiornamenti sui playground e eventi della community.
               </p>
             </div>
             
@@ -250,7 +258,7 @@ const Register = () => {
               className="arcade-button arcade-button-primary w-full"
               disabled={isLoading}
             >
-              {isLoading ? 'REGISTRAZIONE...' : 'REGISTRATI'}
+              {isLoading ? 'REGISTRAZIONE IN CORSO...' : 'REGISTRATI'}
             </Button>
           </form>
 
@@ -262,7 +270,7 @@ const Register = () => {
               </Link>
             </p>
             <p className="text-gray-400 text-xs">
-              Registrandoti accetti la nostra Privacy Policy e i Termini di Servizio
+              I tuoi dati saranno conservati in sicurezza per 10 anni
             </p>
           </div>
         </div>

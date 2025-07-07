@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { signInWithPassword, isAuthenticated } = useAuth();
   const { toast } = useToast();
   
@@ -27,6 +28,16 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  // Mostra messaggio se arriva da conferma email
+  useEffect(() => {
+    if (location.state?.emailVerified) {
+      toast({
+        title: "EMAIL CONFERMATA!",
+        description: location.state.message || "Account attivato! Inserisci le tue credenziali per accedere.",
+      });
+    }
+  }, [location.state, toast]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -36,12 +47,12 @@ const Login = () => {
       const { data, error } = await signInWithPassword(email, password);
       
       if (error) {
-        console.error('❌ Errore login email:', error);
+        console.error('❌ Errore login:', error);
         
         if (error.message?.includes('Email not confirmed')) {
           toast({
             title: "EMAIL NON CONFERMATA",
-            description: "Controlla la tua email e clicca sul link di conferma prima di effettuare il login.",
+            description: "Controlla la tua email e clicca sul link di conferma prima di accedere.",
             variant: "destructive"
           });
         } else if (error.message?.includes('Invalid login credentials')) {
@@ -63,7 +74,7 @@ const Login = () => {
       if (data?.user) {
         console.log('✅ Login completato con successo:', data.user.id);
         toast({
-          title: "LOGIN EFFETTUATO",
+          title: "ACCESSO EFFETTUATO",
           description: "Benvenuto nel PlaygroundJam!",
         });
         navigate('/', { replace: true });
@@ -140,7 +151,7 @@ const Login = () => {
               disabled={loading}
               className="w-full arcade-button arcade-button-primary"
             >
-              {loading ? 'ACCESSO...' : 'ACCEDI'}
+              {loading ? 'ACCESSO IN CORSO...' : 'ACCEDI'}
             </Button>
           </form>
           
