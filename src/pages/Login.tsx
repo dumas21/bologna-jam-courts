@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
@@ -33,7 +33,7 @@ const Login = () => {
     if (location.state?.emailVerified) {
       toast({
         title: "EMAIL CONFERMATA!",
-        description: location.state.message || "Account attivato! Inserisci le tue credenziali per accedere.",
+        description: "Account attivato! Inserisci le tue credenziali per accedere.",
       });
       
       // Precompila l'email se disponibile
@@ -53,7 +53,16 @@ const Login = () => {
     try {
       console.log('🔑 Tentativo login con email:', email);
       
-      const { data, error } = await signInWithPassword(email, password);
+      if (!email.trim() || !password.trim()) {
+        toast({
+          title: "CAMPI OBBLIGATORI",
+          description: "Inserisci email e password.",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      const { data, error } = await signInWithPassword(email.trim(), password);
       
       if (error) {
         console.error('❌ Errore login:', error);

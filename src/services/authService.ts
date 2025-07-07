@@ -9,7 +9,7 @@ export class AuthService {
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect CORRETTO
+      // URL di redirect CORRETTO che matcha la route
       const redirectUrl = `${window.location.origin}/confirm-email`;
       console.log('🔗 URL di redirect:', redirectUrl);
 
@@ -34,20 +34,10 @@ export class AuthService {
 
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
-        
-        // Salva i dati per la conferma
-        const userData = {
-          email,
-          username,
-          userId: data.user.id,
-          registrationDate: Date.now()
-        };
-        
-        localStorage.setItem('pendingUserData', JSON.stringify(userData));
-        console.log('💾 Dati utente salvati per conferma');
       }
 
       return { data, error: null };
+      
     } catch (error: any) {
       console.error('💥 Errore completo in registrazione:', error);
       return { data: null, error };
@@ -89,7 +79,6 @@ export class AuthService {
     
     if (!error) {
       console.log('✅ Logout completato');
-      localStorage.removeItem('pendingUserData');
     } else {
       console.error('❌ Errore durante logout:', error);
     }
@@ -113,21 +102,10 @@ export class AuthService {
         return;
       }
 
-      // Recupera username dai dati salvati o dai metadati
-      let username = 'User';
+      // Recupera username dai metadati o fallback
+      let username = user.user_metadata?.username || user.user_metadata?.display_name;
       
-      if (user.user_metadata?.username) {
-        username = user.user_metadata.username;
-      } else {
-        const savedData = localStorage.getItem('pendingUserData');
-        if (savedData) {
-          const parsed = JSON.parse(savedData);
-          username = parsed.username || username;
-        }
-      }
-      
-      // Fallback se non c'è username
-      if (username === 'User') {
+      if (!username) {
         username = user.email?.split('@')[0] || 'User';
       }
       
@@ -148,7 +126,6 @@ export class AuthService {
         console.error('❌ Errore creazione profilo:', profileError);
       } else {
         console.log('✅ Profilo creato con successo');
-        localStorage.removeItem('pendingUserData');
       }
     } catch (profileErr) {
       console.error('💥 Errore durante creazione profilo:', profileErr);

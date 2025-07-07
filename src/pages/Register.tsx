@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -136,19 +137,13 @@ const Register = () => {
             <p className="text-purple-300 font-bold mb-6">{email}</p>
             <div className="bg-purple-900 bg-opacity-50 rounded-lg p-4 mb-6">
               <p className="text-yellow-300 text-sm font-bold mb-2">
-                📧 IMPORTANTE: CONTROLLA LA TUA EMAIL
+                📧 CONTROLLA LA TUA EMAIL
               </p>
               <p className="text-gray-300 text-sm mb-2">
-                1. Clicca sul link nell'email per confermare il tuo account
+                Clicca sul link nell'email per confermare il tuo account.
               </p>
               <p className="text-gray-300 text-sm mb-2">
-                2. Verrai reindirizzato alla pagina di conferma
-              </p>
-              <p className="text-gray-300 text-sm mb-2">
-                3. Dopo la conferma, potrai fare il login normalmente
-              </p>
-              <p className="text-orange-300 text-xs mt-3">
-                ⚠️ Se il link è scaduto, potrai richiederne uno nuovo dalla pagina di conferma.
+                Dopo la conferma, potrai fare il login normalmente.
               </p>
             </div>
             <div className="space-y-3">
@@ -157,13 +152,6 @@ const Register = () => {
                 className="arcade-button arcade-button-primary w-full"
               >
                 VAI AL LOGIN
-              </Button>
-              <Button 
-                variant="ghost"
-                onClick={() => navigate('/confirm-email')}
-                className="text-purple-300 hover:text-white text-sm"
-              >
-                Problemi con la conferma? Clicca qui
               </Button>
             </div>
           </div>
@@ -297,9 +285,6 @@ const Register = () => {
               >
                 Accedi qui
               </Button>
-            </p>
-            <p className="text-gray-400 text-xs">
-              I tuoi dati saranno conservati in sicurezza per 10 anni
             </p>
           </div>
         </div>
