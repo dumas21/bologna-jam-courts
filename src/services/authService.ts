@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { SignUpData, AuthResponse } from '@/types/auth';
 
@@ -12,7 +11,7 @@ export class AuthService {
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect corretto
+      // URL di redirect corretto con parametri aggiuntivi per debug
       const redirectUrl = `${window.location.origin}/auth/confirm`;
       console.log('🔗 URL di redirect:', redirectUrl);
 
@@ -38,7 +37,7 @@ export class AuthService {
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
         
-        // Salva i dati per 10 anni
+        // Salva i dati per 10 anni con timestamp per debug
         const userData = {
           email,
           password, // Salva temporaneamente per il primo login
@@ -46,7 +45,8 @@ export class AuthService {
           userId: data.user.id,
           registrationDate: Date.now(),
           expiryDate: Date.now() + this.DATA_RETENTION_TIME,
-          confirmed: false
+          confirmed: false,
+          lastEmailSent: Date.now() // Traccia quando è stata inviata l'ultima email
         };
         
         // Salva sia come pendingUserData che come credenziali permanenti
@@ -58,6 +58,49 @@ export class AuthService {
       return { data, error: null };
     } catch (error: any) {
       console.error('💥 Errore completo in registrazione:', error);
+      return { data: null, error };
+    }
+  }
+
+  static async resendConfirmationEmail(email: string): Promise<AuthResponse> {
+    try {
+      console.log('📧 Reinvio email di conferma per:', email);
+      
+      const { data, error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/confirm`
+        }
+      });
+
+      if (error) {
+        console.error('❌ Errore reinvio email:', error);
+        return { data, error };
+      }
+
+      // Aggiorna il timestamp dell'ultimo invio
+      const savedData = localStorage.getItem(`userCredentials_${email}`);
+      if (savedData) {
+        const userData = JSON.parse(savedData);
+        userData.lastEmailSent = Date.now();
+        localStorage.setItem(`userCredentials_${email}`, JSON.stringify(userData));
+        
+        // Aggiorna anche i dati pending se esistono
+        const pendingData = localStorage.getItem('pendingUserData');
+        if (pendingData) {
+          const pendingUserData = JSON.parse(pendingData);
+          if (pendingUserData.email === email) {
+            pendingUserData.lastEmailSent = Date.now();
+            localStorage.setItem('pendingUserData', JSON.stringify(pendingUserData));
+          }
+        }
+      }
+
+      console.log('✅ Email di conferma reinviata con successo');
+      return { data, error: null };
+    } catch (error: any) {
+      console.error('💥 Errore reinvio email:', error);
       return { data: null, error };
     }
   }
@@ -176,10 +219,15 @@ export class AuthService {
     }
   }
 
-  // Metodi di utilità
+  // Metodi di utilità aggiornati
   static getSavedCredentials(email: string): any {
     const savedData = localStorage.getItem(`userCredentials_${email}`);
     return savedData ? JSON.parse(savedData) : null;
+  }
+
+  static getPendingUserData(): any {
+    const pendingData = localStorage.getItem('pendingUserData');
+    return pendingData ? JSON.parse(pendingData) : null;
   }
 
   static cleanupExpiredData(): void {

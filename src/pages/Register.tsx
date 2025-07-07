@@ -139,8 +139,11 @@ const Register = () => {
               <p className="text-gray-300 text-sm mb-2">
                 2. Verrai reindirizzato alla pagina di login
               </p>
-              <p className="text-gray-300 text-sm">
+              <p className="text-gray-300 text-sm mb-2">
                 3. Inserisci la tua email e password per accedere
+              </p>
+              <p className="text-orange-300 text-xs mt-3">
+                ⚠️ Il link ha una validità limitata. Se scade, potrai richiederne uno nuovo.
               </p>
             </div>
             <p className="text-gray-400 text-xs mb-6">
