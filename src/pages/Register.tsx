@@ -80,6 +80,12 @@ const Register = () => {
             description: "Questo indirizzo email è già registrato. Prova ad accedere.",
             variant: "destructive"
           });
+        } else if (error.message?.includes('Password should be at least')) {
+          toast({
+            title: "PASSWORD NON VALIDA",
+            description: "La password deve rispettare i requisiti di sicurezza.",
+            variant: "destructive"
+          });
         } else {
           toast({
             title: "ERRORE REGISTRAZIONE",
@@ -142,15 +148,24 @@ const Register = () => {
                 3. Inserisci la tua email e password per accedere
               </p>
               <p className="text-orange-300 text-xs mt-3">
-                ⚠️ Se il link non funziona, potrai richiederne uno nuovo dalla pagina di conferma.
+                ⚠️ Se ricevi un errore 404, il link potrebbe essere scaduto. Potrai richiederne uno nuovo.
               </p>
             </div>
-            <Button 
-              onClick={() => navigate('/login')}
-              className="arcade-button arcade-button-primary"
-            >
-              VAI AL LOGIN
-            </Button>
+            <div className="space-y-3">
+              <Button 
+                onClick={() => navigate('/login')}
+                className="arcade-button arcade-button-primary w-full"
+              >
+                VAI AL LOGIN
+              </Button>
+              <Button 
+                variant="ghost"
+                onClick={() => navigate('/confirm-email')}
+                className="text-purple-300 hover:text-white text-sm"
+              >
+                Problemi con la conferma? Clicca qui
+              </Button>
+            </div>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ export class AuthService {
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect CORRETTO
+      // URL di redirect CORRETTO che corrisponde alla rotta nell'app
       const redirectUrl = `${window.location.origin}/confirm-email`;
       console.log('🔗 URL di redirect:', redirectUrl);
 
@@ -35,7 +35,7 @@ export class AuthService {
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
         
-        // Salva solo i dati essenziali
+        // Salva i dati essenziali per la conferma
         const userData = {
           email,
           username,
@@ -44,7 +44,7 @@ export class AuthService {
         };
         
         localStorage.setItem('pendingUserData', JSON.stringify(userData));
-        console.log('💾 Dati utente salvati');
+        console.log('💾 Dati utente salvati per conferma');
       }
 
       return { data, error: null };
@@ -70,6 +70,7 @@ export class AuthService {
 
       console.log('✅ Login completato con successo:', data.user?.id);
       
+      // Assicurati che il profilo esista
       if (data.user) {
         await this.ensureUserProfile(data.user);
       }
@@ -100,6 +101,7 @@ export class AuthService {
     try {
       console.log('📝 Controllo/creazione profilo per user:', user.id);
       
+      // Controlla se il profilo esiste già
       const { data: existingProfile } = await supabase
         .from('profiles')
         .select('id')
@@ -124,12 +126,14 @@ export class AuthService {
         }
       }
       
+      // Fallback se non c'è username
       if (username === 'User') {
         username = user.email?.split('@')[0] || 'User';
       }
       
       console.log('📝 Creazione profilo con username:', username);
       
+      // Crea il profilo
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({

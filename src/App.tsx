@@ -54,7 +54,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
-              <Route path="/auth/confirm" element={<ConfirmEmail />} />
+              <Route path="/confirm-email" element={<ConfirmEmail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

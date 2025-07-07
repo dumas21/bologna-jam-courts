@@ -17,37 +17,60 @@ const ConfirmEmail = () => {
     const handleEmailConfirmation = async () => {
       try {
         console.log('🔍 URL completa:', window.location.href);
+        console.log('🔍 Search params:', Object.fromEntries(searchParams.entries()));
         
-        // Cerca il token nell'URL
+        // Cerca tutti i possibili parametri per il token
         const token_hash = searchParams.get('token_hash') || 
+                          searchParams.get('token') ||
                           new URLSearchParams(window.location.hash.substring(1)).get('access_token');
+        
         const type = searchParams.get('type') || 'signup';
         
         console.log('🔍 Token trovato:', !!token_hash);
         console.log('🔍 Type:', type);
 
         if (!token_hash) {
-          console.error('❌ Token mancante');
+          console.error('❌ Token mancante nell\'URL');
           setIsConfirming(false);
           setNeedsResend(true);
+          
+          toast({
+            title: "Link non valido",
+            description: "Il link di conferma non contiene i parametri necessari.",
+            variant: "destructive"
+          });
           return;
         }
 
         console.log('🔄 Verifica del token in corso...');
         
+        // Prova prima con verifyOtp
         const { data, error } = await supabase.auth.verifyOtp({
           token_hash,
           type: type as any
         });
 
         if (error) {
-          console.error('❌ Errore verifica:', error);
-          setIsConfirming(false);
-          setNeedsResend(true);
+          console.error('❌ Errore verifica OTP:', error);
           
+          // Se il token è scaduto, mostra opzione per reinviare
+          if (error.message?.includes('expired') || error.message?.includes('invalid')) {
+            setIsConfirming(false);
+            setNeedsResend(true);
+            
+            toast({
+              title: "Link scaduto",
+              description: "Il link di conferma è scaduto. Puoi richiederne uno nuovo.",
+              variant: "destructive"
+            });
+            return;
+          }
+          
+          // Altri errori
+          setIsConfirming(false);
           toast({
-            title: "Link scaduto o non valido",
-            description: "Puoi richiedere un nuovo link di conferma.",
+            title: "Errore di verifica",
+            description: error.message,
             variant: "destructive"
           });
           return;
@@ -56,36 +79,10 @@ const ConfirmEmail = () => {
         if (data.user) {
           console.log('✅ Email confermata per utente:', data.user.id);
           
-          // Recupera i dati salvati
-          const pendingData = localStorage.getItem('pendingUserData');
-          let username = 'User';
+          // Crea il profilo se non esiste
+          await createUserProfile(data.user);
           
-          if (pendingData) {
-            const userData = JSON.parse(pendingData);
-            username = userData.username || 'User';
-          }
-
-          // Crea il profilo
-          try {
-            const { error: profileError } = await supabase
-              .from('profiles')
-              .upsert({
-                id: data.user.id,
-                nickname: username,
-                email: data.user.email
-              }, {
-                onConflict: 'id'
-              });
-
-            if (profileError) {
-              console.error('❌ Errore creazione profilo:', profileError);
-            } else {
-              console.log('✅ Profilo creato con successo');
-            }
-          } catch (profileErr) {
-            console.error('💥 Errore durante creazione profilo:', profileErr);
-          }
-          
+          // Pulisci i dati temporanei
           localStorage.removeItem('pendingUserData');
           
           toast({
@@ -93,6 +90,7 @@ const ConfirmEmail = () => {
             description: "Account attivato con successo. Ora puoi accedere.",
           });
           
+          // Redirect al login con messaggio di successo
           navigate('/login', { 
             replace: true,
             state: { 
@@ -101,6 +99,10 @@ const ConfirmEmail = () => {
               message: 'Account confermato! Inserisci le tue credenziali per accedere.' 
             }
           });
+        } else {
+          console.error('❌ Nessun utente restituito dalla verifica');
+          setIsConfirming(false);
+          setNeedsResend(true);
         }
 
       } catch (error) {
@@ -118,6 +120,43 @@ const ConfirmEmail = () => {
 
     handleEmailConfirmation();
   }, [navigate, searchParams, toast]);
+
+  const createUserProfile = async (user: any) => {
+    try {
+      // Recupera i dati salvati durante la registrazione
+      const pendingData = localStorage.getItem('pendingUserData');
+      let username = 'User';
+      
+      if (pendingData) {
+        const userData = JSON.parse(pendingData);
+        username = userData.username || 'User';
+      } else if (user.user_metadata?.username) {
+        username = user.user_metadata.username;
+      } else {
+        username = user.email?.split('@')[0] || 'User';
+      }
+
+      console.log('📝 Creazione profilo con username:', username);
+
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: user.id,
+          nickname: username,
+          email: user.email
+        }, {
+          onConflict: 'id'
+        });
+
+      if (profileError) {
+        console.error('❌ Errore creazione profilo:', profileError);
+      } else {
+        console.log('✅ Profilo creato con successo');
+      }
+    } catch (profileErr) {
+      console.error('💥 Errore durante creazione profilo:', profileErr);
+    }
+  };
 
   const handleResendEmail = async () => {
     setIsResending(true);
