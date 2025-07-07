@@ -16,18 +16,25 @@ export default function ConfirmEmailPage() {
     (async () => {
       try {
         console.log('🔍 Avvio processo di conferma email');
+        console.log('🔗 URL completo:', window.location.href);
         
         // Get URL parameters for new PKCE/OTP flow
         const url = new URL(window.location.href);
         const token_hash = url.searchParams.get("token_hash");
-        const type = (url.searchParams.get("type") || "signup") as "signup" | "recovery";
-
-        console.log('🔍 Controllo nuovo flow:', { token_hash: !!token_hash, type });
+        const type = (url.searchParams.get("type") || "signup") as "signup" | "recovery" | "email_change" | "invite";
+        
+        console.log('🔍 Parametri URL:', { 
+          token_hash: token_hash ? token_hash.substring(0, 20) + '...' : null, 
+          type,
+          allParams: Object.fromEntries(url.searchParams.entries())
+        });
 
         if (!token_hash) {
-          throw new Error("Token mancante o link non valido.");
+          console.error('❌ Token hash mancante nell\'URL');
+          throw new Error("Token mancante o link non valido. Controlla il link ricevuto via email.");
         }
 
+        console.log('🔄 Tentativo verifica OTP con tipo:', type);
         const { error: otpErr } = await supabase.auth.verifyOtp({ token_hash, type });
         
         if (otpErr) {
@@ -35,13 +42,13 @@ export default function ConfirmEmailPage() {
           throw otpErr;
         }
 
-        console.log('✅ Conferma completata con nuovo flow');
-        toast({ title: "EMAIL CONFERMATA!", description: "Puoi ora accedere." });
+        console.log('✅ Conferma completata con successo');
+        toast({ title: "EMAIL CONFERMATA!", description: "Puoi ora accedere al tuo account." });
         navigate("/login", { replace: true, state: { emailVerified: true } });
         
       } catch (err: any) {
-        console.error("⚠️ Errore conferma email:", err.message);
-        setErrorMsg(err.message || "Errore imprevisto");
+        console.error("⚠️ Errore conferma email:", err);
+        setErrorMsg(err.message || "Errore imprevisto durante la conferma");
         setStatus("error");
       }
     })();
@@ -60,6 +67,14 @@ export default function ConfirmEmailPage() {
           <>
             <h1 className="text-lg font-bold text-red-400 mb-2">ERRORE</h1>
             <p className="text-gray-300 mb-4">{errorMsg}</p>
+            <div className="bg-gray-800 p-4 rounded-lg mb-4 text-left">
+              <p className="text-yellow-300 text-sm font-bold mb-2">💡 RISOLUZIONE PROBLEMI:</p>
+              <ul className="text-gray-300 text-sm space-y-1">
+                <li>• Controlla che il link email sia completo</li>
+                <li>• Verifica di aver cliccato il link più recente</li>
+                <li>• Il link potrebbe essere scaduto (richiedi nuovo)</li>
+              </ul>
+            </div>
             <button
               onClick={() => navigate("/login")}
               className="mt-2 w-full rounded bg-purple-600 px-4 py-2 hover:bg-purple-700"
