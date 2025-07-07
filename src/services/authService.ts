@@ -12,7 +12,7 @@ export class AuthService {
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect per la conferma email
+      // URL di redirect preciso per la conferma email
       const baseUrl = window.location.origin;
       const redirectUrl = `${baseUrl}/auth/confirm`;
       console.log('🔗 URL di redirect impostato:', redirectUrl);
@@ -23,7 +23,8 @@ export class AuthService {
         options: {
           emailRedirectTo: redirectUrl,
           data: {
-            username: username
+            username: username,
+            display_name: username
           }
         }
       });
@@ -38,16 +39,19 @@ export class AuthService {
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
         
-        // CONSERVA I DATI PER 10 ANNI
+        // SALVA I DATI PER 10 ANNI - QUESTO È FONDAMENTALE
         const userData = {
           email,
+          password, // Salviamo temporaneamente per il primo login
           username,
           userId: data.user.id,
           registrationDate: Date.now(),
-          expiryDate: Date.now() + this.DATA_RETENTION_TIME
+          expiryDate: Date.now() + this.DATA_RETENTION_TIME,
+          confirmed: false
         };
         
         localStorage.setItem('pendingUserData', JSON.stringify(userData));
+        localStorage.setItem(`userCredentials_${email}`, JSON.stringify(userData));
         console.log('💾 Dati utente salvati per 10 anni');
       }
 
@@ -63,27 +67,40 @@ export class AuthService {
       console.log('🔑 Tentativo di login con email:', email);
       
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
+        email: email.trim(),
         password: password
       });
 
       if (error) {
         console.error('❌ Errore durante login:', error);
+        
+        // Se l'errore è dovuto alla email non confermata, recupera i dati salvati
+        if (error.message?.includes('Email not confirmed')) {
+          const savedData = localStorage.getItem(`userCredentials_${email}`);
+          if (savedData) {
+            const userData = JSON.parse(savedData);
+            console.log('📂 Dati utente trovati, ma email non confermata');
+          }
+        }
+        
         return { data, error };
       }
 
       console.log('✅ Login completato con successo:', data.user?.id);
       
-      // Recupera i dati conservati e crea/aggiorna il profilo
+      // Recupera e aggiorna i dati salvati
       if (data.user) {
         await this.ensureUserProfile(data.user);
         
-        // Aggiorna la data di ultimo accesso nei dati conservati
-        const pendingData = localStorage.getItem('pendingUserData');
-        if (pendingData) {
-          const userData = JSON.parse(pendingData);
+        // Marca come confermato nei dati salvati
+        const savedData = localStorage.getItem(`userCredentials_${email}`);
+        if (savedData) {
+          const userData = JSON.parse(savedData);
+          userData.confirmed = true;
           userData.lastLogin = Date.now();
-          localStorage.setItem('pendingUserData', JSON.stringify(userData));
+          // Rimuovi la password dopo il primo login riuscito
+          delete userData.password;
+          localStorage.setItem(`userCredentials_${email}`, JSON.stringify(userData));
         }
       }
       
@@ -102,7 +119,6 @@ export class AuthService {
     if (!error) {
       console.log('✅ Logout completato');
       // NON cancellare i dati utente - devono rimanere per 10 anni
-      // localStorage.removeItem('pendingUserData'); // COMMENTATO
     } else {
       console.error('❌ Errore durante logout:', error);
     }
@@ -126,19 +142,27 @@ export class AuthService {
         return;
       }
 
-      // Recupera username dai dati conservati o dai metadati
-      const pendingData = localStorage.getItem('pendingUserData');
+      // Recupera username dai dati salvati o dai metadati
       let username = 'User';
       
-      if (pendingData) {
-        const parsed = JSON.parse(pendingData);
-        // Verifica che i dati non siano scaduti (controllo per 10 anni)
-        if (parsed.expiryDate && Date.now() < parsed.expiryDate) {
-          username = parsed.username || username;
-          console.log('📂 Username recuperato dai dati conservati:', username);
-        }
+      // Prima prova dai metadati utente
+      if (user.user_metadata?.username) {
+        username = user.user_metadata.username;
+      } else if (user.user_metadata?.display_name) {
+        username = user.user_metadata.display_name;
       } else {
-        username = user.user_metadata?.username || user.email?.split('@')[0] || 'User';
+        // Poi prova dai dati salvati localmente
+        const savedData = localStorage.getItem(`userCredentials_${user.email}`);
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          if (parsed.expiryDate && Date.now() < parsed.expiryDate) {
+            username = parsed.username || username;
+          }
+        }
+      }
+      
+      if (username === 'User') {
+        username = user.email?.split('@')[0] || 'User';
       }
       
       console.log('📝 Creazione profilo con username:', username);
@@ -163,15 +187,26 @@ export class AuthService {
     }
   }
 
-  // Metodo per verificare e pulire dati scaduti (eseguito raramente)
+  // Metodo per recuperare credenziali salvate (per debugging)
+  static getSavedCredentials(email: string): any {
+    const savedData = localStorage.getItem(`userCredentials_${email}`);
+    return savedData ? JSON.parse(savedData) : null;
+  }
+
+  // Metodo per pulire dati scaduti
   static cleanupExpiredData(): void {
-    const pendingData = localStorage.getItem('pendingUserData');
-    if (pendingData) {
-      const userData = JSON.parse(pendingData);
-      if (userData.expiryDate && Date.now() > userData.expiryDate) {
-        localStorage.removeItem('pendingUserData');
-        console.log('🧹 Dati utente scaduti rimossi');
+    const keys = Object.keys(localStorage);
+    keys.forEach(key => {
+      if (key.startsWith('userCredentials_')) {
+        const data = localStorage.getItem(key);
+        if (data) {
+          const userData = JSON.parse(data);
+          if (userData.expiryDate && Date.now() > userData.expiryDate) {
+            localStorage.removeItem(key);
+            console.log('🧹 Dati scaduti rimossi per:', key);
+          }
+        }
       }
-    }
+    });
   }
 }

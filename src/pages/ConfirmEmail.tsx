@@ -11,72 +11,74 @@ const ConfirmEmail = () => {
 
   useEffect(() => {
     const handleEmailConfirmation = async () => {
-      const token_hash = searchParams.get('token_hash') || 
-                        new URLSearchParams(window.location.hash.substring(1)).get('token_hash');
-
-      if (!token_hash) {
-        toast({
-          title: "Errore di verifica",
-          description: "Token mancante nell'URL. Il link di conferma potrebbe essere malformato o scaduto.",
-          variant: "destructive"
-        });
-        // SEMPRE AL LOGIN, MAI ALLA REGISTRAZIONE
-        return navigate('/login');
-      }
-
       try {
-        console.log('🔍 Verifica token:', token_hash);
+        console.log('🔍 URL completa:', window.location.href);
+        console.log('🔍 Parametri URL:', Object.fromEntries(searchParams.entries()));
+        
+        // Estrai i parametri necessari dall'URL
+        const token_hash = searchParams.get('token_hash');
+        const type = searchParams.get('type');
+        
+        console.log('🔍 Token hash:', token_hash);
+        console.log('🔍 Type:', type);
 
+        if (!token_hash || !type) {
+          console.error('❌ Parametri mancanti:', { token_hash, type });
+          toast({
+            title: "Link non valido",
+            description: "Il link di conferma non è valido o è incompleto.",
+            variant: "destructive"
+          });
+          navigate('/login');
+          return;
+        }
+
+        console.log('🔄 Verifica del token in corso...');
+        
         const { data, error } = await supabase.auth.verifyOtp({
           token_hash,
-          type: 'signup'
+          type: type as any
         });
 
         if (error) {
-          console.error('❌ Errore verifica OTP:', error);
-          throw error;
+          console.error('❌ Errore verifica:', error);
+          toast({
+            title: "Errore di verifica",
+            description: error.message.includes('expired') 
+              ? "Il link è scaduto. Richiedi una nuova email di conferma."
+              : "Errore nella verifica dell'email. Riprova.",
+            variant: "destructive"
+          });
+          navigate('/login');
+          return;
         }
 
-        console.log('✅ Token verificato con successo');
-
-        // Attendi un momento per permettere al sistema di processare
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        toast({
-          title: "EMAIL CONFERMATA!",
-          description: "Il tuo account è stato attivato. Ora puoi accedere con email e password.",
-        });
-        
-        // REDIRECT SEMPRE AL LOGIN DOPO CONFERMA EMAIL
-        navigate('/login', { 
-          replace: true,
-          state: { 
-            emailVerified: true, 
-            message: 'Account confermato! Inserisci le tue credenziali per accedere.' 
-          }
-        });
+        if (data.user) {
+          console.log('✅ Email confermata per utente:', data.user.id);
+          
+          toast({
+            title: "EMAIL CONFERMATA!",
+            description: "Account attivato con successo. Ora puoi accedere.",
+          });
+          
+          // Vai sempre al login dopo la conferma
+          navigate('/login', { 
+            replace: true,
+            state: { 
+              emailVerified: true, 
+              email: data.user.email,
+              message: 'Account confermato! Inserisci le tue credenziali per accedere.' 
+            }
+          });
+        }
 
       } catch (error) {
-        console.error('💥 Errore durante verifica:', error);
-        let errorMessage = 'Errore durante la verifica dell\'account.';
-        
-        if (error instanceof Error) {
-          if (error.message.includes('expired')) {
-            errorMessage = 'Il link di conferma è scaduto. Richiedi una nuova email di conferma.';
-          } else if (error.message.includes('invalid')) {
-            errorMessage = 'Il link di conferma non è valido. Controlla che sia completo.';
-          } else {
-            errorMessage = error.message;
-          }
-        }
-        
+        console.error('💥 Errore imprevisto:', error);
         toast({
-          title: "Errore di verifica",
-          description: errorMessage,
+          title: "Errore",
+          description: "Si è verificato un errore durante la verifica.",
           variant: "destructive"
         });
-        
-        // ANCHE IN CASO DI ERRORE, VAI AL LOGIN (non alla registrazione)
         navigate('/login');
       }
     };
