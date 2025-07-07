@@ -1,6 +1,4 @@
 
-"use client";
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,40 +13,45 @@ export default function ConfirmEmailPage() {
   useEffect(() => {
     (async () => {
       try {
-        console.log('🔍 Avvio processo di conferma email');
-        console.log('🔗 URL completo:', window.location.href);
-        
-        // Get URL parameters for new PKCE/OTP flow
+        console.log("Full URL →", window.location.href);
+
+        // Legge i parametri dalla query string (non da #)
         const url = new URL(window.location.href);
         const token_hash = url.searchParams.get("token_hash");
-        const type = (url.searchParams.get("type") || "signup") as "signup" | "recovery" | "email_change" | "invite";
-        
-        console.log('🔍 Parametri URL:', { 
-          token_hash: token_hash ? token_hash.substring(0, 20) + '...' : null, 
-          type,
-          allParams: Object.fromEntries(url.searchParams.entries())
-        });
+        const type = (url.searchParams.get("type") || "email") as
+          | "signup"
+          | "recovery"
+          | "email";
+
+        console.log("Token hash →", token_hash);
+        console.log("Type →", type);
 
         if (!token_hash) {
-          console.error('❌ Token hash mancante nell\'URL');
-          throw new Error("Token mancante o link non valido. Controlla il link ricevuto via email.");
+          throw new Error("Token mancante o link non valido.");
         }
 
-        console.log('🔄 Tentativo verifica OTP con tipo:', type);
-        const { error: otpErr } = await supabase.auth.verifyOtp({ token_hash, type });
-        
-        if (otpErr) {
-          console.error('❌ Errore verifica OTP:', otpErr);
-          throw otpErr;
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash,
+          type,
+        });
+
+        if (error) {
+          console.error("Errore verifica OTP:", error);
+          throw error;
         }
 
-        console.log('✅ Conferma completata con successo');
-        toast({ title: "EMAIL CONFERMATA!", description: "Puoi ora accedere al tuo account." });
-        navigate("/login", { replace: true, state: { emailVerified: true } });
-        
+        toast({
+          title: "EMAIL CONFERMATA!",
+          description: "Puoi ora accedere.",
+        });
+
+        navigate("/login", {
+          replace: true,
+          state: { emailVerified: true },
+        });
       } catch (err: any) {
-        console.error("⚠️ Errore conferma email:", err);
-        setErrorMsg(err.message || "Errore imprevisto durante la conferma");
+        console.error("⚠️ Errore conferma email:", err.message);
+        setErrorMsg(err.message || "Errore imprevisto");
         setStatus("error");
       }
     })();
