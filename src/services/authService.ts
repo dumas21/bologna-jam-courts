@@ -2,6 +2,21 @@
 import { supabase } from '@/integrations/supabase/client';
 import { SignUpData, AuthResponse } from '@/types/auth';
 
+export async function signUp(email: string, password: string, username: string) {
+  return supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      emailRedirectTo: `${window.location.origin}/confirm-email`,
+      data: { username },
+    },
+  });
+}
+
+export async function signIn(email: string, password: string) {
+  return supabase.auth.signInWithPassword({ email, password });
+}
+
 export class AuthService {
   static async signUp(signUpData: SignUpData): Promise<AuthResponse> {
     try {
@@ -9,21 +24,7 @@ export class AuthService {
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect CORRETTO che matcha la route
-      const redirectUrl = `${window.location.origin}/confirm-email`;
-      console.log('🔗 URL di redirect:', redirectUrl);
-
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            username: username,
-            display_name: username
-          }
-        }
-      });
+      const { data, error } = await signUp(email, password, username);
 
       if (error) {
         console.error('❌ Errore durante registrazione:', error);
@@ -48,10 +49,7 @@ export class AuthService {
     try {
       console.log('🔑 Tentativo di login con email:', email);
       
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password: password
-      });
+      const { data, error } = await signIn(email.trim(), password);
 
       if (error) {
         console.error('❌ Errore durante login:', error);
