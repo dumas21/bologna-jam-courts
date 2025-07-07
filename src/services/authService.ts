@@ -1,18 +1,16 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { SignUpData, AuthResponse } from '@/types/auth';
 
 export class AuthService {
-  // Conserva i dati per 10 anni
-  private static readonly DATA_RETENTION_TIME = 10 * 365 * 24 * 60 * 60 * 1000;
-
   static async signUp(signUpData: SignUpData): Promise<AuthResponse> {
     try {
       const { email, password, username, newsletter = false } = signUpData;
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect corretto con parametri aggiuntivi per debug
-      const redirectUrl = `${window.location.origin}/auth/confirm`;
+      // URL di redirect CORRETTO
+      const redirectUrl = `${window.location.origin}/confirm-email`;
       console.log('🔗 URL di redirect:', redirectUrl);
 
       const { data, error } = await supabase.auth.signUp({
@@ -37,70 +35,21 @@ export class AuthService {
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
         
-        // Salva i dati per 10 anni con timestamp per debug
+        // Salva solo i dati essenziali
         const userData = {
           email,
-          password, // Salva temporaneamente per il primo login
           username,
           userId: data.user.id,
-          registrationDate: Date.now(),
-          expiryDate: Date.now() + this.DATA_RETENTION_TIME,
-          confirmed: false,
-          lastEmailSent: Date.now() // Traccia quando è stata inviata l'ultima email
+          registrationDate: Date.now()
         };
         
-        // Salva sia come pendingUserData che come credenziali permanenti
         localStorage.setItem('pendingUserData', JSON.stringify(userData));
-        localStorage.setItem(`userCredentials_${email}`, JSON.stringify(userData));
-        console.log('💾 Dati utente salvati per 10 anni');
+        console.log('💾 Dati utente salvati');
       }
 
       return { data, error: null };
     } catch (error: any) {
       console.error('💥 Errore completo in registrazione:', error);
-      return { data: null, error };
-    }
-  }
-
-  static async resendConfirmationEmail(email: string): Promise<AuthResponse> {
-    try {
-      console.log('📧 Reinvio email di conferma per:', email);
-      
-      const { data, error } = await supabase.auth.resend({
-        type: 'signup',
-        email: email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm`
-        }
-      });
-
-      if (error) {
-        console.error('❌ Errore reinvio email:', error);
-        return { data, error };
-      }
-
-      // Aggiorna il timestamp dell'ultimo invio
-      const savedData = localStorage.getItem(`userCredentials_${email}`);
-      if (savedData) {
-        const userData = JSON.parse(savedData);
-        userData.lastEmailSent = Date.now();
-        localStorage.setItem(`userCredentials_${email}`, JSON.stringify(userData));
-        
-        // Aggiorna anche i dati pending se esistono
-        const pendingData = localStorage.getItem('pendingUserData');
-        if (pendingData) {
-          const pendingUserData = JSON.parse(pendingData);
-          if (pendingUserData.email === email) {
-            pendingUserData.lastEmailSent = Date.now();
-            localStorage.setItem('pendingUserData', JSON.stringify(pendingUserData));
-          }
-        }
-      }
-
-      console.log('✅ Email di conferma reinviata con successo');
-      return { data, error: null };
-    } catch (error: any) {
-      console.error('💥 Errore reinvio email:', error);
       return { data: null, error };
     }
   }
@@ -121,20 +70,8 @@ export class AuthService {
 
       console.log('✅ Login completato con successo:', data.user?.id);
       
-      // Assicura che il profilo esista
       if (data.user) {
         await this.ensureUserProfile(data.user);
-        
-        // Aggiorna i dati salvati
-        const savedData = localStorage.getItem(`userCredentials_${email}`);
-        if (savedData) {
-          const userData = JSON.parse(savedData);
-          userData.confirmed = true;
-          userData.lastLogin = Date.now();
-          // Rimuovi la password dopo il primo login riuscito
-          delete userData.password;
-          localStorage.setItem(`userCredentials_${email}`, JSON.stringify(userData));
-        }
       }
       
       return { data, error };
@@ -151,6 +88,7 @@ export class AuthService {
     
     if (!error) {
       console.log('✅ Logout completato');
+      localStorage.removeItem('pendingUserData');
     } else {
       console.error('❌ Errore durante logout:', error);
     }
@@ -162,7 +100,6 @@ export class AuthService {
     try {
       console.log('📝 Controllo/creazione profilo per user:', user.id);
       
-      // Controlla se il profilo esiste già
       const { data: existingProfile } = await supabase
         .from('profiles')
         .select('id')
@@ -177,19 +114,13 @@ export class AuthService {
       // Recupera username dai dati salvati o dai metadati
       let username = 'User';
       
-      // Prima prova dai metadati utente
       if (user.user_metadata?.username) {
         username = user.user_metadata.username;
-      } else if (user.user_metadata?.display_name) {
-        username = user.user_metadata.display_name;
       } else {
-        // Poi prova dai dati salvati localmente
-        const savedData = localStorage.getItem(`userCredentials_${user.email}`);
+        const savedData = localStorage.getItem('pendingUserData');
         if (savedData) {
           const parsed = JSON.parse(savedData);
-          if (parsed.expiryDate && Date.now() < parsed.expiryDate) {
-            username = parsed.username || username;
-          }
+          username = parsed.username || username;
         }
       }
       
@@ -213,36 +144,10 @@ export class AuthService {
         console.error('❌ Errore creazione profilo:', profileError);
       } else {
         console.log('✅ Profilo creato con successo');
+        localStorage.removeItem('pendingUserData');
       }
     } catch (profileErr) {
       console.error('💥 Errore durante creazione profilo:', profileErr);
     }
-  }
-
-  // Metodi di utilità aggiornati
-  static getSavedCredentials(email: string): any {
-    const savedData = localStorage.getItem(`userCredentials_${email}`);
-    return savedData ? JSON.parse(savedData) : null;
-  }
-
-  static getPendingUserData(): any {
-    const pendingData = localStorage.getItem('pendingUserData');
-    return pendingData ? JSON.parse(pendingData) : null;
-  }
-
-  static cleanupExpiredData(): void {
-    const keys = Object.keys(localStorage);
-    keys.forEach(key => {
-      if (key.startsWith('userCredentials_')) {
-        const data = localStorage.getItem(key);
-        if (data) {
-          const userData = JSON.parse(data);
-          if (userData.expiryDate && Date.now() > userData.expiryDate) {
-            localStorage.removeItem(key);
-            console.log('🧹 Dati scaduti rimossi per:', key);
-          }
-        }
-      }
-    });
   }
 }

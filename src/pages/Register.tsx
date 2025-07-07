@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -137,18 +136,15 @@ const Register = () => {
                 1. Clicca sul link nell'email per confermare il tuo account
               </p>
               <p className="text-gray-300 text-sm mb-2">
-                2. Verrai reindirizzato alla pagina di login
+                2. Verrai automaticamente reindirizzato alla pagina di login
               </p>
               <p className="text-gray-300 text-sm mb-2">
                 3. Inserisci la tua email e password per accedere
               </p>
               <p className="text-orange-300 text-xs mt-3">
-                ⚠️ Il link ha una validità limitata. Se scade, potrai richiederne uno nuovo.
+                ⚠️ Se il link non funziona, potrai richiederne uno nuovo dalla pagina di conferma.
               </p>
             </div>
-            <p className="text-gray-400 text-xs mb-6">
-              I tuoi dati sono conservati in sicurezza per 10 anni
-            </p>
             <Button 
               onClick={() => navigate('/login')}
               className="arcade-button arcade-button-primary"

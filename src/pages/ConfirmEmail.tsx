@@ -9,83 +9,63 @@ const ConfirmEmail = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  const [isConfirming, setIsConfirming] = useState(true);
+  const [needsResend, setNeedsResend] = useState(false);
   const [isResending, setIsResending] = useState(false);
-  const [showResendButton, setShowResendButton] = useState(false);
 
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
         console.log('🔍 URL completa:', window.location.href);
-        console.log('🔍 Parametri URL:', Object.fromEntries(searchParams.entries()));
         
-        // Estrai i parametri dall'URL hash se presenti
-        const urlParams = new URLSearchParams(window.location.hash.substring(1));
-        const access_token = urlParams.get('access_token');
-        const refresh_token = urlParams.get('refresh_token');
-        const type = urlParams.get('type');
+        // Cerca il token nell'URL
+        const token_hash = searchParams.get('token_hash') || 
+                          new URLSearchParams(window.location.hash.substring(1)).get('access_token');
+        const type = searchParams.get('type') || 'signup';
         
-        // Se non ci sono parametri nell'hash, prova con i query params
-        const token_hash = searchParams.get('token_hash') || access_token;
-        const confirmationType = searchParams.get('type') || type;
-        
-        console.log('🔍 Token hash:', token_hash);
-        console.log('🔍 Type:', confirmationType);
+        console.log('🔍 Token trovato:', !!token_hash);
+        console.log('🔍 Type:', type);
 
-        if (!token_hash || !confirmationType) {
-          console.error('❌ Parametri mancanti:', { token_hash, confirmationType });
-          setShowResendButton(true);
-          toast({
-            title: "Link non valido",
-            description: "Il link di conferma non è valido. Puoi richiedere un nuovo link.",
-            variant: "destructive"
-          });
+        if (!token_hash) {
+          console.error('❌ Token mancante');
+          setIsConfirming(false);
+          setNeedsResend(true);
           return;
         }
 
         console.log('🔄 Verifica del token in corso...');
         
-        // Usa verifyOtp per confermare l'email
         const { data, error } = await supabase.auth.verifyOtp({
           token_hash,
-          type: confirmationType as any
+          type: type as any
         });
 
         if (error) {
           console.error('❌ Errore verifica:', error);
+          setIsConfirming(false);
+          setNeedsResend(true);
           
-          // Se il token è scaduto, mostra il pulsante per reinviare
-          if (error.message?.includes('expired') || error.message?.includes('invalid')) {
-            setShowResendButton(true);
-            toast({
-              title: "Link scaduto",
-              description: "Il link di conferma è scaduto. Puoi richiedere un nuovo link.",
-              variant: "destructive"
-            });
-          } else {
-            toast({
-              title: "Errore di verifica",
-              description: "Errore nella verifica dell'email. Riprova.",
-              variant: "destructive"
-            });
-            setTimeout(() => navigate('/login'), 3000);
-          }
+          toast({
+            title: "Link scaduto o non valido",
+            description: "Puoi richiedere un nuovo link di conferma.",
+            variant: "destructive"
+          });
           return;
         }
 
         if (data.user) {
           console.log('✅ Email confermata per utente:', data.user.id);
           
-          // Recupera i dati salvati durante la registrazione
+          // Recupera i dati salvati
           const pendingData = localStorage.getItem('pendingUserData');
           let username = 'User';
           
           if (pendingData) {
             const userData = JSON.parse(pendingData);
             username = userData.username || 'User';
-            console.log('📂 Dati recuperati per profilo:', { username, email: userData.email });
           }
 
-          // Crea il profilo utente in Supabase
+          // Crea il profilo
           try {
             const { error: profileError } = await supabase
               .from('profiles')
@@ -106,21 +86,13 @@ const ConfirmEmail = () => {
             console.error('💥 Errore durante creazione profilo:', profileErr);
           }
           
-          // Aggiorna i dati salvati come confermati
-          if (pendingData) {
-            const userData = JSON.parse(pendingData);
-            userData.confirmed = true;
-            userData.userId = data.user.id;
-            localStorage.setItem(`userCredentials_${data.user.email}`, JSON.stringify(userData));
-            localStorage.removeItem('pendingUserData'); // Rimuovi i dati temporanei
-          }
+          localStorage.removeItem('pendingUserData');
           
           toast({
             title: "EMAIL CONFERMATA!",
             description: "Account attivato con successo. Ora puoi accedere.",
           });
           
-          // Vai al login con i dati precompilati
           navigate('/login', { 
             replace: true,
             state: { 
@@ -133,7 +105,9 @@ const ConfirmEmail = () => {
 
       } catch (error) {
         console.error('💥 Errore imprevisto:', error);
-        setShowResendButton(true);
+        setIsConfirming(false);
+        setNeedsResend(true);
+        
         toast({
           title: "Errore",
           description: "Si è verificato un errore durante la verifica.",
@@ -166,7 +140,7 @@ const ConfirmEmail = () => {
         type: 'signup',
         email: userData.email,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm`
+          emailRedirectTo: `${window.location.origin}/confirm-email`
         }
       });
       
@@ -180,9 +154,10 @@ const ConfirmEmail = () => {
       } else {
         toast({
           title: "Email inviata!",
-          description: "Ti abbiamo inviato una nuova email di conferma. Controlla la tua casella.",
+          description: "Ti abbiamo inviato una nuova email di conferma.",
         });
-        setShowResendButton(false);
+        setNeedsResend(false);
+        setIsConfirming(true);
       }
     } catch (error) {
       console.error('💥 Errore reinvio email:', error);
@@ -199,7 +174,7 @@ const ConfirmEmail = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center p-4">
       <div className="bg-black bg-opacity-50 backdrop-blur-sm rounded-lg p-8 border border-purple-500 text-center max-w-md w-full">
-        {!showResendButton ? (
+        {isConfirming ? (
           <>
             <h1 className="text-xl font-bold text-white mb-4 nike-text">
               VERIFICA EMAIL IN CORSO...
@@ -207,13 +182,13 @@ const ConfirmEmail = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4"></div>
             <p className="text-gray-300">Conferma della tua registrazione...</p>
           </>
-        ) : (
+        ) : needsResend ? (
           <>
             <h1 className="text-xl font-bold text-white mb-4 nike-text">
-              LINK SCADUTO
+              LINK SCADUTO O NON VALIDO
             </h1>
             <p className="text-gray-300 mb-6">
-              Il link di conferma è scaduto o non valido. Puoi richiedere un nuovo link di conferma.
+              Il link di conferma non è valido o è scaduto. Puoi richiedere un nuovo link.
             </p>
             <div className="space-y-4">
               <Button
@@ -231,6 +206,21 @@ const ConfirmEmail = () => {
                 Torna alla registrazione
               </Button>
             </div>
+          </>
+        ) : (
+          <>
+            <h1 className="text-xl font-bold text-white mb-4 nike-text">
+              ERRORE
+            </h1>
+            <p className="text-gray-300 mb-6">
+              Si è verificato un errore durante la verifica.
+            </p>
+            <Button
+              onClick={() => navigate('/register')}
+              className="arcade-button arcade-button-primary w-full"
+            >
+              TORNA ALLA REGISTRAZIONE
+            </Button>
           </>
         )}
       </div>
