@@ -25,16 +25,18 @@ const ConfirmEmail = () => {
       }
 
       try {
-        // 2. Verifica l'OTP con timeout
+        // 2. Verifica l'OTP con timeout - Fixed Promise.race implementation
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Timeout verificato')), 5000)
+        );
+
         const { error } = await Promise.race([
           supabase.auth.verifyOtp({
             token_hash,
             type: 'signup'
           }),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Timeout verificato')), 5000)
-          )
-        ]);
+          timeoutPromise
+        ]) as any;
 
         if (error) throw error;
 
