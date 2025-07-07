@@ -9,7 +9,7 @@ export class AuthService {
       
       console.log('🚀 Avvio signUp con:', { email, username, newsletter });
 
-      // URL di redirect più specifico per catturare tutti i parametri
+      // URL di redirect per la conferma email
       const baseUrl = window.location.origin;
       const redirectUrl = `${baseUrl}/auth/confirm`;
       console.log('🔗 URL di redirect impostato:', redirectUrl);
@@ -34,7 +34,14 @@ export class AuthService {
 
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
-        console.log('🔗 Assicurati che il redirect URL sia configurato in Supabase:', redirectUrl);
+        
+        // Salva temporaneamente i dati dell'utente per il login successivo
+        localStorage.setItem('pendingUserData', JSON.stringify({
+          email,
+          username,
+          userId: data.user.id,
+          timestamp: Date.now()
+        }));
       }
 
       return { data, error: null };
@@ -59,6 +66,15 @@ export class AuthService {
       }
 
       console.log('✅ Login completato:', data.user?.id);
+      
+      // Pulisci i dati temporanei dopo login riuscito
+      localStorage.removeItem('pendingUserData');
+      
+      // Assicurati che il profilo utente esista
+      if (data.user) {
+        await this.ensureUserProfile(data.user);
+      }
+      
       return { data, error };
       
     } catch (error: any) {
@@ -67,61 +83,14 @@ export class AuthService {
     }
   }
 
-  static async signInWithUsername(username: string, password: string): Promise<AuthResponse> {
-    try {
-      console.log('🔑 Tentativo di login con username:', username);
-      
-      // Prima trova l'email dall'username
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('nickname', username)
-        .maybeSingle();
-
-      if (profileError) {
-        console.error('❌ Errore nella ricerca profilo:', profileError);
-        return { data: null, error: { message: 'Errore nella ricerca utente' } };
-      }
-
-      if (!profileData) {
-        console.error('❌ Username non trovato:', username);
-        return { data: null, error: { message: 'Username non trovato' } };
-      }
-
-      console.log('📧 Email trovata per username:', profileData.email);
-
-      // Effettua il login con email e password
-      return this.signInWithPassword(profileData.email, password);
-      
-    } catch (error: any) {
-      console.error('💥 Errore completo in signInWithUsername:', error);
-      return { data: null, error };
-    }
-  }
-
-  static async signInWithMagicLink(email: string, username: string): Promise<AuthResponse> {
-    const redirectUrl = `${window.location.origin}/auth/confirm`;
-    
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: {
-          username: username
-        }
-      }
-    });
-
-    return { data: null, error };
-  }
-
   static async signOut(): Promise<AuthResponse> {
     console.log('🚪 Avvio logout');
     const { error } = await supabase.auth.signOut();
     
     if (!error) {
       console.log('✅ Logout completato');
-      // Pulisci anche il localStorage per sicurezza
+      // Pulisci tutti i dati temporanei
+      localStorage.removeItem('pendingUserData');
       localStorage.removeItem('supabase.auth.token');
     } else {
       console.error('❌ Errore durante logout:', error);
@@ -130,61 +99,52 @@ export class AuthService {
     return { data: null, error };
   }
 
-  private static async updateUserProfile(userId: string, username: string): Promise<void> {
+  private static async ensureUserProfile(user: any): Promise<void> {
     try {
-      console.log('📝 Aggiornamento profilo per user:', userId);
+      console.log('📝 Controllo profilo per user:', user.id);
       
-      // Get user email from auth
-      const { data: { user } } = await supabase.auth.getUser();
-      const userEmail = user?.email;
-      
-      if (!userEmail) {
-        console.error('❌ Email utente non trovata');
+      // Controlla se il profilo esiste già
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      if (existingProfile) {
+        console.log('✅ Profilo già esistente');
         return;
       }
+
+      // Recupera username dai dati salvati o dai metadati
+      const pendingData = localStorage.getItem('pendingUserData');
+      let username = 'User';
+      
+      if (pendingData) {
+        const parsed = JSON.parse(pendingData);
+        username = parsed.username || username;
+      } else {
+        username = user.user_metadata?.username || user.email?.split('@')[0] || 'User';
+      }
+      
+      console.log('📝 Creazione profilo con username:', username);
       
       const { error: profileError } = await supabase
         .from('profiles')
         .upsert({
-          id: userId,
+          id: user.id,
           nickname: username,
-          email: userEmail
+          email: user.email
         }, {
           onConflict: 'id'
         });
 
       if (profileError) {
-        console.error('❌ Error updating profile:', profileError);
+        console.error('❌ Error creating profile:', profileError);
       } else {
-        console.log('✅ Profilo aggiornato con successo');
+        console.log('✅ Profilo creato con successo');
       }
     } catch (profileErr) {
-      console.error('💥 Profile update error:', profileErr);
-    }
-  }
-
-  private static async saveNewsletterConsent(userId: string, email: string, privacyVersion: string): Promise<void> {
-    try {
-      console.log('📧 Salvataggio consenso newsletter');
-      
-      const { error: newsletterError } = await supabase.rpc('log_security_event', {
-        p_user_id: userId,
-        p_event_type: 'newsletter_consent',
-        p_event_data: {
-          email: email,
-          consented: true,
-          consented_at: new Date().toISOString(),
-          privacy_version: privacyVersion
-        }
-      });
-
-      if (newsletterError) {
-        console.error('❌ Error saving newsletter consent:', newsletterError);
-      } else {
-        console.log('✅ Consenso newsletter salvato');
-      }
-    } catch (e) {
-      console.error('💥 Newsletter consent error:', e);
+      console.error('💥 Profile creation error:', profileErr);
     }
   }
 }

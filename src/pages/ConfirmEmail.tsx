@@ -11,81 +11,88 @@ const ConfirmEmail = () => {
 
   useEffect(() => {
     const handleEmailConfirmation = async () => {
-      // 1. Estrai il token da tutte le possibili posizioni
+      // Estrai il token da tutte le possibili posizioni
       const token_hash = searchParams.get('token_hash') || 
                         new URLSearchParams(window.location.hash.substring(1)).get('token_hash');
 
       if (!token_hash) {
         toast({
           title: "Errore di verifica",
-          description: "Token mancante nell'URL",
+          description: "Token mancante nell'URL. Il link di conferma potrebbe essere malformato o scaduto.",
           variant: "destructive"
         });
         return navigate('/register');
       }
 
       try {
-        // 2. Verifica l'OTP con timeout - Fixed Promise.race implementation
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout verificato')), 5000)
-        );
+        console.log('🔍 Verifica token:', token_hash);
 
-        const { error } = await Promise.race([
-          supabase.auth.verifyOtp({
-            token_hash,
-            type: 'signup'
-          }),
-          timeoutPromise
-        ]) as any;
+        // Verifica l'OTP
+        const { data, error } = await supabase.auth.verifyOtp({
+          token_hash,
+          type: 'signup'
+        });
 
-        if (error) throw error;
-
-        // 3. Workaround CRUCIALE: Attendi e forza la sessione
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError || !session) {
-          // Ultimo tentativo: login forzato via API
-          const email = searchParams.get('email');
-          if (email) {
-            await supabase.auth.signInWithOtp({
-              email,
-              options: { emailRedirectTo: window.location.origin }
-            });
-          }
-          throw new Error('Sessione non creata');
+        if (error) {
+          console.error('❌ Errore verifica OTP:', error);
+          throw error;
         }
 
-        // 4. Salvataggio manuale nel localStorage
-        const projectId = 'mpflsxdvvvajzkiyuiur'; // Using the actual project ID from client.ts
-        localStorage.setItem(
-          `sb-${projectId}-auth-token`,
-          JSON.stringify({
-            currentSession: session,
-            expiresAt: session.expires_at
-          })
-        );
+        console.log('✅ Token verificato con successo');
 
-        // 5. Toast di successo
-        toast({
-          title: "Email verificata!",
-          description: "Il tuo account è stato confermato con successo.",
-        });
-
-        // 6. Redirect con stato
-        navigate('/', { 
-          replace: true,
-          state: { emailVerified: true } 
-        });
+        // Attendi un momento per permettere al sistema di processare
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Controlla se la sessione è stata creata
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (session && session.user) {
+          console.log('✅ Sessione attiva, utente confermato');
+          toast({
+            title: "Email verificata!",
+            description: "Il tuo account è stato confermato con successo. Ora puoi accedere con le tue credenziali.",
+          });
+          
+          // Redirect al login invece che alla home
+          navigate('/login', { 
+            replace: true,
+            state: { emailVerified: true, message: 'Account confermato! Ora puoi accedere.' }
+          });
+        } else {
+          console.log('⚠️ Email confermata ma sessione non attiva');
+          toast({
+            title: "Email confermata!",
+            description: "Il tuo account è stato confermato. Ora puoi accedere con le tue credenziali.",
+          });
+          
+          // Redirect al login
+          navigate('/login', { 
+            replace: true,
+            state: { emailVerified: true, message: 'Account confermato! Ora puoi accedere.' }
+          });
+        }
 
       } catch (error) {
-        console.error('Errore completo:', error);
+        console.error('💥 Errore completo durante verifica:', error);
+        let errorMessage = 'Errore durante la verifica dell\'account.';
+        
+        if (error instanceof Error) {
+          if (error.message.includes('expired')) {
+            errorMessage = 'Il link di conferma è scaduto. Richiedi una nuova email di conferma.';
+          } else if (error.message.includes('invalid')) {
+            errorMessage = 'Il link di conferma non è valido. Controlla che sia completo.';
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        
         toast({
           title: "Errore di verifica",
-          description: error instanceof Error ? error.message : 'Errore sconosciuto',
+          description: errorMessage,
           variant: "destructive"
         });
-        navigate('/login');
+        
+        navigate('/register');
       }
     };
 

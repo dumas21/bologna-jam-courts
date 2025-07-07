@@ -15,36 +15,15 @@ export const useAuth = () => {
     return AuthService.signInWithPassword(email, password);
   };
 
-  const signInWithUsername = async (username: string, password: string) => {
-    return AuthService.signInWithUsername(username, password);
-  };
-
-  const signInWithMagicLink = async (email: string, username: string) => {
-    return AuthService.signInWithMagicLink(email, username);
-  };
-
   const signOut = async () => {
     const result = await AuthService.signOut();
     return result;
-  };
-
-  // Legacy function aliases for backward compatibility
-  const login = (email: string, username: string) => {
-    return signInWithMagicLink(email, username);
-  };
-
-  const logout = () => {
-    return signOut();
   };
 
   return {
     ...authState,
     signUp,
     signInWithPassword,
-    signInWithUsername,
-    signInWithMagicLink,
-    signOut,
-    login,
-    logout
+    signOut
   };
 };
