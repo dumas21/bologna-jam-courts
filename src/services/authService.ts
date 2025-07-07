@@ -3,19 +3,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { SignUpData, AuthResponse } from '@/types/auth';
 
 export class AuthService {
-  // Conserva i dati per 10 anni (in millisecondi)
+  // Conserva i dati per 10 anni
   private static readonly DATA_RETENTION_TIME = 10 * 365 * 24 * 60 * 60 * 1000;
 
   static async signUp(signUpData: SignUpData): Promise<AuthResponse> {
     try {
-      const { email, password, username, newsletter = false, privacyVersion = '1.0' } = signUpData;
+      const { email, password, username, newsletter = false } = signUpData;
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      // URL di redirect preciso per la conferma email
-      const baseUrl = window.location.origin;
-      const redirectUrl = `${baseUrl}/auth/confirm`;
-      console.log('🔗 URL di redirect impostato:', redirectUrl);
+      // URL di redirect corretto
+      const redirectUrl = `${window.location.origin}/auth/confirm`;
+      console.log('🔗 URL di redirect:', redirectUrl);
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -34,15 +33,15 @@ export class AuthService {
         throw error;
       }
 
-      console.log('✅ Registrazione completata:', data.user?.id);
+      console.log('✅ Registrazione Supabase completata:', data.user?.id);
 
       if (data.user && !data.user.email_confirmed_at) {
         console.log('📧 Email di conferma inviata a:', email);
         
-        // SALVA I DATI PER 10 ANNI - QUESTO È FONDAMENTALE
+        // Salva i dati per 10 anni
         const userData = {
           email,
-          password, // Salviamo temporaneamente per il primo login
+          password, // Salva temporaneamente per il primo login
           username,
           userId: data.user.id,
           registrationDate: Date.now(),
@@ -50,6 +49,7 @@ export class AuthService {
           confirmed: false
         };
         
+        // Salva sia come pendingUserData che come credenziali permanenti
         localStorage.setItem('pendingUserData', JSON.stringify(userData));
         localStorage.setItem(`userCredentials_${email}`, JSON.stringify(userData));
         console.log('💾 Dati utente salvati per 10 anni');
@@ -73,26 +73,16 @@ export class AuthService {
 
       if (error) {
         console.error('❌ Errore durante login:', error);
-        
-        // Se l'errore è dovuto alla email non confermata, recupera i dati salvati
-        if (error.message?.includes('Email not confirmed')) {
-          const savedData = localStorage.getItem(`userCredentials_${email}`);
-          if (savedData) {
-            const userData = JSON.parse(savedData);
-            console.log('📂 Dati utente trovati, ma email non confermata');
-          }
-        }
-        
         return { data, error };
       }
 
       console.log('✅ Login completato con successo:', data.user?.id);
       
-      // Recupera e aggiorna i dati salvati
+      // Assicura che il profilo esista
       if (data.user) {
         await this.ensureUserProfile(data.user);
         
-        // Marca come confermato nei dati salvati
+        // Aggiorna i dati salvati
         const savedData = localStorage.getItem(`userCredentials_${email}`);
         if (savedData) {
           const userData = JSON.parse(savedData);
@@ -118,7 +108,6 @@ export class AuthService {
     
     if (!error) {
       console.log('✅ Logout completato');
-      // NON cancellare i dati utente - devono rimanere per 10 anni
     } else {
       console.error('❌ Errore durante logout:', error);
     }
@@ -187,13 +176,12 @@ export class AuthService {
     }
   }
 
-  // Metodo per recuperare credenziali salvate (per debugging)
+  // Metodi di utilità
   static getSavedCredentials(email: string): any {
     const savedData = localStorage.getItem(`userCredentials_${email}`);
     return savedData ? JSON.parse(savedData) : null;
   }
 
-  // Metodo per pulire dati scaduti
   static cleanupExpiredData(): void {
     const keys = Object.keys(localStorage);
     keys.forEach(key => {

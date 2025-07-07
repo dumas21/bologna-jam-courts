@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
-import { AuthService } from '@/services/authService';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  // Mostra messaggio se arriva da conferma email
+  // Gestisce i messaggi dalla conferma email
   useEffect(() => {
     if (location.state?.emailVerified) {
       toast({
@@ -41,6 +40,9 @@ const Login = () => {
       if (location.state.email) {
         setEmail(location.state.email);
       }
+      
+      // Pulisci lo state per evitare che il messaggio riappaia
+      window.history.replaceState({}, document.title);
     }
   }, [location.state, toast]);
 
@@ -50,12 +52,6 @@ const Login = () => {
     
     try {
       console.log('🔑 Tentativo login con email:', email);
-      
-      // Controlla se abbiamo credenziali salvate
-      const savedCredentials = AuthService.getSavedCredentials(email);
-      if (savedCredentials) {
-        console.log('📂 Credenziali trovate per:', email);
-      }
       
       const { data, error } = await signInWithPassword(email, password);
       

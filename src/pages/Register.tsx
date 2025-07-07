@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
-  const [newsletter, setNewsletter] = useState(true);
+  const [newsletter, setNewsletter] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [registrationComplete, setRegistrationComplete] = useState(false);
   const navigate = useNavigate();
@@ -74,11 +74,20 @@ const Register = () => {
       
       if (error) {
         console.error('❌ Errore durante registrazione:', error);
-        toast({
-          title: "ERRORE REGISTRAZIONE",
-          description: error.message || "Si è verificato un errore durante la registrazione",
-          variant: "destructive"
-        });
+        
+        if (error.message?.includes('User already registered')) {
+          toast({
+            title: "UTENTE GIÀ REGISTRATO",
+            description: "Questo indirizzo email è già registrato. Prova ad accedere.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "ERRORE REGISTRAZIONE",
+            description: error.message || "Si è verificato un errore durante la registrazione",
+            variant: "destructive"
+          });
+        }
         return;
       }
 
@@ -137,11 +146,12 @@ const Register = () => {
             <p className="text-gray-400 text-xs mb-6">
               I tuoi dati sono conservati in sicurezza per 10 anni
             </p>
-            <Link to="/login">
-              <Button className="arcade-button arcade-button-primary">
-                VAI AL LOGIN
-              </Button>
-            </Link>
+            <Button 
+              onClick={() => navigate('/login')}
+              className="arcade-button arcade-button-primary"
+            >
+              VAI AL LOGIN
+            </Button>
           </div>
         </div>
       </div>
@@ -265,9 +275,14 @@ const Register = () => {
           <div className="mt-6 text-center">
             <p className="text-gray-300 text-sm mb-2">
               Hai già un account?{' '}
-              <Link to="/login" className="text-purple-300 hover:text-purple-200 underline">
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/login')}
+                className="text-purple-300 hover:text-purple-200 underline p-0 h-auto"
+                disabled={isLoading}
+              >
                 Accedi qui
-              </Link>
+              </Button>
             </p>
             <p className="text-gray-400 text-xs">
               I tuoi dati saranno conservati in sicurezza per 10 anni
