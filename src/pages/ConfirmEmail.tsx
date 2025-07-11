@@ -76,7 +76,7 @@ export default function ConfirmEmailPage() {
         setTimeout(() => {
           navigate('/login', { 
             state: { 
-              error: 'Impossibile verificare l\'email. Il link potrebbe essere scaduto.'
+              error: 'Impossibile verificare l\'email. Il link potrebbe essere scaduto. Riprova a registrarti.'
             } 
           });
         }, 3000);
