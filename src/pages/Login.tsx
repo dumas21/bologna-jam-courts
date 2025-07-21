@@ -24,16 +24,12 @@ const Login = () => {
 
     if (error) {
       console.error('❌ Login fallito:', error.message);
-      setErrorMsg('Credenziali errate o account non confermato.');
+      setErrorMsg('Credenziali errate o email non confermata.');
       setLoading(false);
       return;
     }
 
     console.log('✅ Login riuscito:', data.user?.id);
-    toast({
-      title: "Accesso effettuato! 🚀",
-      description: `Benvenuto ${data.user?.email}!`
-    });
     navigate('/');
   };
 
@@ -43,34 +39,27 @@ const Login = () => {
         <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
 
         <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block mb-1 text-sm font-medium">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-sm font-medium">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              className="w-full px-3 py-2 border rounded-lg"
-            />
-          </div>
-
-          {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
-
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+          {errorMsg && <p className="text-red-500">{errorMsg}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800"
+            className="w-full bg-black text-white py-2 rounded-lg"
           >
             {loading ? 'Accesso in corso...' : 'Accedi'}
           </button>
