@@ -35,11 +35,7 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/confirm-email`,
-        // Aumentiamo la durata del token a 15 minuti (900 secondi)
-        data: {
-          timestamp: new Date().toISOString()
-        }
+        emailRedirectTo: `${window.location.origin}/confirm-email`
       }
     })
     
