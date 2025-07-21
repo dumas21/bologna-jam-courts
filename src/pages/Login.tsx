@@ -1,199 +1,86 @@
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Eye, EyeOff, Mail, Lock, ArrowLeft } from 'lucide-react';
 
 const Login = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { signInWithPassword, isAuthenticated } = useAuth();
-  const { toast } = useToast();
-  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
   const [loading, setLoading] = useState(false);
-
-  // Redirect if already authenticated
-  useEffect(() => {
-    if (isAuthenticated) {
-      console.log('✅ Utente già autenticato, redirect alla home');
-      navigate('/', { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
-
-  // Gestisce i messaggi dalla conferma email
-  useEffect(() => {
-    if (location.state?.emailVerified) {
-      toast({
-        title: "EMAIL CONFERMATA!",
-        description: "Account attivato! Inserisci le tue credenziali per accedere.",
-      });
-      
-      // Precompila l'email se disponibile
-      if (location.state.email) {
-        setEmail(location.state.email);
-      }
-      
-      // Pulisci lo state per evitare che il messaggio riappaia
-      window.history.replaceState({}, document.title);
-    }
-  }, [location.state, toast]);
+  const { toast } = useToast();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    try {
-      console.log('🔑 Tentativo login con email:', email);
-      
-      if (!email.trim() || !password.trim()) {
-        toast({
-          title: "CAMPI OBBLIGATORI",
-          description: "Inserisci email e password.",
-          variant: "destructive"
-        });
-        return;
-      }
-      
-      const { data, error } = await signInWithPassword(email.trim(), password);
-      
-      if (error) {
-        console.error('❌ Errore login:', error);
-        
-        if (error.message?.includes('Email not confirmed')) {
-          toast({
-            title: "EMAIL NON CONFERMATA",
-            description: "Controlla la tua email e clicca sul link di conferma prima di accedere.",
-            variant: "destructive"
-          });
-        } else if (error.message?.includes('Invalid login credentials')) {
-          toast({
-            title: "CREDENZIALI NON VALIDE",
-            description: "Email o password non corretti. Riprova.",
-            variant: "destructive"
-          });
-        } else {
-          toast({
-            title: "ERRORE LOGIN",
-            description: error.message || "Errore durante il login. Riprova.",
-            variant: "destructive"
-          });
-        }
-        return;
-      }
-      
-      if (data?.user) {
-        console.log('✅ Login completato con successo:', data.user.id);
-        toast({
-          title: "ACCESSO EFFETTUATO",
-          description: "Benvenuto nel PlaygroundJam!",
-        });
-        navigate('/', { replace: true });
-      }
-    } catch (error: any) {
-      console.error('💥 Errore imprevisto durante login:', error);
-      toast({
-        title: "ERRORE",
-        description: "Si è verificato un errore imprevisto. Riprova.",
-        variant: "destructive"
-      });
-    } finally {
+    setErrorMsg('');
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      console.error('❌ Login fallito:', error.message);
+      setErrorMsg('Credenziali errate o account non confermato.');
       setLoading(false);
+      return;
     }
+
+    console.log('✅ Login riuscito:', data.user?.id);
+    toast({
+      title: "Accesso effettuato! 🚀",
+      description: `Benvenuto ${data.user?.email}!`
+    });
+    navigate('/');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-black bg-opacity-50 backdrop-blur-sm border border-purple-500">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-white nike-text">
-            PLAYGROUND JAM
-          </CardTitle>
-          <CardDescription className="text-gray-300">
-            Accedi al tuo account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <Label htmlFor="email" className="text-white flex items-center gap-2">
-                <Mail size={16} />
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-800 border-orange-500 text-white"
-                placeholder="la-tua-email@esempio.com"
-                required
-                disabled={loading}
-              />
-            </div>
-            <div>
-              <Label htmlFor="password" className="text-white flex items-center gap-2">
-                <Lock size={16} />
-                Password
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-gray-800 border-orange-500 text-white pr-10"
-                  placeholder="••••••••"
-                  required
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                  disabled={loading}
-                >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full arcade-button arcade-button-primary"
-            >
-              {loading ? 'ACCESSO IN CORSO...' : 'ACCEDI'}
-            </Button>
-          </form>
-          
-          <div className="mt-6 text-center space-y-2">
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/register')}
-              className="text-purple-300 hover:text-white"
-              disabled={loading}
-            >
-              Non hai un account? Registrati
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => navigate('/')}
-              className="text-gray-400 hover:text-white flex items-center gap-2 mx-auto"
-              disabled={loading}
-            >
-              <ArrowLeft size={16} />
-              Torna alla home
-            </Button>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
+      <div className="max-w-sm w-full bg-white rounded-xl shadow-md p-6">
+        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block mb-1 text-sm font-medium">Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              className="w-full px-3 py-2 border rounded-lg"
+            />
           </div>
-        </CardContent>
-      </Card>
+
+          <div>
+            <label className="block mb-1 text-sm font-medium">Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+          </div>
+
+          {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800"
+          >
+            {loading ? 'Accesso in corso...' : 'Accedi'}
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Non hai un account?{' '}
+          <a href="/register" className="text-blue-500 underline">Registrati</a>
+        </p>
+      </div>
     </div>
   );
 };
