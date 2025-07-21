@@ -3,11 +3,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { SignUpData, AuthResponse } from '@/types/auth';
 
 export async function signUp(email: string, password: string, username: string) {
+  // Use the production domain for email redirects
+  const redirectUrl = window.location.hostname.includes('lovableproject.com') 
+    ? 'https://bologna-jam-courts.lovable.app/confirm-email'
+    : `${window.location.origin}/confirm-email`;
+    
   return supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${window.location.origin}/confirm-email`,
+      emailRedirectTo: redirectUrl,
       data: { username },
     },
   });
