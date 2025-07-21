@@ -29,29 +29,53 @@ export default function AuthPage() {
   const handleEmailLogin = async () => {
     setMessage('')
     setError('')
+    
+    console.log('🔧 Iniziando magic link login per:', email);
+    
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/confirm-email`
+        emailRedirectTo: `${window.location.origin}/confirm-email`,
+        // Aumentiamo la durata del token a 15 minuti (900 secondi)
+        data: {
+          timestamp: new Date().toISOString()
+        }
       }
     })
+    
+    console.log('📧 Risultato invio magic link:', { 
+      success: !error, 
+      error: error?.message,
+      redirectTo: `${window.location.origin}/confirm-email`
+    });
     if (error) {
+      console.error('❌ Errore magic link:', error);
       setError(error.message)
     } else {
-      setMessage('✅ Controlla la tua email per il link di accesso!')
+      console.log('✅ Magic link inviato con successo');
+      setMessage('✅ Controlla la tua email per il link di accesso! (Valido per 15 minuti)')
     }
   }
 
   const handleGitHubLogin = async () => {
     setMessage('')
     setError('')
+    
+    console.log('🔧 Iniziando GitHub OAuth login');
+    
     const { error } = await supabase.auth.signInWithOAuth({ 
       provider: 'github',
       options: {
         redirectTo: `${window.location.origin}/confirm-email`
       }
     })
+    
+    console.log('🐙 Risultato GitHub OAuth:', { 
+      success: !error, 
+      error: error?.message 
+    });
     if (error) {
+      console.error('❌ Errore GitHub OAuth:', error);
       setError(error.message)
     }
   }

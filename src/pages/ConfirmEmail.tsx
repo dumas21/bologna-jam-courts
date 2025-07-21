@@ -1,89 +1,123 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
 
 export default function ConfirmEmailPage() {
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading } = useAuth();
-  const [message, setMessage] = useState('Conferma in corso...');
+  const [message, setMessage] = useState('Verifica in corso...');
   const [error, setError] = useState('');
   const [hasProcessed, setHasProcessed] = useState(false);
 
   useEffect(() => {
-    const confirm = async () => {
+    const handleAuthCallback = async () => {
       if (hasProcessed) return;
       
       try {
-        console.log('🔧 Iniziando conferma email...');
+        console.log('🔧 Gestendo callback autenticazione...');
+        console.log('🔍 URL completo:', window.location.href);
+        console.log('🔍 Hash:', window.location.hash);
+        console.log('🔍 Search:', window.location.search);
         
-        // Gestisce sia hash che query parameters per robustezza
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const queryParams = new URLSearchParams(window.location.search);
+        setHasProcessed(true);
         
-        const access_token = hashParams.get('access_token') || queryParams.get('access_token');
-        const refresh_token = hashParams.get('refresh_token') || queryParams.get('refresh_token');
-        const type = hashParams.get('type') || queryParams.get('type');
-
-        console.log('🔍 Token trovati:', { 
-          hasAccessToken: !!access_token, 
-          hasRefreshToken: !!refresh_token,
-          type 
+        // Per magic links, Supabase gestisce automaticamente l'autenticazione
+        // quando l'utente clicca il link. Dobbiamo solo verificare la sessione.
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        console.log('📊 Sessione corrente:', {
+          hasSession: !!session,
+          userEmail: session?.user?.email,
+          error: sessionError?.message
         });
 
-        if (access_token && refresh_token) {
-          setHasProcessed(true);
+        if (sessionError) {
+          console.error('❌ Errore sessione:', sessionError);
+          throw sessionError;
+        }
+
+        if (session && session.user) {
+          console.log('✅ Utente autenticato con successo:', session.user.email);
+          setMessage('✅ Accesso effettuato con successo!');
           
-          const { data, error } = await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-          
-          if (error) {
-            console.error('❌ Errore setSession:', error);
-            throw error;
-          }
-          
-          console.log('✅ Sessione impostata con successo:', data.user?.email);
-          setMessage('✅ Email confermata! Accesso completato...');
-          
-          // Aspetta che l'hook useAuth rilevi il cambiamento
+          // Redirect con un delay per mostrare il messaggio
           setTimeout(() => {
             console.log('🔄 Reindirizzamento alla home...');
             navigate('/', { replace: true });
-          }, 1500);
+          }, 2000);
           
         } else {
-          console.warn('⚠️ Token mancanti nell\'URL');
-          throw new Error('Link di conferma non valido o scaduto');
+          console.warn('⚠️ Nessuna sessione trovata dopo callback');
+          
+          // Proviamo a gestire manualmente i token dall'URL se presenti
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const access_token = hashParams.get('access_token');
+          const refresh_token = hashParams.get('refresh_token');
+          
+          if (access_token && refresh_token) {
+            console.log('🔄 Tentativo setSession manuale...');
+            const { data, error } = await supabase.auth.setSession({
+              access_token,
+              refresh_token,
+            });
+            
+            if (error) {
+              console.error('❌ Errore setSession manuale:', error);
+              throw error;
+            }
+            
+            console.log('✅ SetSession manuale riuscita:', data.user?.email);
+            setMessage('✅ Accesso effettuato con successo!');
+            setTimeout(() => navigate('/', { replace: true }), 2000);
+          } else {
+            throw new Error('Link di accesso non valido o scaduto. Riprova a fare login.');
+          }
         }
+        
       } catch (err: any) {
-        console.error('💥 Errore durante conferma:', err);
-        setError(err.message || 'Errore durante la conferma');
-        setMessage('❌ Errore durante la conferma');
-        setHasProcessed(true);
+        console.error('💥 Errore durante callback:', err);
+        setError(err.message || 'Errore durante l\'accesso');
+        setMessage('❌ Errore durante l\'accesso');
+        
+        // Dopo 5 secondi, reindirizza alla pagina di login
+        setTimeout(() => {
+          console.log('🔄 Reindirizzamento al login dopo errore...');
+          navigate('/auth', { replace: true });
+        }, 5000);
       }
     };
 
-    if (!hasProcessed && !isLoading) {
-      confirm();
-    }
-  }, [navigate, hasProcessed, isLoading]);
-
-  // Auto-redirect se l'utente è già autenticato
-  useEffect(() => {
-    if (isAuthenticated && hasProcessed) {
-      console.log('✅ Utente già autenticato, reindirizzamento...');
-      navigate('/', { replace: true });
-    }
-  }, [isAuthenticated, hasProcessed, navigate]);
+    // Aggiungiamo un delay per permettere a Supabase di processare l'URL
+    const timer = setTimeout(handleAuthCallback, 500);
+    
+    return () => clearTimeout(timer);
+  }, [navigate, hasProcessed]);
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 bg-gray-100">
       <div className="bg-white p-6 rounded-xl shadow-md text-center max-w-md w-full">
-        <h1 className="text-xl font-bold mb-2">Conferma Email</h1>
-        <p className="text-gray-700">{message}</p>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
+        <h1 className="text-xl font-bold mb-4">Verifica Accesso</h1>
+        <div className="mb-4">
+          {!error ? (
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+          ) : (
+            <div className="text-red-500 text-4xl mb-2">❌</div>
+          )}
+        </div>
+        <p className="text-gray-700 mb-2">{message}</p>
+        {error && (
+          <div className="text-red-500 mt-4 p-3 bg-red-50 rounded-lg">
+            <p className="font-medium">Errore:</p>
+            <p className="text-sm">{error}</p>
+            <p className="text-xs mt-2 text-gray-600">
+              Verrai reindirizzato al login tra pochi secondi...
+            </p>
+          </div>
+        )}
+        {!error && (
+          <p className="text-xs text-gray-500 mt-2">
+            Attendere prego...
+          </p>
+        )}
       </div>
     </div>
   );
