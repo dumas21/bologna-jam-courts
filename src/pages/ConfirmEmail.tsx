@@ -15,8 +15,17 @@ export default function ConfirmEmailPage() {
     (async () => {
       try {
         const url = new URL(window.location.href);
+        console.log('🔍 URL completo:', window.location.href);
+        console.log('🔍 Search params:', url.search);
+        
         const token_hash = url.searchParams.get("token_hash");
         const type = url.searchParams.get("type");
+        
+        console.log('🔍 Parametri estratti:', { 
+          token_hash: token_hash ? 'PRESENTE' : 'MANCANTE', 
+          type: type ? type : 'MANCANTE',
+          allParams: Object.fromEntries(url.searchParams.entries())
+        });
 
         if (!token_hash || !type) throw new Error("Token mancante o link non valido.");
 
