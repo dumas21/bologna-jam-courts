@@ -14,84 +14,79 @@ export default function ConfirmEmailPage() {
   useEffect(() => {
     const handleAuthConfirmation = async () => {
       try {
+        // Gestisce sia URL fragment (#) che query parameters (?)
         const url = new URL(window.location.href);
-        const token_hash = url.searchParams.get("token_hash");
-        const type = url.searchParams.get("type");
+        let token_hash = url.searchParams.get("token_hash");
+        let type = url.searchParams.get("type");
         
-        console.log('🔍 Parametri URL:', { token_hash, type, fullUrl: url.href });
-
+        // Se non trovati nei query params, prova nell'hash fragment
         if (!token_hash || !type) {
-          throw new Error("Link di verifica non valido o scaduto.");
+          const hash = window.location.hash.substring(1); // Rimuove il #
+          const hashParams = new URLSearchParams(hash);
+          token_hash = hashParams.get("access_token") || hashParams.get("token_hash");
+          type = hashParams.get("type") || "magiclink";
+        }
+        
+        console.log('🔍 Parametri URL:', { token_hash, type, fullUrl: url.href, hash: window.location.hash });
+
+        if (!token_hash) {
+          throw new Error("Token mancante nel link. Il link potrebbe essere scaduto o non valido.");
+        }
+        
+        // Se abbiamo un access_token nell'hash, gestiamo come sessione diretta
+        if (window.location.hash.includes("access_token")) {
+          console.log('🔑 Trovato access_token nell\'hash, gestisco sessione...');
+          
+          const { data, error } = await supabase.auth.getSession();
+          if (error) throw error;
+          
+          if (data.session) {
+            console.log('✅ Sessione attiva trovata:', data.session.user.email);
+            toast({ 
+              title: "Login effettuato! 🚀", 
+              description: `Benvenuto ${data.session.user.email}!` 
+            });
+            setStatus("success");
+            setTimeout(() => navigate("/", { replace: true }), 1500);
+            return;
+          }
         }
 
-        setActionType(type);
+        setActionType(type || "login");
 
-        // Gestisci diversi tipi di verifica
-        switch (type) {
-          case 'signup':
-            console.log('📝 Confermando registrazione...');
-            const { data: signupData, error: signupError } = await supabase.auth.verifyOtp({
-              token_hash,
-              type: 'email'
-            });
-            
-            if (signupError) throw signupError;
-            console.log('✅ Registrazione confermata:', signupData);
-            
-            toast({ 
-              title: "Registrazione completata! 🎉", 
-              description: "Il tuo account è ora attivo." 
-            });
-            break;
-
-          case 'email':
-          case 'email_change':
-            console.log('📧 Confermando cambio email...');
-            const { data: emailData, error: emailError } = await supabase.auth.verifyOtp({
-              token_hash,
-              type: 'email'
-            });
-            
-            if (emailError) throw emailError;
-            console.log('✅ Email confermata:', emailData);
-            
-            toast({ 
-              title: "Email confermata!", 
-              description: "La tua email è stata aggiornata." 
-            });
-            break;
-
-          case 'magiclink':
-            console.log('🔗 Processando magic link login...');
+        // Gestione più robusta dei magic link
+        if (type === 'magiclink' || !type) {
+          console.log('🔗 Processando magic link...');
+          
+          // Prova prima verifyOtp
+          try {
             const { data: loginData, error: loginError } = await supabase.auth.verifyOtp({
               token_hash,
               type: 'magiclink'
             });
             
-            if (loginError) throw loginError;
-            console.log('✅ Login con magic link completato:', loginData);
+            if (loginError && loginError.message?.includes('Invalid')) {
+              // Se fallisce, prova con il metodo alternativo
+              console.log('🔄 Tentativo metodo alternativo...');
+              const { data: sessionData, error: sessionError } = await supabase.auth.exchangeCodeForSession(token_hash);
+              
+              if (sessionError) throw sessionError;
+              console.log('✅ Login completato (metodo alternativo):', sessionData);
+            } else if (loginError) {
+              throw loginError;
+            } else {
+              console.log('✅ Login con magic link completato:', loginData);
+            }
             
             toast({ 
               title: "Login effettuato! 🚀", 
               description: "Benvenuto!" 
             });
-            break;
-
-          default:
-            // Prova con il tipo generico
-            console.log('🔄 Tentativo verifica generica...');
-            const { data: genericData, error: genericError } = await supabase.auth.verifyOtp({
-              token_hash,
-              type: type as any
-            });
             
-            if (genericError) throw genericError;
-            console.log('✅ Verifica generica completata:', genericData);
-            
-            toast({ 
-              title: "Verifica completata!", 
-              description: "Ora puoi accedere." 
-            });
+          } catch (magicError) {
+            console.error('❌ Errore magic link:', magicError);
+            throw magicError;
+          }
         }
 
         // Verifica se l'utente è ora loggato
