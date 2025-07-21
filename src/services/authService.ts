@@ -78,15 +78,66 @@ export class AuthService {
 
   static async signOut(): Promise<AuthResponse> {
     console.log('🚪 Avvio logout');
-    const { error } = await supabase.auth.signOut();
     
-    if (!error) {
-      console.log('✅ Logout completato');
-    } else {
-      console.error('❌ Errore durante logout:', error);
+    try {
+      // Prima prova il logout normale di Supabase
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('❌ Errore durante logout Supabase:', error);
+      } else {
+        console.log('✅ Logout Supabase completato');
+      }
+      
+      // Pulisci manualmente il localStorage come backup
+      console.log('🧹 Pulizia localStorage...');
+      try {
+        // Rimuovi tutte le chiavi relative a Supabase
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (
+            key.startsWith('supabase.') || 
+            key.includes('auth-token') || 
+            key.includes('sb-') ||
+            key === 'supabase-auth-token'
+          )) {
+            keysToRemove.push(key);
+          }
+        }
+        
+        keysToRemove.forEach(key => {
+          localStorage.removeItem(key);
+          console.log('🗑️ Rimossa chiave:', key);
+        });
+        
+        // Pulisci anche sessionStorage
+        sessionStorage.clear();
+        console.log('🧹 Pulizia sessionStorage completata');
+        
+      } catch (storageError) {
+        console.error('⚠️ Errore pulizia storage:', storageError);
+      }
+      
+      // Forza il refresh della sessione
+      window.location.reload();
+      
+      return { data: null, error };
+      
+    } catch (err: any) {
+      console.error('💥 Errore completo logout:', err);
+      
+      // Se tutto fallisce, pulisci tutto e ricarica
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+        window.location.reload();
+      } catch (e) {
+        console.error('💥 Errore critico:', e);
+      }
+      
+      return { data: null, error: err };
     }
-    
-    return { data: null, error };
   }
 
   private static async ensureUserProfile(user: any): Promise<void> {
