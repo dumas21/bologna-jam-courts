@@ -16,16 +16,26 @@ export default function ConfirmEmailPage() {
       try {
         const url = new URL(window.location.href);
         const token_hash = url.searchParams.get("token_hash");
-        const type = url.searchParams.get("type") || "email";
+        const type = url.searchParams.get("type");
 
-        if (!token_hash) throw new Error("Token mancante o link non valido.");
+        if (!token_hash || !type) throw new Error("Token mancante o link non valido.");
 
-        const { error } = await supabase.auth.verifyOtp({ token_hash, type: type as any });
+        console.log('🔍 Verifica email con:', { token_hash, type });
 
-        if (error) throw error;
+        const { data, error } = await supabase.auth.verifyOtp({ 
+          token_hash, 
+          type: type as any 
+        });
 
+        if (error) {
+          console.error('❌ Errore verifica:', error);
+          throw error;
+        }
+
+        console.log('✅ Email confermata con successo:', data);
+        
         toast({ title: "Email confermata!", description: "Ora puoi accedere." });
-        navigate("/login", { replace: true });
+        navigate("/", { replace: true });
       } catch (err: any) {
         console.error("Errore nella verifica OTP:", err.message);
         setErrorMsg(err.message || "Errore imprevisto");
