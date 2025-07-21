@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      newsletter_subscribers: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          source: string | null
+          subscribed_at: string | null
+          unsubscribed_at: string | null
+          updated_at: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          source?: string | null
+          subscribed_at?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          source?: string | null
+          subscribed_at?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       playground_messages: {
         Row: {
           created_at: string | null
@@ -157,6 +196,10 @@ export type Database = {
           p_user_agent?: string
         }
         Returns: string
+      }
+      unsubscribe_newsletter: {
+        Args: { subscriber_email: string }
+        Returns: boolean
       }
     }
     Enums: {
