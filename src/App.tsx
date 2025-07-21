@@ -18,6 +18,7 @@ import Login from "./pages/Login";
 import Logout from "./pages/Logout";
 import AuthCallback from "./pages/AuthCallback";
 import ConfirmEmail from "./pages/ConfirmEmail";
+import AuthPage from "./pages/AuthPage";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
@@ -55,6 +56,7 @@ const App = () => {
               <Route path="/logout" element={<Logout />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/confirm-email" element={<ConfirmEmail />} />
+              <Route path="/auth" element={<AuthPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

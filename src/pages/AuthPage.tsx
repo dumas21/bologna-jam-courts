@@ -32,7 +32,7 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth`
+        emailRedirectTo: `${window.location.origin}/confirm-email`
       }
     })
     if (error) {
@@ -48,7 +48,7 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOAuth({ 
       provider: 'github',
       options: {
-        redirectTo: `${window.location.origin}/auth`
+        redirectTo: `${window.location.origin}/confirm-email`
       }
     })
     if (error) {
