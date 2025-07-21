@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -20,58 +21,81 @@ export default function ConfirmEmailPage() {
         
         setHasProcessed(true);
         
-        // Per magic links, Supabase gestisce automaticamente l'autenticazione
-        // quando l'utente clicca il link. Dobbiamo solo verificare la sessione.
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        // Parsing completo dei parametri dall'hash e dalla query string
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const queryParams = new URLSearchParams(window.location.search);
         
-        console.log('📊 Sessione corrente:', {
-          hasSession: !!session,
-          userEmail: session?.user?.email,
-          error: sessionError?.message
+        const access_token = hashParams.get('access_token') || queryParams.get('access_token');
+        const refresh_token = hashParams.get('refresh_token') || queryParams.get('refresh_token');
+        const type = hashParams.get('type') || queryParams.get('type');
+        const token_hash = hashParams.get('token_hash') || queryParams.get('token_hash');
+        const token = hashParams.get('token') || queryParams.get('token');
+        
+        console.log('📋 Parametri estratti:', {
+          access_token: access_token ? 'PRESENTE' : 'MANCANTE',
+          refresh_token: refresh_token ? 'PRESENTE' : 'MANCANTE',
+          type,
+          token_hash: token_hash ? 'PRESENTE' : 'MANCANTE',
+          token: token ? 'PRESENTE' : 'MANCANTE'
         });
 
+        // STRATEGIA 1: Se abbiamo access_token e refresh_token, usiamo setSession
+        if (access_token && refresh_token) {
+          console.log('🔑 Tentativo setSession con token dall\'URL...');
+          const { data, error } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          });
+          
+          if (error) {
+            console.error('❌ Errore setSession:', error);
+            throw error;
+          }
+          
+          console.log('✅ SetSession riuscita:', data.user?.email);
+          setMessage('✅ Accesso effettuato con successo!');
+          setTimeout(() => navigate('/', { replace: true }), 2000);
+          return;
+        }
+
+        // STRATEGIA 2: Se abbiamo token_hash e type, usiamo verifyOtp
+        if (token_hash && type) {
+          console.log(`🔐 Tentativo verifyOtp per type: ${type}...`);
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash,
+            type: type as any, // signup, magiclink, recovery, etc.
+          });
+          
+          if (error) {
+            console.error('❌ Errore verifyOtp:', error);
+            throw error;
+          }
+          
+          console.log('✅ VerifyOtp riuscita:', data.user?.email);
+          setMessage('✅ Accesso effettuato con successo!');
+          setTimeout(() => navigate('/', { replace: true }), 2000);
+          return;
+        }
+
+        // STRATEGIA 3: Controllo sessione esistente
+        console.log('🔍 Controllo sessione esistente...');
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
         if (sessionError) {
           console.error('❌ Errore sessione:', sessionError);
           throw sessionError;
         }
 
         if (session && session.user) {
-          console.log('✅ Utente autenticato con successo:', session.user.email);
-          setMessage('✅ Accesso effettuato con successo!');
-          
-          // Redirect con un delay per mostrare il messaggio
-          setTimeout(() => {
-            console.log('🔄 Reindirizzamento alla home...');
-            navigate('/', { replace: true });
-          }, 2000);
-          
-        } else {
-          console.warn('⚠️ Nessuna sessione trovata dopo callback');
-          
-          // Proviamo a gestire manualmente i token dall'URL se presenti
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          const access_token = hashParams.get('access_token');
-          const refresh_token = hashParams.get('refresh_token');
-          
-          if (access_token && refresh_token) {
-            console.log('🔄 Tentativo setSession manuale...');
-            const { data, error } = await supabase.auth.setSession({
-              access_token,
-              refresh_token,
-            });
-            
-            if (error) {
-              console.error('❌ Errore setSession manuale:', error);
-              throw error;
-            }
-            
-            console.log('✅ SetSession manuale riuscita:', data.user?.email);
-            setMessage('✅ Accesso effettuato con successo!');
-            setTimeout(() => navigate('/', { replace: true }), 2000);
-          } else {
-            throw new Error('Link di accesso non valido o scaduto. Riprova a fare login.');
-          }
+          console.log('✅ Sessione esistente trovata:', session.user.email);
+          setMessage('✅ Accesso già effettuato!');
+          setTimeout(() => navigate('/', { replace: true }), 2000);
+          return;
         }
+
+        // STRATEGIA 4: Fallback - nessun token valido trovato
+        console.warn('⚠️ Nessun token valido trovato nell\'URL');
+        throw new Error('Link di accesso non valido o scaduto. Riprova a fare login.');
         
       } catch (err: any) {
         console.error('💥 Errore durante callback:', err);
@@ -86,7 +110,7 @@ export default function ConfirmEmailPage() {
       }
     };
 
-    // Aggiungiamo un delay per permettere a Supabase di processare l'URL
+    // Delay per permettere a Supabase di processare l'URL
     const timer = setTimeout(handleAuthCallback, 500);
     
     return () => clearTimeout(timer);
