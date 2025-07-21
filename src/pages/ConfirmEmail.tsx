@@ -20,6 +20,21 @@ export default function ConfirmEmailPage() {
         console.log('🔍 Search:', window.location.search);
         
         setHasProcessed(true);
+
+        // STRATEGIA 0: Controllo sessione PRIMA di tutto
+        console.log('🔍 Controllo sessione esistente PRIMA...');
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error('❌ Errore sessione:', sessionError);
+        }
+
+        if (session && session.user) {
+          console.log('✅ UTENTE GIÀ AUTENTICATO:', session.user.email);
+          setMessage('✅ Accesso già effettuato!');
+          setTimeout(() => navigate('/', { replace: true }), 1000);
+          return;
+        }
         
         // Parsing completo dei parametri dall'hash e dalla query string
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
@@ -77,17 +92,17 @@ export default function ConfirmEmailPage() {
           return;
         }
 
-        // STRATEGIA 3: Controllo sessione esistente
-        console.log('🔍 Controllo sessione esistente...');
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        // STRATEGIA 3: Secondo controllo sessione (se i token non hanno funzionato)
+        console.log('🔍 Secondo controllo sessione...');
+        const { data: { session: existingSession }, error: existingSessionError } = await supabase.auth.getSession();
         
-        if (sessionError) {
-          console.error('❌ Errore sessione:', sessionError);
-          throw sessionError;
+        if (existingSessionError) {
+          console.error('❌ Errore sessione:', existingSessionError);
+          throw existingSessionError;
         }
 
-        if (session && session.user) {
-          console.log('✅ Sessione esistente trovata:', session.user.email);
+        if (existingSession && existingSession.user) {
+          console.log('✅ Sessione esistente trovata:', existingSession.user.email);
           setMessage('✅ Accesso già effettuato!');
           setTimeout(() => navigate('/', { replace: true }), 2000);
           return;
