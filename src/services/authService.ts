@@ -77,11 +77,13 @@ export class AuthService {
   }
 
   static async signOut(): Promise<AuthResponse> {
-    console.log('🚪 Avvio logout');
+    console.log('🚪 Avvio logout completo');
     
     try {
       // Prima prova il logout normale di Supabase
-      const { error } = await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut({
+        scope: 'global' // Forza logout globale
+      });
       
       if (error) {
         console.error('❌ Errore durante logout Supabase:', error);
@@ -89,55 +91,58 @@ export class AuthService {
         console.log('✅ Logout Supabase completato');
       }
       
-      // Pulisci manualmente il localStorage come backup
-      console.log('🧹 Pulizia localStorage...');
-      try {
-        // Rimuovi tutte le chiavi relative a Supabase
-        const keysToRemove = [];
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && (
-            key.startsWith('supabase.') || 
-            key.includes('auth-token') || 
-            key.includes('sb-') ||
-            key === 'supabase-auth-token'
-          )) {
-            keysToRemove.push(key);
-          }
-        }
-        
-        keysToRemove.forEach(key => {
-          localStorage.removeItem(key);
-          console.log('🗑️ Rimossa chiave:', key);
-        });
-        
-        // Pulisci anche sessionStorage
-        sessionStorage.clear();
-        console.log('🧹 Pulizia sessionStorage completata');
-        
-      } catch (storageError) {
-        console.error('⚠️ Errore pulizia storage:', storageError);
-      }
-      
-      // Forza il refresh della sessione
-      window.location.reload();
-      
-      return { data: null, error };
-      
-    } catch (err: any) {
-      console.error('💥 Errore completo logout:', err);
-      
-      // Se tutto fallisce, pulisci tutto e ricarica
-      try {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.reload();
-      } catch (e) {
-        console.error('💥 Errore critico:', e);
-      }
-      
-      return { data: null, error: err };
+    } catch (err) {
+      console.error('💥 Errore logout Supabase:', err);
     }
+    
+    // Pulizia aggressiva di tutto lo storage
+    console.log('🧹 Pulizia completa storage...');
+    try {
+      // Lista tutte le chiavi di localStorage
+      const allKeys = Object.keys(localStorage);
+      console.log('🔍 Chiavi trovate:', allKeys);
+      
+      // Rimuovi TUTTE le chiavi (pulizia aggressiva)
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Pulizia extra per chiavi specifiche di Supabase
+      const supabaseKeys = [
+        'supabase.auth.token',
+        'sb-mpflsxdvvvajzkiyuiur-auth-token',
+        'supabase.session',
+        'auth-token'
+      ];
+      
+      supabaseKeys.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+      
+      console.log('🧹 Pulizia storage completata');
+      
+    } catch (storageError) {
+      console.error('⚠️ Errore pulizia storage:', storageError);
+    }
+    
+    // Pulisci anche i cookie di autenticazione se presenti
+    try {
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      console.log('🍪 Cookie puliti');
+    } catch (cookieError) {
+      console.error('⚠️ Errore pulizia cookie:', cookieError);
+    }
+    
+    console.log('🔄 Forzo ricarica pagina...');
+    
+    // Aspetta un momento e poi ricarica
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100);
+    
+    return { data: null, error: null };
   }
 
   private static async ensureUserProfile(user: any): Promise<void> {
