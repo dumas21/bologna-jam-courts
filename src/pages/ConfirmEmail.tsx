@@ -25,23 +25,37 @@ export default function ConfirmEmailPage() {
         return;
       }
 
-      // Estrai token da location.hash
-      if (window.location.hash) {
+      // Estrai token da location.hash o URL params
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const searchParams = new URLSearchParams(window.location.search);
+      
+      // Controlla entrambi i formati
+      const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
+      const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
+      
+      if (accessToken && refreshToken) {
         try {
-          // Processa i parametri nell'hash per creare la sessione
-          const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.hash);
+          console.log('🔧 Imposto sessione con token ricevuti');
+          
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          
           if (error) {
-            setError(`Errore: ${error.message}`);
+            setError(`Errore nell'impostazione sessione: ${error.message}`);
             return;
           }
+          
           if (data.session) {
             setSession(data.session);
             setUser(data.session.user);
             setTimeout(() => navigate("/", { replace: true }), 1000);
           } else {
-            setError("Link di conferma non valido o scaduto");
+            setError("Sessione non valida");
           }
         } catch (err) {
+          console.error('Errore setSession:', err);
           setError("Errore durante l'autenticazione");
         }
       } else {
