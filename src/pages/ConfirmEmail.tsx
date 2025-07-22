@@ -26,34 +26,22 @@ export default function ConfirmEmailPage() {
       }
 
       // Estrai token da location.hash
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const access_token = hashParams.get('access_token');
-      const refresh_token = hashParams.get('refresh_token');
-
-      if (access_token && refresh_token) {
+      if (window.location.hash) {
         try {
-          // Imposta la sessione manualmente
-          const { data, error } = await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-
+          // Processa i parametri nell'hash per creare la sessione
+          const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.hash);
           if (error) {
-            console.error('❌ Errore setSession:', error);
-            setError("Errore durante l'accesso: " + error.message);
+            setError(`Errore: ${error.message}`);
             return;
           }
-
           if (data.session) {
-            console.log('✅ Login completato con successo tramite setSession');
             setSession(data.session);
             setUser(data.session.user);
             setTimeout(() => navigate("/", { replace: true }), 1000);
           } else {
-            setError("Sessione non trovata dopo setSession");
+            setError("Link di conferma non valido o scaduto");
           }
         } catch (err) {
-          console.error('❌ Errore setSession:', err);
           setError("Errore durante l'autenticazione");
         }
       } else {
