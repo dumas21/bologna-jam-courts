@@ -1,10 +1,11 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from '@/lib/supabase-auth';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -16,7 +17,7 @@ export default function RegisterPage() {
     setStatus('loading');
     setErrorMsg('');
 
-    const { data, error } = await signUp(email, password, username);
+    const { error } = await signUp(email, password, username);
 
     if (error) {
       setStatus('error');

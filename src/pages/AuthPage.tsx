@@ -1,36 +1,88 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/integrations/supabase/client'
+import { useAuth } from '@/hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
 
 export default function AuthPage() {
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [isSignUp, setIsSignUp] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
-  const [session, setSession] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  
+  const { user, session, signUp, signInWithPassword } = useAuth()
+  const navigate = useNavigate()
 
-  // Al mount: controlla sessione
+  // Redirect se già autenticato
   useEffect(() => {
-    const fetchSession = async () => {
-      const { data } = await supabase.auth.getSession()
-      setSession(data.session)
+    if (user && session) {
+      navigate('/', { replace: true })
+    }
+  }, [user, session, navigate])
+
+  const handleEmailPasswordAuth = async () => {
+    if (!email || !password) {
+      setError('Email e password sono obbligatori')
+      return
     }
 
-    fetchSession()
-
-    // Listener per cambiamento auth
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => {
-      listener?.subscription.unsubscribe()
-    }
-  }, [])
-
-  const handleEmailLogin = async () => {
     setMessage('')
     setError('')
+    setIsLoading(true)
     
-    console.log('🔧 Iniziando magic link login per:', email);
+    try {
+      if (isSignUp) {
+        if (!username) {
+          setError('Username è obbligatorio per la registrazione')
+          setIsLoading(false)
+          return
+        }
+        
+        console.log('🚀 Avvio registrazione con:', { email, username })
+        
+        const { error } = await signUp(email, password, username)
+        
+        if (error) {
+          console.error('❌ Errore durante registrazione:', error)
+          setError(error.message)
+        } else {
+          console.log('✅ Registrazione completata - controlla email')
+          setMessage('✅ Registrazione completata! Controlla la tua email per confermare l\'account.')
+        }
+      } else {
+        console.log('🔑 Tentativo di login con email:', email)
+        
+        const { error } = await signInWithPassword(email, password)
+        
+        if (error) {
+          console.error('❌ Errore durante login:', error)
+          setError(error.message)
+        } else {
+          console.log('✅ Login completato con successo')
+          setMessage('✅ Login effettuato con successo!')
+        }
+      }
+    } catch (err: any) {
+      console.error('💥 Errore imprevisto:', err)
+      setError('Errore durante l\'autenticazione')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleMagicLinkLogin = async () => {
+    if (!email) {
+      setError('Email è obbligatoria')
+      return
+    }
+
+    setMessage('')
+    setError('')
+    setIsLoading(true)
+    
+    console.log('🔧 Iniziando magic link login per:', email)
     
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
@@ -39,91 +91,93 @@ export default function AuthPage() {
       }
     })
     
-    console.log('📧 Risultato invio magic link:', { 
-      success: !error, 
-      error: error?.message,
-      redirectTo: `${window.location.origin}/confirm-email`
-    });
     if (error) {
-      console.error('❌ Errore magic link:', error);
+      console.error('❌ Errore magic link:', error)
       setError(error.message)
     } else {
-      console.log('✅ Magic link inviato con successo');
-      setMessage('✅ Controlla la tua email per il link di accesso! (Valido per 15 minuti)')
+      console.log('✅ Magic link inviato con successo')
+      setMessage('✅ Controlla la tua email per il link di accesso!')
     }
+    setIsLoading(false)
   }
 
-  const handleGitHubLogin = async () => {
-    setMessage('')
-    setError('')
-    
-    console.log('🔧 Iniziando GitHub OAuth login');
-    
-    const { error } = await supabase.auth.signInWithOAuth({ 
-      provider: 'github',
-      options: {
-        redirectTo: `${window.location.origin}/confirm-email`
-      }
-    })
-    
-    console.log('🐙 Risultato GitHub OAuth:', { 
-      success: !error, 
-      error: error?.message 
-    });
-    if (error) {
-      console.error('❌ Errore GitHub OAuth:', error);
-      setError(error.message)
-    }
-  }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setSession(null)
+  if (user && session) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+        <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full text-center">
+          <p className="text-green-600 font-semibold">✅ Sei già autenticato!</p>
+          <p>Reindirizzamento in corso...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full text-center">
-        <h1 className="text-2xl font-bold mb-4">LOVABLE - Login</h1>
+      <div className="bg-white p-6 rounded-xl shadow-lg max-w-md w-full">
+        <h1 className="text-2xl font-bold mb-6 text-center">
+          {isSignUp ? 'Registrazione' : 'Accesso'}
+        </h1>
 
-        {session ? (
-          <div className="space-y-4">
-            <p className="text-green-600 font-semibold">✅ Accesso effettuato!</p>
-            <p>Email: {session.user?.email}</p>
-            <p>Scadenza: {new Date(session.expires_at! * 1000).toLocaleString()}</p>
+        <div className="space-y-4">
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="Email"
+            className="border p-3 w-full rounded-lg"
+            disabled={isLoading}
+          />
+          
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            placeholder="Password"
+            className="border p-3 w-full rounded-lg"
+            disabled={isLoading}
+          />
+          
+          {isSignUp && (
+            <input
+              type="text"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+              placeholder="Username"
+              className="border p-3 w-full rounded-lg"
+              disabled={isLoading}
+            />
+          )}
+          
+          <button
+            onClick={handleEmailPasswordAuth}
+            disabled={isLoading}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isLoading ? 'Caricamento...' : (isSignUp ? 'Registrati' : 'Accedi')}
+          </button>
+          
+          <button
+            onClick={() => setIsSignUp(!isSignUp)}
+            className="w-full text-blue-600 py-2"
+            disabled={isLoading}
+          >
+            {isSignUp ? 'Hai già un account? Accedi' : 'Non hai un account? Registrati'}
+          </button>
+          
+          <div className="border-t pt-4">
             <button
-              onClick={handleLogout}
-              className="mt-4 bg-red-500 text-white py-2 px-4 rounded"
+              onClick={handleMagicLinkLogin}
+              disabled={isLoading}
+              className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
-              Esci
+              {isLoading ? 'Caricamento...' : 'Accedi con Magic Link'}
             </button>
           </div>
-        ) : (
-          <>
-            <input
-              type="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="Inserisci email"
-              className="border p-2 w-full mb-3 rounded"
-            />
-            <button
-              onClick={handleEmailLogin}
-              className="w-full bg-blue-600 text-white py-2 rounded mb-2"
-            >
-              Login con Email
-            </button>
-            <button
-              onClick={handleGitHubLogin}
-              className="w-full bg-gray-800 text-white py-2 rounded"
-            >
-              Login con GitHub
-            </button>
 
-            {message && <p className="text-green-600 mt-3">{message}</p>}
-            {error && <p className="text-red-500 mt-3">{error}</p>}
-          </>
-        )}
+          {message && <p className="text-green-600 mt-3 text-center">{message}</p>}
+          {error && <p className="text-red-500 mt-3 text-center">{error}</p>}
+        </div>
       </div>
     </div>
   )
