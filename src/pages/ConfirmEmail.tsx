@@ -25,37 +25,46 @@ export default function ConfirmEmailPage() {
         return;
       }
 
-      // FALLBACK DI EMERGENZA - Controlla token nell'hash
+      // GESTIONE MULTIPLA: Email confirmation, OTP, OAuth
+      
+      // Caso 1: OAuth redirect (da GitHub/Google)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('code') || urlParams.get('access_token')) {
+        console.log('🔧 Rilevato OAuth redirect, Supabase gestirà automaticamente');
+        // Per OAuth, Supabase gestisce automaticamente il redirect
+        return;
+      }
+
+      // Caso 2: Hash con token (magic link/OTP)
       const hashParams = new URLSearchParams(window.location.hash.substring(1));
       const access_token = hashParams.get('access_token');
       const refresh_token = hashParams.get('refresh_token');
 
-      if (!access_token || !refresh_token) {
-        console.warn("Token mancante, link probabilmente corrotto.");
-        setError("Token mancante o link non valido. Il link potrebbe essere stato scansionato dal provider email.");
-        return;
-      }
+      if (access_token && refresh_token) {
+        console.log('🔧 Token trovati nell\'hash, imposto sessione');
+        
+        try {
+          const { data, error } = await supabase.auth.setSession({
+            access_token,
+            refresh_token,
+          });
 
-      console.log('🔧 Token trovati, imposto sessione');
-      
-      try {
-        const { data, error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
-
-        if (error) {
-          setError("Errore nella sessione: " + error.message);
-        } else if (data.session) {
-          setSession(data.session);
-          setUser(data.session.user);
-          setTimeout(() => navigate("/", { replace: true }), 1000);
-        } else {
-          setError("Sessione non valida");
+          if (error) {
+            setError("Errore nella sessione: " + error.message);
+          } else if (data.session) {
+            setSession(data.session);
+            setUser(data.session.user);
+            setTimeout(() => navigate("/", { replace: true }), 1000);
+          } else {
+            setError("Sessione non valida");
+          }
+        } catch (err) {
+          console.error('💥 Errore setSession:', err);
+          setError("Errore durante l'impostazione della sessione");
         }
-      } catch (err) {
-        console.error('💥 Errore setSession:', err);
-        setError("Errore durante l'impostazione della sessione");
+      } else {
+        console.warn("⚠️ Nessun token trovato in URL o hash");
+        setError("Link non valido o token mancanti. Il link potrebbe essere stato scansionato dal provider email.");
       }
     };
 

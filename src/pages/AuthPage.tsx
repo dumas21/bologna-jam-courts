@@ -82,21 +82,63 @@ export default function AuthPage() {
     setError('')
     setIsLoading(true)
     
-    console.log('🔧 Iniziando magic link per:', email)
+    console.log('🔧 Iniziando OTP passwordless per:', email)
     
-    const { error } = await supabase.auth.signInWithOtp({ 
+    const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: 'https://bologna-jam-courts.lovable.app/confirm-email'
+        emailRedirectTo: 'https://bologna-jam-courts.lovable.app/confirm-email',
+      },
+    })
+    
+    if (error) {
+      console.error('❌ Errore OTP:', error)
+      setError(error.message)
+    } else {
+      console.log('✅ Codice OTP inviato con successo')
+      setMessage('✅ Controlla la tua email per il codice/link di accesso!')
+    }
+    setIsLoading(false)
+  }
+
+  const handleGitHubLogin = async () => {
+    setMessage('')
+    setError('')
+    setIsLoading(true)
+    
+    console.log('🔧 Iniziando GitHub OAuth')
+    
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider: 'github',
+      options: {
+        redirectTo: 'https://bologna-jam-courts.lovable.app/confirm-email'
       }
     })
     
     if (error) {
-      console.error('❌ Errore magic link:', error)
+      console.error('❌ Errore GitHub OAuth:', error)
       setError(error.message)
-    } else {
-      console.log('✅ Magic link inviato con successo')
-      setMessage('✅ Controlla la tua email per il link di accesso!')
+    }
+    setIsLoading(false)
+  }
+
+  const handleGoogleLogin = async () => {
+    setMessage('')
+    setError('')
+    setIsLoading(true)
+    
+    console.log('🔧 Iniziando Google OAuth')
+    
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider: 'google',
+      options: {
+        redirectTo: 'https://bologna-jam-courts.lovable.app/confirm-email'
+      }
+    })
+    
+    if (error) {
+      console.error('❌ Errore Google OAuth:', error)
+      setError(error.message)
     }
     setIsLoading(false)
   }
@@ -165,14 +207,36 @@ export default function AuthPage() {
             {isSignUp ? 'Hai già un account? Accedi' : 'Non hai un account? Registrati'}
           </button>
           
-          <div className="border-t pt-4">
+          <div className="border-t pt-4 space-y-3">
             <button
               onClick={handleMagicLinkLogin}
               disabled={isLoading}
               className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 disabled:opacity-50"
             >
-              {isLoading ? 'Caricamento...' : 'Accedi con Magic Link'}
+              {isLoading ? 'Caricamento...' : 'Accedi con OTP (Solo Email)'}
             </button>
+            
+            <div className="flex space-x-2">
+              <button
+                onClick={handleGitHubLogin}
+                disabled={isLoading}
+                className="flex-1 bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-900 disabled:opacity-50 flex items-center justify-center"
+              >
+                🐙 GitHub
+              </button>
+              
+              <button
+                onClick={handleGoogleLogin}
+                disabled={isLoading}
+                className="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center justify-center"
+              >
+                🔍 Google
+              </button>
+            </div>
+            
+            <p className="text-xs text-gray-500 text-center">
+              Metodi di accesso alternativi - più veloci e affidabili!
+            </p>
           </div>
 
           {message && <p className="text-green-600 mt-3 text-center">{message}</p>}
