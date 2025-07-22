@@ -9,19 +9,17 @@ export class AuthService {
       
       console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
-      const redirectUrl = `${window.location.origin}/confirm-email`;
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl,
+          emailRedirectTo: 'https://bologna-jam-courts.lovable.app/confirm-email',
           data: { username },
         },
       });
 
       if (error) {
-        console.error('❌ Errore durante registrazione:', error);
+        console.error("Errore registrazione:", error.message);
         throw error;
       }
 

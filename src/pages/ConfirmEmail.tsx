@@ -25,53 +25,37 @@ export default function ConfirmEmailPage() {
         return;
       }
 
-      // Estrai token da location.hash
-      if (window.location.hash) {
-        try {
-          const hashParams = new URLSearchParams(window.location.hash.substring(1));
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          
-          if (accessToken && refreshToken) {
-            console.log('🔧 Token trovati, imposto sessione');
-            const { data, error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken
-            });
-            
-            if (error) {
-              setError(`Errore: ${error.message}`);
-              return;
-            }
-            if (data.session) {
-              setSession(data.session);
-              setUser(data.session.user);
-              setTimeout(() => navigate("/", { replace: true }), 1000);
-            } else {
-              setError("Sessione non valida");
-            }
-          } else {
-            console.log('⚠️ Token mancanti, provo exchangeCodeForSession');
-            const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.hash);
-            if (error) {
-              setError(`Errore: ${error.message}`);
-              return;
-            }
-            if (data.session) {
-              setSession(data.session);
-              setUser(data.session.user);
-              setTimeout(() => navigate("/", { replace: true }), 1000);
-            } else {
-              setError("Link di conferma non valido o scaduto");
-            }
-          }
-        } catch (err) {
-          console.error('Errore durante l\'autenticazione:', err);
-          setError("Errore durante l'autenticazione");
+      // FALLBACK DI EMERGENZA - Controlla token nell'hash
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const access_token = hashParams.get('access_token');
+      const refresh_token = hashParams.get('refresh_token');
+
+      if (!access_token || !refresh_token) {
+        console.warn("Token mancante, link probabilmente corrotto.");
+        setError("Token mancante o link non valido. Il link potrebbe essere stato scansionato dal provider email.");
+        return;
+      }
+
+      console.log('🔧 Token trovati, imposto sessione');
+      
+      try {
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+
+        if (error) {
+          setError("Errore nella sessione: " + error.message);
+        } else if (data.session) {
+          setSession(data.session);
+          setUser(data.session.user);
+          setTimeout(() => navigate("/", { replace: true }), 1000);
+        } else {
+          setError("Sessione non valida");
         }
-      } else {
-        console.log('⚠️ Token mancanti nell\'URL');
-        setError("Link di conferma non valido o scaduto");
+      } catch (err) {
+        console.error('💥 Errore setSession:', err);
+        setError("Errore durante l'impostazione della sessione");
       }
     };
 
