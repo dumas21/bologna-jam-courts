@@ -25,37 +25,48 @@ export default function ConfirmEmailPage() {
         return;
       }
 
-      // Estrai token da location.hash o URL params
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const searchParams = new URLSearchParams(window.location.search);
-      
-      // Controlla entrambi i formati
-      const accessToken = hashParams.get('access_token') || searchParams.get('access_token');
-      const refreshToken = hashParams.get('refresh_token') || searchParams.get('refresh_token');
-      
-      if (accessToken && refreshToken) {
+      // Estrai token da location.hash
+      if (window.location.hash) {
         try {
-          console.log('🔧 Imposto sessione con token ricevuti');
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
           
-          const { data, error } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken
-          });
-          
-          if (error) {
-            setError(`Errore nell'impostazione sessione: ${error.message}`);
-            return;
-          }
-          
-          if (data.session) {
-            setSession(data.session);
-            setUser(data.session.user);
-            setTimeout(() => navigate("/", { replace: true }), 1000);
+          if (accessToken && refreshToken) {
+            console.log('🔧 Token trovati, imposto sessione');
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken
+            });
+            
+            if (error) {
+              setError(`Errore: ${error.message}`);
+              return;
+            }
+            if (data.session) {
+              setSession(data.session);
+              setUser(data.session.user);
+              setTimeout(() => navigate("/", { replace: true }), 1000);
+            } else {
+              setError("Sessione non valida");
+            }
           } else {
-            setError("Sessione non valida");
+            console.log('⚠️ Token mancanti, provo exchangeCodeForSession');
+            const { data, error } = await supabase.auth.exchangeCodeForSession(window.location.hash);
+            if (error) {
+              setError(`Errore: ${error.message}`);
+              return;
+            }
+            if (data.session) {
+              setSession(data.session);
+              setUser(data.session.user);
+              setTimeout(() => navigate("/", { replace: true }), 1000);
+            } else {
+              setError("Link di conferma non valido o scaduto");
+            }
           }
         } catch (err) {
-          console.error('Errore setSession:', err);
+          console.error('Errore durante l\'autenticazione:', err);
           setError("Errore durante l'autenticazione");
         }
       } else {
