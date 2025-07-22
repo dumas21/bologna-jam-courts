@@ -10,51 +10,70 @@ export default function ConfirmEmailPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const checkSession = async () => {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
+    const handleAuth = async () => {
+      console.log('🔍 URL completo:', window.location.href);
+      console.log('🔍 Hash:', window.location.hash);
+      console.log('🔍 Search:', window.location.search);
 
-      if (error) {
-        setError("Errore durante il recupero della sessione.");
+      // Prima controlla se esiste già una sessione
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      
+      if (currentSession) {
+        console.log('✅ Sessione già presente, redirect alla home');
+        setSession(currentSession);
+        setUser(currentSession.user);
+        setTimeout(() => navigate("/", { replace: true }), 1000);
         return;
       }
 
-      if (session) {
-        setSession(session);
-        setUser(session.user);
-        // Redirect dopo 2 secondi
-        setTimeout(() => navigate("/", { replace: true }), 2000);
+      // Se non c'è sessione, gestisci il callback dall'email
+      if (window.location.hash) {
+        console.log('🔗 Processando hash params...');
+        try {
+          // Gestisci il callback di autenticazione
+          const { data, error } = await supabase.auth.getSession();
+          
+          if (error) {
+            console.error('❌ Errore getSession:', error);
+            setError(`Errore: ${error.message}`);
+            return;
+          }
+
+          if (data.session) {
+            console.log('✅ Login completato con successo');
+            setSession(data.session);
+            setUser(data.session.user);
+            setTimeout(() => navigate("/", { replace: true }), 1000);
+          } else {
+            console.log('⚠️ Nessuna sessione trovata dopo il callback');
+            setError("Link di conferma non valido o scaduto");
+          }
+        } catch (err) {
+          console.error('❌ Errore durante il callback:', err);
+          setError("Errore durante l'autenticazione");
+        }
       } else {
-        // Prova a estrarre token dalla URL (hash)
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        const access_token = hashParams.get("access_token");
-        const refresh_token = hashParams.get("refresh_token");
-
-        if (!access_token || !refresh_token) {
-          setError("Token mancante o link non valido.");
-          return;
-        }
-
-        // Imposta i token
-        const { data, error } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
-
-        if (error) {
-          setError("Errore durante il login automatico.");
-          return;
-        }
-
-        setSession(data.session);
-        setUser(data.session?.user);
-        setTimeout(() => navigate("/", { replace: true }), 2000);
+        console.log('⚠️ Nessun hash trovato nell\'URL');
+        setError("Link di conferma non valido");
       }
     };
 
-    checkSession();
+    // Listener per i cambiamenti di stato auth
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('🔔 Auth state change:', event, session ? 'SESSION_PRESENTE' : 'NO_SESSION');
+      
+      if (event === 'SIGNED_IN' && session) {
+        setSession(session);
+        setUser(session.user);
+        setTimeout(() => navigate("/", { replace: true }), 1000);
+      }
+    });
+
+    handleAuth();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   return (
