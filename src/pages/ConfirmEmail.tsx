@@ -96,14 +96,32 @@ export default function ConfirmEmailPage() {
           <p><strong>Error:</strong> {error ?? "NESSUNO"}</p>
         </div>
 
-        <div className="mt-4">
-          <button
-            onClick={() => navigate('/auth')}
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
-          >
-            Torna al login
-          </button>
-        </div>
+        {session && user && (
+          <div className="mt-4">
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                setSession(null);
+                setUser(null);
+                navigate('/auth', { replace: true });
+              }}
+              className="w-full bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
+            >
+              Logout
+            </button>
+          </div>
+        )}
+
+        {(!session || !user) && (
+          <div className="mt-4">
+            <button
+              onClick={() => navigate('/auth')}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+            >
+              Torna al login
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
