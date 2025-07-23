@@ -11,94 +11,43 @@ export default function ConfirmEmailPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let mounted = true;
-    
     const handleAuth = async () => {
-      console.log('🔍 ConfirmEmail - Avvio gestione auth');
+      console.log('🔍 ConfirmEmail - Gestione token dalla URL');
       console.log('🔍 URL:', window.location.href);
       
-      try {
-        // STEP 1: Lascia che Supabase gestisca automaticamente i token dall'URL
-        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (!mounted) return;
-        
-        if (sessionError) {
-          console.error('❌ Errore getSession:', sessionError);
-          setError('Errore durante il controllo della sessione: ' + sessionError.message);
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const access_token = hashParams.get('access_token');
+      const refresh_token = hashParams.get('refresh_token');
+
+      if (access_token && refresh_token) {
+        console.log('🔐 Trovati access_token e refresh_token');
+
+        const { data, error } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
+
+        if (error) {
+          console.error('❌ Errore setSession:', error);
+          setError('Errore durante il login: ' + error.message);
           setIsLoading(false);
           return;
         }
 
-        if (currentSession) {
-          console.log('✅ Sessione trovata, login riuscito');
-          setSession(currentSession);
-          setUser(currentSession.user);
-          setError(null);
-          setIsLoading(false);
-          
-          // Redirect immediato senza timeout
-          navigate('/', { replace: true });
-          return;
-        }
-
-        // STEP 2: Se non c'è sessione, verifica se ci sono token da elaborare
-        const urlParams = new URLSearchParams(window.location.search);
-        const hashParams = new URLSearchParams(window.location.hash.substring(1));
-        
-        // Controlla vari tipi di redirect
-        const hasOAuthCode = urlParams.get('code');
-        const hasAccessToken = hashParams.get('access_token') || urlParams.get('access_token');
-        
-        if (hasOAuthCode || hasAccessToken) {
-          console.log('🔧 Token rilevati, attendo gestione automatica di Supabase...');
-          // Supabase gestirà automaticamente attraverso l'auth state listener
-          return;
-        }
-        
-        // STEP 3: Nessun token trovato - errore
-        console.warn('⚠️ Nessun token trovato nell\'URL');
-        setError('Link di conferma non valido o scaduto');
-        setIsLoading(false);
-        
-      } catch (err) {
-        console.error('💥 Errore generale:', err);
-        if (mounted) {
-          setError('Errore durante l\'autenticazione');
-          setIsLoading(false);
-        }
-      }
-    };
-
-    // LISTENER: Gestisce tutti i cambiamenti di stato auth
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('🔔 Auth state change:', event, session?.user?.id || 'NO_USER');
-      
-      if (!mounted) return;
-      
-      if (event === 'SIGNED_IN' && session) {
-        console.log('✅ SIGNED_IN - Login completato');
-        setSession(session);
-        setUser(session.user);
+        console.log('✅ Login completato con successo');
+        setSession(data.session);
+        setUser(data.session.user);
         setError(null);
         setIsLoading(false);
-        
-        // Redirect immediato
         navigate('/', { replace: true });
-      } else if (event === 'SIGNED_OUT') {
-        console.log('🚪 SIGNED_OUT rilevato');
-        setSession(null);
-        setUser(null);
+      } else {
+        console.warn('❌ Token assenti nell\'URL');
+        setError('Link di conferma non valido o scaduto');
+        setIsLoading(false);
       }
-    });
-
-    // Avvia il processo
-    handleAuth();
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
     };
+
+    handleAuth();
   }, [navigate]);
 
   return (
