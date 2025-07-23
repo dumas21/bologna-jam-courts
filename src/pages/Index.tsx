@@ -83,6 +83,24 @@ const Index = () => {
 
         <EventsButton />
         
+        {/* Test Auth Link */}
+        <div style={{ position: 'fixed', bottom: '10px', right: '10px', zIndex: 1000 }}>
+          <a 
+            href="/auth-simple" 
+            style={{ 
+              background: '#007bff', 
+              color: 'white', 
+              padding: '8px 12px', 
+              borderRadius: '4px', 
+              textDecoration: 'none',
+              fontSize: '12px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+            }}
+          >
+            🔐 Test Auth
+          </a>
+        </div>
+        
         {/* Mostra un messaggio di benvenuto se l'utente è autenticato */}
         {isAuthenticated && profile && (
           <div className="mb-4 p-3 bg-green-500 bg-opacity-20 border border-green-500 rounded-lg">
