@@ -15,12 +15,13 @@ export default function ConfirmEmailPage() {
       console.log('🔍 ConfirmEmail - Gestione token dalla URL');
       console.log('🔍 URL:', window.location.href);
       
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const access_token = hashParams.get('access_token');
-      const refresh_token = hashParams.get('refresh_token');
+      // Leggi i token da query parameters (non hash)
+      const urlParams = new URLSearchParams(window.location.search);
+      const access_token = urlParams.get('access_token');
+      const refresh_token = urlParams.get('refresh_token');
 
       if (access_token && refresh_token) {
-        console.log('🔐 Trovati access_token e refresh_token');
+        console.log('🔐 Trovati access_token e refresh_token nei query parameters');
 
         const { data, error } = await supabase.auth.setSession({
           access_token,
@@ -29,7 +30,7 @@ export default function ConfirmEmailPage() {
 
         if (error) {
           console.error('❌ Errore setSession:', error);
-          setError('Errore durante il login: ' + error.message);
+          setError('Errore nel salvataggio della sessione: ' + error.message);
           setIsLoading(false);
           return;
         }
@@ -41,7 +42,7 @@ export default function ConfirmEmailPage() {
         setIsLoading(false);
         navigate('/', { replace: true });
       } else {
-        console.warn('❌ Token assenti nell\'URL');
+        console.warn('❌ Token assenti nell\'URL (query parameters)');
         setError('Link di conferma non valido o scaduto');
         setIsLoading(false);
       }
