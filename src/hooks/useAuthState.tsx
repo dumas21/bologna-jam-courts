@@ -85,7 +85,12 @@ export const useAuthState = (): AuthState => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          await loadUserProfile(session.user.id);
+          // Usa setTimeout per evitare problemi di concorrenza
+          setTimeout(() => {
+            if (isMounted) {
+              loadUserProfile(session.user.id);
+            }
+          }, 100);
         }
         
         setIsLoading(false);
