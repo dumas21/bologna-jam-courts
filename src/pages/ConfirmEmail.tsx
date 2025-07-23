@@ -7,95 +7,96 @@ export default function ConfirmEmailPage() {
   const [error, setError] = useState<string | null>(null);
   const [session, setSession] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true); // ✅ Stato loading aggiunto
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
+    let mounted = true;
+    
     const handleAuth = async () => {
-      console.log('🔍 URL completo:', window.location.href);
-      console.log('🔍 Hash:', window.location.hash);
-
-      // Prima controlla se esiste già una sessione
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-
-      if (currentSession) {
-        console.log('✅ Sessione già presente, redirect alla home');
-        setSession(currentSession);
-        setUser(currentSession.user);
-        setError(null); // ✅ Reset errore
-        setIsLoading(false); // ✅ Stop loading
-        setTimeout(() => navigate("/", { replace: true }), 1000);
-        return;
-      }
-
-      // GESTIONE MULTIPLA: Email confirmation, OTP, OAuth
+      console.log('🔍 ConfirmEmail - Avvio gestione auth');
+      console.log('🔍 URL:', window.location.href);
       
-      // Caso 1: OAuth redirect (da GitHub/Google)
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('code') || urlParams.get('access_token')) {
-        console.log('🔧 Rilevato OAuth redirect, Supabase gestirà automaticamente');
-        setError(null); // ✅ Reset errore per OAuth
-        setIsLoading(false); // ✅ Stop loading
-        // Per OAuth, Supabase gestisce automaticamente il redirect
-        return;
-      }
-
-      // Caso 2: Hash con token (magic link/OTP)
-      const hashParams = new URLSearchParams(window.location.hash.substring(1));
-      const access_token = hashParams.get('access_token');
-      const refresh_token = hashParams.get('refresh_token');
-
-      if (access_token && refresh_token) {
-        console.log('🔧 Token trovati nell\'hash, imposto sessione');
+      try {
+        // STEP 1: Lascia che Supabase gestisca automaticamente i token dall'URL
+        const { data: { session: currentSession }, error: sessionError } = await supabase.auth.getSession();
         
-        try {
-          const { data, error } = await supabase.auth.setSession({
-            access_token,
-            refresh_token,
-          });
-
-          if (error) {
-            setError("Errore nella sessione: " + error.message);
-            setIsLoading(false); // ✅ Stop loading on error
-          } else if (data.session) {
-            console.log('✅ Login completato con successo');
-            setSession(data.session);
-            setUser(data.session.user);
-            setError(null); // ✅ Reset errore!
-            setIsLoading(false); // ✅ Stop loading
-            setTimeout(() => navigate("/", { replace: true }), 1000);
-          } else {
-            setError("Sessione non valida");
-            setIsLoading(false); // ✅ Stop loading
-          }
-        } catch (err) {
-          console.error('💥 Errore setSession:', err);
-          setError("Errore durante l'impostazione della sessione");
-          setIsLoading(false); // ✅ Stop loading
+        if (!mounted) return;
+        
+        if (sessionError) {
+          console.error('❌ Errore getSession:', sessionError);
+          setError('Errore durante il controllo della sessione: ' + sessionError.message);
+          setIsLoading(false);
+          return;
         }
-      } else {
-        console.warn("⚠️ Nessun token trovato in URL o hash");
-        setError("Link non valido o token mancanti. Il link potrebbe essere stato scansionato dal provider email.");
-        setIsLoading(false); // ✅ Stop loading
+
+        if (currentSession) {
+          console.log('✅ Sessione trovata, login riuscito');
+          setSession(currentSession);
+          setUser(currentSession.user);
+          setError(null);
+          setIsLoading(false);
+          
+          // Redirect immediato senza timeout
+          navigate('/', { replace: true });
+          return;
+        }
+
+        // STEP 2: Se non c'è sessione, verifica se ci sono token da elaborare
+        const urlParams = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        
+        // Controlla vari tipi di redirect
+        const hasOAuthCode = urlParams.get('code');
+        const hasAccessToken = hashParams.get('access_token') || urlParams.get('access_token');
+        
+        if (hasOAuthCode || hasAccessToken) {
+          console.log('🔧 Token rilevati, attendo gestione automatica di Supabase...');
+          // Supabase gestirà automaticamente attraverso l'auth state listener
+          return;
+        }
+        
+        // STEP 3: Nessun token trovato - errore
+        console.warn('⚠️ Nessun token trovato nell\'URL');
+        setError('Link di conferma non valido o scaduto');
+        setIsLoading(false);
+        
+      } catch (err) {
+        console.error('💥 Errore generale:', err);
+        if (mounted) {
+          setError('Errore durante l\'autenticazione');
+          setIsLoading(false);
+        }
       }
     };
 
-    // Listener auth state change
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('🔔 Auth state change:', event, session ? 'SESSION_PRESENTE' : 'NO_SESSION');
+    // LISTENER: Gestisce tutti i cambiamenti di stato auth
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('🔔 Auth state change:', event, session?.user?.id || 'NO_USER');
+      
+      if (!mounted) return;
+      
       if (event === 'SIGNED_IN' && session) {
-        console.log('✅ Auth state change - SIGNED_IN rilevato');
+        console.log('✅ SIGNED_IN - Login completato');
         setSession(session);
         setUser(session.user);
-        setError(null); // ✅ Reset errore se login riuscito
-        setIsLoading(false); // ✅ Stop loading
-        setTimeout(() => navigate("/", { replace: true }), 1000);
+        setError(null);
+        setIsLoading(false);
+        
+        // Redirect immediato
+        navigate('/', { replace: true });
+      } else if (event === 'SIGNED_OUT') {
+        console.log('🚪 SIGNED_OUT rilevato');
+        setSession(null);
+        setUser(null);
       }
     });
 
+    // Avvia il processo
     handleAuth();
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
