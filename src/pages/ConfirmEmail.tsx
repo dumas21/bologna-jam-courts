@@ -7,26 +7,52 @@ export default function ConfirmEmail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleAuth = async () => {
-      // Aspetta che Supabase gestisca automaticamente il token
-      supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          navigate('/', { replace: true });
-        } else if (event === 'SIGNED_OUT') {
-          setError('Accesso non riuscito, effettua di nuovo il login');
-        }
-      });
+    const handleConfirm = async () => {
+      try {
+        // 1) Gestione token nell'hash (access_token/refresh_token)
+        const hash = window.location.hash;
+        if (hash && hash.includes('access_token') && hash.includes('refresh_token')) {
+          const params = new URLSearchParams(hash.replace('#', ''));
+          const access_token = params.get('access_token') || '';
+          const refresh_token = params.get('refresh_token') || '';
 
-      // Forza refresh session (utile se si arriva con token in URL)
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        setError('Errore sessione: ' + error.message);
-      } else if (!data.session) {
-        setError('Sessione non trovata, link scaduto o non valido');
+          if (access_token && refresh_token) {
+            const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
+            if (error) throw error;
+            if (data.session) {
+              navigate('/', { replace: true });
+              return;
+            }
+          }
+        }
+
+        // 2) Gestione del codice in query (PKCE/email confirm)
+        const searchParams = new URLSearchParams(window.location.search);
+        const hasCode = searchParams.get('code');
+        if (hasCode) {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(hasCode);
+          if (error) throw error;
+          if (data.session) {
+            navigate('/', { replace: true });
+            return;
+          }
+        }
+
+        // 3) Fallback: verifica sessione esistente
+        const { data: sessionData, error: getErr } = await supabase.auth.getSession();
+        if (getErr) throw getErr;
+        if (sessionData.session) {
+          navigate('/', { replace: true });
+          return;
+        }
+
+        setError('Sessione non trovata: link non valido o scaduto.');
+      } catch (e: any) {
+        setError(e?.message || 'Errore durante la conferma.');
       }
     };
 
-    handleAuth();
+    handleConfirm();
   }, [navigate]);
 
   return (
