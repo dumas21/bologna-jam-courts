@@ -9,46 +9,48 @@ export default function ConfirmEmail() {
   useEffect(() => {
     const handleConfirm = async () => {
       try {
-        // 1) Gestione token nell'hash (access_token/refresh_token)
         const hash = window.location.hash;
-        if (hash && hash.includes('access_token') && hash.includes('refresh_token')) {
+        const searchParams = new URLSearchParams(window.location.search);
+
+        // 1) Flusso HASH (Token/Magic Link): PRIORITARIO
+        if (hash.includes('access_token') && hash.includes('refresh_token')) {
           const params = new URLSearchParams(hash.replace('#', ''));
-          const access_token = params.get('access_token') || '';
-          const refresh_token = params.get('refresh_token') || '';
+          const access_token = params.get('access_token');
+          const refresh_token = params.get('refresh_token');
 
           if (access_token && refresh_token) {
-            const { data, error } = await supabase.auth.setSession({ access_token, refresh_token });
+            const { error } = await supabase.auth.setSession({ access_token, refresh_token });
             if (error) throw error;
-            if (data.session) {
-              navigate('/', { replace: true });
-              return;
-            }
-          }
-        }
-
-        // 2) Gestione del codice in query (PKCE/email confirm)
-        const searchParams = new URLSearchParams(window.location.search);
-        const hasCode = searchParams.get('code');
-        if (hasCode) {
-          const { data, error } = await supabase.auth.exchangeCodeForSession(hasCode);
-          if (error) throw error;
-          if (data.session) {
+            
+            // Pulizia URL dopo il successo
+            window.history.replaceState({}, document.title, window.location.pathname);
             navigate('/', { replace: true });
             return;
           }
         }
 
-        // 3) Fallback: verifica sessione esistente
-        const { data: sessionData, error: getErr } = await supabase.auth.getSession();
-        if (getErr) throw getErr;
+        // 2) Flusso CODE (PKCE / Confirm Email):
+        const hasCode = searchParams.get('code');
+        if (hasCode) {
+          const { error } = await supabase.auth.exchangeCodeForSession(hasCode);
+          if (error) throw error;
+          navigate('/', { replace: true });
+          return;
+        }
+
+        // 3) Fallback: Controlla se l'utente ha già una sessione valida:
+        const { data: sessionData } = await supabase.auth.getSession();
         if (sessionData.session) {
           navigate('/', { replace: true });
           return;
         }
 
         setError('Sessione non trovata: link non valido o scaduto.');
+
       } catch (e: any) {
-        setError(e?.message || 'Errore durante la conferma.');
+        // Gestione errore centralizzata e robusta
+        console.error(e); 
+        setError(e?.message || 'Errore durante la conferma. Riprova dalla pagina di login.');
       }
     };
 
@@ -56,23 +58,30 @@ export default function ConfirmEmail() {
   }, [navigate]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen px-4 bg-gray-100">
-      <div className="bg-white p-6 rounded-xl shadow-md text-center max-w-md w-full">
-        <h1 className="text-xl font-bold mb-4">Conferma Email</h1>
+    <div 
+      className="flex items-center justify-center min-h-screen p-4"
+      style={{ 
+        backgroundColor: '#000033', 
+        backgroundImage: 'repeating-linear-gradient(0deg, #000 0, #000033 1px, #000 1px)', 
+        backgroundSize: '100% 2px' 
+      }}
+    >
+      <div className="bg-card/90 backdrop-blur-sm p-8 rounded-xl shadow-2xl text-center max-w-md w-full border-2 border-primary/20">
+        <h1 className="text-2xl font-bold mb-6 text-primary">Conferma Email</h1>
         {error ? (
-          <div className="text-red-500 mt-4 p-3 bg-red-50 rounded-lg mb-4">
-            <p style={{ color: 'red' }}>{error}</p>
+          <div className="mt-4 p-4 bg-destructive/10 border border-destructive/20 rounded-lg mb-4">
+            <p className="text-destructive mb-3">{error}</p>
             <button 
               onClick={() => navigate('/auth')}
-              className="mt-2 w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+              className="w-full bg-primary text-primary-foreground py-3 px-6 rounded-lg hover:bg-primary/90 transition-colors font-semibold"
             >
               Torna al login
             </button>
           </div>
         ) : (
           <div className="mb-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
-            <p>Verifica in corso...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Verifica in corso...</p>
           </div>
         )}
       </div>
