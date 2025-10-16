@@ -176,7 +176,9 @@ export type Database = {
     }
     Functions: {
       check_message_rate_limit: {
-        Args: { p_nickname: string; p_playground_id: string }
+        Args:
+          | { p_nickname: string; p_playground_id: string }
+          | { p_playground_id: string }
         Returns: boolean
       }
       cleanup_old_messages: {
