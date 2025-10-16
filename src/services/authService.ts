@@ -6,8 +6,6 @@ export class AuthService {
   static async signUp(signUpData: SignUpData): Promise<AuthResponse> {
     try {
       const { email, password, username, newsletter = false } = signUpData;
-      
-      console.log('🚀 Avvio registrazione con:', { email, username, newsletter });
 
       const redirectTo = `${window.location.origin}/confirm-email`;
 
@@ -21,39 +19,26 @@ export class AuthService {
       });
 
       if (error) {
-        console.error("Errore registrazione:", error.message);
         throw error;
-      }
-
-      console.log('✅ Registrazione Supabase completata:', data.user?.id);
-
-      if (data.user && !data.user.email_confirmed_at) {
-        console.log('📧 Email di conferma inviata a:', email);
       }
 
       return { data, error: null };
       
     } catch (error: any) {
-      console.error('💥 Errore completo in registrazione:', error);
       return { data: null, error };
     }
   }
 
   static async signInWithPassword(email: string, password: string): Promise<AuthResponse> {
     try {
-      console.log('🔑 Tentativo di login con email:', email);
-      
       const { data, error } = await supabase.auth.signInWithPassword({ 
         email: email.trim(), 
         password 
       });
 
       if (error) {
-        console.error('❌ Errore durante login:', error);
         return { data, error };
       }
-
-      console.log('✅ Login completato con successo:', data.user?.id);
       
       // Assicurati che il profilo esista
       if (data.user) {
@@ -63,38 +48,22 @@ export class AuthService {
       return { data, error };
       
     } catch (error: any) {
-      console.error('💥 Errore completo in login:', error);
       return { data: null, error };
     }
   }
 
   static async signOut(): Promise<AuthResponse> {
-    console.log('🚪 Avvio logout completo');
-    
     try {
       // Prima prova il logout normale di Supabase
-      const { error } = await supabase.auth.signOut({
-        scope: 'global' // Forza logout globale
+      await supabase.auth.signOut({
+        scope: 'global'
       });
-      
-      if (error) {
-        console.error('❌ Errore durante logout Supabase:', error);
-      } else {
-        console.log('✅ Logout Supabase completato');
-      }
-      
     } catch (err) {
-      console.error('💥 Errore logout Supabase:', err);
+      // Continua con la pulizia anche se il logout Supabase fallisce
     }
     
     // Pulizia aggressiva di tutto lo storage
-    console.log('🧹 Pulizia completa storage...');
     try {
-      // Lista tutte le chiavi di localStorage
-      const allKeys = Object.keys(localStorage);
-      console.log('🔍 Chiavi trovate:', allKeys);
-      
-      // Rimuovi TUTTE le chiavi (pulizia aggressiva)
       localStorage.clear();
       sessionStorage.clear();
       
@@ -110,11 +79,8 @@ export class AuthService {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
       });
-      
-      console.log('🧹 Pulizia storage completata');
-      
     } catch (storageError) {
-      console.error('⚠️ Errore pulizia storage:', storageError);
+      // Ignora errori di storage
     }
     
     // Pulisci anche i cookie di autenticazione se presenti
@@ -122,12 +88,9 @@ export class AuthService {
       document.cookie.split(";").forEach(function(c) { 
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
       });
-      console.log('🍪 Cookie puliti');
     } catch (cookieError) {
-      console.error('⚠️ Errore pulizia cookie:', cookieError);
+      // Ignora errori di cookie
     }
-    
-    console.log('🔄 Forzo ricarica pagina...');
     
     // Aspetta un momento e poi ricarica
     setTimeout(() => {
@@ -139,8 +102,6 @@ export class AuthService {
 
   private static async ensureUserProfile(user: any): Promise<void> {
     try {
-      console.log('📝 Controllo/creazione profilo per user:', user.id);
-      
       // Controlla se il profilo esiste già
       const { data: existingProfile } = await supabase
         .from('profiles')
@@ -149,7 +110,6 @@ export class AuthService {
         .maybeSingle();
 
       if (existingProfile) {
-        console.log('✅ Profilo già esistente');
         return;
       }
 
@@ -160,10 +120,8 @@ export class AuthService {
         username = user.email?.split('@')[0] || 'User';
       }
       
-      console.log('📝 Creazione profilo con username:', username);
-      
       // Crea il profilo
-      const { error: profileError } = await supabase
+      await supabase
         .from('profiles')
         .upsert({
           id: user.id,
@@ -172,14 +130,8 @@ export class AuthService {
         }, {
           onConflict: 'id'
         });
-
-      if (profileError) {
-        console.error('❌ Errore creazione profilo:', profileError);
-      } else {
-        console.log('✅ Profilo creato con successo');
-      }
     } catch (profileErr) {
-      console.error('💥 Errore durante creazione profilo:', profileErr);
+      // Ignora errori nella creazione del profilo
     }
   }
 }
