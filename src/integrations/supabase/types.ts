@@ -85,7 +85,6 @@ export type Database = {
           created_at: string | null
           email: string
           id: string
-          is_admin: boolean | null
           last_login: string | null
           login_count: number | null
           nickname: string
@@ -95,7 +94,6 @@ export type Database = {
           created_at?: string | null
           email: string
           id: string
-          is_admin?: boolean | null
           last_login?: string | null
           login_count?: number | null
           nickname: string
@@ -105,11 +103,40 @@ export type Database = {
           created_at?: string | null
           email?: string
           id?: string
-          is_admin?: boolean | null
           last_login?: string | null
           login_count?: number | null
           nickname?: string
           updated_at?: string | null
+        }
+        Relationships: []
+      }
+      rate_limits: {
+        Row: {
+          action_type: string
+          blocked_until: string | null
+          count: number | null
+          created_at: string | null
+          id: string
+          user_id: string | null
+          window_start: string | null
+        }
+        Insert: {
+          action_type: string
+          blocked_until?: string | null
+          count?: number | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+          window_start?: string | null
+        }
+        Update: {
+          action_type?: string
+          blocked_until?: string | null
+          count?: number | null
+          created_at?: string | null
+          id?: string
+          user_id?: string | null
+          window_start?: string | null
         }
         Relationships: []
       }
@@ -140,6 +167,27 @@ export type Database = {
           ip_address?: unknown | null
           user_agent?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -181,12 +229,24 @@ export type Database = {
           | { p_playground_id: string }
         Returns: boolean
       }
+      check_rate_limit: {
+        Args: {
+          p_action_type: string
+          p_max_attempts: number
+          p_user_id: string
+          p_window_hours: number
+        }
+        Returns: boolean
+      }
       cleanup_old_messages: {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
-      is_admin: {
-        Args: { user_id: string }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
         Returns: boolean
       }
       log_security_event: {
@@ -199,13 +259,17 @@ export type Database = {
         }
         Returns: string
       }
+      record_rate_limit_attempt: {
+        Args: { p_action_type: string; p_user_id: string }
+        Returns: undefined
+      }
       unsubscribe_newsletter: {
         Args: { subscriber_email: string }
         Returns: boolean
       }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -332,6 +396,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const
