@@ -103,27 +103,6 @@ export default function SimpleAuth() {
     setLoading(false);
   };
 
-  const handleMagicLink = async () => {
-    setLoading(true);
-    setMessage('');
-    
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth-simple`
-      }
-    });
-    
-    console.log('🪄 Risultato magic link:', { error });
-    setDebug({ magicLink: { error } });
-    
-    if (error) {
-      setMessage('❌ Errore magic link: ' + error.message);
-    } else {
-      setMessage('📧 Controlla la tua email per il link di accesso!');
-    }
-    setLoading(false);
-  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -256,21 +235,6 @@ export default function SimpleAuth() {
                 {loading ? '⏳ Caricamento...' : '🔑 Accedi'}
               </button>
               
-              <button 
-                onClick={handleMagicLink} 
-                disabled={loading || !email}
-                style={{ 
-                  background: '#6c757d', 
-                  color: 'white', 
-                  padding: '0.75rem', 
-                  border: 'none', 
-                  borderRadius: '4px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  opacity: loading ? 0.7 : 1
-                }}
-              >
-                {loading ? '⏳ Caricamento...' : '🪄 Magic Link'}
-              </button>
               
               <button 
                 onClick={() => setView('signup')}

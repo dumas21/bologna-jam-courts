@@ -1,4 +1,4 @@
-
+@tailwind components;
 @layer components {
   /* Animazione super speciale per il titolo principale - STILE ARCADE ANNI 80 */
   @keyframes super-retro-glow {

@@ -1,4 +1,4 @@
-
+@tailwind components;
 @layer components {
   /* Mobile optimizations */
   @media (max-width: 768px) {

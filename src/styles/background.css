@@ -1,4 +1,4 @@
-
+@tailwind base;
 @layer base {
   * {
     box-sizing: border-box;

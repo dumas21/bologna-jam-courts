@@ -1,4 +1,4 @@
-
+@tailwind base;
 @layer base {
   /* Animazioni arcade originali */
   @keyframes neon-glow {

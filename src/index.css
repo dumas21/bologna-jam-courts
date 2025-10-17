@@ -198,7 +198,23 @@
   .arcade-card div:not(.arcade-title):not(.arcade-button):not(.text-blue-600):not(.text-red-400):not(.text-blue-800):not(.text-blue-700),
   .arcade-card label,
   .arcade-input,
-  .arcade-input::placeholder {
+  .arcade-input::placeholder,
+  .login-card *,
+  .login-card h1,
+  .login-card h2,
+  .login-card h3,
+  .login-card h4,
+  .login-card h5,
+  .login-card h6,
+  .login-card p,
+  .login-card span,
+  .login-card a,
+  .login-card label,
+  .login-card input,
+  .login-card textarea,
+  .login-card select,
+  .login-card input::placeholder,
+  .login-card textarea::placeholder {
     color: #000000 !important;
     text-shadow: none !important;
   }

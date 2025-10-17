@@ -78,15 +78,6 @@ export default function AuthFullPage() {
     else setMessage('✅ Login effettuato');
   };
 
-  const handleGithubLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ 
-      provider: 'github',
-      options: {
-        redirectTo: `${window.location.origin}/auth-full`
-      }
-    });
-    if (error) setError(error.message);
-  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -96,7 +87,7 @@ export default function AuthFullPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white shadow-md p-6 rounded-xl w-full max-w-md text-center">
+      <div className="login-card bg-white shadow-md p-6 rounded-xl w-full max-w-md text-center">
         <h1 className="text-2xl font-bold mb-4">Supabase Auth</h1>
 
         {session ? (
@@ -140,12 +131,6 @@ export default function AuthFullPage() {
                 disabled={loading}
               >
                 Registrati
-              </button>
-              <button
-                className="bg-gray-800 text-white p-2 rounded"
-                onClick={handleGithubLogin}
-              >
-                Login con GitHub
               </button>
             </div>
           </>
