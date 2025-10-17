@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      global_config: {
+        Row: {
+          created_at: string | null
+          key: string
+          updated_at: string | null
+          value: Json
+        }
+        Insert: {
+          created_at?: string | null
+          key: string
+          updated_at?: string | null
+          value: Json
+        }
+        Update: {
+          created_at?: string | null
+          key?: string
+          updated_at?: string | null
+          value?: Json
+        }
+        Relationships: []
+      }
       newsletter_subscribers: {
         Row: {
           created_at: string | null
@@ -230,12 +251,18 @@ export type Database = {
         Returns: boolean
       }
       check_rate_limit: {
-        Args: {
-          p_action_type: string
-          p_max_attempts: number
-          p_user_id: string
-          p_window_hours: number
-        }
+        Args:
+          | {
+              p_action_type: string
+              p_max_attempts: number
+              p_user_id: string
+              p_window_hours: number
+            }
+          | {
+              p_action_type: string
+              p_max_attempts: number
+              p_window_hours: number
+            }
         Returns: boolean
       }
       cleanup_old_messages: {
@@ -260,7 +287,9 @@ export type Database = {
         Returns: string
       }
       record_rate_limit_attempt: {
-        Args: { p_action_type: string; p_user_id: string }
+        Args:
+          | { p_action_type: string }
+          | { p_action_type: string; p_user_id: string }
         Returns: undefined
       }
       unsubscribe_newsletter: {
