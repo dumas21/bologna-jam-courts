@@ -28,14 +28,19 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
-      <div className="w-full max-w-md bg-white rounded-xl p-6 shadow">
-        <h1 className="text-2xl font-bold mb-4 text-center">Registrati</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-white">
+      <div className="w-full max-w-md bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
+        <h1 className="text-2xl font-bold mb-4 text-center text-black">Registrati</h1>
 
         {status === 'success' ? (
-          <p className="text-green-600 text-center">
-            ✅ Registrazione avvenuta! Controlla l'email per confermare l'account.
-          </p>
+          <div className="text-center">
+            <p className="text-green-700 font-semibold mb-2">
+              ✅ Registrazione avvenuta!
+            </p>
+            <p className="text-black">
+              Controlla l'email per confermare l'account.
+            </p>
+          </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <input
@@ -44,7 +49,7 @@ export default function RegisterPage() {
               value={username}
               onChange={e => setUsername(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
             />
             <input
               type="email"
@@ -52,29 +57,29 @@ export default function RegisterPage() {
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
             />
             <input
               type="password"
-              placeholder="Password"
+              placeholder="Password (min 8 caratteri, maiuscola, minuscola, numero)"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border rounded-lg"
+              className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
             />
-            {status === 'error' && <p className="text-red-500">{errorMsg}</p>}
+            {status === 'error' && <p className="text-red-600 font-medium">{errorMsg}</p>}
             <button
               type="submit"
               disabled={status === 'loading'}
-              className="w-full bg-black text-white py-2 rounded-lg"
+              className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50"
             >
               {status === 'loading' ? 'Registrazione...' : 'Registrati'}
             </button>
           </form>
         )}
 
-        <p className="mt-4 text-sm text-center">
-          Hai già un account? <a href="/login" className="text-blue-600 underline">Accedi</a>
+        <p className="mt-4 text-sm text-center text-black">
+          Hai già un account? <a href="/login" className="text-black underline font-semibold hover:text-gray-700">Accedi</a>
         </p>
       </div>
     </div>

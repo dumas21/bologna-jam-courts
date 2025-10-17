@@ -34,9 +34,9 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
-      <div className="max-w-sm w-full bg-white rounded-xl shadow-md p-6">
-        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
+      <div className="max-w-sm w-full bg-white rounded-xl shadow-lg border-2 border-gray-200 p-6">
+        <h1 className="text-2xl font-bold mb-4 text-center text-black">Login</h1>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <input
@@ -45,7 +45,7 @@ const Login = () => {
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
           />
           <input
             type="password"
@@ -53,21 +53,21 @@ const Login = () => {
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            className="w-full px-3 py-2 border rounded-lg"
+            className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
           />
-          {errorMsg && <p className="text-red-500">{errorMsg}</p>}
+          {errorMsg && <p className="text-red-600 font-medium">{errorMsg}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white py-2 rounded-lg"
+            className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50"
           >
             {loading ? 'Accesso in corso...' : 'Accedi'}
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
+        <p className="mt-4 text-center text-sm text-black">
           Non hai un account?{' '}
-          <a href="/register" className="text-blue-500 underline">Registrati</a>
+          <a href="/register" className="text-black underline font-semibold hover:text-gray-700">Registrati</a>
         </p>
       </div>
     </div>
