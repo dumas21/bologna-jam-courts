@@ -1,20 +1,51 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { SignUpData, AuthResponse } from '@/types/auth';
+import { z } from 'zod';
+
+// Zod validation schemas for authentication
+const signUpSchema = z.object({
+  email: z.string()
+    .email('Formato email non valido')
+    .max(255, 'Email troppo lunga')
+    .transform(val => val.trim().toLowerCase()),
+  password: z.string()
+    .min(8, 'La password deve essere di almeno 8 caratteri')
+    .max(72, 'La password è troppo lunga')
+    .regex(/[A-Z]/, 'La password deve contenere almeno una lettera maiuscola')
+    .regex(/[a-z]/, 'La password deve contenere almeno una lettera minuscola')
+    .regex(/[0-9]/, 'La password deve contenere almeno un numero'),
+  username: z.string()
+    .min(3, 'Il nome utente deve essere di almeno 3 caratteri')
+    .max(50, 'Il nome utente è troppo lungo')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Il nome utente può contenere solo lettere, numeri, trattini e underscore'),
+  newsletter: z.boolean().optional(),
+  privacyVersion: z.string().optional()
+});
+
+const signInSchema = z.object({
+  email: z.string()
+    .email('Formato email non valido')
+    .max(255, 'Email troppo lunga')
+    .transform(val => val.trim().toLowerCase()),
+  password: z.string()
+    .min(1, 'La password è obbligatoria')
+    .max(72, 'La password è troppo lunga')
+});
 
 export class AuthService {
   static async signUp(signUpData: SignUpData): Promise<AuthResponse> {
     try {
-      const { email, password, username, newsletter = false } = signUpData;
+      // Validate input with Zod
+      const validated = signUpSchema.parse(signUpData);
 
       const redirectTo = `${window.location.origin}/confirm-email`;
 
       const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
+        email: validated.email,
+        password: validated.password,
         options: {
           emailRedirectTo: redirectTo,
-          data: { username },
+          data: { username: validated.username },
         },
       });
 
@@ -25,15 +56,30 @@ export class AuthService {
       return { data, error: null };
       
     } catch (error: any) {
+      // Handle Zod validation errors
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        return { 
+          data: null, 
+          error: { 
+            message: firstError.message,
+            name: 'ValidationError',
+            status: 400
+          } 
+        };
+      }
       return { data: null, error };
     }
   }
 
   static async signInWithPassword(email: string, password: string): Promise<AuthResponse> {
     try {
+      // Validate input with Zod
+      const validated = signInSchema.parse({ email, password });
+
       const { data, error } = await supabase.auth.signInWithPassword({ 
-        email: email.trim(), 
-        password 
+        email: validated.email, 
+        password: validated.password
       });
 
       if (error) {
@@ -48,6 +94,18 @@ export class AuthService {
       return { data, error };
       
     } catch (error: any) {
+      // Handle Zod validation errors
+      if (error instanceof z.ZodError) {
+        const firstError = error.errors[0];
+        return { 
+          data: null, 
+          error: { 
+            message: firstError.message,
+            name: 'ValidationError',
+            status: 400
+          } 
+        };
+      }
       return { data: null, error };
     }
   }

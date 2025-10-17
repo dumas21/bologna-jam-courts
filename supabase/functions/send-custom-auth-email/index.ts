@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@4.0.0";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -7,6 +8,24 @@ const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Zod validation schema for auth email requests
+const authEmailSchema = z.object({
+  email: z.string()
+    .email('Invalid email format')
+    .max(255, 'Email too long'),
+  username: z.string()
+    .min(1, 'Username required')
+    .max(50, 'Username too long')
+    .regex(/^[a-zA-Z0-9_-]+$/, 'Invalid username characters'),
+  confirmationUrl: z.string()
+    .url('Invalid confirmation URL')
+    .max(2048, 'URL too long')
+    .refine(url => url.startsWith('http://') || url.startsWith('https://'), {
+      message: 'URL must use http or https protocol'
+    }),
+  type: z.enum(['signup', 'magic_link'])
+});
 
 interface AuthEmailRequest {
   email: string;
@@ -21,7 +40,26 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { email, username, confirmationUrl, type }: AuthEmailRequest = await req.json();
+    const rawData = await req.json();
+    
+    // Validate input with Zod
+    const validationResult = authEmailSchema.safeParse(rawData);
+    
+    if (!validationResult.success) {
+      console.error("Validation error:", validationResult.error);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Invalid input data', 
+          details: validationResult.error.errors 
+        }),
+        { 
+          status: 400, 
+          headers: { "Content-Type": "application/json", ...corsHeaders } 
+        }
+      );
+    }
+    
+    const { email, username, confirmationUrl, type }: AuthEmailRequest = validationResult.data;
 
     const subject = type === 'signup' ? 
       'Conferma il tuo account - Bologna Jam Courts' : 

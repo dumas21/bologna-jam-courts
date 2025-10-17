@@ -1,9 +1,8 @@
 
-// Security configuration - move sensitive URLs to environment variables in production
+// Security configuration
 export const SECURITY_CONFIG = {
-  // Google Apps Script URLs from environment variables
-  GOOGLE_SCRIPT_URL: import.meta.env.VITE_GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzY_3f5RF-cHUZ5qqdaqN89oElopEZgjP_I9h2KbYKihCD9tjh8WSr942SP8wP9SdWP/exec",
-  GOOGLE_NEWSLETTER_URL: import.meta.env.VITE_GOOGLE_NEWSLETTER_URL || "https://script.google.com/macros/s/AKfycbyuvH-l_JVhdDSojVgTxLpe_Eexb1JtwWoOM0MQDIErNIEPWznTqmpaUBrxG9eU4e9P/exec",
+  // Google Apps Script URLs are now proxied through Edge Functions
+  // No longer exposed in client code for security
   
   // Rate limiting configuration - enhanced
   RATE_LIMITS: {
@@ -70,7 +69,7 @@ class SecureAPIClient {
     return true;
   }
 
-  async securePost(endpoint: 'registration' | 'newsletter', data: any): Promise<any> {
+  async securePost(endpoint: 'contact' | 'newsletter', data: any): Promise<any> {
     if (!this.checkRateLimit(endpoint)) {
       throw new Error('Rate limit exceeded. Please try again later.');
     }
@@ -80,26 +79,21 @@ class SecureAPIClient {
       throw new Error('Invalid data provided');
     }
 
-    // Select appropriate URL based on endpoint
-    const url = endpoint === 'registration' 
-      ? SECURITY_CONFIG.GOOGLE_NEWSLETTER_URL 
-      : SECURITY_CONFIG.GOOGLE_SCRIPT_URL;
+    // Use Edge Functions instead of direct Google Script URLs
+    const { supabase } = await import('@/integrations/supabase/client');
+    
+    const functionName = endpoint === 'contact' ? 'contact-submit' : 'newsletter-submit';
 
     try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest' // CSRF protection
-        },
-        body: JSON.stringify(data)
+      const { data: result, error } = await supabase.functions.invoke(functionName, {
+        body: data
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (error) {
+        throw error;
       }
 
-      return await response.json();
+      return result;
     } catch (error) {
       console.error(`API call to ${endpoint} failed:`, error);
       throw error;

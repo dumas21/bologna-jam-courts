@@ -1,1 +1,10 @@
 project_id = "mpflsxdvvvajzkiyuiur"
+
+[functions.send-custom-auth-email]
+verify_jwt = false
+
+[functions.contact-submit]
+verify_jwt = true
+
+[functions.newsletter-submit]
+verify_jwt = false
