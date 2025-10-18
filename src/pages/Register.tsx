@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -8,80 +7,120 @@ export default function RegisterPage() {
   const { signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStatus('loading');
-    setErrorMsg('');
+    setLoading(true);
+    setMessage('');
+    setIsError(false);
 
-    const { error } = await signUp(email, password, username);
+    // Validazione: Confronto Password
+    if (password !== confirmPassword) {
+      setMessage("Errore: Le password non corrispondono. Inserisci due volte lo stesso codice.");
+      setIsError(true);
+      setLoading(false);
+      return;
+    }
+
+    // Validazione: Consenso Dati
+    if (!acceptedTerms) {
+      setMessage("Errore: Devi accettare i termini per accedere alla Griglia.");
+      setIsError(true);
+      setLoading(false);
+      return;
+    }
+
+    // Registrazione con username = email prefix
+    const username = email.split('@')[0];
+    const { error } = await signUp(email, password, username, false, '1.0');
 
     if (error) {
-      setStatus('error');
-      setErrorMsg(error.message || 'Errore durante la registrazione');
+      setMessage(`ERRORE DI SISTEMA: ${error.message}`);
+      setIsError(true);
     } else {
-      setStatus('success');
+      setMessage('✅ REGISTRAZIONE COMPLETATA! Controlla la tua email per la convalida e inizia a giocare.');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+      setAcceptedTerms(false);
     }
+    setLoading(false);
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-white">
-      <div className="w-full max-w-md bg-white rounded-xl p-6 shadow-lg border-2 border-gray-200">
-        <h1 className="text-2xl font-bold mb-4 text-center text-black">Registrati</h1>
+    <div className="flex justify-center items-center min-h-screen p-4">
+      <form onSubmit={handleSignup} className="arcade-card p-8 md:p-10 w-full max-w-md space-y-4 animate-neon-pulse">
+        <h1 className="text-xl md:text-2xl text-center arcade-title mb-6">
+          ACCESSO AL NETWORK
+        </h1>
 
-        {status === 'success' ? (
-          <div className="text-center">
-            <p className="text-green-700 font-semibold mb-2">
-              ✅ Registrazione avvenuta!
-            </p>
-            <p className="text-black">
-              Controlla l'email per confermare l'account.
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              placeholder="Username"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              required
-              className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
-            />
-            <input
-              type="password"
-              placeholder="Password (min 8 caratteri, maiuscola, minuscola, numero)"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
-            />
-            {status === 'error' && <p className="text-red-600 font-medium">{errorMsg}</p>}
-            <button
-              type="submit"
-              disabled={status === 'loading'}
-              className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50"
-            >
-              {status === 'loading' ? 'Registrazione...' : 'Registrati'}
-            </button>
-          </form>
+        {/* Messaggio di errore/successo */}
+        {message && (
+          <p className={`p-3 border rounded text-center ${isError ? 'text-red-400 border-red-400' : 'text-neon-yellow border-neon-yellow'}`}>
+            {message}
+          </p>
         )}
 
-        <p className="mt-4 text-sm text-center text-black">
-          Hai già un account? <a href="/login" className="text-black underline font-semibold hover:text-gray-700">Accedi</a>
+        {/* Campi di input */}
+        <input
+          className="arcade-input w-full"
+          type="email"
+          placeholder="EMAIL UTENTE"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          className="arcade-input w-full"
+          type="password"
+          placeholder="PASSWORD (MIN 8 CARATTERI)"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <input
+          className="arcade-input w-full"
+          type="password"
+          placeholder="CONFERMA PASSWORD"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
+
+        {/* Checkbox di accettazione dati */}
+        <div className="pt-2">
+          <label className="newsletter-label text-xs md:text-sm">
+            <input
+              id="data-terms"
+              type="checkbox"
+              className="peer sr-only"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+            />
+            <span className="checkmark"></span>
+            Accetto la <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:underline">Policy Dati</a>
+          </label>
+        </div>
+
+        {/* Pulsante submit */}
+        <button
+          type="submit"
+          className="arcade-button w-full mt-6"
+          disabled={loading}
+        >
+          {loading ? 'TRASMISSIONE DATI...' : 'REGISTRATI E ACCEDI'}
+        </button>
+
+        {/* Link per login esistente */}
+        <p className="text-center text-xs pt-4 arcade-text">
+          HAI GIA' UN PROFILO? <a href="/login" className="arcade-link">ACCEDI QUI</a>
         </p>
-      </div>
+      </form>
     </div>
   );
 }

@@ -118,4 +118,70 @@
     text-transform: uppercase !important;
     letter-spacing: 3px !important;
   }
+
+  .arcade-input {
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    color: #FFFFFF !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    border: 2px solid #FF6B35 !important;
+    border-radius: 4px !important;
+    padding: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .arcade-input::placeholder {
+    color: rgba(255, 255, 255, 0.5) !important;
+    text-transform: uppercase !important;
+  }
+
+  .arcade-input:focus {
+    outline: none !important;
+    border-color: #ff0055 !important;
+    box-shadow: 0 0 10px rgba(255, 0, 85, 0.5) !important;
+  }
+
+  .newsletter-label {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #FFFFFF !important;
+    font-family: 'JetBrains Mono', 'Exo 2', 'Rajdhani', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    font-size: 12px !important;
+    cursor: pointer !important;
+  }
+
+  .newsletter-label .checkmark {
+    width: 20px !important;
+    height: 20px !important;
+    border: 2px solid #FF6B35 !important;
+    border-radius: 3px !important;
+    display: inline-block !important;
+    position: relative !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .newsletter-label input:checked ~ .checkmark::after {
+    content: '✓' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    color: #ff0055 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+  }
+
+  .newsletter-label a {
+    color: #00BFFF !important;
+    text-decoration: underline !important;
+  }
+
+  .newsletter-label a:hover {
+    color: #FFD700 !important;
+  }
 }
