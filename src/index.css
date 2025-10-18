@@ -125,17 +125,33 @@
     font-weight: 400 !important;
   }
 
-  /* CONSENTI MINUSCOLE NEI CONTROLLI DOVE L'UTENTE DIGITA */
+  /* CONSENTI MINUSCOLE NEI CONTROLLI DOVE L'UTENTE DIGITA - TESTO NERO SU SFONDO BIANCO */
   input,
   textarea,
-  select {
-    text-transform: none !important;   /* rimuove la forzatura uppercase */
+  select,
+  .arcade-input {
+    text-transform: none !important;
     font-family: 'Press Start 2P', monospace !important;
-    text-shadow: 1px 1px 0px #000 !important;
+    text-shadow: none !important;
+    color: #000000 !important;
+    font-weight: 400 !important;
+    background-color: #FFFFFF !important;
+    border: 2px solid #D72638 !important;
     letter-spacing: 1px !important;
     line-height: 1.4 !important;
-    color: #FFFFFF !important;
-    font-weight: 400 !important;
+  }
+
+  /* Placeholder leggibile */
+  input::placeholder,
+  textarea::placeholder {
+    color: #A0A0A0 !important;
+    text-shadow: none !important;
+  }
+
+  /* Link della policy mantiene stile retro */
+  .newsletter-label a {
+    color: #ff6b35 !important;
+    text-shadow: 1px 1px 0px #000 !important;
   }
 
   /* ========== SEZIONE DETTAGLI - FORZA BIANCO ASSOLUTO ========== */
