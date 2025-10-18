@@ -104,6 +104,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string | null
+          data_consent_accepted: boolean | null
           email: string
           id: string
           last_login: string | null
@@ -113,6 +114,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string | null
+          data_consent_accepted?: boolean | null
           email: string
           id: string
           last_login?: string | null
@@ -122,6 +124,7 @@ export type Database = {
         }
         Update: {
           created_at?: string | null
+          data_consent_accepted?: boolean | null
           email?: string
           id?: string
           last_login?: string | null
