@@ -33,7 +33,7 @@ export default function RegisterPage() {
     }
 
     // Registrazione Supabase con emailRedirectTo
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl = `${window.location.origin}/confirm-email`;
     const { error } = await supabase.auth.signUp({
       email,
       password,
