@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
@@ -32,6 +33,16 @@ export default function RegisterPage() {
       return;
     }
 
+    // Validate username with security utils
+    const { validateNickname } = await import('@/utils/security');
+    const validation = validateNickname(username);
+    if (!validation.isValid) {
+      setMessage(`ERRORE: ${validation.error || 'Username non valido'}`);
+      setIsError(true);
+      setLoading(false);
+      return;
+    }
+
     // Registrazione Supabase con emailRedirectTo
     const redirectUrl = `${window.location.origin}/confirm-email`;
     const { error } = await supabase.auth.signUp({
@@ -40,17 +51,27 @@ export default function RegisterPage() {
       options: {
         emailRedirectTo: redirectUrl,
         data: {
-          username: email.split('@')[0]
+          username: username, // Use validated username
+          data_consent_accepted: true
         }
       }
     });
 
     if (error) {
-      setMessage(`ERRORE DI SISTEMA: ${error.message}`);
+      // Map errors to generic messages
+      const errorMap: Record<string, string> = {
+        'User already registered': 'Questo account esiste già. Prova ad accedere.',
+        'Email already registered': 'Questa email è già registrata.',
+        'Invalid email': 'Email non valida.',
+      };
+      const userMessage = errorMap[error.message] || 'Si è verificato un errore durante la registrazione. Riprova più tardi.';
+      console.error('Signup error:', error); // Log for debugging
+      setMessage(`ERRORE: ${userMessage}`);
       setIsError(true);
     } else {
       setMessage('✅ REGISTRAZIONE COMPLETA! Controlla la tua email (e lo spam) per la convalida e unisciti a noi.');
       setEmail('');
+      setUsername('');
       setPassword('');
       setConfirmPassword('');
       setAcceptedTerms(false);
@@ -80,6 +101,18 @@ export default function RegisterPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+        />
+        <input
+          className="arcade-input w-full p-3"
+          type="text"
+          placeholder="USERNAME (3-20 caratteri)"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          minLength={3}
+          maxLength={20}
+          pattern="^[a-zA-Z0-9_-]+$"
+          title="Solo lettere, numeri, underscore e trattino"
         />
         <input
           className="arcade-input w-full p-3"

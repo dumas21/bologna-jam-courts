@@ -23,13 +23,21 @@ const Login = () => {
     });
 
     if (error) {
-      console.error('❌ Login fallito:', error.message);
-      setErrorMsg('Credenziali errate o email non confermata.');
+      // Map errors to generic messages
+      const errorMap: Record<string, string> = {
+        'Invalid login credentials': 'Email o password non validi.',
+        'Email not confirmed': 'Verifica la tua email prima di accedere.',
+        'User not found': 'Email o password non validi.',
+      };
+      const userMessage = errorMap[error.message] || 'Si è verificato un errore durante l\'accesso. Riprova più tardi.';
+      console.error('Login error:', error); // Log for debugging
+      setErrorMsg(userMessage);
       setLoading(false);
       return;
     }
 
     console.log('✅ Login riuscito:', data.user?.id);
+    toast({ title: 'LOGIN EFFETTUATO', description: 'Benvenuto!' });
     navigate('/');
   };
 

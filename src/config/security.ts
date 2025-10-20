@@ -20,11 +20,7 @@ export const SECURITY_CONFIG = {
     MAX_CONCURRENT_SESSIONS: 1
   },
   
-  // Admin emails - in production should come from backend validation
-  ADMIN_EMAILS: [
-    "admin@playground.com",
-    "playgroundjam21@gmail.com"
-  ],
+  // ADMIN_EMAILS removed for security - admin roles managed server-side via user_roles table
   
   // Content Security Policy
   CSP_SETTINGS: {
