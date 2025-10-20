@@ -81,7 +81,7 @@ export type Database = {
           message: string
           nickname: string
           playground_id: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string | null
@@ -89,7 +89,7 @@ export type Database = {
           message: string
           nickname: string
           playground_id: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string | null
@@ -97,7 +97,7 @@ export type Database = {
           message?: string
           nickname?: string
           playground_id?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: []
       }
