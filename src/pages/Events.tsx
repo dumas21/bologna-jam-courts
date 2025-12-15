@@ -43,26 +43,7 @@ const Events = () => {
                         {playground.name}
                       </CardTitle>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-lg border-2 border-yellow-400">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-yellow-300 font-bold text-sm">EVENTO IN CORSO</span>
-                            <ExternalLink size={16} className="text-yellow-300" />
-                          </div>
-                          <h3 className="text-white font-bold text-lg mb-2" style={{
-                      fontFamily: "'Press Start 2P', monospace"
-                    }}>NUOVI EVENTI DISPONIBILI PRESTO</h3>
-                          {playground.currentEvent?.link}
-                        </div>
-                        
-                        <div className="space-y-2 text-sm">
-                          
-                          <p><strong>Orari:</strong> {playground.openHours}</p>
-                          <p><strong>Canestri:</strong> {playground.basketCount}</p>
-                        </div>
-                      </div>
-                    </CardContent>
+                    
                   </Card>)}
               </div> : <div className="text-center py-12">
                 <Calendar size={64} className="mx-auto text-gray-400 mb-4" />
