@@ -40,7 +40,7 @@ export type Database = {
           created_at: string | null
           email: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           is_active: boolean | null
           source: string | null
           subscribed_at: string | null
@@ -52,7 +52,7 @@ export type Database = {
           created_at?: string | null
           email: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           source?: string | null
           subscribed_at?: string | null
@@ -64,7 +64,7 @@ export type Database = {
           created_at?: string | null
           email?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           is_active?: boolean | null
           source?: string | null
           subscribed_at?: string | null
@@ -170,7 +170,7 @@ export type Database = {
           event_data: Json | null
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           user_agent: string | null
           user_id: string | null
         }
@@ -179,7 +179,7 @@ export type Database = {
           event_data?: Json | null
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -188,7 +188,7 @@ export type Database = {
           event_data?: Json | null
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           user_agent?: string | null
           user_id?: string | null
         }
@@ -247,31 +247,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      check_message_rate_limit: {
-        Args:
-          | { p_nickname: string; p_playground_id: string }
-          | { p_playground_id: string }
-        Returns: boolean
-      }
-      check_rate_limit: {
-        Args:
-          | {
+      check_message_rate_limit:
+        | { Args: { p_playground_id: string }; Returns: boolean }
+        | {
+            Args: { p_nickname: string; p_playground_id: string }
+            Returns: boolean
+          }
+      check_rate_limit:
+        | {
+            Args: {
+              p_action_type: string
+              p_max_attempts: number
+              p_window_hours: number
+            }
+            Returns: boolean
+          }
+        | {
+            Args: {
               p_action_type: string
               p_max_attempts: number
               p_user_id: string
               p_window_hours: number
             }
-          | {
-              p_action_type: string
-              p_max_attempts: number
-              p_window_hours: number
-            }
-        Returns: boolean
-      }
-      cleanup_old_messages: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+            Returns: boolean
+          }
+      cleanup_old_messages: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -289,12 +289,12 @@ export type Database = {
         }
         Returns: string
       }
-      record_rate_limit_attempt: {
-        Args:
-          | { p_action_type: string }
-          | { p_action_type: string; p_user_id: string }
-        Returns: undefined
-      }
+      record_rate_limit_attempt:
+        | { Args: { p_action_type: string }; Returns: undefined }
+        | {
+            Args: { p_action_type: string; p_user_id: string }
+            Returns: undefined
+          }
       unsubscribe_newsletter: {
         Args: { subscriber_email: string }
         Returns: boolean

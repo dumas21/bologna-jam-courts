@@ -1,3 +1,4 @@
+// FORCE REBUILD v1.2 - Registration form with validation
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 

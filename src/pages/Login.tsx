@@ -1,4 +1,4 @@
-
+// FORCE REBUILD v1.2 - Black text on white background
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
