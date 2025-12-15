@@ -38,9 +38,9 @@ const Events = () => {
             {activeEvents.length > 0 ? <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {activeEvents.map(playground => <Card key={playground.id} className="arcade-card">
                     <CardHeader>
-                      <CardTitle className="flex items-center gap-2 arcade-title">
+                    <CardTitle className="flex items-center gap-2 arcade-title">
                         <Calendar className="text-orange-500" size={24} />
-                        {playground.name}
+                        STAY TUNED!
                       </CardTitle>
                     </CardHeader>
                     
