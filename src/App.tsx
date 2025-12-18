@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import CookieBanner from "@/components/CookieBanner";
-import AuthDebug from "@/components/AuthDebug";
+// AuthDebug rimosso per produzione
 import Index from "./pages/Index";
 import Stats from "./pages/Stats";
 import Events from "./pages/Events";
@@ -20,6 +19,7 @@ import AuthCallback from "./pages/AuthCallback";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import AuthPage from "./pages/AuthPage";
 import SimpleAuth from "./pages/SimpleAuth";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import NotFound from "./pages/NotFound";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
@@ -59,11 +59,12 @@ const App = () => {
               <Route path="/confirm-email" element={<ConfirmEmail />} />
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/auth-simple" element={<SimpleAuth />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
           <CookieBanner />
-          <AuthDebug />
+          {/* AuthDebug rimosso per produzione */}
         </ErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>

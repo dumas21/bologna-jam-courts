@@ -1,4 +1,3 @@
-
 import { AuthService } from '@/services/authService';
 import { useAuthState } from '@/hooks/useAuthState';
 import { SignUpData } from '@/types/auth';

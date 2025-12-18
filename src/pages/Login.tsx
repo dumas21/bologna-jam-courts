@@ -1,6 +1,5 @@
-// FORCE REBUILD v1.2 - Black text on white background
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -23,14 +22,14 @@ const Login = () => {
     });
 
     if (error) {
-      // Map errors to generic messages
+      // Map errors to user-friendly messages
       const errorMap: Record<string, string> = {
         'Invalid login credentials': 'Email o password non validi.',
         'Email not confirmed': 'Verifica la tua email prima di accedere.',
         'User not found': 'Email o password non validi.',
       };
       const userMessage = errorMap[error.message] || 'Si è verificato un errore durante l\'accesso. Riprova più tardi.';
-      console.error('Login error:', error); // Log for debugging
+      console.error('Login error:', error);
       setErrorMsg(userMessage);
       setLoading(false);
       return;
@@ -42,44 +41,54 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white">
-      <div className="login-card max-w-sm w-full bg-white rounded-xl shadow-lg border-2 border-gray-200 p-6">
-        <h1 className="text-2xl font-bold mb-4 text-center text-black">Login</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-background">
+      <form onSubmit={handleLogin} className="arcade-card p-6 md:p-8 max-w-md w-full">
+        <h1 className="text-xl md:text-2xl font-press-start mb-6 text-center retro-neon-text">
+          ACCESSO
+        </h1>
         
-        <form onSubmit={handleLogin} className="space-y-4">
+        <div className="space-y-4">
           <input
             type="email"
-            placeholder="Email"
+            placeholder="EMAIL"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
-            style={{ color: '#000000', backgroundColor: '#ffffff', caretColor: '#000000' }}
+            className="arcade-input w-full p-3"
+            disabled={loading}
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder="PASSWORD"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            className="w-full px-3 py-2 border-2 border-gray-300 rounded-lg text-black bg-white focus:outline-none focus:border-black"
-            style={{ color: '#000000', backgroundColor: '#ffffff', caretColor: '#000000' }}
+            className="arcade-input w-full p-3"
+            disabled={loading}
           />
-          {errorMsg && <p className="text-red-600 font-medium">{errorMsg}</p>}
+          
+          {errorMsg && (
+            <p className="text-destructive text-sm text-center p-2 border border-destructive rounded">
+              {errorMsg}
+            </p>
+          )}
+          
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50"
+            className="arcade-button w-full mt-4"
           >
-            {loading ? 'Accesso in corso...' : 'Accedi'}
+            {loading ? 'ACCESSO IN CORSO...' : 'ACCEDI'}
           </button>
-        </form>
+        </div>
 
-        <p className="mt-4 text-center text-sm text-black">
+        <p className="mt-6 text-center text-xs text-muted-foreground">
           Non hai un account?{' '}
-          <a href="/register" className="text-black underline font-semibold hover:text-gray-700">Registrati</a>
+          <Link to="/register" className="text-primary hover:underline font-semibold">
+            REGISTRATI
+          </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Playground } from "@/types/playgroundTypes";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,6 +6,7 @@ import { validateContentLength, sanitizeText } from "@/utils/security";
 import { usePlaygroundMessages } from "@/hooks/usePlaygroundMessages";
 import { useChatSounds } from "@/hooks/useChatSounds";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import ChatHeader from "./chat/ChatHeader";
 import ChatMessages from "./chat/ChatMessages";
 import MessageInput from "./chat/MessageInput";
@@ -18,9 +18,10 @@ interface PlaygroundChatProps {
 
 const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessage }) => {
   const { toast } = useToast();
-  const { profile, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { user, profile, isAuthenticated, isLoading: authLoading } = useAuth();
   // Usa il nome utente dal profilo Supabase o fallback al localStorage per compatibilità
-  const nickname = profile?.username || localStorage.getItem('username') || 'Utente';
+  const nickname = profile?.nickname || localStorage.getItem('username') || 'Utente';
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { playSoundEffect } = useChatSounds();
@@ -33,6 +34,29 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
     setMessages,
     setRemainingMessages
   } = usePlaygroundMessages(playground.id, nickname);
+
+  // Se l'utente non è autenticato, mostra CTA login
+  if (!authLoading && !isAuthenticated) {
+    return (
+      <div className="bg-background/80 p-6 rounded-lg border-4 border-primary shadow-lg text-center">
+        <ChatHeader playground={playground} />
+        <div className="py-8 space-y-4">
+          <p className="text-foreground font-press-start text-xs">
+            ACCEDI PER PARTECIPARE ALLA CHAT
+          </p>
+          <p className="text-muted-foreground text-sm">
+            Devi effettuare il login per visualizzare e inviare messaggi.
+          </p>
+          <button 
+            onClick={() => navigate('/login')}
+            className="arcade-button mt-4"
+          >
+            ACCEDI ORA
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleSendMessage = async () => {
     const trimmedMessage = message.trim();
@@ -70,13 +94,23 @@ const PlaygroundChat: React.FC<PlaygroundChatProps> = ({ playground, onSendMessa
       const sanitizedMessage = sanitizeText(trimmedMessage);
       const sanitizedNickname = sanitizeText(nickname);
       
+      // L'utente DEVE essere autenticato per inviare messaggi (user.id da auth)
+      if (!user?.id) {
+        toast({
+          title: "ERRORE AUTENTICAZIONE",
+          description: "Devi essere autenticato per inviare messaggi.",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { error } = await supabase
         .from('playground_messages')
         .insert({
           playground_id: playground.id,
           nickname: sanitizedNickname,
           message: sanitizedMessage,
-          user_id: isAuthenticated ? profile?.id || null : null
+          user_id: user.id // Usa sempre l'ID utente autenticato
         });
 
       if (error) {
