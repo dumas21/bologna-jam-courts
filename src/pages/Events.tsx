@@ -15,6 +15,7 @@ const Events = () => {
   const { user } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [formData, setFormData] = useState({
     playgroundName: '',
     eventName: '',
@@ -33,6 +34,11 @@ const Events = () => {
       toast.error("Compila i campi obbligatori");
       return;
     }
+
+    if (!privacyAccepted) {
+      toast.error("Devi accettare l'informativa privacy per continuare");
+      return;
+    }
     
     setIsSubmitting(true);
     
@@ -47,6 +53,7 @@ const Events = () => {
       eventDate: '',
       eventLink: ''
     });
+    setPrivacyAccepted(false);
     setShowForm(false);
     setIsSubmitting(false);
   };
@@ -186,6 +193,27 @@ const Events = () => {
                       />
                     </div>
                     
+                    {/* Privacy Consent Checkbox */}
+                    <div className="pt-2">
+                      <div className="flex items-start gap-3">
+                        <input
+                          id="privacy-consent-event"
+                          type="checkbox"
+                          checked={privacyAccepted}
+                          onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                          className="mt-1 h-4 w-4 rounded border-border bg-background/50 text-primary focus:ring-primary"
+                          required
+                        />
+                        <label htmlFor="privacy-consent-event" className="text-xs text-muted-foreground">
+                          Dichiaro di aver letto l'{' '}
+                          <Link to="/privacy-policy" target="_blank" className="text-primary hover:underline">
+                            informativa privacy
+                          </Link>{' '}
+                          e acconsento al trattamento dei miei dati personali ai sensi del Regolamento UE 2016/679 (GDPR).
+                        </label>
+                      </div>
+                    </div>
+                    
                     <div className="flex gap-3 pt-4">
                       <Button 
                         type="button" 
@@ -197,7 +225,7 @@ const Events = () => {
                       </Button>
                       <Button 
                         type="submit" 
-                        disabled={isSubmitting}
+                        disabled={isSubmitting || !privacyAccepted}
                         className="flex-1 arcade-button"
                       >
                         {isSubmitting ? "INVIO..." : "INVIA SUGGERIMENTO"}

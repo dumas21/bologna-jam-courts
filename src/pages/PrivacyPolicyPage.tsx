@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Shield } from 'lucide-react';
+import { ArrowLeft, Shield, Mail } from 'lucide-react';
 
 const PrivacyPolicyPage = () => {
   return (
@@ -22,244 +22,210 @@ const PrivacyPolicyPage = () => {
           </div>
           
           <p className="text-muted-foreground text-sm">
-            Ultimo aggiornamento: Gennaio 2025
+            Informativa ai sensi del Regolamento UE 2016/679 (GDPR)
+          </p>
+          <p className="text-muted-foreground text-xs">
+            Ultimo aggiornamento: Dicembre 2024
           </p>
           
           <div className="space-y-6 text-foreground">
+            {/* 1. Titolare del Trattamento */}
             <section>
               <h2 className="font-bold text-primary mb-2">1. Titolare del Trattamento</h2>
               <p className="text-sm">
-                Il titolare del trattamento dei dati personali è <strong>Playground Jam Bologna</strong>, 
-                di Matteo Bergami. Per qualsiasi informazione o richiesta relativa al trattamento 
-                dei tuoi dati personali, puoi contattarci all'indirizzo email: 
-                <a href="mailto:privacy@playgroundjam.com" className="text-primary hover:underline ml-1">
-                  privacy@playgroundjam.com
+                Il titolare del trattamento dei dati personali è il proprietario del progetto <strong>Playground JAM</strong>.
+              </p>
+              <p className="text-sm mt-2 flex items-center gap-2">
+                <Mail className="w-4 h-4 text-primary" />
+                <span>Email di contatto: </span>
+                <a href="mailto:playgroundjam21@gmail.com" className="text-primary hover:underline">
+                  playgroundjam21@gmail.com
                 </a>
               </p>
             </section>
 
+            {/* 2. Tipologia di Dati Raccolti */}
             <section>
-              <h2 className="font-bold text-primary mb-2">2. Dati Personali Raccolti</h2>
+              <h2 className="font-bold text-primary mb-2">2. Tipologia di Dati Raccolti</h2>
               <p className="text-sm mb-3">
-                Raccogliamo e trattiamo i seguenti dati personali:
+                Vengono raccolti esclusivamente:
               </p>
               <ul className="list-disc pl-5 space-y-2 text-sm">
                 <li>
-                  <strong>Indirizzo Email:</strong> Raccolto durante la registrazione, utilizzato per:
-                  <ul className="list-circle pl-5 mt-1 space-y-1">
-                    <li>Autenticazione e accesso al servizio</li>
-                    <li>Invio dell'email di conferma registrazione</li>
-                    <li>Comunicazioni relative al servizio (es. reset password)</li>
-                    <li>Newsletter (solo se espressamente acconsentito)</li>
-                  </ul>
+                  <strong>Indirizzo email</strong> – fornito durante la registrazione o l'iscrizione alla newsletter
                 </li>
                 <li>
-                  <strong>Username/Nickname:</strong> Scelto dall'utente, visibile pubblicamente nelle chat dei playground
+                  <strong>Username/Nickname</strong> – scelto dall'utente per identificarsi nel servizio
                 </li>
                 <li>
-                  <strong>Password:</strong> Memorizzata in forma crittografata (hash), mai in chiaro
-                </li>
-                <li>
-                  <strong>Messaggi Chat:</strong> Contenuto dei messaggi inviati nelle chat dei playground
-                </li>
-                <li>
-                  <strong>Dati Tecnici:</strong> Indirizzo IP, User Agent del browser (per sicurezza e prevenzione abusi)
+                  <strong>Eventuali dati forniti volontariamente</strong> – tramite form di contatto, suggerimenti eventi o altre comunicazioni
                 </li>
               </ul>
             </section>
 
+            {/* 3. Finalità del Trattamento */}
             <section>
-              <h2 className="font-bold text-primary mb-2">3. Finalità e Base Giuridica del Trattamento</h2>
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="border-b border-border">
-                    <th className="text-left py-2 pr-4">Finalità</th>
-                    <th className="text-left py-2">Base Giuridica (GDPR)</th>
-                  </tr>
-                </thead>
-                <tbody className="space-y-2">
-                  <tr className="border-b border-border/50">
-                    <td className="py-2 pr-4">Creazione e gestione account</td>
-                    <td className="py-2">Art. 6(1)(b) - Esecuzione contratto</td>
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-2 pr-4">Autenticazione e sicurezza</td>
-                    <td className="py-2">Art. 6(1)(b) - Esecuzione contratto</td>
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-2 pr-4">Invio email di conferma</td>
-                    <td className="py-2">Art. 6(1)(b) - Esecuzione contratto</td>
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-2 pr-4">Partecipazione alle chat</td>
-                    <td className="py-2">Art. 6(1)(a) - Consenso</td>
-                  </tr>
-                  <tr className="border-b border-border/50">
-                    <td className="py-2 pr-4">Invio newsletter</td>
-                    <td className="py-2">Art. 6(1)(a) - Consenso esplicito</td>
-                  </tr>
-                  <tr>
-                    <td className="py-2 pr-4">Prevenzione abusi e sicurezza</td>
-                    <td className="py-2">Art. 6(1)(f) - Legittimo interesse</td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-
-            <section>
-              <h2 className="font-bold text-primary mb-2">4. Conservazione dei Dati</h2>
-              <ul className="list-disc pl-5 space-y-2 text-sm">
-                <li>
-                  <strong>Dati Account:</strong> Conservati per tutta la durata dell'account. 
-                  Alla cancellazione, i dati vengono eliminati entro 30 giorni.
-                </li>
-                <li>
-                  <strong>Messaggi Chat:</strong> Eliminati automaticamente dopo <strong>72 ore</strong> 
-                  dalla pubblicazione.
-                </li>
-                <li>
-                  <strong>Log di Sicurezza:</strong> Conservati per 12 mesi per finalità di 
-                  sicurezza e prevenzione frodi.
-                </li>
-                <li>
-                  <strong>Dati Newsletter:</strong> Conservati fino alla disiscrizione.
-                </li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="font-bold text-primary mb-2">5. Condivisione e Trasferimento Dati</h2>
-              <p className="text-sm mb-2">
-                <strong>Non vendiamo</strong> né condividiamo i tuoi dati personali con terze parti 
-                per scopi pubblicitari o di marketing.
+              <h2 className="font-bold text-primary mb-2">3. Finalità del Trattamento</h2>
+              <p className="text-sm mb-3">
+                I dati personali sono utilizzati per le seguenti finalità:
               </p>
-              <p className="text-sm mb-2">I dati possono essere condivisi con:</p>
-              <ul className="list-disc pl-5 space-y-1 text-sm">
-                <li>
-                  <strong>Supabase Inc.</strong> (hosting e database) - Server in UE, conforme GDPR
-                </li>
-                <li>
-                  <strong>Resend</strong> (servizio email) - Per l'invio di email transazionali
-                </li>
+              <ul className="list-disc pl-5 space-y-2 text-sm">
+                <li>Inviare comunicazioni legate a Playground JAM</li>
+                <li>Fornire aggiornamenti sul progetto, eventi, tornei e novità</li>
+                <li>Rispondere a richieste inviate dagli utenti</li>
+                <li>Gestire l'autenticazione e l'accesso ai servizi</li>
+                <li>Attività informative e promozionali strettamente collegate al progetto</li>
               </ul>
+            </section>
+
+            {/* 4. Base Giuridica del Trattamento */}
+            <section>
+              <h2 className="font-bold text-primary mb-2">4. Base Giuridica del Trattamento</h2>
+              <p className="text-sm">
+                Il trattamento dei dati si basa sul <strong>consenso esplicito dell'utente</strong>, 
+                espresso tramite apposita accettazione al momento della registrazione o dell'invio di form.
+              </p>
               <p className="text-sm mt-2">
-                Tutti i fornitori sono selezionati per la loro conformità al GDPR e alle 
-                normative sulla protezione dei dati.
+                Riferimento normativo: Art. 6(1)(a) del Regolamento UE 2016/679 (GDPR).
               </p>
             </section>
 
+            {/* 5. Modalità di Trattamento e Conservazione */}
             <section>
-              <h2 className="font-bold text-primary mb-2">6. I Tuoi Diritti (GDPR Art. 15-22)</h2>
+              <h2 className="font-bold text-primary mb-2">5. Modalità di Trattamento e Conservazione</h2>
+              <p className="text-sm mb-2">
+                I dati personali sono trattati in modo <strong>lecito, corretto e trasparente</strong>, 
+                con strumenti digitali e adeguate misure di sicurezza tecniche e organizzative.
+              </p>
+              <p className="text-sm">
+                I dati vengono conservati <strong>solo per il tempo strettamente necessario</strong> alle 
+                finalità indicate, oppure fino a richiesta di cancellazione da parte dell'utente.
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-sm mt-2">
+                <li>Dati account: conservati per tutta la durata dell'account</li>
+                <li>Messaggi chat: eliminati automaticamente dopo 72 ore</li>
+                <li>Dati newsletter: conservati fino alla disiscrizione</li>
+              </ul>
+            </section>
+
+            {/* 6. Comunicazione e Condivisione dei Dati */}
+            <section>
+              <h2 className="font-bold text-primary mb-2">6. Comunicazione e Condivisione dei Dati</h2>
+              <p className="text-sm mb-2">
+                <strong>I dati personali non vengono ceduti a terzi</strong> per scopi pubblicitari o commerciali.
+              </p>
+              <p className="text-sm">
+                I dati possono essere trattati esclusivamente da servizi tecnici indispensabili 
+                al funzionamento del sito (hosting, servizi email), sempre nel rispetto del GDPR:
+              </p>
+              <ul className="list-disc pl-5 space-y-1 text-sm mt-2">
+                <li><strong>Supabase</strong> – hosting e database (server in UE)</li>
+                <li><strong>Resend</strong> – invio email transazionali</li>
+              </ul>
+            </section>
+
+            {/* 7. Diritti dell'Utente */}
+            <section>
+              <h2 className="font-bold text-primary mb-2">7. Diritti dell'Utente</h2>
               <p className="text-sm mb-3">
-                Hai i seguenti diritti sui tuoi dati personali:
+                Ai sensi degli articoli 15-22 del GDPR, l'utente ha il diritto di:
               </p>
               <ul className="list-disc pl-5 space-y-2 text-sm">
                 <li>
-                  <strong>Diritto di Accesso (Art. 15):</strong> Ottenere conferma del trattamento 
-                  e copia dei tuoi dati
+                  <strong>Accedere ai propri dati</strong> – ottenere conferma del trattamento e copia dei dati
                 </li>
                 <li>
-                  <strong>Diritto di Rettifica (Art. 16):</strong> Correggere dati inesatti o 
-                  incompleti
+                  <strong>Richiedere la rettifica</strong> – correggere dati inesatti o incompleti
                 </li>
                 <li>
-                  <strong>Diritto alla Cancellazione (Art. 17):</strong> Richiedere l'eliminazione 
-                  dei tuoi dati ("diritto all'oblio")
+                  <strong>Richiedere la cancellazione</strong> – eliminazione dei dati ("diritto all'oblio")
                 </li>
                 <li>
-                  <strong>Diritto alla Portabilità (Art. 20):</strong> Ricevere i tuoi dati in 
-                  formato strutturato e leggibile
+                  <strong>Limitare o opporsi al trattamento</strong> – in determinati casi previsti dalla legge
                 </li>
                 <li>
-                  <strong>Diritto di Opposizione (Art. 21):</strong> Opporti al trattamento in 
-                  determinati casi
-                </li>
-                <li>
-                  <strong>Diritto di Revoca (Art. 7):</strong> Ritirare il consenso in qualsiasi 
-                  momento senza pregiudicare la liceità del trattamento precedente
+                  <strong>Richiedere la portabilità</strong> – ricevere i dati in formato strutturato e leggibile
                 </li>
               </ul>
               <p className="text-sm mt-3">
                 Per esercitare questi diritti, contattaci a: 
-                <a href="mailto:privacy@playgroundjam.com" className="text-primary hover:underline ml-1">
-                  privacy@playgroundjam.com
+                <a href="mailto:playgroundjam21@gmail.com" className="text-primary hover:underline ml-1">
+                  playgroundjam21@gmail.com
                 </a>
               </p>
             </section>
 
+            {/* 8. Revoca del Consenso */}
             <section>
-              <h2 className="font-bold text-primary mb-2">7. Sicurezza dei Dati</h2>
-              <p className="text-sm mb-2">
-                Adottiamo misure tecniche e organizzative appropriate per proteggere i tuoi dati:
-              </p>
-              <ul className="list-disc pl-5 space-y-1 text-sm">
-                <li>Crittografia delle password con algoritmi sicuri (bcrypt)</li>
-                <li>Connessioni sicure HTTPS per tutte le comunicazioni</li>
-                <li>Row Level Security (RLS) nel database per isolamento dati utente</li>
-                <li>Rate limiting per prevenire abusi</li>
-                <li>Autenticazione a due fattori disponibile</li>
-                <li>Monitoraggio costante degli accessi</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="font-bold text-primary mb-2">8. Cookie e Tecnologie Simili</h2>
+              <h2 className="font-bold text-primary mb-2">8. Revoca del Consenso</h2>
               <p className="text-sm">
-                Utilizziamo cookie tecnici strettamente necessari per il funzionamento del 
-                servizio (es. sessione di autenticazione). Non utilizziamo cookie di 
-                profilazione o di terze parti per pubblicità.
+                L'utente può <strong>revocare il consenso in qualsiasi momento</strong> scrivendo a{' '}
+                <a href="mailto:playgroundjam21@gmail.com" className="text-primary hover:underline">
+                  playgroundjam21@gmail.com
+                </a>
+                .
+              </p>
+              <p className="text-sm mt-2">
+                La revoca del consenso non pregiudica la liceità del trattamento effettuato 
+                prima della revoca stessa.
               </p>
             </section>
 
+            {/* 9. Autorità di Controllo */}
             <section>
-              <h2 className="font-bold text-primary mb-2">9. Minori</h2>
+              <h2 className="font-bold text-primary mb-2">9. Autorità di Controllo</h2>
               <p className="text-sm">
-                Il servizio è destinato a utenti di età pari o superiore a 16 anni. Non 
-                raccogliamo consapevolmente dati di minori di 16 anni senza il consenso 
-                del genitore o tutore.
+                Se ritieni che il trattamento dei tuoi dati violi le normative sulla protezione dei dati, 
+                hai il diritto di proporre reclamo al <strong>Garante per la Protezione dei Dati Personali</strong>:
               </p>
-            </section>
-
-            <section>
-              <h2 className="font-bold text-primary mb-2">10. Reclami</h2>
-              <p className="text-sm">
-                Se ritieni che il trattamento dei tuoi dati violi le normative sulla protezione 
-                dei dati, hai il diritto di presentare un reclamo all'Autorità Garante per la 
-                Protezione dei Dati Personali: 
+              <p className="text-sm mt-2">
                 <a 
                   href="https://www.garanteprivacy.it" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-primary hover:underline ml-1"
+                  className="text-primary hover:underline"
                 >
                   www.garanteprivacy.it
                 </a>
               </p>
             </section>
 
+            {/* 10. Cookie */}
+            <section>
+              <h2 className="font-bold text-primary mb-2">10. Cookie e Tecnologie Simili</h2>
+              <p className="text-sm">
+                Utilizziamo esclusivamente <strong>cookie tecnici strettamente necessari</strong> per il 
+                funzionamento del servizio (es. sessione di autenticazione). 
+                Non utilizziamo cookie di profilazione o di terze parti per pubblicità.
+              </p>
+            </section>
+
+            {/* 11. Modifiche alla Privacy Policy */}
             <section>
               <h2 className="font-bold text-primary mb-2">11. Modifiche alla Privacy Policy</h2>
               <p className="text-sm">
-                Ci riserviamo il diritto di modificare questa informativa. Le modifiche 
-                significative saranno comunicate via email o tramite avviso sul sito. 
+                Ci riserviamo il diritto di modificare questa informativa. Le modifiche significative 
+                saranno comunicate via email o tramite avviso sul sito. 
                 Ti invitiamo a consultare periodicamente questa pagina.
               </p>
             </section>
 
+            {/* Contatti */}
             <section className="pt-4 border-t border-border">
               <h2 className="font-bold text-primary mb-2">Contatti</h2>
               <p className="text-sm">
                 Per qualsiasi domanda sulla privacy o per esercitare i tuoi diritti:
               </p>
               <ul className="text-sm mt-2 space-y-1">
-                <li>
+                <li className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-primary" />
                   <strong>Email:</strong> 
-                  <a href="mailto:privacy@playgroundjam.com" className="text-primary hover:underline ml-1">
-                    privacy@playgroundjam.com
+                  <a href="mailto:playgroundjam21@gmail.com" className="text-primary hover:underline">
+                    playgroundjam21@gmail.com
                   </a>
                 </li>
                 <li>
-                  <strong>Titolare:</strong> Matteo Bergami - Playground Jam Bologna
+                  <strong>Titolare:</strong> Playground JAM
                 </li>
               </ul>
             </section>
