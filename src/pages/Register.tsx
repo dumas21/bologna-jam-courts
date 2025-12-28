@@ -132,20 +132,25 @@ export default function RegisterPage() {
           required
         />
 
-        {/* Checkbox di accettazione dati */}
+        {/* Checkbox di accettazione dati GDPR */}
         <div className="pt-2">
-          <input
-            id="data-terms"
-            type="checkbox"
-            className="peer sr-only"
-            checked={acceptedTerms}
-            onChange={(e) => setAcceptedTerms(e.target.checked)}
-            required
-          />
-          <label htmlFor="data-terms" className="newsletter-label text-xs md:text-sm">
-            <span className="checkmark"></span>
-            Accetto la <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="hover:underline">Policy Dati</a>
-          </label>
+          <div className="flex items-start gap-3">
+            <input
+              id="data-terms"
+              type="checkbox"
+              className="mt-1 h-4 w-4 rounded border-border bg-background/50 text-primary focus:ring-primary"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              required
+            />
+            <label htmlFor="data-terms" className="text-xs text-muted-foreground leading-relaxed">
+              Dichiaro di aver letto l'{' '}
+              <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                informativa privacy
+              </a>{' '}
+              e acconsento al trattamento dei miei dati personali ai sensi del Regolamento UE 2016/679 (GDPR).
+            </label>
+          </div>
         </div>
 
         {/* Pulsante submit */}
