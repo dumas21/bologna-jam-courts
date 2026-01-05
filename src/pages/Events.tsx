@@ -209,7 +209,7 @@ const Events = () => {
                           <Link to="/privacy-policy" target="_blank" className="text-primary hover:underline">
                             informativa privacy
                           </Link>{' '}
-                          e acconsento al trattamento dei miei dati personali ai sensi del Regolamento UE 2016/679 (GDPR).
+                          e acconsento al trattamento dei miei dati personali per la gestione della proposta evento e le comunicazioni relative al progetto, ai sensi del Regolamento UE 2016/679 (GDPR).
                         </label>
                       </div>
                     </div>
