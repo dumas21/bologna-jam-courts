@@ -148,7 +148,7 @@ export default function RegisterPage() {
               <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 informativa privacy
               </a>{' '}
-              e acconsento al trattamento dei miei dati personali ai sensi del Regolamento UE 2016/679 (GDPR).
+              e acconsento al trattamento dei miei dati personali per la creazione dell'account, l'iscrizione alla newsletter e le comunicazioni relative al progetto, ai sensi del Regolamento UE 2016/679 (GDPR).
             </label>
           </div>
         </div>
