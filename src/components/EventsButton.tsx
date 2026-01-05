@@ -31,7 +31,7 @@ const EventsButton: React.FC = () => {
             letterSpacing: "3px"
           }}
         >
-          EVENTI IN CORSO
+          PRESTO NUOVI EVENTI
         </span>
         <Calendar size={40} className="text-yellow-300 animate-bounce" />
       </div>
