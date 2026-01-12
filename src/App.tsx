@@ -27,15 +27,8 @@ const queryClient = new QueryClient();
 
 const App = () => {
   useEffect(() => {
-    // Debug degli eventi di autenticazione
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`[AUTH EVENT] ${event}`, {
-        session: session ? "VALID" : "NULL",
-        user: session?.user?.email || "NO USER",
-        timestamp: new Date().toISOString()
-      });
-    });
-
+    // Auth state listener (debug rimosso per produzione)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {});
     return () => subscription.unsubscribe();
   }, []);
 

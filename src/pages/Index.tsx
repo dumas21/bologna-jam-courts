@@ -20,11 +20,7 @@ const Index = () => {
   
   const { scrollToTop, playSoundEffect } = useAudioEffects();
 
-  useEffect(() => {
-    console.log("PLAYGROUND DEBUG - Numero di playgrounds caricati:", playgrounds.length);
-    console.log("PLAYGROUND DEBUG - Lista completa playgrounds:", playgrounds.map(p => ({ id: p.id, name: p.name })));
-    console.log("AUTH DEBUG - Utente autenticato:", isAuthenticated, "Nickname:", nickname);
-  }, [playgrounds, isAuthenticated, nickname]);
+  // Debug rimosso per produzione
   
   const handleSelectPlayground = (playground: Playground) => {
     setSelectedPlayground(playground);
@@ -83,23 +79,7 @@ const Index = () => {
 
         <EventsButton />
         
-        {/* Test Auth Link */}
-        <div style={{ position: 'fixed', bottom: '10px', right: '10px', zIndex: 1000 }}>
-          <a 
-            href="/auth-simple" 
-            style={{ 
-              background: '#007bff', 
-              color: 'white', 
-              padding: '8px 12px', 
-              borderRadius: '4px', 
-              textDecoration: 'none',
-              fontSize: '12px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-            }}
-          >
-            🔐 Test Auth
-          </a>
-        </div>
+        {/* Test Auth Link rimosso per produzione */}
         
         {/* Mostra un messaggio di benvenuto se l'utente è autenticato */}
         {isAuthenticated && profile && (
@@ -127,7 +107,7 @@ const Index = () => {
       <footer className="arcade-footer mt-2 md:mt-4">
         <div className="container mx-auto px-2 md:px-4 text-center py-2 md:py-4">
           <p className="font-press-start text-xs">
-            PLAYGROUND JAM BOLOGNA &copy; 2025
+            PLAYGROUND JAM BOLOGNA &copy; 2026
           </p>
           <div className="mt-2" style={{
             color: '#00ffff',

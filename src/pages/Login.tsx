@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/components/ui/use-toast';
+import { AuthService } from '@/services/authService';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,10 +16,8 @@ const Login = () => {
     setLoading(true);
     setErrorMsg('');
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    // Usa AuthService con validazione Zod
+    const { data, error } = await AuthService.signInWithPassword(email, password);
 
     if (error) {
       // Map errors to user-friendly messages
@@ -29,13 +27,11 @@ const Login = () => {
         'User not found': 'Email o password non validi.',
       };
       const userMessage = errorMap[error.message] || 'Si è verificato un errore durante l\'accesso. Riprova più tardi.';
-      console.error('Login error:', error);
       setErrorMsg(userMessage);
       setLoading(false);
       return;
     }
 
-    console.log('✅ Login riuscito:', data.user?.id);
     toast({ title: 'LOGIN EFFETTUATO', description: 'Benvenuto!' });
     navigate('/');
   };
