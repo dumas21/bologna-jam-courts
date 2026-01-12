@@ -66,7 +66,7 @@ export default function RegisterPage() {
         'Invalid email': 'Email non valida.',
       };
       const userMessage = errorMap[error.message] || 'Si è verificato un errore durante la registrazione. Riprova più tardi.';
-      console.error('Signup error:', error); // Log for debugging
+      // Error logged server-side
       setMessage(`ERRORE: ${userMessage}`);
       setIsError(true);
     } else {
