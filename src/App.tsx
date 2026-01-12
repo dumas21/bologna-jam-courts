@@ -6,10 +6,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import CookieBanner from "@/components/CookieBanner";
-// AuthDebug rimosso per produzione
 import Index from "./pages/Index";
 import Stats from "./pages/Stats";
 import Events from "./pages/Events";
+import Admin from "./pages/Admin";
 import Export from "./pages/Export";
 import AddPlayground from "./pages/AddPlayground";
 import Register from "./pages/Register";
@@ -53,6 +53,7 @@ const App = () => {
               <Route path="/auth" element={<AuthPage />} />
               <Route path="/auth-simple" element={<SimpleAuth />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/admin" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
