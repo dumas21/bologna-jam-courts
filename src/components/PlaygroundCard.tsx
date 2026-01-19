@@ -63,7 +63,6 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
           : 'bg-black bg-opacity-80 hover:bg-opacity-95 hover:scale-[1.01] hover:shadow-lg hover:shadow-orange-500/20'
       } backdrop-blur-sm border-2 border-orange-500 rounded-xl overflow-hidden active:scale-[0.98] touch-manipulation`}
       onClick={() => {
-        console.log("Selezionato playground:", playground);
         onSelectPlayground(playground);
         playBasketballSound();
       }}
