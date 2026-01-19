@@ -27,35 +27,34 @@ const CookieBanner: React.FC = () => {
   if (!isVisible) return null;
   
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-800 bg-opacity-95 text-white p-4 z-50 border-t-2 border-jam-purple">
-      <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between">
-        <div className="flex-1 text-sm mb-4 sm:mb-0 pr-4">
+    <div className="fixed bottom-0 left-0 right-0 bg-gray-900 bg-opacity-98 text-white p-3 md:p-4 z-50 border-t-2 border-jam-purple shadow-lg">
+      <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex-1 text-xs md:text-sm leading-relaxed">
           <p>
-            Questa applicazione utilizza cookie e tecnologie simili per garantirti una migliore esperienza.
-            Continuando a utilizzare Playground Jam, acconsenti all'uso dei cookie come descritto nella nostra 
+            Utilizziamo cookie per migliorare la tua esperienza.
             <span 
-              className="text-jam-orange hover:underline cursor-pointer ml-1"
+              className="text-jam-orange hover:underline cursor-pointer ml-1 inline-block"
               onClick={() => window.dispatchEvent(new CustomEvent('open-cookie-policy'))}
             >
-              Informativa sui Cookie
-            </span>.
+              Maggiori info
+            </span>
           </p>
         </div>
         
-        <div className="flex space-x-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <Button 
             variant="outline" 
             size="sm" 
             onClick={handleAccept}
-            className="border-jam-orange text-jam-orange hover:bg-jam-orange hover:text-white"
+            className="border-jam-orange text-jam-orange hover:bg-jam-orange hover:text-white text-xs px-3 py-1.5"
           >
-            Accetta tutti
+            Accetta
           </Button>
           <Button 
             variant="ghost" 
             size="icon" 
             onClick={() => setIsVisible(false)}
-            className="text-white hover:bg-gray-700"
+            className="text-white hover:bg-gray-700 h-8 w-8"
           >
             <X className="h-4 w-4" />
           </Button>

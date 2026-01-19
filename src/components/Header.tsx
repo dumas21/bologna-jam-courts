@@ -20,14 +20,12 @@ const Header = () => {
       
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(err => {
-          // Silently handle audio errors to prevent console spam
-          console.log('Audio playback not available');
+        playPromise.catch(() => {
+          // Silently handle audio errors
         });
       }
-    } catch (error) {
+    } catch {
       // Silently handle audio initialization errors
-      console.log('Audio not available');
     }
   };
 
@@ -66,8 +64,7 @@ const Header = () => {
               src="/lovable-uploads/e4d6bab9-96f0-4ad5-a830-7af99d4433b5.png" 
               alt="Playground Jam Bologna Logo"
               className="h-32 md:h-40 lg:h-48 xl:h-56 w-auto object-contain arcade-icon"
-              onError={(e) => {
-                console.log('Logo image failed to load');
+              onError={() => {
                 // Fallback handling if needed
               }}
             />

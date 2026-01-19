@@ -11,19 +11,15 @@ export type { CheckInRecord, RegisteredUser };
 export function usePlaygrounds() {
   const { toast } = useToast();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(() => {
-    console.log("Inizializzazione playgrounds...");
     const saved = localStorage.getItem("playgroundData");
     if (saved) {
       const parsedData = JSON.parse(saved);
       // Controlla se ci sono meno di 10 playground e ripristina i dati originali
       if (parsedData.length < 10) {
-        console.log("Meno di 10 playground trovati, ripristino dati originali:", initialData);
         return initialData;
       }
-      console.log("Dati caricati da localStorage:", parsedData);
       return parsedData;
     }
-    console.log("Utilizzo dati iniziali:", initialData);
     return initialData;
   });
   
@@ -43,7 +39,6 @@ export function usePlaygrounds() {
   useEffect(() => {
     localStorage.setItem("playgroundData", JSON.stringify(playgrounds));
     setTotalCheckIns(playgrounds.reduce((acc, pg) => acc + pg.totalCheckins, 0));
-    console.log("Playgrounds aggiornati e salvati:", playgrounds);
   }, [playgrounds]);
   
   // Save check-in records
@@ -112,7 +107,7 @@ export function usePlaygrounds() {
     setCheckInRecords([]);
     
     const audio = new Audio('/sounds/reset.mp3');
-    audio.play().catch(err => console.log('Audio playback error:', err));
+    audio.play().catch(() => {});
     
     toast({
       title: "Reset giornaliero",
@@ -128,13 +123,9 @@ export function usePlaygrounds() {
       }))
     );
     
+    // Audio silenzioso per evitare errori
     const audio = new Audio('/sounds/message.mp3');
-    audio.play().catch(err => console.log('Audio playback error:', err));
-    
-    toast({
-      title: "Reset chat",
-      description: "Le chat dei playground sono state resettate dopo 48 ore.",
-    });
+    audio.play().catch(() => {});
   };
   
   const checkIn = (playgroundId: string, nickname: string, displayNickname: string = "") => {
