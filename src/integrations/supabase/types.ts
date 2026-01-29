@@ -253,6 +253,10 @@ export type Database = {
             Args: { p_nickname: string; p_playground_id: string }
             Returns: boolean
           }
+      check_newsletter_rate_limit: {
+        Args: { p_ip_address: unknown }
+        Returns: boolean
+      }
       check_rate_limit:
         | {
             Args: {
