@@ -2,9 +2,23 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.50.1";
 import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+// Restrict CORS to specific origins for security
+const ALLOWED_ORIGINS = [
+  "https://bologna-playgroundjam.lovable.app",
+  "https://id-preview--d01073df-498e-488b-be4b-ef189a39047d.lovable.app"
+];
+
+const getCorsHeaders = (origin: string | null): Record<string, string> => {
+  const isAllowed = origin && (
+    ALLOWED_ORIGINS.includes(origin) || 
+    origin.endsWith('.lovable.app')
+  );
+  
+  return {
+    "Access-Control-Allow-Origin": isAllowed ? origin : ALLOWED_ORIGINS[0],
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+  };
 };
 
 // Zod validation schema
@@ -22,8 +36,19 @@ const contactSchema = z.object({
 });
 
 const handler = async (req: Request): Promise<Response> => {
+  const origin = req.headers.get("origin");
+  const corsHeaders = getCorsHeaders(origin);
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Only allow POST
+  if (req.method !== "POST") {
+    return new Response(
+      JSON.stringify({ error: "Metodo non consentito" }),
+      { status: 405, headers: { "Content-Type": "application/json", ...corsHeaders } }
+    );
   }
 
   try {
@@ -83,7 +108,7 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(
         JSON.stringify({ 
           error: 'Dati non validi', 
-          details: validationResult.error.errors 
+          details: validationResult.error.errors.map(e => e.message)
         }),
         { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
@@ -125,11 +150,12 @@ const handler = async (req: Request): Promise<Response> => {
       { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error in contact-submit:", error);
+    const errorMessage = error instanceof Error ? error.message : "Errore nell'invio del messaggio";
     return new Response(
-      JSON.stringify({ error: error.message || "Errore nell'invio del messaggio" }),
-      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      JSON.stringify({ error: errorMessage }),
+      { status: 500, headers: { "Content-Type": "application/json", ...getCorsHeaders(req.headers.get("origin")) } }
     );
   }
 };
