@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      field_check_ins: {
+        Row: {
+          checked_in_at: string
+          checked_out_at: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          playground_id: string
+          user_id: string
+        }
+        Insert: {
+          checked_in_at?: string
+          checked_out_at?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          playground_id: string
+          user_id: string
+        }
+        Update: {
+          checked_in_at?: string
+          checked_out_at?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          playground_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       global_config: {
         Row: {
           created_at: string | null
@@ -96,6 +126,42 @@ export type Database = {
           id?: string
           message?: string
           nickname?: string
+          playground_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      playground_ratings: {
+        Row: {
+          atmosphere: number
+          cleanliness: number
+          court_condition: number
+          created_at: string
+          hoops_quality: number
+          id: string
+          notes: string | null
+          playground_id: string
+          user_id: string
+        }
+        Insert: {
+          atmosphere: number
+          cleanliness: number
+          court_condition: number
+          created_at?: string
+          hoops_quality: number
+          id?: string
+          notes?: string | null
+          playground_id: string
+          user_id: string
+        }
+        Update: {
+          atmosphere?: number
+          cleanliness?: number
+          court_condition?: number
+          created_at?: string
+          hoops_quality?: number
+          id?: string
+          notes?: string | null
           playground_id?: string
           user_id?: string
         }
@@ -194,6 +260,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          playground_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          playground_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          playground_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -276,6 +363,7 @@ export type Database = {
             Returns: boolean
           }
       cleanup_old_messages: { Args: never; Returns: undefined }
+      expire_old_check_ins: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

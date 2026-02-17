@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import CookieBanner from "@/components/CookieBanner";
+import MotivationalPopup from "@/components/MotivationalPopup";
 import Index from "./pages/Index";
 import Stats from "./pages/Stats";
 import Events from "./pages/Events";
@@ -15,6 +16,7 @@ import AddPlayground from "./pages/AddPlayground";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
+import Profile from "./pages/Profile";
 import AuthCallback from "./pages/AuthCallback";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import AuthPage from "./pages/AuthPage";
@@ -27,7 +29,6 @@ const queryClient = new QueryClient();
 
 const App = () => {
   useEffect(() => {
-    // Auth state listener (debug rimosso per produzione)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {});
     return () => subscription.unsubscribe();
   }, []);
@@ -39,6 +40,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <MotivationalPopup />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/stats" element={<Stats />} />
@@ -48,6 +50,7 @@ const App = () => {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/confirm-email" element={<ConfirmEmail />} />
               <Route path="/auth" element={<AuthPage />} />
@@ -58,7 +61,6 @@ const App = () => {
             </Routes>
           </BrowserRouter>
           <CookieBanner />
-          {/* AuthDebug rimosso per produzione */}
         </ErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>
