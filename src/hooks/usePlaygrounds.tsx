@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Playground, Comment, CheckInRecord, RegisteredUser } from "@/types/playground";
 import { playgroundData as initialData } from "@/data/playgroundData";
+
 import { getDailyResetTime } from "@/utils/timeUtils";
 import { useToast } from "@/components/ui/use-toast";
 import { v4 as uuidv4 } from 'uuid';
@@ -14,8 +15,8 @@ export function usePlaygrounds() {
     const saved = localStorage.getItem("playgroundData");
     if (saved) {
       const parsedData = JSON.parse(saved);
-      // Controlla se ci sono meno di 10 playground e ripristina i dati originali
-      if (parsedData.length < 10) {
+      // Se i dati salvati sono obsoleti (meno di 15 campi), ripristina i dati originali
+      if (parsedData.length < 15) {
         return initialData;
       }
       return parsedData;
