@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import CheckInButton from "./CheckInButton";
 import RatingForm from "./RatingForm";
 import PlaygroundDetail from "./PlaygroundDetail";
-import { MapPin, Star, Clock, Heart, Zap, Trophy, ChevronDown, ChevronUp, Users } from "lucide-react";
+import { MapPin, Star, Clock, Heart, Trophy, ChevronDown, ChevronUp, Users, Search } from "lucide-react";
 
 const PLAYGROUND_NICKNAMES: Record<string, { nickname: string; status: "iconic" | "active" }> = {
   "1":  { nickname: "I Giardini", status: "iconic" },
@@ -28,10 +28,10 @@ const PLAYGROUND_NICKNAMES: Record<string, { nickname: string; status: "iconic" 
 };
 
 const FEATURE_TAGS: Record<string, { label: string; color: string }> = {
-  hasLighting:  { label: "💡 ILLUMINATO", color: "bg-yellow-900/60 border-yellow-500 text-yellow-300" },
-  hasShade:     { label: "🌳 OMBRA",      color: "bg-green-900/60 border-green-500 text-green-300"   },
-  hasAmenities: { label: "🚿 SERVIZI",    color: "bg-blue-900/60 border-blue-500 text-blue-300"     },
-  hasFountain:  { label: "💧 FONTANA",    color: "bg-cyan-900/60 border-cyan-500 text-cyan-300"     },
+  hasLighting:  { label: "💡 ILLUMINATO", color: "bg-yellow-900/40 border-yellow-600/40 text-yellow-400" },
+  hasShade:     { label: "🌳 OMBRA",      color: "bg-green-900/40 border-green-600/40 text-green-400"   },
+  hasAmenities: { label: "🚿 SERVIZI",    color: "bg-blue-900/40 border-blue-600/40 text-blue-400"     },
+  hasFountain:  { label: "💧 FONTANA",    color: "bg-cyan-900/40 border-cyan-600/40 text-cyan-400"     },
 };
 
 interface PlaygroundListProps {
@@ -92,26 +92,29 @@ const PlaygroundList = ({
   });
 
   return (
-    <div className="space-y-4">
-      {/* Filtri */}
-      <div className="bg-black/80 border-2 border-orange-500 rounded-xl p-3 space-y-3">
-        <input
-          type="text"
-          placeholder="🔍 CERCA CAMPO..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="w-full bg-black/70 border-2 border-orange-500/50 rounded-lg px-3 py-2 text-orange-300 placeholder-orange-800 focus:outline-none focus:border-orange-400"
-          style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px" }}
-        />
+    <div className="space-y-6">
+      {/* Search & filters — clean, spacious */}
+      <div className="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm p-4 space-y-4">
+        <div className="relative">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <input
+            type="text"
+            placeholder="CERCA CAMPO..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-3 text-white/80 placeholder-white/20 focus:outline-none focus:border-orange-500/50 transition-colors"
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}
+          />
+        </div>
         <div className="flex gap-2 flex-wrap">
           {zones.map(zone => (
             <button
               key={zone}
               onClick={() => setFilterZone(zone)}
-              className={`px-3 py-1 rounded-lg border transition-all ${
+              className={`px-3 py-1.5 rounded-lg border transition-all ${
                 filterZone === zone
-                  ? "border-orange-500 bg-orange-500/20 text-orange-300"
-                  : "border-white/20 text-white/40 hover:border-white/40"
+                  ? "border-orange-500/60 bg-orange-500/15 text-orange-400"
+                  : "border-white/10 text-white/30 hover:border-white/20 hover:text-white/50"
               }`}
               style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}
             >
@@ -119,13 +122,13 @@ const PlaygroundList = ({
             </button>
           ))}
         </div>
-        <p className="text-orange-400/50" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
-          {filtered.length} CAMPI TROVATI
+        <p className="text-white/20" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
+          {filtered.length} CAMPI
         </p>
       </div>
 
-      {/* Lista */}
-      <div className="space-y-3">
+      {/* Playground cards — bigger, more whitespace */}
+      <div className="space-y-4">
         {filtered.map(playground => {
           const info = PLAYGROUND_NICKNAMES[playground.id];
           const isIconic = info?.status === "iconic";
@@ -139,48 +142,48 @@ const PlaygroundList = ({
           return (
             <div
               key={playground.id}
-              className={`rounded-xl overflow-hidden border-2 transition-all duration-300 bg-black/80 backdrop-blur-sm ${
+              className={`rounded-2xl overflow-hidden border transition-all duration-300 bg-black/50 backdrop-blur-sm ${
                 isExpanded
-                  ? "border-orange-500 shadow-lg shadow-orange-500/30"
+                  ? "border-orange-500/60 shadow-lg shadow-orange-500/10"
                   : isIconic
-                  ? "border-yellow-500/60 hover:border-yellow-400"
-                  : "border-orange-500/40 hover:border-orange-500/60"
+                  ? "border-yellow-500/30 hover:border-yellow-500/50"
+                  : "border-white/10 hover:border-white/20"
               }`}
             >
-              {/* Header cliccabile */}
-              <button className="w-full text-left p-4" onClick={() => toggleExpand(playground.id)}>
-                <div className="flex items-start justify-between gap-3">
+              {/* Clickable header — more padding */}
+              <button className="w-full text-left p-5 md:p-6" onClick={() => toggleExpand(playground.id)}>
+                <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     {isIconic && (
-                      <div className="flex items-center gap-1 mb-1">
-                        <Trophy size={9} className="text-yellow-400" />
+                      <div className="flex items-center gap-1.5 mb-2">
+                        <Trophy size={10} className="text-yellow-400" />
                         <span className="text-yellow-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "6px" }}>
                           LEGGENDARIO
                         </span>
                       </div>
                     )}
                     <h3
-                      className="text-orange-400 truncate"
-                      style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "10px", textShadow: "0 0 8px rgba(255,107,53,0.5)" }}
+                      className="text-orange-400 leading-tight"
+                      style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "11px", textShadow: "0 0 8px rgba(255,107,53,0.3)" }}
                     >
                       {playground.name.toUpperCase()}
                     </h3>
                     {info?.nickname && (
-                      <p className="text-yellow-400/60 mt-0.5" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
+                      <p className="text-white/30 mt-1" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
                         "{info.nickname}"
                       </p>
                     )}
-                    <div className="flex items-center gap-1 mt-1.5">
-                      <MapPin size={9} className="text-white/30 flex-shrink-0" />
-                      <span className="text-white/30 font-mono truncate" style={{ fontSize: "8px" }}>
+                    <div className="flex items-center gap-1.5 mt-2.5">
+                      <MapPin size={10} className="text-white/20 flex-shrink-0" />
+                      <span className="text-white/20 font-mono truncate" style={{ fontSize: "8px" }}>
                         {playground.address}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
+                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
                     {displayRating != null && (
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
                         <Star size={10} className="fill-yellow-400 text-yellow-400" />
                         <span className="text-yellow-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px" }}>
                           {displayRating.toFixed(1)}
@@ -188,28 +191,27 @@ const PlaygroundList = ({
                       </div>
                     )}
                     {playerCount > 0 && (
-                      <div className="flex items-center gap-1">
-                        <Zap size={9} className="text-green-400" />
-                        <span className={fieldStatus.color} style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-500/10 border border-green-500/20">
+                        <span className="text-green-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
                           {playerCount}🏀
                         </span>
                       </div>
                     )}
-                    <div className="text-white/25 mt-0.5">
-                      {isExpanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
+                    <div className="text-white/15 mt-1">
+                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                     </div>
                   </div>
                 </div>
 
-                {/* Tags & orario */}
-                <div className="flex flex-wrap gap-1 mt-2 items-center">
-                  <div className="flex items-center gap-1 mr-1">
-                    <Clock size={8} className="text-white/25" />
-                    <span className="text-white/25 font-mono" style={{ fontSize: "7px" }}>{playground.openHours}</span>
+                {/* Tags row */}
+                <div className="flex flex-wrap gap-1.5 mt-3 items-center">
+                  <div className="flex items-center gap-1 mr-2">
+                    <Clock size={8} className="text-white/15" />
+                    <span className="text-white/15 font-mono" style={{ fontSize: "7px" }}>{playground.openHours}</span>
                   </div>
                   {Object.entries(FEATURE_TAGS).map(([key, tag]) =>
                     playground[key as keyof Playground] ? (
-                      <span key={key} className={`px-1.5 py-0.5 rounded border font-mono ${tag.color}`} style={{ fontSize: "6px" }}>
+                      <span key={key} className={`px-2 py-0.5 rounded-md border font-mono ${tag.color}`} style={{ fontSize: "6px" }}>
                         {tag.label}
                       </span>
                     ) : null
@@ -217,25 +219,28 @@ const PlaygroundList = ({
                 </div>
               </button>
 
-              {/* Sezione espansa */}
+              {/* Expanded section */}
               {isExpanded && (
-                <div className="border-t-2 border-orange-500/30 p-4 space-y-4">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-black/50 rounded-lg p-3 border border-orange-500/20">
+                <div className="border-t border-white/10 p-5 md:p-6 space-y-5">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-xl p-4 border border-white/10 bg-white/5">
                     <div>
                       <p className={fieldStatus.color} style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px" }}>
                         {fieldStatus.label}
                       </p>
                       {playerCount > 0 && (
-                        <div className="flex items-center gap-1 mt-1">
-                          <Users size={9} className="text-white/30" />
-                          <span className="text-white/30 font-mono" style={{ fontSize: "7px" }}>{playerCount} giocatori ora</span>
+                        <div className="flex items-center gap-1.5 mt-1.5">
+                          <Users size={10} className="text-white/20" />
+                          <span className="text-white/20 font-mono" style={{ fontSize: "7px" }}>{playerCount} giocatori ora</span>
                         </div>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       {isAuthenticated && (
-                        <button onClick={() => toggleFavorite(playground.id)} className="p-2 rounded-full border border-white/20 hover:border-red-400 transition-colors">
-                          <Heart size={14} className={isFavorite(playground.id) ? "fill-red-500 text-red-500" : "text-white/30"} />
+                        <button
+                          onClick={() => toggleFavorite(playground.id)}
+                          className="p-2.5 rounded-xl border border-white/10 hover:border-red-400/50 transition-colors"
+                        >
+                          <Heart size={14} className={isFavorite(playground.id) ? "fill-red-500 text-red-500" : "text-white/20"} />
                         </button>
                       )}
                       <CheckInButton
@@ -279,4 +284,3 @@ const PlaygroundList = ({
 };
 
 export default PlaygroundList;
-
