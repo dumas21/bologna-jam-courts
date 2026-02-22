@@ -7,7 +7,8 @@ import { useAuth } from "@/hooks/useAuth";
 import CheckInButton from "./CheckInButton";
 import RatingForm from "./RatingForm";
 import PlaygroundDetail from "./PlaygroundDetail";
-import { MapPin, Star, Clock, Heart, Trophy, ChevronDown, ChevronUp, Users, Search } from "lucide-react";
+import { MapPin, Star, Clock, Heart, Trophy, ChevronDown, ChevronUp, Users, Search, Navigation } from "lucide-react";
+import { openSecureExternalLink } from "@/config/security";
 
 const PLAYGROUND_NICKNAMES: Record<string, { nickname: string; status: "iconic" | "active" }> = {
   "1":  { nickname: "I Giardini", status: "iconic" },
@@ -80,6 +81,12 @@ const PlaygroundList = ({
     if (pg) onSelectPlayground(pg);
   };
 
+  const openDirections = (playground: Playground, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${playground.latitude},${playground.longitude}`;
+    openSecureExternalLink(url);
+  };
+
   const zones = ["tutti", ...Array.from(new Set(playgrounds.map(p => p.district || "altro")))];
 
   const filtered = playgrounds.filter(pg => {
@@ -92,18 +99,18 @@ const PlaygroundList = ({
   });
 
   return (
-    <div className="space-y-6">
-      {/* Search & filters — clean, spacious */}
-      <div className="rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm p-4 space-y-4">
+    <div className="w-full space-y-6">
+      {/* Search & filters */}
+      <div className="w-full rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm p-5 md:p-6 space-y-4">
         <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30" />
           <input
             type="text"
             placeholder="CERCA CAMPO..."
             value={searchTerm}
             onChange={e => setSearchTerm(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-4 py-3 text-white/80 placeholder-white/20 focus:outline-none focus:border-orange-500/50 transition-colors"
-            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}
+            className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-4 text-white/80 placeholder-white/20 focus:outline-none focus:border-orange-500/50 transition-colors"
+            style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "10px" }}
           />
         </div>
         <div className="flex gap-2 flex-wrap">
@@ -111,24 +118,24 @@ const PlaygroundList = ({
             <button
               key={zone}
               onClick={() => setFilterZone(zone)}
-              className={`px-3 py-1.5 rounded-lg border transition-all ${
+              className={`px-4 py-2 rounded-xl border transition-all min-h-[40px] ${
                 filterZone === zone
                   ? "border-orange-500/60 bg-orange-500/15 text-orange-400"
                   : "border-white/10 text-white/30 hover:border-white/20 hover:text-white/50"
               }`}
-              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}
+              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}
             >
               {zone.toUpperCase()}
             </button>
           ))}
         </div>
-        <p className="text-white/20" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
-          {filtered.length} CAMPI
+        <p className="text-white/20" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}>
+          {filtered.length} CAMPI TROVATI
         </p>
       </div>
 
-      {/* Playground cards — bigger, more whitespace */}
-      <div className="space-y-4">
+      {/* Playground cards — full width, larger */}
+      <div className="w-full space-y-5">
         {filtered.map(playground => {
           const info = PLAYGROUND_NICKNAMES[playground.id];
           const isIconic = info?.status === "iconic";
@@ -142,95 +149,108 @@ const PlaygroundList = ({
           return (
             <div
               key={playground.id}
-              className={`rounded-2xl overflow-hidden border transition-all duration-300 bg-black/50 backdrop-blur-sm ${
+              className={`w-full rounded-2xl overflow-hidden border-2 transition-all duration-300 bg-black/50 backdrop-blur-sm ${
                 isExpanded
-                  ? "border-orange-500/60 shadow-lg shadow-orange-500/10"
+                  ? "border-orange-500/70 shadow-xl shadow-orange-500/15"
                   : isIconic
-                  ? "border-yellow-500/30 hover:border-yellow-500/50"
-                  : "border-white/10 hover:border-white/20"
+                  ? "border-yellow-500/40 hover:border-yellow-500/60"
+                  : "border-white/15 hover:border-white/25"
               }`}
             >
-              {/* Clickable header — more padding */}
-              <button className="w-full text-left p-5 md:p-6" onClick={() => toggleExpand(playground.id)}>
+              {/* Clickable header */}
+              <button className="w-full text-left p-6 md:p-8" onClick={() => toggleExpand(playground.id)}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     {isIconic && (
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Trophy size={10} className="text-yellow-400" />
-                        <span className="text-yellow-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "6px" }}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Trophy size={14} className="text-yellow-400" />
+                        <span className="text-yellow-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}>
                           LEGGENDARIO
                         </span>
                       </div>
                     )}
                     <h3
-                      className="text-orange-400 leading-tight"
-                      style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "11px", textShadow: "0 0 8px rgba(255,107,53,0.3)" }}
+                      className="text-orange-400 leading-relaxed"
+                      style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "13px", textShadow: "0 0 10px rgba(255,107,53,0.3)" }}
                     >
                       {playground.name.toUpperCase()}
                     </h3>
                     {info?.nickname && (
-                      <p className="text-white/30 mt-1" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
+                      <p className="text-white/35 mt-1.5" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px" }}>
                         "{info.nickname}"
                       </p>
                     )}
-                    <div className="flex items-center gap-1.5 mt-2.5">
-                      <MapPin size={10} className="text-white/20 flex-shrink-0" />
-                      <span className="text-white/20 font-mono truncate" style={{ fontSize: "8px" }}>
+                    <div className="flex items-center gap-2 mt-3">
+                      <MapPin size={14} className="text-white/25 flex-shrink-0" />
+                      <span className="text-white/25 font-mono" style={{ fontSize: "10px" }}>
                         {playground.address}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col items-end gap-2 flex-shrink-0">
+                  <div className="flex flex-col items-end gap-3 flex-shrink-0">
                     {displayRating != null && (
-                      <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-                        <Star size={10} className="fill-yellow-400 text-yellow-400" />
-                        <span className="text-yellow-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px" }}>
+                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
+                        <Star size={14} className="fill-yellow-400 text-yellow-400" />
+                        <span className="text-yellow-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "11px" }}>
                           {displayRating.toFixed(1)}
                         </span>
                       </div>
                     )}
                     {playerCount > 0 && (
-                      <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-500/10 border border-green-500/20">
-                        <span className="text-green-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}>
-                          {playerCount}🏀
+                      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-green-500/10 border border-green-500/20">
+                        <span className="text-green-400" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px" }}>
+                          {playerCount} 🏀
                         </span>
                       </div>
                     )}
-                    <div className="text-white/15 mt-1">
-                      {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                    <div className="text-white/20 mt-1">
+                      {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                     </div>
                   </div>
                 </div>
 
-                {/* Tags row */}
-                <div className="flex flex-wrap gap-1.5 mt-3 items-center">
-                  <div className="flex items-center gap-1 mr-2">
-                    <Clock size={8} className="text-white/15" />
-                    <span className="text-white/15 font-mono" style={{ fontSize: "7px" }}>{playground.openHours}</span>
+                {/* Tags & directions row */}
+                <div className="flex flex-wrap items-center gap-2 mt-4">
+                  <div className="flex items-center gap-1.5 mr-2">
+                    <Clock size={11} className="text-white/20" />
+                    <span className="text-white/20 font-mono" style={{ fontSize: "9px" }}>{playground.openHours}</span>
                   </div>
                   {Object.entries(FEATURE_TAGS).map(([key, tag]) =>
                     playground[key as keyof Playground] ? (
-                      <span key={key} className={`px-2 py-0.5 rounded-md border font-mono ${tag.color}`} style={{ fontSize: "6px" }}>
+                      <span key={key} className={`px-2.5 py-1 rounded-lg border font-mono ${tag.color}`} style={{ fontSize: "7px" }}>
                         {tag.label}
                       </span>
                     ) : null
                   )}
                 </div>
+
+                {/* Directions button — always visible on card */}
+                <div
+                  className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/30 hover:border-blue-400/60 transition-all cursor-pointer min-h-[44px]"
+                  onClick={(e) => openDirections(playground, e)}
+                  role="link"
+                  aria-label={`Indicazioni per ${playground.name}`}
+                >
+                  <Navigation size={16} className="text-blue-400" />
+                  <span className="text-blue-300" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}>
+                    INDICAZIONI
+                  </span>
+                </div>
               </button>
 
               {/* Expanded section */}
               {isExpanded && (
-                <div className="border-t border-white/10 p-5 md:p-6 space-y-5">
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 rounded-xl p-4 border border-white/10 bg-white/5">
+                <div className="border-t border-white/10 p-6 md:p-8 space-y-6">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-5 rounded-2xl p-5 border border-white/10 bg-white/5">
                     <div>
-                      <p className={fieldStatus.color} style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px" }}>
+                      <p className={fieldStatus.color} style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "11px" }}>
                         {fieldStatus.label}
                       </p>
                       {playerCount > 0 && (
-                        <div className="flex items-center gap-1.5 mt-1.5">
-                          <Users size={10} className="text-white/20" />
-                          <span className="text-white/20 font-mono" style={{ fontSize: "7px" }}>{playerCount} giocatori ora</span>
+                        <div className="flex items-center gap-2 mt-2">
+                          <Users size={14} className="text-white/25" />
+                          <span className="text-white/25 font-mono" style={{ fontSize: "9px" }}>{playerCount} giocatori ora</span>
                         </div>
                       )}
                     </div>
@@ -238,9 +258,10 @@ const PlaygroundList = ({
                       {isAuthenticated && (
                         <button
                           onClick={() => toggleFavorite(playground.id)}
-                          className="p-2.5 rounded-xl border border-white/10 hover:border-red-400/50 transition-colors"
+                          className="p-3 rounded-xl border border-white/10 hover:border-red-400/50 transition-colors min-h-[48px] min-w-[48px] flex items-center justify-center"
+                          aria-label="Aggiungi ai preferiti"
                         >
-                          <Heart size={14} className={isFavorite(playground.id) ? "fill-red-500 text-red-500" : "text-white/20"} />
+                          <Heart size={18} className={isFavorite(playground.id) ? "fill-red-500 text-red-500" : "text-white/25"} />
                         </button>
                       )}
                       <CheckInButton
