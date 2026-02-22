@@ -1,85 +1,60 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { User } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 
 const Header = () => {
   const navigate = useNavigate();
   const { isAuthenticated, profile } = useAuth();
 
-  const playSoundEffect = (action: string) => {
-    try {
-      if (typeof Audio === 'undefined') return;
-      const audio = new Audio(`/sounds/${action}.mp3`);
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
-    } catch {
-      // Silently handle
-    }
-  };
-
   const handleHomeClick = () => {
-    try {
-      playSoundEffect('click');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      if (window.location.pathname !== '/') navigate('/');
-    } catch {
-      if (window.location.pathname !== '/') navigate('/');
-    }
-  };
-
-  const handleLogout = () => {
-    playSoundEffect('click');
-    navigate('/logout');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (window.location.pathname !== '/') navigate('/');
   };
 
   return (
-    <header className="bg-black bg-opacity-80 border-b-4 border-white p-4 relative z-20">
-      <div className="container mx-auto flex flex-col items-center gap-4">
-        <div className="flex justify-between items-center w-full">
-          <div className="flex-1"></div>
+    <header className="border-b border-white/10 bg-black/60 backdrop-blur-md relative z-20">
+      <div className="container mx-auto max-w-4xl flex items-center justify-between px-4 py-3">
+        {/* Logo — smaller, cleaner */}
+        <div className="cursor-pointer select-none" onClick={handleHomeClick}>
+          <img
+            src="/lovable-uploads/e4d6bab9-96f0-4ad5-a830-7af99d4433b5.png"
+            alt="Playground Jam Bologna Logo"
+            className="h-16 md:h-20 w-auto object-contain"
+          />
+        </div>
 
-          <div
-            className="cursor-pointer select-none flex-1 flex justify-center"
-            onClick={handleHomeClick}
-          >
-            <img
-              src="/lovable-uploads/e4d6bab9-96f0-4ad5-a830-7af99d4433b5.png"
-              alt="Playground Jam Bologna Logo"
-              className="h-32 md:h-40 lg:h-48 xl:h-56 w-auto object-contain arcade-icon"
-            />
-          </div>
-
-          <div className="flex-1 flex justify-end">
-            {isAuthenticated ? (
-              <div className="flex flex-col items-end gap-2">
-                <button
-                  onClick={() => navigate('/profile')}
-                  className="flex items-center gap-1 text-xs nike-text hover:text-jam-neon-orange transition-colors"
-                >
-                  <User size={14} />
-                  {profile?.nickname || profile?.username || 'Utente'}
-                </button>
-                <Button
-                  onClick={handleLogout}
-                  variant="outline"
-                  size="sm"
-                  className="text-white border-white hover:bg-white hover:text-black transition-colors nike-text text-xs"
-                >
-                  LOGOUT
-                </Button>
-              </div>
-            ) : (
-              <Button
-                onClick={() => navigate('/auth')}
-                variant="outline"
-                size="sm"
-                className="text-white border-white hover:bg-white hover:text-black transition-colors nike-text text-xs"
+        {/* Auth actions */}
+        <div className="flex items-center gap-3">
+          {isAuthenticated ? (
+            <>
+              <button
+                onClick={() => navigate('/profile')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/20 hover:border-orange-500/60 transition-colors"
+                style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}
               >
-                LOGIN
-              </Button>
-            )}
-          </div>
+                <User size={12} />
+                {profile?.nickname || profile?.username || 'Utente'}
+              </button>
+              <button
+                onClick={() => navigate('/logout')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/20 hover:border-red-500/60 transition-colors"
+                style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px" }}
+              >
+                <LogOut size={12} />
+              </button>
+            </>
+          ) : (
+            <Button
+              onClick={() => navigate('/auth')}
+              variant="outline"
+              size="sm"
+              className="border-white/30 hover:border-orange-500 hover:bg-orange-500/10 transition-all"
+              style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}
+            >
+              LOGIN
+            </Button>
+          )}
         </div>
       </div>
     </header>

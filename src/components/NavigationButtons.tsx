@@ -1,6 +1,5 @@
 
-import { Button } from "@/components/ui/button";
-import { Calendar, Home, UserPlus } from "lucide-react";
+import { Calendar, UserPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -13,39 +12,29 @@ const NavigationButtons = ({ onScrollToTop, playSoundEffect }: NavigationButtons
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
-  return (
-    <div className="flex gap-1 md:gap-2 flex-wrap justify-center">
-      <Button 
-        onClick={onScrollToTop}
-        className="arcade-button arcade-button-home text-xs px-2 py-2 md:px-4 md:py-3"
-      >
-        <Home size={14} />
-        <span className="hidden sm:inline ml-1">HOME</span>
-      </Button>
-      
-      <Button 
-        onClick={() => {
-          playSoundEffect('click');
-          navigate('/events');
-        }}
-        className="arcade-button arcade-button-stats text-xs px-2 py-2 md:px-4 md:py-3"
-      >
-        <Calendar size={14} />
-        <span className="hidden sm:inline ml-1">EVENTI</span>
-      </Button>
+  const btnClass = "flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/15 hover:border-orange-500/50 hover:bg-orange-500/10 transition-all";
+  const textStyle = { fontFamily: "'Press Start 2P', monospace", fontSize: "7px" } as const;
 
-      {/* Mostra bottone REGISTRATI solo se non autenticato (LOGIN gestito dall'Header) */}
+  return (
+    <div className="flex gap-2 flex-wrap justify-center">
+      <button
+        onClick={() => { playSoundEffect('click'); navigate('/events'); }}
+        className={btnClass}
+        style={textStyle}
+      >
+        <Calendar size={12} />
+        <span>EVENTI</span>
+      </button>
+
       {!isAuthenticated && (
-        <Button 
-          onClick={() => {
-            playSoundEffect('click');
-            navigate('/register');
-          }}
-          className="arcade-button arcade-button-stats text-xs px-2 py-2 md:px-4 md:py-3"
+        <button
+          onClick={() => { playSoundEffect('click'); navigate('/register'); }}
+          className={btnClass}
+          style={textStyle}
         >
-          <UserPlus size={14} />
-          <span className="hidden sm:inline ml-1">REGISTRATI</span>
-        </Button>
+          <UserPlus size={12} />
+          <span>REGISTRATI</span>
+        </button>
       )}
     </div>
   );

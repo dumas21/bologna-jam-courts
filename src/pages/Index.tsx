@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import Header from "@/components/Header";
 import DateDisplay from "@/components/DateDisplay";
@@ -20,8 +20,6 @@ const Index = () => {
   
   const { scrollToTop, playSoundEffect } = useAudioEffects();
 
-  // Debug rimosso per produzione
-  
   const handleSelectPlayground = (playground: Playground) => {
     setSelectedPlayground(playground);
     const audio = new Audio('/sounds/select.mp3');
@@ -29,13 +27,11 @@ const Index = () => {
   };
 
   const handleCheckIn = (playgroundId: string, userNickname: string) => {
-    // Usa il nickname del profilo se l'utente è autenticato
     const finalNickname = isAuthenticated ? nickname : userNickname;
     return checkIn(playgroundId, finalNickname, finalNickname);
   };
 
   const handleCheckOut = (playgroundId: string, userNickname: string) => {
-    // Usa il nickname del profilo se l'utente è autenticato
     const finalNickname = isAuthenticated ? nickname : userNickname;
     return checkOut(playgroundId, finalNickname);
   };
@@ -56,7 +52,6 @@ const Index = () => {
     }
   };
 
-  // Mostra un loader durante il caricamento dell'autenticazione
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-purple-900 to-blue-900">
@@ -71,25 +66,26 @@ const Index = () => {
       
       <Header />
       
-      <main className="container mx-auto p-2 md:p-4 flex-1 relative z-10">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4 md:mb-6 gap-2 md:gap-4">
+      <main className="container mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10 flex-1 relative z-10 max-w-4xl">
+        {/* Top bar: date + nav */}
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <DateDisplay />
           <NavigationButtons onScrollToTop={scrollToTop} playSoundEffect={playSoundEffect} />
         </div>
 
+        {/* Events banner — cleaner */}
         <EventsButton />
         
-        {/* Test Auth Link rimosso per produzione */}
-        
-        {/* Mostra un messaggio di benvenuto se l'utente è autenticato */}
+        {/* Welcome message */}
         {isAuthenticated && profile && (
-          <div className="mb-4 p-3 bg-green-500 bg-opacity-20 border border-green-500 rounded-lg">
-            <p className="text-green-200 text-sm nike-text">
-              BENVENUTO/A {nickname.toUpperCase()}! Ora puoi scrivere nei playground come utente registrato.
+          <div className="mb-6 px-4 py-3 rounded-xl border border-green-500/40 bg-green-500/10 backdrop-blur-sm">
+            <p className="text-green-300 text-center" style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "8px" }}>
+              BENVENUTO/A {nickname.toUpperCase()}!
             </p>
           </div>
         )}
         
+        {/* Main content */}
         <MainTabs
           playgrounds={playgrounds}
           selectedPlayground={selectedPlayground}
@@ -104,19 +100,14 @@ const Index = () => {
         />
       </main>
       
-      <footer className="arcade-footer mt-2 md:mt-4">
-        <div className="container mx-auto px-2 md:px-4 text-center py-2 md:py-4">
-          <p className="font-press-start text-xs">
+      <footer className="mt-8 border-t border-white/10 py-6">
+        <div className="container mx-auto px-4 text-center space-y-2">
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "9px", color: '#FF6B35', textShadow: '1px 1px 0px #000' }}>
             PLAYGROUND JAM BOLOGNA &copy; 2026
           </p>
-          <div className="mt-2" style={{
-            color: '#00ffff',
-            fontSize: '8px',
-            fontFamily: 'Press Start 2P, monospace',
-            textShadow: '1px 1px 0px #000'
-          }}>
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: "7px", color: '#00ffff', textShadow: '1px 1px 0px #000' }}>
             CONTATTI: playgroundjam21@gmail.com
-          </div>
+          </p>
         </div>
       </footer>
     </div>
