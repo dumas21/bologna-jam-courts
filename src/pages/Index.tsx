@@ -66,7 +66,7 @@ const Index = () => {
       
       <Header />
       
-      <main className="container mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10 flex-1 relative z-10 max-w-4xl">
+      <main className="container mx-auto px-4 md:px-6 lg:px-8 py-6 md:py-10 flex-1 relative z-10 max-w-5xl">
         {/* Top bar: date + nav */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
           <DateDisplay />
