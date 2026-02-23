@@ -20,7 +20,7 @@ const Header = () => {
           <img
             src="/lovable-uploads/e4d6bab9-96f0-4ad5-a830-7af99d4433b5.png"
             alt="Playground Jam Bologna Logo"
-            className="h-16 md:h-20 w-auto object-contain"
+            className="h-24 md:h-32 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,107,53,0.4)]"
           />
         </div>
 
