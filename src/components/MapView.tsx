@@ -22,7 +22,7 @@ const MapView = ({
   getFieldStatus,
   getRatingAvg,
 }: MapViewProps) => {
-  const [view, setView] = useState<'map' | 'list'>('map');
+  const [view, setView] = useState<'map' | 'list'>('list');
 
   return (
     <div className="relative w-full bg-black bg-opacity-90 backdrop-blur-sm border-2 border-jam-neon-orange p-3 md:p-4 overflow-hidden rounded-lg synthwave-bg">
