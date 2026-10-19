@@ -16,7 +16,7 @@ const MapView = ({
 }: MapViewProps) => {
   return <div className="relative w-full bg-black bg-opacity-90 backdrop-blur-sm border-2 md:border-3 border-orange-500 p-3 md:p-4 overflow-hidden rounded-lg synthwave-bg">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-4 md:mb-6 gap-2 md:gap-4">
-        <div className="text-xs md:text-sm nike-text text-white bg-black bg-opacity-90 px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-orange-500 text-center w-full sm:w-auto retro-neon-text">BASKET CITY - 12 CAMPI DISPONIBILI</div>
+        <div className="text-xs md:text-sm nike-text text-white bg-black bg-opacity-90 px-3 md:px-4 py-2 md:py-3 rounded-lg border-2 border-orange-500 text-center w-full sm:w-auto retro-neon-text">BASKET CITY - {playgrounds.length} CAMPI DISPONIBILI</div>
       </div>
       
       <ScrollArea className="h-[400px] sm:h-[450px] md:h-[500px] pr-2 md:pr-3">
