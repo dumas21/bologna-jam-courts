@@ -23,16 +23,16 @@ const Header = () => {
         />
       </div>
       {/* Velature per la leggibilità */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/10 to-black/80 pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/5 to-black/70 pointer-events-none" aria-hidden="true" />
 
       {/* Contenuto del banner */}
-      <div className="relative container mx-auto max-w-4xl px-4 pt-8 pb-10 md:pt-10 md:pb-12">
+      <div className="relative container mx-auto max-w-4xl px-4 pt-6 pb-8 md:pt-8 md:pb-10">
         {/* Logo principale, molto più grande */}
         <div className="flex justify-center cursor-pointer select-none" onClick={handleHomeClick}>
           <img
             src="/lovable-uploads/e4d6bab9-96f0-4ad5-a830-7af99d4433b5.png"
             alt="Playground Jam Bologna Logo"
-            className="h-44 md:h-64 w-auto object-contain drop-shadow-[0_0_25px_rgba(255,107,53,0.6)]"
+            className="h-56 md:h-80 w-auto object-contain drop-shadow-[0_0_30px_rgba(255,107,53,0.7)]"
           />
         </div>
 
