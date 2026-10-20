@@ -23,7 +23,7 @@ const Header = () => {
         />
       </div>
       {/* Velature per la leggibilità */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/10 to-black/80 pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/5 to-black/70 pointer-events-none" aria-hidden="true" />
 
       {/* Contenuto del banner */}
       <div className="relative container mx-auto max-w-4xl px-4 pt-6 pb-8 md:pt-8 md:pb-10">
