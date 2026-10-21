@@ -364,6 +364,13 @@ export type Database = {
           }
       cleanup_old_messages: { Args: never; Returns: undefined }
       expire_old_check_ins: { Args: never; Returns: undefined }
+      get_active_check_in_counts: {
+        Args: never
+        Returns: {
+          active_players: number
+          playground_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
