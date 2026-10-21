@@ -371,6 +371,17 @@ export type Database = {
           playground_id: string
         }[]
       }
+      get_playground_rating_summary: {
+        Args: never
+        Returns: {
+          avg_atmosphere: number
+          avg_cleanliness: number
+          avg_court_condition: number
+          avg_hoops_quality: number
+          playground_id: string
+          rating_count: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
