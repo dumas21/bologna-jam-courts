@@ -28,15 +28,12 @@ export function useCheckIn() {
     // First expire old check-ins
     await supabase.rpc('expire_old_check_ins');
 
-    const { data, error } = await supabase
-      .from('field_check_ins')
-      .select('playground_id')
-      .eq('is_active', true);
+    const { data, error } = await (supabase.rpc as any)('get_active_check_in_counts');
 
     if (!error && data) {
       const counts: Record<string, number> = {};
-      data.forEach((row: { playground_id: string }) => {
-        counts[row.playground_id] = (counts[row.playground_id] || 0) + 1;
+      (data as { playground_id: string; active_players: number }[]).forEach((row) => {
+        counts[row.playground_id] = Number(row.active_players) || 0;
       });
       setActiveCounts(counts);
     }
