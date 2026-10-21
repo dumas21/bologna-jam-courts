@@ -28,37 +28,19 @@ export function useRatings() {
   const [ratingsMap, setRatingsMap] = useState<Record<string, AggregatedRating>>({});
 
   const fetchRatings = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('playground_ratings')
-      .select('playground_id, court_condition, hoops_quality, cleanliness, atmosphere');
+    const { data, error } = await (supabase.rpc as any)('get_playground_rating_summary');
 
     if (!error && data) {
-      const map: Record<string, { total: number[]; count: number; cc: number; hq: number; cl: number; at: number }> = {};
-      
-      data.forEach((r: any) => {
-        if (!map[r.playground_id]) {
-          map[r.playground_id] = { total: [], count: 0, cc: 0, hq: 0, cl: 0, at: 0 };
-        }
-        const avg = (r.court_condition + r.hoops_quality + r.cleanliness + r.atmosphere) / 4;
-        map[r.playground_id].total.push(avg);
-        map[r.playground_id].count++;
-        map[r.playground_id].cc += r.court_condition;
-        map[r.playground_id].hq += r.hoops_quality;
-        map[r.playground_id].cl += r.cleanliness;
-        map[r.playground_id].at += r.atmosphere;
-      });
-
       const result: Record<string, AggregatedRating> = {};
-      Object.entries(map).forEach(([pid, v]) => {
-        result[pid] = {
-          average: v.total.reduce((a, b) => a + b, 0) / v.count,
-          count: v.count,
-          breakdown: {
-            court_condition: v.cc / v.count,
-            hoops_quality: v.hq / v.count,
-            cleanliness: v.cl / v.count,
-            atmosphere: v.at / v.count,
-          },
+      (data as any[]).forEach((r) => {
+        const cc = Number(r.avg_court_condition) || 0;
+        const hq = Number(r.avg_hoops_quality) || 0;
+        const cl = Number(r.avg_cleanliness) || 0;
+        const at = Number(r.avg_atmosphere) || 0;
+        result[r.playground_id] = {
+          average: (cc + hq + cl + at) / 4,
+          count: Number(r.rating_count) || 0,
+          breakdown: { court_condition: cc, hoops_quality: hq, cleanliness: cl, atmosphere: at },
         };
       });
       setRatingsMap(result);
