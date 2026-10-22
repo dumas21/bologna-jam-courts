@@ -16,7 +16,7 @@ export function usePlaygrounds() {
     if (saved) {
       const parsedData = JSON.parse(saved);
       // Se i dati salvati sono obsoleti (meno di 15 campi), ripristina i dati originali
-      if (parsedData.length < 15) {
+      if (!Array.isArray(parsedData) || parsedData.length < initialData.length) {
         return initialData;
       }
       return parsedData;
