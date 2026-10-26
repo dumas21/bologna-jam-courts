@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Playground, Comment, CheckInRecord, RegisteredUser } from "@/types/playground";
 import { playgroundData as initialData } from "@/data/playgroundData";
 
@@ -40,6 +41,15 @@ export function usePlaygrounds() {
   const [totalCheckIns, setTotalCheckIns] = useState<number>(() => {
     return playgrounds.reduce((acc, pg) => acc + pg.totalCheckins, 0);
   });
+
+  // Apply moderator-approved lighting reports
+  useEffect(() => {
+    (supabase.rpc as any)("get_approved_lighting").then(({ data, error }: any) => {
+      if (error || !Array.isArray(data) || data.length === 0) return;
+      const map = new Map<string, boolean>(data.map((r: any) => [r.playground_id, r.has_lighting]));
+      setPlaygrounds(current => current.map(pg => map.has(pg.id) ? { ...pg, hasLighting: map.get(pg.id) as boolean } : pg));
+    });
+  }, []);
 
   // Save playgrounds to localStorage whenever they change
   useEffect(() => {
