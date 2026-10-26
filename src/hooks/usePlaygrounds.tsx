@@ -12,7 +12,12 @@ export type { CheckInRecord, RegisteredUser };
 export function usePlaygrounds() {
   const { toast } = useToast();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(() => {
+    const DATA_VERSION = "2026-10-guide-v2";
     const saved = localStorage.getItem("playgroundData");
+    if (localStorage.getItem("playgroundDataVersion") !== DATA_VERSION) {
+      localStorage.setItem("playgroundDataVersion", DATA_VERSION);
+      return initialData;
+    }
     if (saved) {
       const parsedData = JSON.parse(saved);
       // Se i dati salvati sono obsoleti (meno di 15 campi), ripristina i dati originali
