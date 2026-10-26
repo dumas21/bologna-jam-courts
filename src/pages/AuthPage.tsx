@@ -107,6 +107,8 @@ export default function AuthPage() {
         <h1 className="text-xl md:text-2xl font-press-start mb-6 text-center retro-neon-text">
           {isSignUp ? 'NUOVA CONNESSIONE' : 'ACCESSO'}
         </h1>
+        <LoginPurposeInfo />
+
 
         <div className="space-y-4">
           <input
