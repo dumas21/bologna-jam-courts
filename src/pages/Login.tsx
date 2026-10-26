@@ -1,3 +1,4 @@
+import LoginPurposeInfo from "@/components/LoginPurposeInfo";
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
