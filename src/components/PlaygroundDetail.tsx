@@ -10,6 +10,7 @@ import WeatherInfo from './WeatherInfo';
 import EventBanner from './EventBanner';
 import PlaygroundInfo from './PlaygroundInfo';
 import PlaygroundActions from './PlaygroundActions';
+import PlaygroundSuggestionBox from './PlaygroundSuggestionBox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ClientRateLimiter } from '@/utils/rateLimiting';
 import { SecureStorage } from '@/utils/secureStorage';
@@ -118,6 +119,7 @@ const PlaygroundDetail: React.FC<PlaygroundDetailProps> = ({
               onCheckOutClick={handleCheckOutClick}
               onRatingUpdate={onRatingUpdate}
             />
+            <PlaygroundSuggestionBox playgroundId={playground.id} />
           </TabsContent>
           <TabsContent value="community" className="community">
             <div className="space-y-4">
