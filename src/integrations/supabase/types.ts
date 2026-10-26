@@ -167,6 +167,45 @@ export type Database = {
         }
         Relationships: []
       }
+      playground_suggestions: {
+        Row: {
+          created_at: string
+          has_lighting: boolean | null
+          id: string
+          notes: string | null
+          playground_id: string
+          reviewed_at: string | null
+          stars: number | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          has_lighting?: boolean | null
+          id?: string
+          notes?: string | null
+          playground_id: string
+          reviewed_at?: string | null
+          stars?: number | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          has_lighting?: boolean | null
+          id?: string
+          notes?: string | null
+          playground_id?: string
+          reviewed_at?: string | null
+          stars?: number | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -368,6 +407,13 @@ export type Database = {
         Args: never
         Returns: {
           active_players: number
+          playground_id: string
+        }[]
+      }
+      get_approved_lighting: {
+        Args: never
+        Returns: {
+          has_lighting: boolean
           playground_id: string
         }[]
       }

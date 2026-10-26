@@ -10,6 +10,7 @@ import AdminUsers from "@/components/admin/AdminUsers";
 import AdminPlaygrounds from "@/components/admin/AdminPlaygrounds";
 import AdminEvents from "@/components/admin/AdminEvents";
 import AdminMessages from "@/components/admin/AdminMessages";
+import AdminSuggestions from "@/components/admin/AdminSuggestions";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -113,7 +114,7 @@ const Admin = () => {
 
       <main className="container mx-auto p-4 flex-1 relative z-10">
         <Tabs defaultValue="users" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6 arcade-tabs">
+          <TabsList className="grid w-full grid-cols-5 mb-6 arcade-tabs">
             <TabsTrigger value="users" className="arcade-tab flex items-center gap-2">
               <Users size={16} />
               <span className="hidden sm:inline">UTENTI</span>
@@ -129,6 +130,10 @@ const Admin = () => {
             <TabsTrigger value="messages" className="arcade-tab flex items-center gap-2">
               <MessageSquare size={16} />
               <span className="hidden sm:inline">MESSAGGI</span>
+            </TabsTrigger>
+            <TabsTrigger value="suggestions" className="arcade-tab flex items-center gap-2">
+              <Shield size={16} />
+              <span className="hidden sm:inline">SEGNALAZIONI</span>
             </TabsTrigger>
           </TabsList>
 
@@ -146,6 +151,10 @@ const Admin = () => {
 
           <TabsContent value="messages" className="arcade-section p-6">
             <AdminMessages />
+          </TabsContent>
+
+          <TabsContent value="suggestions" className="arcade-section p-6">
+            <AdminSuggestions />
           </TabsContent>
         </Tabs>
       </main>
