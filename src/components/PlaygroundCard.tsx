@@ -24,7 +24,9 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
   const openGoogleMaps = (address: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const encodedAddress = encodeURIComponent(address);
-    const url = `https://maps.google.com/maps?q=${encodedAddress}`;
+    const url = playground.latitude && playground.longitude
+      ? `https://www.google.com/maps/search/?api=1&query=${playground.latitude},${playground.longitude}`
+      : `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
     
     openSecureExternalLink(url);
     
