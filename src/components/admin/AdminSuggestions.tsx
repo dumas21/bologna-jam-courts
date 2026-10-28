@@ -10,6 +10,9 @@ interface ISuggestion {
   playground_id: string;
   stars: number | null;
   has_lighting: boolean | null;
+  has_water: boolean | null;
+  has_parking: boolean | null;
+  has_bike_parking: boolean | null;
   notes: string | null;
   status: string;
   created_at: string;
@@ -55,7 +58,10 @@ const AdminSuggestions: React.FC = () => {
           </div>
           <div className="text-xs text-gray-200 flex flex-wrap gap-3">
             {s.stars && <span className="flex items-center gap-1"><Star size={12} className="fill-yellow-400 text-yellow-400" />{s.stars}/5</span>}
-            {s.has_lighting !== null && <span>💡 Illuminazione: {s.has_lighting ? 'SÌ' : 'NO'}</span>}
+            {s.has_lighting !== null && <span>💡 Luci: {s.has_lighting ? 'ON' : 'OFF'}</span>}
+            {s.has_water != null && <span>🚰 Fontanella: {s.has_water ? 'ON' : 'OFF'}</span>}
+            {s.has_parking != null && <span>🚗 Parcheggio: {s.has_parking ? 'ON' : 'OFF'}</span>}
+            {s.has_bike_parking != null && <span>🚲 Bici: {s.has_bike_parking ? 'ON' : 'OFF'}</span>}
           </div>
           {s.notes && <p className="text-xs text-gray-300 whitespace-pre-wrap">{s.notes}</p>}
           {filter === 'pending' && (
