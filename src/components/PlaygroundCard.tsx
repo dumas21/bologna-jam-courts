@@ -24,7 +24,9 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
   const openGoogleMaps = (address: string, e: React.MouseEvent) => {
     e.stopPropagation();
     const encodedAddress = encodeURIComponent(address);
-    const url = `https://maps.google.com/maps?q=${encodedAddress}`;
+    const url = playground.latitude && playground.longitude
+      ? `https://www.google.com/maps/search/?api=1&query=${playground.latitude},${playground.longitude}`
+      : `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
     
     openSecureExternalLink(url);
     
@@ -150,6 +152,15 @@ const PlaygroundCard = ({ playground, selectedPlayground, onSelectPlayground }: 
             {playground.hasLighting && (
               <span className="bg-yellow-600 text-white px-2 py-1 rounded-full text-xs font-bold">ILLUMINATO</span>
             )}
+            {([
+              ['🚰 FONTANELLA', playground.verifiedWater],
+              ['🚗 PARCHEGGIO', playground.verifiedParking],
+              ['🚲 BICI', playground.verifiedBikeParking],
+            ] as const).map(([label, v]) => (
+              <span key={label} className={`px-2 py-1 rounded-full text-xs font-bold border ${v === true ? 'bg-cyan-600 text-white border-cyan-300' : v === false ? 'bg-black/70 text-gray-400 border-gray-600 line-through' : 'bg-black/70 text-gray-400 border-dashed border-gray-600'}`}>
+                {label}{v == null ? ' ?' : ''}
+              </span>
+            ))}
           </div>
         )}
         

@@ -170,7 +170,10 @@ export type Database = {
       playground_suggestions: {
         Row: {
           created_at: string
+          has_bike_parking: boolean | null
           has_lighting: boolean | null
+          has_parking: boolean | null
+          has_water: boolean | null
           id: string
           notes: string | null
           playground_id: string
@@ -182,7 +185,10 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          has_bike_parking?: boolean | null
           has_lighting?: boolean | null
+          has_parking?: boolean | null
+          has_water?: boolean | null
           id?: string
           notes?: string | null
           playground_id: string
@@ -194,7 +200,10 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          has_bike_parking?: boolean | null
           has_lighting?: boolean | null
+          has_parking?: boolean | null
+          has_water?: boolean | null
           id?: string
           notes?: string | null
           playground_id?: string
@@ -408,6 +417,18 @@ export type Database = {
         Returns: {
           active_players: number
           playground_id: string
+        }[]
+      }
+      get_approved_amenities: {
+        Args: never
+        Returns: {
+          avg_stars: number
+          has_bike_parking: boolean
+          has_lighting: boolean
+          has_parking: boolean
+          has_water: boolean
+          playground_id: string
+          stars_count: number
         }[]
       }
       get_approved_lighting: {

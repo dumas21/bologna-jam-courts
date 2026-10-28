@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import ArcadeReminder from "@/components/ArcadeReminder";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -38,6 +39,7 @@ const App = () => {
       <TooltipProvider>
         <ErrorBoundary>
           <Toaster />
+          <ArcadeReminder />
           <Sonner />
           <BrowserRouter>
             <MotivationalPopup />

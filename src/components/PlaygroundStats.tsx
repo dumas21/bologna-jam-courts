@@ -16,17 +16,24 @@ const PlaygroundStats = ({ playground }: PlaygroundStatsProps) => {
       
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
         <Clock size={12} className="text-blue-400 mr-2 flex-shrink-0" />
-        <span className="text-white/90 nike-text">{playground.openHours}</span>
+        {playground.hoursSummer || playground.hoursWinter ? (
+          <span className="text-white/90 nike-text flex flex-col">
+            <span>☀️ ESTATE: {playground.hoursSummer}</span>
+            <span>❄️ INVERNO: {playground.hoursWinter}</span>
+          </span>
+        ) : (
+          <span className="text-white/90 nike-text">{playground.openHours}</span>
+        )}
       </div>
       
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
         <span className="text-yellow-400 mr-2">🏀</span>
-        <span className="text-white/90 nike-text font-bold">CANESTRI: 2</span>
+        <span className="text-white/90 nike-text font-bold">CANESTRI: {playground.basketCount ?? "?"}</span>
       </div>
       
       <div className="flex items-center bg-black bg-opacity-70 px-3 py-2 rounded-lg border border-orange-300">
         <Star size={12} className="text-yellow-400 mr-2 flex-shrink-0" />
-        <span className="text-white/90 nike-text">{playground.rating?.toFixed(1)} ({playground.ratingCount})</span>
+        <span className="text-white/90 nike-text">{playground.communityStars ? `${playground.communityStars.toFixed(1)} (${playground.communityStarsCount})` : "NESSUN VOTO"}</span>
       </div>
     </div>
   );

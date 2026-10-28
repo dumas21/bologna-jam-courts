@@ -13,7 +13,7 @@ export type { CheckInRecord, RegisteredUser };
 export function usePlaygrounds() {
   const { toast } = useToast();
   const [playgrounds, setPlaygrounds] = useState<Playground[]>(() => {
-    const DATA_VERSION = "2026-10-guide-v2";
+    const DATA_VERSION = "2026-10-guide-v3";
     const saved = localStorage.getItem("playgroundData");
     if (localStorage.getItem("playgroundDataVersion") !== DATA_VERSION) {
       localStorage.setItem("playgroundDataVersion", DATA_VERSION);
@@ -42,12 +42,24 @@ export function usePlaygrounds() {
     return playgrounds.reduce((acc, pg) => acc + pg.totalCheckins, 0);
   });
 
-  // Apply moderator-approved lighting reports
+  // Apply moderator-approved community reports (lighting, water, parking, stars)
   useEffect(() => {
-    (supabase.rpc as any)("get_approved_lighting").then(({ data, error }: any) => {
+    (supabase.rpc as any)("get_approved_amenities").then(({ data, error }: any) => {
       if (error || !Array.isArray(data) || data.length === 0) return;
-      const map = new Map<string, boolean>(data.map((r: any) => [r.playground_id, r.has_lighting]));
-      setPlaygrounds(current => current.map(pg => map.has(pg.id) ? { ...pg, hasLighting: map.get(pg.id) as boolean } : pg));
+      const map = new Map<string, any>(data.map((r: any) => [r.playground_id, r]));
+      setPlaygrounds(current => current.map(pg => {
+        const r = map.get(pg.id);
+        if (!r) return pg;
+        return {
+          ...pg,
+          hasLighting: r.has_lighting ?? pg.hasLighting,
+          verifiedWater: r.has_water,
+          verifiedParking: r.has_parking,
+          verifiedBikeParking: r.has_bike_parking,
+          communityStars: r.avg_stars !== null ? Number(r.avg_stars) : null,
+          communityStarsCount: Number(r.stars_count || 0),
+        };
+      }));
     });
   }, []);
 

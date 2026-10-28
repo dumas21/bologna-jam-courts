@@ -156,6 +156,7 @@ export function useCheckIn() {
 
     const playgroundId = userActiveCheckIn.playground_id;
     setUserActiveCheckIn(null);
+    window.dispatchEvent(new CustomEvent('arcade-reminder', { detail: 'leave' }));
     await fetchActiveCounts();
     return playgroundId;
   };

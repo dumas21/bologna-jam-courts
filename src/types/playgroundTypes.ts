@@ -59,6 +59,13 @@ export interface Playground {
   hasFountain: boolean;
   hasAmenities: boolean;
   hasLighting: boolean;
+  verifiedWater?: boolean | null;
+  verifiedParking?: boolean | null;
+  verifiedBikeParking?: boolean | null;
+  communityStars?: number | null;
+  communityStarsCount?: number;
+  hoursSummer?: string;
+  hoursWinter?: string;
   currentPlayers: number;
   totalCheckins: number;
   basketCount?: number;
